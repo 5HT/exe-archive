@@ -24,8 +24,6 @@ get_data(T) when is_tuple(T) -> element(3, T).
 
 exe_ast(T,L,Args) -> {T,get_line(L),Args}.
 
-% actual AST creation
-
 mk_level_int(L,X)           -> exe_ast(level, L, {int,get_data(X)}).
 mk_level_var(L,X)           -> exe_ast(level, L, {var,get_data(X)}).
 mk_level_seq(L,X)           -> exe_ast(level, L, {seq,X}).
@@ -254,7 +252,7 @@ yecctoken2string(Other) ->
 
 
 
--file("/Users/5HT/depot/groupoid/exe/src/macro_parser.erl", 257).
+-file("/Users/5HT/depot/groupoid/exe/src/macro_parser.erl", 255).
 
 -dialyzer({nowarn_function, yeccpars2/7}).
 yeccpars2(0=S, Cat, Ss, Stack, T, Ts, Tzr) ->
@@ -3066,4 +3064,4 @@ yeccpars2_182_(__Stack0) ->
   end | __Stack].
 
 
--file("/Users/5HT/depot/groupoid/exe/src/macro_parser.yrl", 264).
+-file("/Users/5HT/depot/groupoid/exe/src/macro_parser.yrl", 262).

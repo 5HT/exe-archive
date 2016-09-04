@@ -1,6 +1,7 @@
 -module(exe).
 -description('Exe Compiler').
 -behaviour(supervisor).
+-include("exe.hrl").
 -behaviour(application).
 -export([init/1, start/2, stop/1]).
 -compile(export_all).

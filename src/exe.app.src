@@ -1,6 +1,6 @@
 {application, exe, [ {description, "Groupoid Infinity EXE Programming Language"},
                      {vsn, "v1.0"},
                      {registered, []},
-                     {applications, [kernel, stdlib, parsetools]},
+                     {applications, [kernel, stdlib]},
                      {mod, { exe, []}},
                      {env, []} ]}.

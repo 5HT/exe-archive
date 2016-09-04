@@ -206,8 +206,6 @@ get_data(T) when is_tuple(T) -> element(3, T).
 
 exe_ast(T,L,Args) -> {T,get_line(L),Args}.
 
-% actual AST creation
-
 mk_level_int(L,X)           -> exe_ast(level, L, {int,get_data(X)}).
 mk_level_var(L,X)           -> exe_ast(level, L, {var,get_data(X)}).
 mk_level_seq(L,X)           -> exe_ast(level, L, {seq,X}).
