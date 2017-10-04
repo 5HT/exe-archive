@@ -1,0 +1,18 @@
+
+    lambek := new
+
+    (record ListAlg (A: Type) : Type :=
+           (X: Type)
+           (nil: Unit -> X)
+           (cons: A -> X -> X))
+
+    (record ListMor (A: Type) (x1,x2: ListAlg A): Type :=
+           (map:    x1.X -> x2.X)
+           (okNil:  Path x2.X (map (x1.nil unit)) (x2.nil unit))
+           (okCons: ∀ (a: A) -> ∀ (x: x1) -> Path x2.X (map (x1.cons a x)) (x2.cons a (map x))))
+
+    (record listPoint (A: Type) : Type :=
+           (point: ∀ (x: listAlg A) -> x.X)
+           (map: ∀ (x1,x2: listAlg A) -> ∀ (m: listMor A x1 x2) ->
+                 Path x2.1 (m.map (point x1)) (point x2)))
+

@@ -53,7 +53,7 @@ convert([H|T],Acc)  -> convert(T,[H|Acc]).
 
 parse(X)   -> io:format("~tp~n",[macro:parse(bin(X))]).
 bin(X)     -> unicode:characters_to_list(X).
-display(X) -> io:format("~ts~n",[X]).
+display(X) -> exe_pretty:p(X).
 
 file(F) -> case file:read_file(convert(F,[],element(2,os:type()))) of
                 {ok,Bin} -> bin(Bin);
@@ -65,6 +65,3 @@ mad(F)  -> case mad_repl:load_file(F) of
             end.
 
 pad(D) -> lists:duplicate(D*7," ").
-
-p(X) -> exe_pretty:p(X).
-
