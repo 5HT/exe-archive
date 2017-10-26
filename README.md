@@ -51,8 +51,6 @@ No custom `user_drv` or `group` process is used. Color aware pretty printing `ex
 OM — Compact Core of CoC
 ------------------------
 
-<img src="http://groupoid.space/mltt/inf/inf.svg" width="600">
-
 In repository OM you may found following parts of core:
 * [Parser](https://github.com/groupoid/om/blob/master/src/om_parse.erl)
 * [Typechecker](https://github.com/groupoid/om/blob/master/src/om_type.erl)
