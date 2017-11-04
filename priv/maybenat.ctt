@@ -1,0 +1,60 @@
+module maybenat where
+-- by @esmolanka
+-- here is simple one tweet equality sample with transport
+
+-- Nat ~ Fix Maybe
+-- Z ~ Nothing
+-- S ~ Fix . Just
+
+import prelude
+import equiv
+import nat
+import maybe
+import control
+
+three : fix maybe = Fix (just (Fix (just (Fix (just (Fix nothing))))))
+
+natToMaybe : nat -> fix maybe = split
+  zero -> Fix nothing
+  suc n -> Fix (just (natToMaybe n))
+
+maybeToNat : fix maybe -> nat = split
+  Fix m -> go m
+   where
+    go : maybe (fix maybe) -> nat = split
+       nothing -> zero
+       just f -> suc (maybeToNat f)
+
+natMaybeIso : (a : nat) -> Path nat (maybeToNat (natToMaybe a)) a = split
+  zero -> <i> zero
+  suc n -> <i> suc (natMaybeIso n @ i)
+
+maybeNatIso : (a : fix maybe) -> Path (fix maybe) (natToMaybe (maybeToNat a)) a = split
+  Fix m -> go m
+   where
+    go : (a : maybe (fix maybe)) -> Path (fix maybe) (natToMaybe (maybeToNat (Fix a))) (Fix a) = split
+      nothing -> <i> Fix nothing
+      just f -> <i> Fix (just (maybeNatIso f @ i))
+
+maybenat_ : Path U (fix maybe) nat = isoPath (fix maybe) nat maybeToNat natToMaybe natMaybeIso maybeNatIso
+
+-- > transNeg (fix maybe) (nat) maybenat_ (suc (suc zero))
+-- EVAL: Fix (just (Fix (just (Fix nothing))))
+-- > trans (fix maybe) (nat) maybenat_ (Fix nothing)
+-- EVAL: zero
+
+-- import univalence
+
+-- natEquiv : isEquiv nat (fix maybe) natToMaybe =
+--  isoToEquiv
+--    nat (fix maybe)
+--    natToMaybe maybeToNat
+--    maybeNatIso natMaybeIso
+
+-- natEq : Path U nat (fix maybe) =
+--   ua nat (fix maybe) (natToMaybe, natEquiv)
+
+-- > transport natEq (suc (suc zero))
+-- EVAL: Fix (just (Fix (just (Fix nothing))))
+-- > transport (<i> natEq @ -i) (Fix (just (Fix (just (Fix (just (Fix nothing)))))))
+-- EVAL: suc (suc (suc zero))

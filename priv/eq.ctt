@@ -1,0 +1,7 @@
+module eq where
+
+import bool
+
+eq: U = (type: U) * (type -> type -> bool)
+
+eq_ (type: U): U = type -> type -> bool

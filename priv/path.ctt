@@ -1,0 +1,22 @@
+module path where
+
+Path (A : U) (a b : A) : U = PathP (<i> A) a b
+refl (A : U) (a : A) : Path A a a = <i> a
+singl (A : U) (a : A) : U = (x : A) * Path A a x
+
+trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
+composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
+    = <i> comp (<_> A) (p @ i) [(i=0)-><j>a,(i=1)->q]
+
+mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
+    = <i> f (p @ i)
+
+subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
+    = trans (P a) (P b) (mapOnPath A U P a b p) e
+
+contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
+    = <i> (p @ i,<j> p @ i/\j)
+
+J (A: U) (a b: A) (P: singl A a -> U) (u: P (a,refl A a)) (p: Path A a b): P (b,p)
+    = subst (singl A a) T (a,refl A a) (b,p) (contrSingl A a b p) u
+    where T (z : singl A a) : U = P z

@@ -1,0 +1,123 @@
+module om where
+
+import prelude
+import nat
+import list
+import maybe
+
+data alg = z | o | max (a b: alg) | min (a b: alg) | app (a b: alg)
+name: U = list nat
+
+data pts
+    = star (n: nat)
+    | var (n: name) (n: nat)
+    | app (f a: pts)
+    | lambda (x: name) (d c: pts)
+    | arrow (d c: pts)
+    | pi (x: name) (d c: pts)
+
+data mltt
+    = pts
+    | sigma (n: name) (a b: mltt)
+    | pair (a b: mltt)
+    | fst (p: mltt)
+    | snd (p: mltt)
+
+data identity
+    = mltt
+    | id (a b: identity)
+    | idpair (a b: identity)
+    | idelim (a b c d e: identity)
+
+data tele (A: U)   = emp | tel (n: name) (b: A) (t: tele A)
+data branch (A: U) =          br (n: name) (args: list name) (term: A)
+data label (A: U)  =         lab (n: name) (t: tele A)
+
+data ind
+    = star                        (n: nat)
+    | var    (n: name)            (i: nat)
+    | app              (f a: ind)
+    | lambda (x: name) (d c: ind)
+    | pi     (x: name) (d c: ind)
+    | sigma  (n: name) (a b: ind)
+    | arrow            (d c: ind)
+    | pair             (a b: ind)
+    | fst              (p: ind)
+    | snd              (p: ind)
+    | id               (a b: ind)
+    | idpair           (a b: ind)
+    | idelim           (a b c d e: ind)
+    | data_  (n: name) (t: tele ind) (labels:   list (label ind))
+    | case   (n: name) (t: ind)      (branches: list (branch ind))
+    | ctor   (n: name)               (args:     list ind)
+
+list_str: name = cons n1 nil
+a_str:    name = cons n2 nil
+nil_str:  name = cons n3 nil
+cons_str: name = cons n4 nil
+x_str:    name = cons n5 nil
+xs_str:   name = cons n6 nil
+program:  ind  = data_                      -- data
+                 list_str                   -- list
+                 (tel a_str (star one) emp) -- (a: U) =
+                (cons (lab nil_str emp)     -- nil |
+                (cons (lab cons_str
+                      (tel x_str  (var a_str zero) -- cons (x: A) (xs: list A)
+                      (tel xs_str (ctor list_str (cons (var a_str zero)
+                                                  nil)) emp)))
+                 nil))
+
+star: ind  -> maybe nat = split
+    star n -> just n
+    var    -> nothing
+    app    -> nothing
+    lambda -> nothing
+    pi     -> nothing
+    sigma  -> nothing
+    arrow  -> nothing
+    pair   -> nothing
+    fst    -> nothing
+    snd    -> nothing
+    id     -> nothing
+    idpair -> nothing
+    idelim -> nothing
+    data_  -> nothing
+    case   -> nothing
+    ctor   -> nothing
+
+func: ind  -> bool = split
+    star n -> false
+    var    -> false
+    app    -> false
+    lambda -> false
+    pi     -> true
+    sigma  -> false
+    arrow  -> true
+    pair   -> false
+    fst    -> false
+    snd    -> false
+    id     -> false
+    idpair -> false
+    idelim -> false
+    data_  -> false
+    case   -> false
+    ctor   -> false
+
+-- refine type
+
+var (l: name): list (tuple name ind) -> bool = undefined
+sh:    ind -> name -> nat -> ind             = undefined
+subst: ind -> name -> ind -> ind             = undefined
+norm:  ind -> ind                            = undefined
+equ:   ind -> bool                           = undefined
+type:  ind -> list (tuple name ind) -> ind   = undefined
+
+data hts
+    = path (a b: hts)
+    | path_lam (n: name) (a b: hts)
+    | path_app (f: name) (a b: hts)
+    | comp_ (a b: hts)
+    | fill_ (a b c: hts)
+    | glue_ (a b c: hts)
+    | glue_elem (a b: hts)
+    | unglue_elem (a b: hts)

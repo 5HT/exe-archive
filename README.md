@@ -1,184 +1,107 @@
-EXE — DepTypes Language with Encodings
-======================================
+Infinity Language
+=================
 
-[![Build Status](https://travis-ci.org/groupoid/exe.svg?branch=master)](https://travis-ci.org/groupoid/exe)
-[![Gitter Chat](https://img.shields.io/gitter/room/badges/shields.svg)](https://gitter.im/groupoid/exe)
+The idea of Infinity Language came from the need to unify and
+arrange different calculi as extensions to the core of the
+language with dependent types (or MLTT core). While working on
+distributed systems, data storages and stream processing, we discovered that two core
+languages: pi calculus and stream calculus were
+connected and being driven by a language with quantifiers as primitives.
 
-This document should drop you to EXE/OM stack immediately. Groupoid Infinity creates
-a new programming language with dependent types called EXE with small provable dependent core called OM.
-OM is an implementation of Calculus of Constructions (CoC), the pure lambda calculus with dependent types.
-It can be compiled (code extraction) to bytecode of Erlang virtual machines BEAM and LING.
-EXE is an implementation of Calculus of Inductive Constructions (CiC) that lives on top of CoC OM model.
-You may think of EXE as AST transformation of higher language (with HITs) to OM.
+Infinity is a dependently typed language for stream processing,
+distributed processing and text processing. We use Coq to prototype
+the standard library including the theories needed to 
+prove code invariants instead of testing them. Infinity is a source
+to source translator which lets you use different languages at runtime:
+Erlang, Rust, Clang, Futhark, Julia, etc.
 
-Why new Dependent Language?
----------------------------
+Infinity language presents a solid and unified way of modeling inter-language
+computations and inter-system communications within a single language with
+compact core. We strive for utilizing parallel hardware such as GPU and
+SSE/AVX SIMD instructions and providing a robust and verified distributed
+environment with process and channels runtime.
 
-**No Fixpoint and Induction in Core**. We came up with pure CoC core having predicative
-and impredicative universe hierarchies and macro extensions. Other MLTT cores have additional
-axioms like Fixpoint and Induction (and even more) — something we strive to escape
-because it leads to the complex core. No, we don't have Fixpoint, and yes,
-we implemented Induction principle in pure CoC.
+Simple Lambda Calculus
+----------------------
 
-**Extensible Language Design**. Encoding of inductive types is based on categorical semantic
-of compilation to CoC. All other syntax constructions are inductive definitions, plugged
-into the stream parser. AST of the CoC language is also defined in terms of inductive
-constructions and thus allowed in the macros. The language of polynomial functors (data
-and record) and core language of the process calculus (spawn, receive and send) is just
-macrosystem over CoC language, its syntax extensions.
+Simple lambda calculus was discovered by Church as computational model of functions.
+This is the simplest model of lambda calculus in lambda cube, also it suffers from paradoxes.
+To help escape this the simple typed lambda caclulus was invented.
 
-**Changeable Encodings**. In pure CoC we have only arrows, so all inductive type encodings
-would be Church-encoding variations. Most extended nowadays is Church-Boehm-Berrarducci
-the encoding which dedicated to inductive types. Another well known are Scott (laziness),
-Parigot (laziness and constant-time iterators) and CPS (continuations) encodings.
+The Simple Lambda Calculus is used to model dynamic interpreted
+target languages such as JavaScript, Erlang, Lua, K and other shells.
+A total fragment of call by value lambda calculus is used in the optimizer
+as a runtime model. Translation to dynamic languages requires type erasure in
+addition to syntactic transformations.
 
-**Proved Categorical Semantic**. There was modeled a math model (using higher-order
-categorical logic) of encoding, which calculates (co)limits in a category of (co)algebras
-built with given set of (de)constructors. We call such encoding in honor of Lambek lemma
-that leads us to the equality of (co)initial object and (co)limit in the categories
-of (co)algebras. Such encoding works with dependent types and its consistency is proved
-in Lean model.
+Hindley-Milner Type System
+--------------------------
 
-Native Erlang Language with own shell
--------------------------------------
+A Hindley-Milner type system is used to model static target languages such as C++ or Rust.
+The system models certain features of low-level languages such as unboxed
+types and non-first-class instantiation-based polymorphism pretty well.
+The completeness and modularity of type inference lets the code generator
+reconstruct the native types of the target language.
 
-You can switch with no stress between Erlang and EXE shell in the same `user_drv` process.
-EXE shell is implememted as `exe_repl` in 120 LOC using `io:request` API and `{get_until,unicode,_,_,_,_}` message of Erlang IO protocol.
-No custom `user_drv` or `group` process is used. Color aware pretty printing `exe_pretty` took same size.
+While Hindley-Milner systems in general and the particular set of extensions
+used are pretty limited compared to System F, the chosen type system still
+allows to model native effects and translate structural recursion and
+corecursion into native iteration.
 
-<img src="http://groupoid.space/exe_repl.png" width="728">
+MLTT
+----
 
-OM — Compact Core of CoC
-------------------------
+With usage of dependent fibrations and Pi, Sigma types Martin-Lof introduced MLTT.
+Which is known to be sound and consistent with only one impredicative contractable
+bottom space and predicative hierarchy of infinitely many spaces. It can be used both as
+an operational calculus and a logical framework. It is the core of top level AST while
+other languaages are represented as leafs of this core.
 
-In repository OM you may found following parts of core:
-* [Parser](https://github.com/groupoid/om/blob/master/src/om_parse.erl)
-* [Typechecker](https://github.com/groupoid/om/blob/master/src/om_type.erl)
-* [Eraser](https://github.com/groupoid/om/blob/master/src/om_erase.erl) (could be improved)
-* [Code Extractor](https://github.com/groupoid/om/blob/master/src/om_extract.erl)
+Homotopy
+--------
 
+Homotopy calculus is an extension of MLTT with path types, intervals and circles.
+It is used to model higher inductive types and stands as a contemporary math foundation.
 
-OM ships with different `modes` (spaces of types with own encodings), or `preludes`
-you may find in `priv` directory. They are selectable with `om:mode("normal")`, e.g.
+Pi Calculus
+-----------
 
-### General Preludes
+Pi calculus can be obtained by a transformation from lambda
+calculus by replacing a variable constructor with stream constructor.
+But the language and protocol accessing this stream could vary
+from backend to backend with respect to design requirements.
 
-#### [normal](https://github.com/groupoid/om/tree/master/priv/normal)
+Pi calculus is also known as a process calculus that can be used to model of distributed system
+over a channel transport. Each process is represented as a coinductive program and can 
+run both in parallel and sequentially. Processes communicate by inductive protocols
+known as session types over physical channels that can be corecursive streams (linear types),
+random access arrays (static lifetime) or other effectful disciplines. Process calculus
+is used to model distributed systems such as Erlang or application based protocols.
 
-This is minimal practical prelude similar to Morte's base library of Gabriel Gonzalez.
-For modeling inductive constructions we use here plain Church (or Boehm-Berrarducci if you wish),
-we have here basic I/O monads: IO (free monad, for limited I/O) and IOI (free comonad,
-for infinitary I/O, long-term processes). The generated code is being sewed with
-Erlang effects that are passed as parameters to pure functions.
+The process calculus itself should be backed with number of infinity streams,
+represented as processor cores. The parallel system of reactive schedulers
+that cycle the list of AST trees filled with calculus instructions.
 
-#### [new-setoids](https://github.com/groupoid/om/tree/master/priv/new-setoids)
+Stream Calculus
+---------------
 
-This is an implementation of Setoid structure, that provides us Equality. However
-we switched lately to more compact `poset` encoding.
+Thus, stream calculus should provide with different disciplines for accessing
+underlying streams used in Pi calculus. For example: 1) linear types, or streams with
+constant direction without rollbacks where each element of stream is touched once;
+2) random access arrays; 3) GPU sources; 4) runtime typed channels;
+5) effect and coeffect streams (processes as streams). Such stream
+calculuses could be landed with such GPU languages as Futhark
+or AVX intrinsics languages, such as Julia. We could treat
+stream calculus as memory representation with different protocol accesses.
 
-#### [posets](https://github.com/groupoid/om/tree/master/priv/posets)
+One type of disciplines is the stream calculus. While pi calculus could be imagined as
+lambda calculus where function arguments are channels or streams, the stream calculus defines a set
+of constructions over these streams. This calculus is needed to provide different forms
+of vectorization that can be used on GPU and AVX hardware.
 
-This is implementation of non-reflexive partial order sets which
-has more compact representation than setoids for our needs.
-It has only `Bool`, `Empty` and `Unit` encoded just to show the general idea.
-Dependent eliminator of `Bool` you can found here https://github.com/groupoid/om/tree/master/priv/posets/Data/Bool/
+Effect Calculus
+---------------
 
-Note: all these folders (modules) are encoded in plain CoC in OM repository to demonstrate
-you the basic principles how things work. Later all these should be written in EXE languages and translated to OM
-automatically. You may think of OM as the low-level typed assembler of type theory.
-
-### Paradox Preludes
-
-[girard](https://github.com/groupoid/om/tree/master/priv/girard),
-[hurkens](https://github.com/groupoid/om/tree/master/priv/hurkens),
-[russell](https://github.com/groupoid/om/tree/master/priv/russell) are preludes dedicated to
-demonstration of appropriate models of paradoxes which arise in type theory and show
-the inconsistency of type theory with impredicative hierarhy of universes.
-You also can play with it in pure CoC and its variations.
-
-EXE — Expressive Language of CiC
---------------------------------
-
-EXE is top level, user language with CiC semantics and minimal yet useful syntax wich is subject to change.
-EXE parser is implemented as LALR-(1) grammar using Erlang's `leex` and `yecc` applications,
-and translates to OM terms, each term is a file on a filesystem and folder is a module or compilation unit (BEAM files).
-
-Technically it is useful to distinguish different layers of EXE:
-
-* Internal Core with `record` used as structures, modules, and namespaces for the entire language.
-It transparently translates to OM as Contexts (named types and terms).
-
-* Metaprogramming Encodings layer which allows expanding macros to Internal Core. Macros are used to
-encoding programming that hides implementation details of `CPS`, `Parigot` or `Church` encodings.
-However, our EXE encodings are a bit different encodings with categorical semantics, proven in Lean model.
-
-* End-user Top-level EXE Language with powerful primitives `data` and `codata` that uses underlying
-encoding macros. In the future with inductive-inductive types and HITs.
-Likely Top Language would be a superset of the Internal Core sharing most of the parser.
-
-### Macrosystems
-
-#### [macro.new](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new)
-
-Proptypes of general macros built using `poset` approach. Here you can find different encodings
-for basic types
-[Nat](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Nat.macro),
-[Bool](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Bool.macro),
-[List](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.List.macro),
-[Prod](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Prod.macro),
-[Sum](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Sum.macro) along with
-[packing macros](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Pack.macro)
-and even [Free Monad](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.FreeMonad.macro).
-
-#### [smart-simpleton](https://github.com/groupoid/exe/blob/master/priv/Macro/smart-simpleton)
-
-Most compact, final model of encodings with recursor and induction, the result of all theoretical EXE findings.
-
-How it works?
--------------
-
-### Recursor
-
-There is a belief that recursor (non-dependent eliminator) in Type Theory
-is a weaker property than induction principle (dependent eliminator). At the same time
-from category theory, we know that Universal Property defines the object uniquely.
-In the case of an initial object in the category of algebras, the initiality could be defined by recursor.
-That means that all properties of algebra follow from its initiality,
-as a case, it is possible to get the recursor from induction. There is a sensitive moment here,
-all categorical constructions are being formulated with defined equality on morphisms,
-in type theory the equality is the built-in type that could have extended properties. Simplify we could say
-that we can get recursor from induction without equality, and with proper equality, we could get induction from recursor.
-
-### Fibrations
-
-Mechanism of getting induction principle from equality is based on the presentation
-of dependent types through fibrations. Hereby dependent type `(D: B → Type)` is defined as `(p: Sigma B P → B)`
-which projects dependent pair to the first field. In topology, such approach is called fibration.
-To the other direction for a given morphism `(p: E → B)` which we understands as fibration with projection p,
-we could get its dependent type as `(D: B → Type)` by calculation in every point `(b: B)` its image of
-projection p by using equality on elements of `B`. In type theory besides dependent pair `Sigma` also
-used the dependent product `Pi`. In encoding of dependent types with fibrations there is a correspondence
-between elements of dependent and morphism-fibrations for projection `p`: such `(s: B → E)` that `s * p = I`.
-The example of this implementation could be seen in
-
-* EXE as [Macro](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Mini.macro#L71)
-* OM as expanded term [Sectioning](https://github.com/groupoid/om/blob/master/priv/posets/sec2all)
-
-### Induction
-
-The input for induction is a predicate — dependent type encoded with `(p: E → B)`.
-Induction needed additional information for the predicate. The type of induction is defined
-by set of inductive constructors. Induction is just a statement that on E we have the
-structure of F-algebra of the inductive type. Now we could apply recursor to E
-getting the map `(I → E)` from the initial object which in fact the section (fiber bundle) of fibration
-and thus defines the dependent function which is a proved value of induction principle.
-The example for `Bool` could be found in
-
-* EXE [Bool](https://github.com/groupoid/exe/blob/master/priv/Macro/macro.new/Data.Bool.macro#L128)
-* OM [Induction](https://github.com/groupoid/om/blob/master/priv/posets/Data/Bool/induc)
-
-Summarizing we encode types of source lambda calculus with objects of selected category,
-dependent types with fibrations, dependent function as fibrations, inductive types as
-limits of identity functors on the category of F-algebras.
-
-OM A HUM
+The other type of discipline is effect calculus of streams and programs. It covers internal
+process states, `try` `raise` `catch` constructions, `random` and other infinity streams.
+Also this subtree contains I/O and low level operations that are linked with runtime.

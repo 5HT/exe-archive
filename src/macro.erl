@@ -7,14 +7,14 @@ file(F) -> case file:read_file(F) of
                         {error,file} end.
 
 lexer({error,S}) -> {error,S};
-lexer({ok,S})    -> case macro_lexer:string(S) of
+lexer({ok,S})    -> case cub_lexer:string(S) of
                     {ok,T,_}          -> {ok,T};
                     {error,{L,A,X},_} -> io:format(lists:concat(["Line ", L, " ", A, " : ", element(2,X)])),
                                          io:format("~n"),
                                          {error,lexer} end.
 
 parser({error,T}) -> {error,T};
-parser({ok,T})    -> case macro_parser:parse(T) of
+parser({ok,T})    -> case cub_parser:parse(T) of
                      {ok,AST}        -> {ok,AST};
                      {error,{L,A,S}} -> io:format(lists:concat(["Line ", L, " ", A, " : "| S])),
                                         io:format("~n"),

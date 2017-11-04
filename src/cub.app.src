@@ -1,0 +1,6 @@
+{application, cub, [ {description, "Groupoid Infinity Cubical Programming Language"},
+                     {vsn, "v1.0"},
+                     {registered, []},
+                     {applications, [kernel, stdlib]},
+                     {mod, { cub, []}},
+                     {env, []} ]}.

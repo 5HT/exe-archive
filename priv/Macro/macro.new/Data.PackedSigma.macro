@@ -1,2 +1,0 @@
-Data.PackedSigma.{u,p} (X : Poset) (Y : DepPoset X) :=
-    Data.Pack (DepPoset.BigSigma X Y)
