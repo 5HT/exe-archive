@@ -45,6 +45,13 @@ aaa (A B: U) (P: maybe A -> B): maybe A -> B = split
 
 instance_3 (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
             Path (maybe C) (maybeMap A C (o A B C f g) x)
-                 ((o (maybe A) (maybe B) (maybe C) (maybeMap B C f) (maybeMap A B g)) x) = undefined
+                 ((o (maybe A) (maybe B) (maybe C) (maybeMap B C f) (maybeMap A B g)) x)
+  = let
+    aa : maybe A -> maybe C = maybeMap A C (o A B C f g)
+    bb : maybe A -> maybe C =  o (maybe A) (maybe B) (maybe C) (maybeMap B C f) (maybeMap A B g)
+    goal: (a : maybe A) -> Path (maybe C) (aa a) (bb a) = split
+      nothing -> refl (maybe C) (aa nothing)
+      just x -> refl (maybe C) (aa (just x))
+  in goal
 
 functor_maybe: functor_ maybe = (maybeMap, quux, instance_3, tt)
