@@ -1,4 +1,0 @@
-
-  record Let: Type :=
-         (Binds: list (prod string Om))
-         (In: Exe)

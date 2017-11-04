@@ -1,3 +1,0 @@
-
-  record Process (Sigma: Type) (X: Type): Type :=
-         (action: Sigma → X → GenServer X)

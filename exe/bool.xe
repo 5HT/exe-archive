@@ -1,6 +1,0 @@
-
-   Bool := new
-
-   (data bool: Type :=
-         (true: () -> bool)
-         (false: () -> bool))

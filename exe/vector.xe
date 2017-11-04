@@ -1,4 +1,0 @@
-
-  data vector (A: Type) (n: Nat): Type :=
-       (nil: vector A)
-       (cons: A → vector A n → vector A (Nat.succ n))

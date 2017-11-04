@@ -1,4 +1,0 @@
-
-  record Send (Sigma: Type): Type :=
-         (message: Sigma)
-         (to: Process Sigma)

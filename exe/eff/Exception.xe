@@ -1,4 +1,0 @@
-
-    data Exception (x:Type) (y:Type) (z: x → Type): Type :=
-         (Core: (record (Try: Exe) (Catch: Case)) → Exception x)
-         (Raise: x → Exception x)

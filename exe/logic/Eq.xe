@@ -1,3 +1,0 @@
-
-  data Eq (A : Type): A → A → Type :=
-       (refl: ∀ (x: A) → Eq A x x)

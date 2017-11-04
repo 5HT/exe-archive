@@ -1,3 +1,0 @@
-
-    data Exists (A: Type): A → Type → Type :=
-         (intro: ∀ (P: A → Type) → ∀ (x: A) → P x → Exists A P)

@@ -1,4 +1,0 @@
-
-  record Spawn: Type :=
-         (what: Process)
-         (effects: list Eff)

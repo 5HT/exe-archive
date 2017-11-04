@@ -1,4 +1,0 @@
-
- define Respect (A,B: Type) (C: A → Type) (D: B → Type) (R: A → B → Prop)
-        (Ro: ∀ (x: A) (y: B) → C x → D y → Prop) : (∀ (x: A) → C x) → (∀ (x: B) → D x) → Prop :=
-        λ (f,g: Type → Type) → (∀ (x,y: Type) → R x y) → Ro x y (f x) (g y)

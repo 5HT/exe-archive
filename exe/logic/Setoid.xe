@@ -1,7 +1,0 @@
-
- record Setoid: Type :=
-        (Carrier: Type)
-        (Equ: Carrier → Carrier → Prop)
-        (Refl: ∀ (x: Carrier) → Equ x x)
-        (Trans: ∀ (x₁,x₂,x₃: Carrier) → Equ x₁ x₂ → Equ x₂ x₃ → Equ x₁ x₃)
-        (Sym: ∀ (x₁,x₂: Carrier) → Equ x₁ x₂ → Equ x₂ x₁)

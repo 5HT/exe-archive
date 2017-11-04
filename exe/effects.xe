@@ -1,7 +1,0 @@
-
-    data IO (A: Type): Type :=
-         (in1: (String -> IO) -> IO)
-         (out: String -> IO -> IO)
-         (rnd: (nat -> IO) -> IO)
-         (raise1: String -> IO -> IO)
-         (term: IO)
