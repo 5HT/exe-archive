@@ -9,8 +9,8 @@ languages: pi calculus and stream calculus were
 connected and being driven by a language with quantifiers as primitives.
 
 Infinity is a dependently typed language for stream processing,
-distributed processing and text processing. We use Coq to prototype
-the standard library including the theories needed to 
+distributed processing and text processing. We use Cubical to prototype
+the standard library including the theories needed to
 prove code invariants instead of testing them. Infinity is a source
 to source translator which lets you use different languages at runtime:
 Erlang, Rust, Clang, Futhark, Julia, etc.
