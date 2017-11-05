@@ -39,10 +39,6 @@ functorMaybeId (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
 functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
   = funExtNonDep (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
 
-aaa (A B: U) (P: maybe A -> B): maybe A -> B = split
-  nothing -> P nothing
-  just x -> P (just x)
-
 -- maybeInd (A: U) (pp: (P: maybe A -> maybe A) -> Path (maybe A) nothing (P nothing)) = undefined
 -- bbb (A: U) (P: maybe A -> maybe A) (n: Path (maybe A) nothing (P nothing)): Unit = undefined
 -- (j: (x: A) -> Path (maybe A) (just x) (P (just x)) (a: maybe A) : Path (maybe A) a (P a) = undefined
