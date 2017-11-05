@@ -187,6 +187,8 @@ PathPathTest1 (A : U) (a b : A) (p : Path A a b) :
 
 idfun (A : U) (a : A) : A = a
 
+constfun (A B: U) (a: A) (b: B): A = a
+
 --         u
 --    a0 -----> a1
 --    |         |
