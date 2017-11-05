@@ -29,9 +29,14 @@ maybeConstrDestr (A: U): (a: maybe A) -> Path (maybe A) a (foo A a) = split
   nothing -> reflOnNothing A
   just x -> reflOnJust A x
 
+-- maybeMap idfun a == a
 quux (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
    nothing -> reflOnNothing A
    just x -> reflOnJust A x
+
+-- maybeMap id == id
+quuxFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
+  = funExtNonDep (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (quux A)
 
 aaa (A B: U) (P: maybe A -> B): maybe A -> B = split
   nothing -> P nothing

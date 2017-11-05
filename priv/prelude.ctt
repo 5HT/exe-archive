@@ -48,6 +48,13 @@ funExt (A : U) (B : A -> U) (f g : (x : A) -> B x)
        (p : (x : A) -> Path (B x) (f x) (g x)) :
        Path ((y : A) -> B y) f g = <i> \(a : A) -> (p a) @ i
 
+funExtNonDep
+  (A B: U)
+  (f g : A -> B)
+  (p : (x : A) -> Path B (f x) (g x))
+  : Path (A -> B) f g
+  = <i> \(a : A) -> p a @ i
+
 -- Transport can be defined using comp
 trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
 
