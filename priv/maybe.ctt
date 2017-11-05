@@ -3,12 +3,13 @@ module maybe where
 import prelude
 import control
 
-data maybe (A: U) = nothing
-                  | just (a: A)
+data maybe (A: U)
+    = nothing
+    | just (a: A)
 
 maybe_ (A B: U) (n: B) (j: A -> B) : maybe A -> B = split
-    nothing -> n
-    just a -> j a
+  nothing -> n
+  just a -> j a
 
 -- usage
 -- maybe_ nat nat zero (\ (x: nat) -> x) (just zero)
@@ -18,26 +19,25 @@ maybeMap (A B: U) (f: A -> B) : maybe A -> maybe B = split
   just x -> just (f x)
 
 maybeId (A: U): maybe A -> maybe A = maybeMap A A (idfun A)
-
 maybeRefl (A : U) (a : maybe A) : Path (maybe A) a a = refl (maybe A) a
 
-reflOnNothing (A: U): Path (maybe A) nothing nothing = maybeRefl A nothing
-reflOnJust (A: U) (x: A): Path (maybe A) (just x) (just x) = maybeRefl A (just x)
+reflNothing (A: U): Path (maybe A) nothing nothing = maybeRefl A nothing
+reflJust (A: U) (x: A): Path (maybe A) (just x) (just x) = maybeRefl A (just x)
 
 -- law of maybe_
 -- maybe_ nothing just a == a
-maybeConstrDestr (A: U): (a: maybe A) -> Path (maybe A) a (maybe_ A (maybe A) nothing (\(a:A) -> just a) a) = split
-  nothing -> reflOnNothing A
-  just x -> reflOnJust A x
+maybeIsElim (A: U): (a: maybe A) -> Path (maybe A) a (maybe_ A (maybe A) nothing (\(a:A) -> just a) a) = split
+  nothing -> reflNothing A
+  just x -> reflJust A x
 
 -- maybeMap idfun a == a
-quux (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
-   nothing -> reflOnNothing A
-   just x -> reflOnJust A x
+functorMaybeId (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
+   nothing -> reflNothing A
+   just x -> reflJust A x
 
 -- maybeMap id == id
-quuxFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
-  = funExtNonDep (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (quux A)
+functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
+  = funExtNonDep (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
 
 aaa (A B: U) (P: maybe A -> B): maybe A -> B = split
   nothing -> P nothing
@@ -48,7 +48,7 @@ aaa (A B: U) (P: maybe A -> B): maybe A -> B = split
 -- (j: (x: A) -> Path (maybe A) (just x) (P (just x)) (a: maybe A) : Path (maybe A) a (P a) = undefined
 -- maybeInd (A B: U) (P: B) (n: P nothing)
 
-instance_3 (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
+functorMaybeComp (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
             Path (maybe C) (maybeMap A C (o A B C f g) x)
                  ((o (maybe A) (maybe B) (maybe C) (maybeMap B C f) (maybeMap A B g)) x)
   = let
@@ -59,7 +59,7 @@ instance_3 (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
       just x -> maybeRefl C (aa (just x))
   in goal
 
-functor_maybe: functor_ maybe = (maybeMap, quux, instance_3, tt)
+functor_maybe: functor_ maybe = (maybeMap, functorMaybeId, functorMaybeComp, tt)
 
 data Ordering = LT | EQ | GT
 
