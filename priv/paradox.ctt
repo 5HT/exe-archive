@@ -1,0 +1,10 @@
+module paradox where
+
+import prelude
+
+ff : N0 = ff
+
+proveAnything (A: U): A = efq A ff
+
+unsafeCoerse (A B: U) : A -> B = constfun B A (proveAnything B)
+
