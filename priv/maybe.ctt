@@ -13,8 +13,7 @@ maybe_ (A B: U) (n: B) (j: A -> B) : maybe A -> B = split
 -- usage
 -- maybe_ nat nat zero (\ (x: nat) -> x) (just zero)
 
-xjust (A: U) (a: A) : maybe A = just a
-foo (A: U) : (maybe A) -> maybe A = maybe_ A (maybe A) nothing (xjust A)
+foo (A: U) : maybe A -> maybe A = maybe_ A (maybe A) nothing (\(a:A) -> a)
 
 maybeMap (A B: U) (f: A -> B) : maybe A -> maybe B = split
   nothing -> nothing
