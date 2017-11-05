@@ -1,0 +1,12 @@
+# Script for checking that all files compile
+
+files="algstruct functor list prelude bool girard maybe puresigma
+       category grothendieck maybenat retract circle hedberg monad setquot
+       control int nat sigma discor iso om stream
+       either lam paradox test eq lambek path univalence
+       equiv lambek.hs pi"
+
+for file in $files
+do
+ cubical -b priv/$file.ctt
+done

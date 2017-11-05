@@ -18,7 +18,7 @@ Pi (A: U) : U
     * Unit
 
 intro (A:U):(A->U)->U = \(x:A->U)->list A
-lambda (A:U) (B:A->U):pi A B->intro B=\(x:A->U)(y:pi A B)->singl B
+--lambda (A:U) (B:A->U):pi A B->intro B=\(x:A->U)(y:pi A B)->singl B
 --app (A: U) (B: A -> U): U = intro B -> pi A B
 
 
