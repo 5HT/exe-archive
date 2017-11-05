@@ -1,0 +1,15 @@
+module functor where
+
+import control
+
+idtype (A: U): U = A
+
+apply (A B: U) (f: A -> B) (arg: A): B = f arg
+
+functorIdtypeId: (A: U) -> (a: A) -> Path A a a = refl
+
+functorIdtypeComp (A B C: U) (f: B -> C) (g: A -> B) (x: A):
+            Path C (f (g x)) (f (g x))
+  = refl C (f (g x))
+
+functor_idtype : functor idtype = (apply, functorIdtypeId, functorIdtypeComp, tt)
