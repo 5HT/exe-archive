@@ -18,12 +18,15 @@ maybeMap (A B: U) (f: A -> B) : maybe A -> maybe B = split
   just x -> just (f x)
 
 maybeId (A: U): maybe A -> maybe A = maybeMap A A (idfun A)
+
 maybeRefl (A : U) (a : maybe A) : Path (maybe A) a a = refl (maybe A) a
 
 reflOnNothing (A: U): Path (maybe A) nothing nothing = maybeRefl A nothing
 reflOnJust (A: U) (x: A): Path (maybe A) (just x) (just x) = maybeRefl A (just x)
 
-maybeConstrDestr (A: U): (a: maybe A) -> Path (maybe A) a (maybeId A a) = split
+-- law of maybe_
+-- maybe_ nothing just a == a
+maybeConstrDestr (A: U): (a: maybe A) -> Path (maybe A) a (maybe_ A (maybe A) nothing (\(a:A) -> just a) a) = split
   nothing -> reflOnNothing A
   just x -> reflOnJust A x
 
