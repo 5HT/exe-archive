@@ -2,8 +2,6 @@ module control where
 
 import prelude
 
-fmap (A B: U) (F: U -> U): (A -> B) -> F A -> F B = undefined
-
 -- Recursion/Corecursion
 
 data fix (F: U -> U) = Fix (point: F (fix F))
@@ -29,33 +27,31 @@ pure (A: U) (F: U -> U): U
 
 o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
 
-functor (A B: U) (F: U -> U): U
+functor_ (A B: U) (F: U -> U): U
     = (fmap: (A -> B) -> F A -> F B) * Unit
 
-functor_ (F: U -> U): U
+functor (F: U -> U): U
     = (fmap: (A B: U) -> (A -> B) -> F A -> F B)
     * (id: (A: U) -> (x: F A) -> Path (F A) (fmap A A (idfun A) x) x)
     * (compose: (A B C: U) (f: B -> C) (g: A -> B) (x: F A) ->
       Path (F C) (fmap A C (o A B C f g) x)
                  ((o (F A) (F B) (F C) (fmap B C f) (fmap A B g)) x)) * Unit
 
-
-
 applicative (A B: U) (F: U -> U): U
     = (pure_: pure A F)
-    * (functor_: functor A B F)
+    * (functor_: functor_ A B F)
     * (ap: F (A -> B) -> F A -> F B)
     * Unit
 
 monad (A B: U) (F: U -> U): U
     = (pure_: pure A F)
-    * (functor_: functor A B F)
+    * (functor_: functor F)
     * (join: F (F A) -> F B)
     * Unit
 
 comonad (A B: U) (F: U -> U): U
     = (pure_: pure A F)
-    * (functor_: functor A B F)
+    * (functor_: functor F)
     * (extract: F A -> A)
     * (duplicate: F A -> F (F A))
     * (extend: (F A -> B) -> F A -> F B)

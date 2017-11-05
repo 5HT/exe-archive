@@ -59,7 +59,7 @@ functorMaybeComp (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
       just x -> maybeRefl C (aa (just x))
   in goal
 
-functor_maybe: functor_ maybe = (maybeMap, functorMaybeId, functorMaybeComp, tt)
+functor_maybe: functor maybe = (maybeMap, functorMaybeId, functorMaybeComp, tt)
 
 data Ordering = LT | EQ | GT
 

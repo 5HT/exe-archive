@@ -79,7 +79,7 @@ list_eq (A: eq): list A.1 -> list A.1 -> bool = split
 eq_list_nat:               eq                   = (list nat,        list_eq eq_nat)
 eq_list_list_nat:          eq                   = (list (list nat), list_eq eq_list_nat)
 pure_list          (A: U): pure          A list = (\(x: A) -> cons x nil, tt)
-functor_list     (A B: U): functor     A B list = (map A B,         tt)
+functor_list     (A B: U): functor_    A B list = (map A B,         tt)
 applicative_list (A B: U): applicative A B list = (pure_list A,     functor_list A B,
                                                   \(x:list (A -> B)) -> \(y:list A) -> nil, tt)
 
