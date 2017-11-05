@@ -13,8 +13,6 @@ maybe_ (A B: U) (n: B) (j: A -> B) : maybe A -> B = split
 -- usage
 -- maybe_ nat nat zero (\ (x: nat) -> x) (just zero)
 
-foo (A: U) : maybe A -> maybe A = maybe_ A (maybe A) nothing (\(a:A) -> a)
-
 maybeMap (A B: U) (f: A -> B) : maybe A -> maybe B = split
   nothing -> nothing
   just x -> just (f x)
@@ -25,7 +23,7 @@ maybeRefl (A : U) (a : maybe A) : Path (maybe A) a a = refl (maybe A) a
 reflOnNothing (A: U): Path (maybe A) nothing nothing = maybeRefl A nothing
 reflOnJust (A: U) (x: A): Path (maybe A) (just x) (just x) = maybeRefl A (just x)
 
-maybeConstrDestr (A: U): (a: maybe A) -> Path (maybe A) a (foo A a) = split
+maybeConstrDestr (A: U): (a: maybe A) -> Path (maybe A) a (maybeId A a) = split
   nothing -> reflOnNothing A
   just x -> reflOnJust A x
 
