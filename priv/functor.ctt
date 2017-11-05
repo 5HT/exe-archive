@@ -19,3 +19,12 @@ functorIdtypeId: (A: U) -> (a: A) -> Path A a a = refl
 functorIdtypeComp (A B C: U) (f: B -> C) (g: A -> B) (x: A): Path C (f (g x)) (f (g x)) = refl C (f (g x))
 
 functor_idtype : functor idtype = (apply, functorIdtypeId, functorIdtypeComp, tt)
+
+consttype (A B: U): U = A
+
+constfun (A B: U) (a: A) (b: B): A = a
+
+functor_consttype (A: U) : functor (consttype A) = (fmap, id, compose, tt) where
+  fmap (B C : U) (_: B -> C) : A -> A = idfun A
+  id (_ : U): (x : A) -> Path A x x = refl A
+  compose (A0 B C : U) (f : B -> C) (g : A0 -> B): (x : A) -> Path A x x = refl A
