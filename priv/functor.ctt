@@ -26,3 +26,10 @@ functor_consttype (A: U) : functor (consttype A) = (fmap, id, compose, tt) where
   fmap (B C : U) (_: B -> C) : A -> A = idfun A
   id (_ : U): (x : A) -> Path A x x = refl A
   compose (A0 B C : U) (f : B -> C) (g : A0 -> B): (x : A) -> Path A x x = refl A
+
+functiontype (A B: U): U = A -> B
+
+functor_functiontype (T: U): functor (functiontype T) = (fmap, id, compose, tt) where
+  fmap (A B : U) (f: A -> B): (T -> A) -> (T -> B) = o T A B f
+  id (A : U): (x : T -> A) -> Path (T -> A) x x = refl (T -> A)
+  compose (A B C : U) (f : B -> C) (g : A -> B) (x : T -> A): Path (T -> C) (\(x0 : T) -> f (g (x x0))) (\(x0 : T) -> f (g (x x0))) = refl (T -> C) (\(x0 : T) -> f (g (x x0)))
