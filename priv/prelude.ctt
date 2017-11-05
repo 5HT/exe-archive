@@ -1,12 +1,16 @@
 module prelude where
 
+data Unit = tt
+
+pure (A: U) (F: U -> U): U = (return: A -> F A) * Unit
+
 data tuple (A B: U) = pair (a: A) (b: B)
 fst (A B: U): tuple A B -> A = split pair a b -> a
 snd (A B: U): tuple A B -> B = split pair a b -> b
 
-data N = Z | S (n: N)
+o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
 
-data Unit = tt
+data N = Z | S (n: N)
 
 Path     (A : U) (a b : A) : U = PathP (<i> A) a b
 --prop     (A : U) : U = (a b : A) -> Path A a b

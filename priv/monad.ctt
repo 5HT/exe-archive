@@ -1,0 +1,18 @@
+module monad where
+
+import prelude
+import functor
+
+monad (A B: U) (F: U -> U): U
+    = (pure_: pure A F)
+    * (functor_: functor F)
+    * (join: F (F A) -> F B)
+    * Unit
+
+comonad (A B: U) (F: U -> U): U
+    = (pure_: pure A F)
+    * (functor_: functor F)
+    * (extract: F A -> A)
+    * (duplicate: F A -> F (F A))
+    * (extend: (F A -> B) -> F A -> F B)
+    * Unit
