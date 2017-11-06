@@ -1,6 +1,7 @@
 module functor where
 
 import prelude
+import path
 
 functor_ (A B: U) (F: U -> U): U
     = (fmap: (A -> B) -> F A -> F B) * Unit
@@ -37,16 +38,12 @@ functor_functiontype (T: U): functor (functiontype T) = (fmap, id, compose, tt) 
 -- type-level composition
 comptype (F G: U -> U) (t: U): U = F (G t)
 
-cong (A B : U) (f : A -> B) (a b : A) (p : Path A a b) :
-     Path B (f a) (f b) = <i> f (p @ i)
 {-
 x == y
 f y == z
 -------------
 f x == z
 -}
-
-
 lemma1
   (A B: U)
   (g : A -> B)
@@ -56,8 +53,7 @@ lemma1
   (pxy: Path A x y)
   (pgyz: Path B (g y) z)
   : Path B (g x) z
-  = compPath B (g x) (g y) z (cong A B g x y pxy) pgyz
-
+  = composition B (g x) (g y) z (mapOnPath A B g x y pxy) pgyz
 
 functorIdFunExt (F: U -> U) (f: functor F) (A: U) : Path (F A -> F A) (f.1 A A (idfun A)) (idfun (F A))
   = funExtNonDep (F A) (F A) (f.1 A A (idfun A)) (idfun (F A)) (f.2.1 A)
