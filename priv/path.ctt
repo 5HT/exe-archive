@@ -11,9 +11,11 @@ mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
 
 subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
     = comp (<i> P (p @ i)) e []
+--  = trans (P a) (P b) (mapOnPath A U P a b p) e
 
 composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
     = comp (<i> Path A a (q @ i)) p []
+--  = subst A (Path A a) b c q p
 
 contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
     = <i> (p @ i,<j> p @ i/\j)
