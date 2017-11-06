@@ -33,7 +33,9 @@ functiontype (A B: U): U = A -> B
 functor_functiontype (T: U): functor (functiontype T) = (fmap, id, compose, tt) where
   fmap (A B : U) (f: A -> B): (T -> A) -> (T -> B) = o T A B f
   id (A : U): (x : T -> A) -> Path (T -> A) x x = refl (T -> A)
-  compose (A B C : U) (f : B -> C) (g : A -> B) (x : T -> A): Path (T -> C) (\(x0 : T) -> f (g (x x0))) (\(x0 : T) -> f (g (x x0))) = refl (T -> C) (\(x0 : T) -> f (g (x x0)))
+  compose (A B C : U) (f : B -> C) (g : A -> B) (x : T -> A):
+     Path (T -> C) (\(x0 : T) -> f (g (x x0))) (\(x0 : T) -> f (g (x x0)))
+     = refl (T -> C) (\(x0 : T) -> f (g (x x0)))
 
 -- type-level composition
 comptype (F G: U -> U) (t: U): U = F (G t)
