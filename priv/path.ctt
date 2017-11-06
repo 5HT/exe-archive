@@ -5,14 +5,15 @@ refl (A : U) (a : A) : Path A a a = <i> a
 singl (A : U) (a : A) : U = (x : A) * Path A a x
 
 trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
-composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
-    = <i> comp (<_> A) (p @ i) [(i=0)-><j>a,(i=1)->q]
 
 mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
     = <i> f (p @ i)
 
 subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
     = trans (P a) (P b) (mapOnPath A U P a b p) e
+
+composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
+    = subst A (Path A a) b c q p
 
 contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
     = <i> (p @ i,<j> p @ i/\j)
