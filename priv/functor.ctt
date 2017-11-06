@@ -66,18 +66,9 @@ functor_comptype (F G: U -> U) (f: functor F) (g: functor G) : functor (comptype
   idF : (A: U) -> (x: F A) -> Path (F A) (fmapF A A (idfun A) x) x = f.2.1
   idG : (A: U) -> (x: G A) -> Path (G A) (fmapG A A (idfun A) x) x = g.2.1
   fmap (A B : U) (arg: A -> B) : F (G A) -> F (G B) = fmapF (G A) (G B) (fmapG A B arg)
-  id (A : U): (x : F (G A)) -> Path (F (G A)) (fmapF (G A) (G A) (fmapG A A (idfun A)) x) x = goal where
-    idGspec : (x: G A) -> Path (G A) (fmapG A A (idfun A) x) x = idG A
-    fmapFspec : (G A -> G A) -> F (G A) -> F (G A) = fmapF (G A) (G A)
-    goal (x : F (G A)) : Path (F (G A)) (fmapFspec (fmapG A A (idfun A)) x) x = subgoal where
-       lemma1x: G A -> G A = fmapG A A (idfun A)
-       lemma1y: G A -> G A = idfun (G A)
-       lemma1pxy : Path (G A -> G A) (fmapG A A (idfun A)) (idfun (G A)) = functorIdFunExt G g A
-
-       lemma1g (y: G A -> G A): F (G A) = fmapFspec y x
-       lemma1pgyz : Path (F (G A)) (lemma1g (idfun (G A))        ) x = idF (G A) x
-
-       subgoal:  Path (F (G A)) (lemma1g (fmapG A A (idfun A))) x = lemma1 (G A -> G A) (F (G A)) lemma1g lemma1x lemma1y x lemma1pxy lemma1pgyz
+  id (A : U) (x : F (G A)) : Path (F (G A)) (fmapF (G A) (G A) (fmapG A A (idfun A)) x) x
+    = lemma1 (G A -> G A) (F (G A)) lemma1g (fmapG A A (idfun A)) (idfun (G A)) x (functorIdFunExt G g A) (idF (G A) x)
+    where lemma1g (y: G A -> G A): F (G A) = fmapF (G A) (G A) y x
 
   compose: (A B C: U) (f: B -> C) (g: A -> B) (x: T A) ->
     Path (T C) (fmap A C (o A B C f g) x)
