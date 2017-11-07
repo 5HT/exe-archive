@@ -50,6 +50,7 @@ convert([$:|T],Acc) -> convert(T,[61498|Acc]);
 convert([$||T],Acc) -> convert(T,[61564|Acc]);
 convert([H|T],Acc)  -> convert(T,[H|Acc]).
 
+a(X)       -> macro:a(X).
 parse(X)   -> io:format("~tp~n",[macro:parse(bin(X))]).
 bin(X)     -> unicode:characters_to_list(X).
 
