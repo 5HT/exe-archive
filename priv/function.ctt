@@ -1,0 +1,15 @@
+module function where
+
+import path
+import equiv
+
+flipfun (A B C: U) (f: A -> B -> C) (b: B) (a: A): C = f a b
+
+flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
+  = isoPath AB BA from to toK fromK where
+  AB : U = A -> B -> C
+  BA : U = B -> A -> C
+  from: AB -> BA = flipfun A B C
+  to: BA -> AB = flipfun B A C
+  fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
+  toK: (f: BA) -> Path BA (from (to f)) f = refl BA
