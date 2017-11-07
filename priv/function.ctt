@@ -15,9 +15,20 @@ flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
   fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
   toK: (f: BA) -> Path BA (from (to f)) f = refl BA
 
-churchPairT (A B R: U): U = (A -> B -> R) -> R
+churchPairT (A B: U): U = (R: U) -> (A -> B -> R) -> R
 
-churchPairIso (A B: U): Path (U -> U) (churchPairT A B) (churchPairT B A)
-  = funExtNonDep U U (churchPairT A B) (churchPairT B A) (\(R: U) ->
-    subst U (\(X: U) ->Path U (churchPairT A B R) (X -> R)) (A -> B -> R) (B -> A -> R)
-    (flipfunIso A B R) (refl U (churchPairT A B R)))
+churchPairIso (A B: U): Path U (churchPairT A B) (churchPairT B A)
+  = mapOnPath (U -> U) U foo bar baz quux where
+  foo (P : U -> U): U = (R: U) -> P R -> R
+  bar (X: U): U = A -> B -> X
+  baz (X: U): U = B -> A -> X
+  p (x: U): Path U (bar x) (baz x) = flipfunIso A B x
+  quux : Path (U -> U) bar baz = funExtNonDep U U bar baz (flipfunIso A B)
+  goal : Path U (foo bar) (foo baz) = mapOnPath (U -> U) U foo bar baz quux
+
+churchPair (A B: U) (a: A) (b: B) (R: U) (c: A -> B -> R): R = c a b
+
+churchFst (A B: U) (p: churchPairT A B): A = p A (\(a: A) (b: B) -> a)
+
+churchFirst (A B C: U) (f: A -> C) (p: churchPairT A B): churchPairT C B
+  = p (churchPairT C B) (\(a: A) (b: B) -> churchPair C B (f a) b)
