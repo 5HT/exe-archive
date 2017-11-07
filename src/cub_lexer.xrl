@@ -7,7 +7,6 @@ C = [a-zA-Z_]
 A = [a-zA-Z_0-9\-\x{2074}-\x{208E}\x{2010}-\x{2191}\x{2193}-\x{2199}\x{2201}-\x{25FF}\x{3B1}-\x{3BA}\x{3BC}-\x{3FF}]
 S = ([\t\s\r\n]|--.*)
 BC = [\r\n]
-%Index   = \*(\.{(.*|[^}])})?
 Star    = \*
 Unit    = \(\)
 Slash   = \\
@@ -28,9 +27,9 @@ VBar    = \|
 
 Rules.
 
-(data|record|.1|.2)                  : {token,{list_to_atom(TokenChars),TokenLine}}.
-(case|of|fun|let|in|module|where)    : {token,{list_to_atom(TokenChars),TokenLine}}.
-(spawn|send|receive|import)          : {token,{list_to_atom(TokenChars),TokenLine}}.
+(data|record|.1|.2|split)            : {token,{list_to_atom(TokenChars),TokenLine}}.
+(let|in|module|import|where)         : {token,{list_to_atom(TokenChars),TokenLine}}.
+(spawn|send|receive)                 : {token,{list_to_atom(TokenChars),TokenLine}}.
 ({Curly}|{Parens}|{Angle}|{Square})  : {token,{list_to_atom(TokenChars),TokenLine}}.
 ({Dot}|{Comma}|{Eq}|{Colon})         : {token,{list_to_atom(TokenChars),TokenLine}}.
 ({Hash}|{VBar}|{Oper}|{Star})        : {token,{list_to_atom(TokenChars),TokenLine}}.
@@ -41,7 +40,6 @@ Rules.
 {Forall}        : {token, {forall, TokenLine}}.
 {Lambda}        : {token, {lam,    TokenLine}}.
 {Oper}+         : {token, {oper,   TokenLine,TokenChars}}.
-%({BC}{BC}+)     : {token, {skip,   TokenLine}}.
 ({BC}+)         : {token, {skip,   TokenLine}}.
 ({S}+)          : skip_token.
 
