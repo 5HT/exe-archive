@@ -60,6 +60,12 @@ lemma1
 functorIdFunExt (F: U -> U) (f: functor F) (A: U) : Path (F A -> F A) (f.1 A A (idfun A)) (idfun (F A))
   = funExtNonDep (F A) (F A) (f.1 A A (idfun A)) (idfun (F A)) (f.2.1 A)
 
+functorComposeFunExt (F: U -> U) (ff: functor F) (A B C: U) (f: B -> C) (g: A -> B):
+  Path (F A -> F C)
+    (ff.1 A C (o A B C f g))
+    (o (F A) (F B) (F C) (ff.1 B C f) (ff.1 A B g))
+  = funExtNonDep (F A) (F C) (ff.1 A C (o A B C f g)) ((o (F A) (F B) (F C) (ff.1 B C f) (ff.1 A B g))) (ff.2.2.1 A B C f g)
+
 -- Functor F, Functor G => Functor (comptype F G)
 functor_comptype (F G: U -> U) (f: functor F) (g: functor G) : functor (comptype F G) = (fmap, id, compose, tt) where
   T: U -> U = comptype F G
@@ -72,6 +78,20 @@ functor_comptype (F G: U -> U) (f: functor F) (g: functor G) : functor (comptype
     = lemma1 (G A -> G A) (F (G A)) lemma1g (fmapG A A (idfun A)) (idfun (G A)) x (functorIdFunExt G g A) (idF (G A) x)
     where lemma1g (y: G A -> G A): F (G A) = fmapF (G A) (G A) y x
 
-  compose: (A B C: U) (f: B -> C) (g: A -> B) (x: T A) ->
-    Path (T C) (fmap A C (o A B C f g) x)
-               ((o (T A) (T B) (T C) (fmap B C f) (fmap A B g)) x) = undefined
+  compose (A B C: U) (ff: B -> C) (gg: A -> B) (x: T A):
+    Path (F (G C))
+      (fmapF (G A) (G C) (fmapG A C ((\(y : A) -> ff (gg y)))) x)
+      (fmapF (G B) (G C) (fmapG B C ff) (fmapF (G A) (G B) (fmapG A B gg) x))
+    = goal where
+       fff : G B -> G C = fmapG B C ff
+       ggg : G A -> G B = fmapG A B gg
+       AAA:  G A -> G C = fmapG A C (o A B C ff gg)
+       BBB:  G A -> G C = o (G A) (G B) (G C) fff ggg
+       P (aaa: G A -> G C): U = Path (F (G C))
+         (fmapF (G A) (G C) aaa x)
+         (fmapF (G B) (G C) fff (fmapF (G A) (G B) ggg x))
+       compFinst: P BBB
+          = f.2.2.1 (G A) (G B) (G C) fff ggg x
+       compGinst : Path (G A -> G C) AAA BBB
+          = functorComposeFunExt G g A B C ff gg
+       goal : P AAA = substInv (G A -> G C) P AAA BBB compGinst compFinst
