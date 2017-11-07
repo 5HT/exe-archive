@@ -1,3 +1,5 @@
+% Copyright Groupoid Infinity, Inc.
+
 mod -> 'module' id 'where' imp dec : {module,'$2','$3','$4','$5'}.
 imp -> skip imp : '$2'.
 imp -> '$empty' : [].
@@ -28,7 +30,7 @@ codec -> def skip dec : ['$1'|'$3'].
 codec -> def dec : ['$1'|'$2'].
 def -> 'data' id tele '=' sum : {data,'$2','$3','$5'}.
 def -> id tele ':' exp '=' exp : {def,'$1','$2','$4','$6'}.
-def -> id tele ':' exp '=' exp 'where' codec : {def,'$1','$2','$4','$6','$8'}.
+def -> id tele ':' exp '=' exp 'where' def : {def,'$1','$2','$4','$6','$8'}.
 sum -> '$empty' : [].
 sum -> id tele : {ctor,'$1','$2'}.
 sum -> id tele '|' sum : [{ctor,'$1','$2'}|'$4'].
