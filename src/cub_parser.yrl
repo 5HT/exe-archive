@@ -42,6 +42,7 @@ Left 10 '|'.
 Left 10 skip.
 Left 10 'data'.
 Left 10 id.
+Left 10 def.
 Nonterminals mod imp tele exp app dec def ids sum prod cotele br brs cobrs codec.
 Terminals id digits atom oper 'module' 'where' 'import' skip lam
 '(' ')' '[' ']' '{' '}' '.' ',' ':' '=' '#' '|' '+' '-' '*' '/'
