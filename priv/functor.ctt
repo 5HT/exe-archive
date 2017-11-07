@@ -95,3 +95,6 @@ functor_comptype (F G: U -> U) (f: functor F) (g: functor G) : functor (comptype
        compGinst : Path (G A -> G C) AAA BBB
           = functorComposeFunExt G g A B C ff gg
        goal : P AAA = substInv (G A -> G C) P AAA BBB compGinst compFinst
+
+functor_transport (F G: U -> U) (p: Path (U -> U) F G) (f: functor F): functor G
+  = subst (U -> U) functor F G p f
