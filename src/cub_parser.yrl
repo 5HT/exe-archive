@@ -45,5 +45,5 @@ Terminals id digits atom oper 'module' 'where' 'import' skip lam
 '(' ')' '[' ']' '{' '}' '.' ',' ':' '=' '#' '|' '+' '-' '*' '/'
 arrow forall 'record' 'data' 'let' 'in' '.1' '.2' 'split'.
 Erlang code.
-uncons({app,L,R}) -> [L|uncons(R)];
+uncons({app,L,R}) -> [R|uncons(L)];
 uncons(X) -> [X].

@@ -1,7 +1,7 @@
 -module(cub_parser).
 -export([parse/1, parse_and_scan/1, format_error/1]).
 -file("/Users/maxim/depot/groupoid/infinity/src/cub_parser.yrl", 47).
-uncons({app,L,R}) -> [L|uncons(R)];
+uncons({app,L,R}) -> [R|uncons(L)];
 uncons(X) -> [X].
 
 -file("/usr/local/Cellar/erlang/20.0.4/lib/erlang/lib/parsetools-2.1.5/include/yeccpre.hrl", 0).
