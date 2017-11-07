@@ -18,4 +18,6 @@ flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
 churchPairT (A B R: U): U = (A -> B -> R) -> R
 
 churchPairIso (A B: U): Path (U -> U) (churchPairT A B) (churchPairT B A)
-  = funExtNonDep U U (churchPairT A B) (churchPairT B A) (\(R: U) -> subst U (\(X: U) ->Path U (churchPairT A B R) (X -> R)) (A -> B -> R) (B -> A -> R) (flipfunIso A B R) (refl U (churchPairT A B R)))
+  = funExtNonDep U U (churchPairT A B) (churchPairT B A) (\(R: U) ->
+    subst U (\(X: U) ->Path U (churchPairT A B R) (X -> R)) (A -> B -> R) (B -> A -> R)
+    (flipfunIso A B R) (refl U (churchPairT A B R)))
