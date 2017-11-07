@@ -55,7 +55,7 @@ lemma1
   (pxy: Path A x y)
   (pgyz: Path B (g y) z)
   : Path B (g x) z
-  = composition B (g x) (g y) z (mapOnPath A B g x y pxy) pgyz
+  = substInv A (\(X: A) -> Path B (g X) z) x y pxy pgyz
 
 functorIdFunExt (F: U -> U) (f: functor F) (A: U) : Path (F A -> F A) (f.1 A A (idfun A)) (idfun (F A))
   = funExtNonDep (F A) (F A) (f.1 A A (idfun A)) (idfun (F A)) (f.2.1 A)
