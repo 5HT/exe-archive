@@ -1,7 +1,8 @@
 module function where
 
-import path
+import prelude
 import equiv
+import functor
 
 flipfun (A B C: U) (f: A -> B -> C) (b: B) (a: A): C = f a b
 
@@ -13,3 +14,8 @@ flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
   to: BA -> AB = flipfun B A C
   fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
   toK: (f: BA) -> Path BA (from (to f)) f = refl BA
+
+churchPairT (A B R: U): U = (A -> B -> R) -> R
+
+churchPairIso (A B: U): Path (U -> U) (churchPairT A B) (churchPairT B A)
+  = funExtNonDep U U (churchPairT A B) (churchPairT B A) (\(R: U) -> subst U (\(X: U) ->Path U (churchPairT A B R) (X -> R)) (A -> B -> R) (B -> A -> R) (flipfunIso A B R) (refl U (churchPairT A B R)))
