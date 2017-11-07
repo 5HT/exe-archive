@@ -28,7 +28,7 @@ VBar    = \|
 
 Rules.
 
-(data|record)                        : {token,{list_to_atom(TokenChars),TokenLine}}.
+(data|record|.1|.2)                  : {token,{list_to_atom(TokenChars),TokenLine}}.
 (case|of|fun|let|in|module|where)    : {token,{list_to_atom(TokenChars),TokenLine}}.
 (spawn|send|receive|import)          : {token,{list_to_atom(TokenChars),TokenLine}}.
 ({Curly}|{Parens}|{Angle}|{Square})  : {token,{list_to_atom(TokenChars),TokenLine}}.
@@ -41,7 +41,8 @@ Rules.
 {Forall}        : {token, {forall, TokenLine}}.
 {Lambda}        : {token, {lam,    TokenLine}}.
 {Oper}+         : {token, {oper,   TokenLine,TokenChars}}.
-({BC}{BC}+)     : {token, {skip,   TokenLine}}.
+%({BC}{BC}+)     : {token, {skip,   TokenLine}}.
+({BC}+)         : {token, {skip,   TokenLine}}.
 ({S}+)          : skip_token.
 
 Erlang code.
