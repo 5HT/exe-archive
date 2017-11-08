@@ -2,6 +2,7 @@ module coproduct where
 
 import propset
 
+-- endofunctor
 T : U = Set -> Set
 
 -- page 8
@@ -13,18 +14,15 @@ T : U = Set -> Set
 -- Set category has Set as objects and Set -> Set as morphisms.
 -- Set x Set category has (_:Set) * Set ("independent sigma") as objects and (_:Set) * Set) -> (_:Set) * Set) as morphisms
 -- the product functor sends
---
 
 -- Pi, not Lambda. cf. functor.churchPairT
--- polyNat: U = (X: Set) -> (X -> X) -> X -> X
-
--- homSet (X Y: Set): U = X -> Y
+polyNat: U = (X: Set) -> homSet X X -> homSet X X
 
 -- page 28
 
--- TAlg : U = (X: Set) * (X -> X)
+TAlg (t: T): U = (X: Set) * homSet (t X) X
 
--- THom (phi psi: TAlg): U = Unit
+-- THom (t: T) (phi psi: TAlg t): U = (f: homSet phi.1 psi.1) * Path ? (psi.2 ? ?
 
 -- page 30
 
