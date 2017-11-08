@@ -1,24 +1,19 @@
 module coproduct where
 
-import path
-import maybe
-
--- only for isProp/isSet
-data N = Z | S (n: N)
-
-mutual
-  rec (A: U) (a b: A): (k: N) -> U = split
-    Z -> Path A a b
-    S n -> n_grpd (Path A a b) n
-  n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n)
-
-isProp      (A: U): U = n_grpd A Z
-isSet       (A: U): U = n_grpd A (S Z)
-
--- page 25
-Set : U = (a: U) * isSet a
+import propset
 
 T : U = Set -> Set
+
+-- page 8
+
+-- sfCoproduct : (A B: Set): Set = (X: Set) -> (((_:A -> X) * (B -> X)) -> X)
+
+-- page 12
+-- idfun and o serve as identity morphisms and compositions in all the categories below
+-- Set category has Set as objects and Set -> Set as morphisms.
+-- Set x Set category has (_:Set) * Set ("independent sigma") as objects and (_:Set) * Set) -> (_:Set) * Set) as morphisms
+-- the product functor sends
+--
 
 -- Pi, not Lambda. cf. functor.churchPairT
 -- polyNat: U = (X: Set) -> (X -> X) -> X -> X
@@ -35,7 +30,7 @@ T : U = Set -> Set
 
 -- functorN (X: Set): Set = maybe U
 
-data Either (a b : U) 
+data Either (a b : U)
   = Left (_ : a)
   | Right (_ : b)
 
