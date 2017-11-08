@@ -1,40 +1,28 @@
 module equiv where
 
-import prelude
+import iso
 
-fiber (A B : U) (f : A -> B) (y : B) : U =
-  (x : A) * Path B y (f x)
-
-isEquiv (A B : U) (f : A -> B) : U = (y : B) -> isContr (fiber A B f y)
-
-equiv (A B : U) : U = (f : A -> B) * isEquiv A B f
-
-propIsEquiv (A B : U) (f : A -> B)
-  : prop (isEquiv A B f) =
-  \ (u0 u1:isEquiv A B f) ->
-     <i> \ (y:B) -> propIsContr (fiber A B f y) (u0 y) (u1 y) @ i
-
+-- used by idTpPath
 equivLemma (A B : U)
   : (v w : equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
   = lemSig (A -> B) (isEquiv A B) (propIsEquiv A B)
 
-idIsEquiv (A : U) : isEquiv A A (idfun A) =
-  \(a : A) -> ((a, refl A a)
-              ,\(z : fiber A A (idfun A) a) -> contrSingl A a z.1 z.2)
-
+-- used by univalence.ctt
 equivPath (T A : U) (f : T -> A) (p : isEquiv T A f) : Path U T A =
   <i> Glue A [ (i=0) -> (T,f,p), (i=1) -> (A,idfun A, idIsEquiv A)]
 
--- for univalence
+-- used by category.ctt
 invEq (A B:U) (w:equiv A B) (y:B) : A = (w.2 y).1.1
 
+-- used by category.ctt
 retEq (A B:U) (w:equiv A B) (y:B) : Path B (w.1 (invEq A B w y)) y =
  <i>(w.2 y).1.2@-i
 
+-- used by category.ctt
 secEq (A B:U) (w:equiv A B) (x:A) : Path A (invEq A B w (w.1 x)) x =
  <i> ((w.2 (w.1 x)).2 (x,<j>w.1 x)@i).1
- --
 
+-- used by univalence.ctt
 transEquivDirect (A B:U) (p:Path U A B) : equiv A B = (f,p)
  where
   f (x:A) : B = comp p x []
@@ -55,21 +43,20 @@ transEquivDirect (A B:U) (p:Path U A B) : equiv A B = (f,p)
     <i>(lem5 y z.1 z.2@i,lem7 y z.1 z.2@i)
   p (y:B) : isContr (fiber A B f y) = (lem8 y,lem9 y)
 
-lemSinglContr (A:U) (a:A) : isContr ((x:A) * Path A a x) =
- ((a,refl A a),\ (z:(x:A) * Path A a x) -> contrSingl A a z.1 z.2)
-
-idEquiv (A:U) : equiv A A = (\ (x:A) -> x, lemSinglContr A)
-
+-- used by transEquiv
 transEquiv (A X:U) (p:Path U A X) : equiv A X =
  substTrans U (equiv A) A X p (idEquiv A)
 
+-- used by univalence.ctt
 transDelta (A:U) : equiv A A = transEquiv A A (<i>A)
 
+-- UNUSED
 transEquivToPath (A B : U) (w : equiv A B) : Path U A B =
   <i> Glue B [ (i = 1) -> (B,eB)
              , (i = 0) -> (A,w) ]
  where eB : equiv B B = transDelta B
 
+-- used by univalence.ctt
 eqToEq (A B : U) (p : Path U A B)
   : Path (Path U A B) (transEquivToPath A B (transEquiv A B p)) p
   = <j i> let e : equiv A B = transEquiv A B p
@@ -81,6 +68,7 @@ eqToEq (A B : U) (p : Path U A B)
            , (i = 1) -> (B,f)
            , (j = 1) -> (p@i,g)]
 
+-- used by idToPath
 transPathFun (A B : U) (w : equiv A B)
   : Path (A -> B) w.1 (transEquiv A B (transEquivToPath A B w)).1 =
  <i> \ (a:A) ->
@@ -90,74 +78,10 @@ transPathFun (A B : U) (w : equiv A B)
    in comp (<j> B)
         (comp (<j> B) (comp (<j> B) (comp (<j> B) (w.1 u) [(i=0)->q]) [(i=0)-><k>b]) [(i=0)-><k>b]) [(i=0)-><k>b]
 
+-- used by univalence.ctt
 idToPath (A B : U) (w : equiv A B)
   : Path (equiv A B) (transEquiv A B (transEquivToPath A B w)) w
   = equivLemma A B (transEquiv A B (transEquivToPath A B w)) w
       (<i>transPathFun A B w@-i)
 
 
--- The iso to equiv
-
-lemIso (A B : U) (f : A -> B) (g : B -> A)
-       (s : (y : B) -> Path B (f (g y)) y)
-       (t : (x : A) -> Path A (g (f x)) x)
-       (y : B) (x0 x1 : A) (p0 : Path B y (f x0)) (p1 : Path B y (f x1)) :
-       Path (fiber A B f y) (x0,p0) (x1,p1) = <i> (p @ i,sq1 @ i)
-  where
-    rem0 : Path A (g y) x0 =
-      <i> comp (<k> A) (g (p0 @ i)) [ (i = 1) -> t x0, (i = 0) -> <k> g y ]
-
-    rem1 : Path A (g y) x1 =
-      <i> comp (<k> A) (g (p1 @ i)) [ (i = 1) -> t x1, (i = 0) -> <k> g y ]
-
-    p : Path A x0 x1 =
-     <i> comp (<k> A) (g y) [ (i = 0) -> rem0
-                            , (i = 1) -> rem1 ]
-
-    fill0 : Square A (g y) (g (f x0)) (g y) x0
-                     (<i> g (p0 @ i)) rem0 (<i> g y) (t x0)  =
-      <i j> comp (<k> A) (g (p0 @ i)) [ (i = 1) -> <k> t x0 @ j /\ k
-                                      , (i = 0) -> <k> g y
-                                      , (j = 0) -> <k> g (p0 @ i) ]
-
-    fill1 : Square A (g y) (g (f x1)) (g y) x1
-                     (<i> g (p1 @ i)) rem1 (<i> g y) (t x1) =
-      <i j> comp (<k> A) (g (p1 @ i)) [ (i = 1) -> <k> t x1 @ j /\ k
-                                      , (i = 0) -> <k> g y
-                                      , (j = 0) -> <k> g (p1 @ i) ]
-
-    fill2 : Square A (g y) (g y) x0 x1
-                     (<k> g y) p rem0 rem1 =
-      <i j> comp (<k> A) (g y) [ (i = 0) -> <k> rem0 @ j /\ k
-                               , (i = 1) -> <k> rem1 @ j /\ k
-                               , (j = 0) -> <k> g y ]
-
-    sq : Square A (g y) (g y) (g (f x0)) (g (f x1))
-                  (<i> g y) (<i> g (f (p @ i)))
-                  (<j> g (p0 @ j)) (<j> g (p1 @ j)) =
-      <i j> comp (<k> A) (fill2 @ i @ j) [ (i = 0) -> <k> fill0 @ j @ -k
-                                         , (i = 1) -> <k> fill1 @ j @ -k
-                                         , (j = 0) -> <k> g y
-                                         , (j = 1) -> <k> t (p @ i) @ -k ]
-
-    sq1 : Square B y y (f x0) (f x1)
-                   (<k>y) (<i> f (p @ i)) p0 p1 =
-      <i j> comp (<k> B) (f (sq @ i @j)) [ (i = 0) -> s (p0 @ j)
-                                         , (i = 1) -> s (p1 @ j)
-                                         , (j = 1) -> s (f (p @ i))
-                                         , (j = 0) -> s y ]
-
-isoToEquiv (A B : U) (f : A -> B) (g : B -> A)
-       (s : (y : B) -> Path B (f (g y)) y)
-       (t : (x : A) -> Path A (g (f x)) x) : isEquiv A B f =
-  \(y:B) -> ((g y,<i>s y@-i),\ (z:fiber A B f y) ->
-    lemIso A B f g s t y (g y) z.1 (<i>s y@-i) z.2)
-
-isoPath (A B : U) (f : A -> B) (g : B -> A)
-      (s : (y : B) -> Path B (f (g y)) y)
-      (t : (x : A) -> Path A (g (f x)) x) : Path U A B =
-       <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t)
-                  , (i = 1) -> (B,idfun B,idIsEquiv B) ]
-
-idIsEquivIsoToEquiv (A : U) : isEquiv A A (idfun A) =
-  isoToEquiv A A (idfun A) (idfun A) (\(a : A) -> <i> a) (\(a : A) -> <i> a)

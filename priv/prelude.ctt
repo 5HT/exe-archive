@@ -1,5 +1,7 @@
 module prelude where
 
+import path
+
 data Unit = tt
 
 pure (A: U) (F: U -> U): U = (return: A -> F A) * Unit
@@ -12,7 +14,6 @@ o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
 
 data N = Z | S (n: N)
 
-Path     (A : U) (a b : A) : U = PathP (<i> A) a b
 --prop     (A : U) : U = (a b : A) -> Path A a b
 --set      (A : U) : U = (a b : A) -> prop     (Path A a b)
 --groupoid (A : U) : U = (a b : A) -> set      (Path A a b)
@@ -41,26 +42,7 @@ inf_grpd (A: U): U =
 --    zero -> \(x y: Path A a b) -> Path (Path A a b) x y
 --    succ k -> \(x y: Path A a b) -> rec2 k (Path A a b) x y
 
-refl (A : U) (a : A) : Path A a a = <i> a
-
 testEta (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) p p = refl (Path A a b) (<i> p @ i)
-
-mapOnPath (A B : U) (f : A -> B) (a b : A)
-          (p : Path A a b) : Path B (f a) (f b) = <i> f (p @ i)
-
-funExt (A : U) (B : A -> U) (f g : (x : A) -> B x)
-       (p : (x : A) -> Path (B x) (f x) (g x)) :
-       Path ((y : A) -> B y) f g = <i> \(a : A) -> (p a) @ i
-
-funExtNonDep
-  (A B: U)
-  (f g : A -> B)
-  (p : (x : A) -> Path B (f x) (g x))
-  : Path (A -> B) f g
-  = <i> \(a : A) -> p a @ i
-
--- Transport can be defined using comp
-trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
 
 transNeg (A B : U) (p : Path U A B) (b : B) : A = comp (<i> p @ - i) b []
 
@@ -88,14 +70,6 @@ transNegK (A B : U) (p : Path U A B) (a : A) :
 substTrans (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b =
   trans (P a) (P b) (mapOnPath A U P a b p) e
 
-subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b =
-  transport (mapOnPath A U P a b p) e
-
-singl (A : U) (a : A) : U = (x : A) * Path A a x
-
-contrSingl (A : U) (a b : A) (p : Path A a b) :
-  Path (singl A a) (a,refl A a) (b,p) = <i> (p @ i,<j> p @ i/\j)
-
 PathElim (A: U) (a b: A) (P: A -> U) (u: P a) (p: Path A a b): P b
     = subst A P a b p u
 
@@ -108,10 +82,7 @@ substEq (A : U) (P : A -> U) (a : A) (e : P a)
   : Path (P a) e (subst A P a a (refl A a) e) =
   fill (<i> P a) e []
 
-substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a =
- subst A P b a (<i> p @ -i)
-
-
+-- different from path.J!
 J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
   (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p =
     subst (singl A a) T (a, refl A a) (x, p) (contrSingl A a x p) d
