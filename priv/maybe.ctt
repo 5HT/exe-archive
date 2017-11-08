@@ -6,12 +6,12 @@ data maybe (A: U)
     = nothing
     | just (a: A)
 
-maybe_ (A B: U) (n: B) (j: A -> B) : maybe A -> B = split
+maybeElim (A B: U) (n: B) (j: A -> B) : maybe A -> B = split
   nothing -> n
   just a -> j a
 
 -- usage
--- maybe_ nat nat zero (\ (x: nat) -> x) (just zero)
+-- maybeElim nat nat zero (\ (x: nat) -> x) (just zero)
 
 maybeMap (A B: U) (f: A -> B) : maybe A -> maybe B = split
   nothing -> nothing
@@ -23,9 +23,9 @@ maybeRefl (A : U) (a : maybe A) : Path (maybe A) a a = refl (maybe A) a
 reflNothing (A: U): Path (maybe A) nothing nothing = maybeRefl A nothing
 reflJust (A: U) (x: A): Path (maybe A) (just x) (just x) = maybeRefl A (just x)
 
--- law of maybe_
+-- law of maybeElim
 -- maybe_ nothing just a == a
-maybeIsElim (A: U): (a: maybe A) -> Path (maybe A) a (maybe_ A (maybe A) nothing (\(a:A) -> just a) a) = split
+maybeIsElim (A: U): (a: maybe A) -> Path (maybe A) a (maybeElim A (maybe A) nothing (\(a:A) -> just a) a) = split
   nothing -> reflNothing A
   just x -> reflJust A x
 
@@ -38,10 +38,14 @@ functorMaybeId (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
 functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
   = funExtNonDep (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
 
--- maybeInd (A: U) (pp: (P: maybe A -> maybe A) -> Path (maybe A) nothing (P nothing)) = undefined
--- bbb (A: U) (P: maybe A -> maybe A) (n: Path (maybe A) nothing (P nothing)): Unit = undefined
--- (j: (x: A) -> Path (maybe A) (just x) (P (just x)) (a: maybe A) : Path (maybe A) a (P a) = undefined
--- maybeInd (A B: U) (P: B) (n: P nothing)
+-- dependent eliminator, or induction principle
+maybeDElim (A: U) (P : maybe A -> U) (n: P nothing) (j: (a: A) -> P (just a)): (a: maybe A) -> P a = split
+  nothing -> n
+  just x -> j x
+
+-- an alternative proof of functorMaybeId using maybeDElim
+functorMaybeId2 (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = maybeDElim A P (reflNothing A) (reflJust A) where
+  P (x: maybe A): U = Path (maybe A) (maybeId A x) x
 
 functorMaybeComp (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
             Path (maybe C) (maybeMap A C (o A B C f g) x)
