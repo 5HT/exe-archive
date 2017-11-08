@@ -1,6 +1,6 @@
 module functor where
 
-import prelude
+import proto
 import path
 
 functor_ (A B: U) (F: U -> U): U

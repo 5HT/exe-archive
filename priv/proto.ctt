@@ -1,0 +1,10 @@
+module proto where
+
+data Unit = tt
+
+idfun (A : U) (a : A) : A = a
+
+constfun (A B: U) (a: A) (b: B): A = a
+
+o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
+
