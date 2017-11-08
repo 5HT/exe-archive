@@ -1,8 +1,6 @@
 -- Characterization of equality in pi types.
 module pi where
 
-import prelude
-import equiv
 import list
 
 pi (A:U) (P:A->U) : U = (x:A) -> P x

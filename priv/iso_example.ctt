@@ -1,8 +1,6 @@
-module iso where
+module iso_example where
 
 import nat
-import equiv
-import prelude
 
 data nat2 = zero2 | suc2 (n : nat2)
 

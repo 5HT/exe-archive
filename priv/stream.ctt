@@ -1,7 +1,5 @@
 module stream where
 
-import prelude
-import equiv
 import nat
 
 data stream (A : U) = cons (x : A) (xs : stream A)

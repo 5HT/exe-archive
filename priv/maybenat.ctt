@@ -6,8 +6,6 @@ module maybenat where
 -- Z ~ Nothing
 -- S ~ Fix . Just
 
-import prelude
-import equiv
 import nat
 import maybe
 import control

@@ -2,7 +2,6 @@
 -- non-trivial path from Z to Z
 module int where
 
-import equiv
 import nat
 import discor
 

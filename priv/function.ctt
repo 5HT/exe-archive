@@ -1,7 +1,6 @@
 module function where
 
-import prelude
-import equiv
+import iso
 import functor
 
 flipfun (A B C: U) (f: A -> B -> C) (b: B) (a: A): C = f a b

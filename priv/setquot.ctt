@@ -4,7 +4,6 @@ module setquot where
 import bool
 import sigma
 import pi
-import univalence
 
 subtypeEquality (A : U) (B : A -> U) (pB : (x : A) -> prop (B x))
                 (s t : (x : A) * B x) : Path A s.1 t.1 -> Path (Sigma A B) s t =
