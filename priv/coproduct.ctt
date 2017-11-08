@@ -1,0 +1,41 @@
+module coproduct where
+
+import path
+import maybe
+
+-- only for isProp/isSet
+data N = Z | S (n: N)
+
+mutual
+  rec (A: U) (a b: A): (k: N) -> U = split
+    Z -> Path A a b
+    S n -> n_grpd (Path A a b) n
+  n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n)
+
+isProp      (A: U): U = n_grpd A Z
+isSet       (A: U): U = n_grpd A (S Z)
+
+-- page 25
+Set : U = (a: U) * isSet a
+
+T : U = Set -> Set
+
+-- Pi, not Lambda. cf. functor.churchPairT
+-- polyNat: U = (X: Set) -> (X -> X) -> X -> X
+
+-- homSet (X Y: Set): U = X -> Y
+
+-- page 28
+
+-- TAlg : U = (X: Set) * (X -> X)
+
+-- THom (phi psi: TAlg): U = Unit
+
+-- page 30
+
+-- functorN (X: Set): Set = maybe U
+
+data Either (a b : U) 
+  = Left (_ : a)
+  | Right (_ : b)
+
