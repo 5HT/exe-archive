@@ -1,0 +1,43 @@
+-- propositions and sets
+
+foo : setElem unitSet -> setElem unitSet = idfun Unit
+module propset where
+
+import path
+import proto
+
+-- only for isProp/isSet
+data N = Z | S (n: N)
+
+mutual
+  rec (A: U) (a b: A): (k: N) -> U = split
+    Z -> Path A a b
+    S n -> n_grpd (Path A a b) n
+  n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n)
+
+isProp      (A: U): U = n_grpd A Z
+isSet       (A: U): U = n_grpd A (S Z)
+
+-- page 14
+Set : U = (a: U) * isSet a
+
+propSet (A : U) (h : isProp A) : isSet A =
+ \(a b : A) (p q : Path A a b) ->
+   <j i> comp (<_> A) a [ (i=0) -> h a a
+                        , (i=1) -> h a b
+                        , (j=0) -> h a (p @ i)
+                        , (j=1) -> h a (q @ i)]
+
+propUnit : isProp Unit = split
+ tt -> split@((x:Unit) -> Path Unit tt x) with
+  tt -> <i> tt
+
+unitSet : Set = (Unit, propSet Unit propUnit)
+
+setElem (S: Set): U = S.1
+
+-- foo (S: Set) (e: setElem S): e -> e = idfun e
+
+u : setElem unitSet = tt
+
+foo : setElem unitSet -> setElem unitSet = idfun Unit
