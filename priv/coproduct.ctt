@@ -3,7 +3,7 @@ module coproduct where
 import propset
 
 -- endofunctor
-T : U = Set -> Set
+T : U = (f: Set -> Set) * ((a b: Set) -> homSet a b -> homSet (f a) (f b))
 
 -- page 8
 
@@ -20,9 +20,18 @@ polyNat: U = (X: Set) -> homSet X X -> homSet X X
 
 -- page 28
 
-TAlg (t: T): U = (X: Set) * homSet (t X) X
+-- type TAlg t x = Functor t => (x, t x -> x)
+TAlg (t: T): U = (X: Set) * homSet (t.1 X) X
 
--- THom (t: T) (phi psi: TAlg t): U = (f: homSet phi.1 psi.1) * Path ? (psi.2 ? ?
+-- From https://en.wikipedia.org/wiki/F-algebra
+THom (F: T) (al be: TAlg F): U = (f: homSet A B) * Path (homSet FA B) (up f) (down f) where
+  A  : Set = al.1
+  B  : Set = be.1
+  FA : Set = F.1 A
+  FB : Set = F.1 B
+  up   (f: homSet A B): homSet FA B = o FA.1  A.1 B.1 f    al.2
+  down (f: homSet A B): homSet FA B = o FA.1 FB.1 B.1 be.2 Ff where
+    Ff : FA.1 -> FB.1 = F.2 A B f
 
 -- page 30
 
