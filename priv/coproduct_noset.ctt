@@ -78,32 +78,17 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (unitEncRec unitEnc unitEncStar z) z =
   goal : Path unitEnc (al unitEnc unitEncStar) z
     = pathSig2 A P alStar z (q,t) where
     A : U = unitEnc'
-    q: Path unitEnc' alStar.1 al = undefined
-    t : PathP (<i> P (q @ i)) alStar.2 p = undefined
 
     -- proposition 2.4.5
-    qq (X: U) (x: X): Path X (alStar.1 X x) (al X x) = goal where
+    qq (X: U) (x: X): Path X (alStar.1 X x) (al X x) = funExtInv unitEnc X ff gg pp unitEncStar where
       f: unitEnc -> X = unitEncRec X x
       ff : unitEnc -> X = o unitEnc unitEnc X f (al unitEnc)
       gg : unitEnc -> X = o unitEnc X X (al X) f
       pInst : U = Path (unitEnc -> X) ff gg where
         f: unitEnc -> X = unitEncRec X x
       pp : pInst = p unitEnc X (unitEncRec X x)
-      goal : Path X (alStar.1 X x) (al X x) = funExtInv unitEnc X ff gg pp unitEncStar
 
+    qqEta (X: U): Path (X -> X) (alStarAl X) (al X) = funExtNonDep X X (alStarAl X) (al X) (qq X)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    q: Path unitEnc' alStar.1 al = funExt U (\(X: U) -> X -> X) alStarAl al qqEta
+    t : PathP (<i> P (q @ i)) alStarP p = undefined
