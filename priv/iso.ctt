@@ -85,3 +85,16 @@ isoPath (A B : U) (f : A -> B) (g : B -> A)
       (t : (x : A) -> Path A (g (f x)) x) : Path U A B =
        <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t)
                   , (i = 1) -> (B,idfun B,idIsEquiv B) ]
+
+pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
+ Path U (Path (Sigma A B) t u) ((p : Path A t.1 u.1) * PathP (<i> B (p @ i)) t.2 u.2) =
+  isoPath T0 T1 f g s t where
+   T0 : U = Path (Sigma A B) t u
+   T1 : U = (p:Path A t.1 u.1) * PathP (<i> B (p@i)) t.2 u.2
+   f (q:T0) : T1 = (<i> (q@i).1,<i> (q@i).2)
+   g (z:T1) : T0 = <i>(z.1 @i,z.2 @i)
+   s (z:T1) : Path T1 (f (g z)) z = refl T1 z
+   t (q:T0) : Path T0 (g (f q)) q = refl T0 q
+
+pathAnd (A B : U) (t u : and A B) :
+  Path U (Path (and A B) t u) (and (Path A t.1 u.1) (Path B t.2 u.2)) = pathSig A (\(_ : A) -> B) t u

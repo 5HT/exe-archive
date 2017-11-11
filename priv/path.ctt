@@ -6,6 +6,8 @@ singl (A : U) (a : A) : U = (x : A) * Path A a x
 
 trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
 
+symm (A B: U) (p: Path U A B): Path U B A = <i> p @ -i
+
 mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
     = <i> f (p @ i)
 
