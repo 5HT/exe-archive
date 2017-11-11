@@ -60,13 +60,13 @@ unitEncRec (C: U) (c: C): unitEnc -> C
 unitEncBeta (C: U) (c: C): Path C (unitEncRec C c unitEncStar) c = refl C c
 
 -- lemma 2.4.4
-pathSig2 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * PathP (<i> P (p @ i)) t.2 u.2): Path (Sigma A P) t u
-  = comp (<i> pathSig A P t u @ -i) pp []
 
 sigPath1 (A: U) (P: A -> U) (a b: Sigma A P) (p: Path (Sigma A P) a b): Path A a.1 b.1
  = undefined
 
-unitEncWeakEta (z: unitEnc): Path unitEnc (unitEncRec unitEnc unitEncStar z) z = goal where
+-- funExt2 (A B C: U) (f g: A -> B -> C) (p: (a: A) (b: B) -> Path (f a b) (g a b)): Path (A -> B -> C) f g = undefined
+
+unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal where
   P (al: (X : U) -> X -> X): U = ((X Y: U) -> (f: X -> Y) ->
     Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
   al : unitEnc' = z.1
@@ -80,7 +80,7 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (unitEncRec unitEnc unitEncStar z) z =
     A : U = unitEnc'
 
     -- proposition 2.4.5
-    qq (X: U) (x: X): Path X (alStar.1 X x) (al X x) = funExtInv unitEnc X ff gg pp unitEncStar where
+    qq (X: U) (x: X): Path X (alStarAl X x) (al X x) = funExtInv unitEnc X ff gg pp unitEncStar where
       f: unitEnc -> X = unitEncRec X x
       ff : unitEnc -> X = o unitEnc unitEnc X f (al unitEnc)
       gg : unitEnc -> X = o unitEnc X X (al X) f

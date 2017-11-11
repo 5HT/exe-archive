@@ -96,5 +96,8 @@ pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
    s (z:T1) : Path T1 (f (g z)) z = refl T1 z
    t (q:T0) : Path T0 (g (f q)) q = refl T0 q
 
+pathSig2 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * PathP (<i> P (p @ i)) t.2 u.2): Path (Sigma A P) t u
+  = comp (<i> pathSig A P t u @ -i) pp []
+
 pathAnd (A B : U) (t u : and A B) :
   Path U (Path (and A B) t u) (and (Path A t.1 u.1) (Path B t.2 u.2)) = pathSig A (\(_ : A) -> B) t u
