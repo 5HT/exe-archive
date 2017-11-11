@@ -33,6 +33,10 @@ funExtNonDep
   : Path (A -> B) f g
   = <i> \(a : A) -> p a @ i
 
+funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g x)
+  = mapOnPath (A -> B) B ff f g p where
+  ff (f: A -> B): B = f x
+
 isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
 
 contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)

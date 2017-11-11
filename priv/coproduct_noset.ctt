@@ -1,0 +1,109 @@
+module coproduct_noset where
+
+import proto
+import path
+import iso
+
+-- an endofunctor
+T (f: U -> U): U = (a b: U) -> (a -> b) -> (f a -> f b)
+
+-- type TAlg f x = Functor f => (x, f x -> x)
+TAlg (f: U -> U) (F: T f) (X: U): U = (f X -> X)
+
+-- From https://en.wikipedia.org/wiki/F-algebra
+-- B = f (al FA)
+-- B = be (Ff FA)
+--
+-- (al: a -> f a) (be: b -> f b): (witness : a -> b) * (al . witness == Ff . be)
+THom (f: U -> U) (F: T f) (A B: U) (al: TAlg f F A) (be: TAlg f F B): U
+  = (ff: A -> B) * Path (FA -> B) (up ff) (down ff) where
+  FA : U = f A
+  FB : U = f B
+  up   (f: A -> B): FA -> B = o FA  A B f  al
+  down (f: A -> B): FA -> B = o FA FB B be Ff where
+    Ff : FA -> FB = F A B f
+
+-- arbitrary . witness == Ff . initial
+TIsInitial (f: U -> U) (F: T f) (A B: U) (initial: TAlg f F A): U = (arbitrary: TAlg f F B) -> THom f F B A arbitrary initial
+
+-- fmap of the identity endofunctor is the identity function between functions
+endoId : T (idfun U) = \(a b: U) -> idfun (a -> b)
+
+-- its algebras are "endofunctions"
+endoIdAlg (X: U) : U = X -> X
+
+-- its algebra homomorphisms
+-- (al: a -> a) (be: b -> b): (witness : a -> b) * (be . witness == witness . al)
+endoIdHom (X: U) (al be: X -> X): U = (witness: X -> X) * Path (X -> X) (up witness) (down witness) where
+  up   (witness: X -> X): X -> X = o X X X witness  al
+  down (witness: X -> X): X -> X = o X X X be       witness
+
+-- a non-trivial and non-identity example of Id-algebra homomorphism (without source code):
+-- affine transformations of the real axis
+-- x * 2 + 12   = (x + 6) * 2
+-- (+12) . (*2) = (*2) . (+6)
+-- so (*2) witnesses the homomorphism between (+6) and (+12)
+
+
+unitEnc' : U = (X: U) -> X -> X
+
+unitEnc : U
+  = (al : unitEnc') * ((X Y: U) -> (f: X -> Y) ->
+    Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
+
+unitEncStar : unitEnc = (\(X: U) -> idfun X, (\(X Y: U) -> refl (X -> Y)))
+
+unitEncRec (C: U) (c: C): unitEnc -> C
+  = \(z: unitEnc) -> z.1 C c
+
+-- lemma 2.4.3
+unitEncBeta (C: U) (c: C): Path C (unitEncRec C c unitEncStar) c = refl C c
+
+-- lemma 2.4.4
+pathSig2 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * PathP (<i> P (p @ i)) t.2 u.2): Path (Sigma A P) t u
+  = comp (<i> pathSig A P t u @ -i) pp []
+
+sigPath1 (A: U) (P: A -> U) (a b: Sigma A P) (p: Path (Sigma A P) a b): Path A a.1 b.1
+ = undefined
+
+unitEncWeakEta (z: unitEnc): Path unitEnc (unitEncRec unitEnc unitEncStar z) z = goal where
+  P (al: (X : U) -> X -> X): U = ((X Y: U) -> (f: X -> Y) ->
+    Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
+  al : unitEnc' = z.1
+  p : P al = z.2
+
+  alStar : unitEnc = al unitEnc unitEncStar
+  alStarAl: unitEnc' = alStar.1
+  alStarP: P alStarAl = alStar.2
+  goal : Path unitEnc (al unitEnc unitEncStar) z
+    = pathSig2 A P alStar z (q,t) where
+    A : U = unitEnc'
+    q: Path unitEnc' alStar.1 al = undefined
+    t : PathP (<i> P (q @ i)) alStar.2 p = undefined
+
+    -- proposition 2.4.5
+    qq (X: U) (x: X): Path X (alStar.1 X x) (al X x) = goal where
+      f: unitEnc -> X = unitEncRec X x
+      ff : unitEnc -> X = o unitEnc unitEnc X f (al unitEnc)
+      gg : unitEnc -> X = o unitEnc X X (al X) f
+      pInst : U = Path (unitEnc -> X) ff gg where
+        f: unitEnc -> X = unitEncRec X x
+      pp : pInst = p unitEnc X (unitEncRec X x)
+      goal : Path X (alStar.1 X x) (al X x) = funExtInv unitEnc X ff gg pp unitEncStar
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

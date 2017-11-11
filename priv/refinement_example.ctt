@@ -8,7 +8,7 @@ nat1 : Nat = Succ Zero
 
 DynamicCondition: U = Nat -> Bool
 
-StaticCondition (P: Nat -> U) (x: Nat): U = P x 
+StaticCondition (P: Nat -> U) (x: Nat): U = P x
 
 StaticEqualBool (x: Bool) (y: Bool): U = Path Bool x y
 
@@ -20,7 +20,7 @@ dynamicIsPositive: DynamicCondition = split
 
 StaticIsPositive (n: Nat): U = StaticEqualBool (dynamicIsPositive n) True
 
-Positive: U = (n: Nat) * (StaticEqualBool (dynamicIsPositive n) True) 
+Positive: U = (n: Nat) * (StaticEqualBool (dynamicIsPositive n) True)
 
 makePositive (n: Nat) (x: StaticIsPositive n) : Positive = (n, x)
 
@@ -35,7 +35,7 @@ not : Bool -> Bool = split
   False -> True
 
 -- This don't work hehe as it cannot subsitute through splits so you need another approach
--- proof1 (n: Nat): StaticEqualBool (not (not (dynamicIsPositive n))) (dynamicIsPositive n) 
+-- proof1 (n: Nat): StaticEqualBool (not (not (dynamicIsPositive n))) (dynamicIsPositive n)
 --  = BothSidesAreTextually Bool (dynamicIsPositive n)
 
 
