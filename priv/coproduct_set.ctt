@@ -21,29 +21,32 @@ unitEncRec (C: U) (proofC: isSet C) (c: C): unitEnc -> C
 unitEncBeta (C: U) (proofC: isSet C) (c: C): Path C (unitEncRec C proofC c unitEncStar) c = refl C c
 
 -- lemma 2.4.4
-{-
-unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal where
-  P (al: (X : U) -> X -> X): U = ((X Y: U) -> (f: X -> Y) ->
-    Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
-  al : unitEnc' = z.1
-  p : P al = z.2
 
-  alStar : unitEnc = al unitEnc unitEncStar
+unitEncWeakEta (z: unitEnc) (proofUnitEnc: isSet unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z = goal where
+  P (al: (X : U) (proofX: isSet X) ->  X -> X): U = ((X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
+    Path (X -> Y) (o X X Y f (al X proofX)) (o X Y Y (al Y proofY) f))
+  al : unitEnc' = z.1
+  p :  P al = z.2
+
+  alStar : unitEnc = al unitEnc proofUnitEnc unitEncStar
   alStarAl: unitEnc' = alStar.1
   alStarP: P alStarAl = alStar.2
-  goal : Path unitEnc (al unitEnc unitEncStar) z
-    = pathSig2 A P alStar z (q,t) where
+  goal : Path unitEnc (al unitEnc proofUnitEnc unitEncStar) z
+    = ? where
+-- pathSig2 A P alStar z (q,t) where
     A : U = unitEnc'
 
     -- proposition 2.4.5
-    qq (X: U) (x: X): Path X (alStarAl X x) (al X x) = funExtInv unitEnc X ff gg pp unitEncStar where
-      f: unitEnc -> X = unitEncRec X x
-      ff : unitEnc -> X = o unitEnc unitEnc X f (al unitEnc)
-      gg : unitEnc -> X = o unitEnc X X (al X) f
-      pInst : U = Path (unitEnc -> X) ff gg where
-        f: unitEnc -> X = unitEncRec X x
-      pp : pInst = p unitEnc X (unitEncRec X x)
+    qq (X: U) (proofX: isSet X) (x: X): Path X (alStarAl X proofX x) (al X proofX x)
+      = funExtInv unitEnc X ff gg pp unitEncStar where
 
+      f: unitEnc -> X = unitEncRec X proofX x
+      ff : unitEnc -> X = o unitEnc unitEnc X f (al unitEnc proofUnitEnc)
+      gg : unitEnc -> X = o unitEnc X X (al X proofX) f
+      pInst : U = Path (unitEnc -> X) ff gg where
+        f: unitEnc -> X = unitEncRec X proofX x
+      pp : pInst = p unitEnc X proofUnitEnc proofX (unitEncRec X proofX x)
+{-
     qqEta (X: U): Path (X -> X) (alStarAl X) (al X) = funExtNonDep X X (alStarAl X) (al X) (qq X)
 
     q: Path unitEnc' alStar.1 al = funExt U (\(X: U) -> X -> X) alStarAl al qqEta
