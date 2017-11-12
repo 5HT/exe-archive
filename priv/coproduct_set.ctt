@@ -11,8 +11,7 @@ unitEnc : U
   = (al : unitEnc') * ((X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
     Path (X -> Y) (o X X Y f (al X proofX)) (o X Y Y (al Y proofY) f))
 
-
-unitEncStar : unitEnc = (\(X: U) (proofX: isSet X) -> idfun X, \(X Y: U) (proofX: isSet X) (proofY: isSet Y)-> refl (X -> Y)) 
+unitEncStar : unitEnc = (\(X: U) (proofX: isSet X) -> idfun X, \(X Y: U) (proofX: isSet X) (proofY: isSet Y)-> refl (X -> Y))
 
 unitEncRec (C: U) (proofC: isSet C) (c: C): unitEnc -> C
   = \(z: unitEnc) -> z.1 C proofC c
@@ -32,8 +31,7 @@ unitEncWeakEta (z: unitEnc) (proofUnitEnc: isSet unitEnc): Path unitEnc (z.1 uni
   alStarAl: unitEnc' = alStar.1
   alStarP: P alStarAl = alStar.2
   goal : Path unitEnc (al unitEnc proofUnitEnc unitEncStar) z
-    = ? where
--- pathSig2 A P alStar z (q,t) where
+    = pathSig2 A P alStar z (q,t) where
     A : U = unitEnc'
 
     -- proposition 2.4.5
@@ -46,10 +44,13 @@ unitEncWeakEta (z: unitEnc) (proofUnitEnc: isSet unitEnc): Path unitEnc (z.1 uni
       pInst : U = Path (unitEnc -> X) ff gg where
         f: unitEnc -> X = unitEncRec X proofX x
       pp : pInst = p unitEnc X proofUnitEnc proofX (unitEncRec X proofX x)
-{-
-    qqEta (X: U): Path (X -> X) (alStarAl X) (al X) = funExtNonDep X X (alStarAl X) (al X) (qq X)
 
-    q: Path unitEnc' alStar.1 al = funExt U (\(X: U) -> X -> X) alStarAl al qqEta
+    qqEta (X: U) (proofX: isSet X): Path (X -> X) (alStarAl X proofX) (al X proofX)
+      = funExtNonDep X X (alStarAl X proofX) (al X proofX) (qq X proofX)
+
+    qqEtaEta (X: U): Path (isSet X -> X -> X) (alStarAl X) (al X)
+      = funExtNonDep (isSet X) (X -> X) (alStarAl X) (al X) (qqEta X)
+
+    q: Path unitEnc' alStarAl al = funExt U (\(X: U) -> isSet X -> X -> X) alStarAl al qqEtaEta
     t : PathP (<i> P (q @ i)) alStarP p = undefined
-  P (X: U): U = isSet X -> X -> X
--}
+-- P (X: U): U = isSet X -> X -> X
