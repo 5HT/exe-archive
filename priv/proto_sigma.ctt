@@ -1,38 +1,35 @@
 module proto_sigma where
 
-import proto
-import path
+-- import proto
+-- import path
 import propset
 import iso
 
 sigInd (A: U) (B: A -> U) (C: Sigma A B -> U) (g: (a: A) (b: B a) -> C (a, b)) (p: Sigma A B): C p
   = g p.1 p.2
 
+pathSig3 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * Path (P u.1) (transport (<i>P (p @ i)) t.2) u.2): Path (Sigma A P) t u
+  = pathSig2 A P t u (pp.1, transport foo pp.2) where
+  p: Path A t.1 u.1 = pp.1
+  P' : Path U (P t.1) (P u.1) = <i>P (p@i)
+  T0 : U = PathP P' t.2 u.2
+  T1 : U = Path (P u.1) (transport P' t.2) u.2
+  funDepTr (A:U) (P:A->U) (a0 a1 :A) (p:Path A a0 a1) (u0:P a0) (u1:P a1)
+    : Path U (PathP (<i> P (p@i)) u0 u1) (Path (P a1) (transport (<i> P (p@i)) u0) u1)
+    = <j>PathP (<i>P (p@j\/i)) (comp (<i>P (p@j/\i)) u0 [(j=0)-><_>u0]) u1
+  lem2 (A:U) (B:A-> U) (t u : Sigma A B) (p:Path A t.1 u.1)
+    : Path U (PathP (<i>B (p@i)) t.2 u.2) (Path (B u.1) (transport (<i>B (p@i)) t.2) u.2)
+    = funDepTr A B t.1 u.1 p  t.2 u.2
+  foo : Path U T1 T0 = sym U T0 T1 (lem2 A P t u p)
+
+sigSecondPath (A: U) (P: A -> U) (t u: Sigma A P) (p: Path A t.1 u.1): U
+  = Path (P u.1) (transport p' t.2) u.2 where
+  p' : Path U (P t.1) (P u.1) = mapOnPath A U P t.1 u.1 p
+
 -- there are 2 sigmas of the same type. Their first components are equal and their second components
 -- are props. Prove that the sigmas are equal
 sig2PropEq (A: U) (P: A -> U) (proofP: (a: A) -> isProp (P a)) (a b: Sigma A P) (p: Path A a.1 b.1) : Path (Sigma A P) a b
-  = goal where
-   a2b2typePath : Path U (P a.1) (P b.1) = mapOnPath A U P a.1 b.1 p
+ = pathSig3 A P a b (p, bbb) where
+ p' : Path U (P a.1) (P b.1) = mapOnPath A U P a.1 b.1 p
+ bbb: Path (P b.1) (transport p' a.2) b.2 = proofP b.1 (transport p' a.2) b.2
 
-   qq : (aa:Path U (P a.1) (P b.1)) * (PathP aa a.2 b.2) = compositeP A B C a_ b_ c pab pbc p q where
-
-     A: U = P a.1
-     B: U = P b.1
-     C: U = P b.1
-     a_: A = a.2
-     xx : (p': Path U A B) * (b: B) * PathP p' a_ b
-       = elemPathP A B a2b2typePath a_
-     b_: B = xx.2.1
-     c: C = b.2
-     pab : Path U A B = xx.1
-     pbc : Path U B C = <_> P b.1
-     p : PathP pab a_ b_ =  xx.2.2
-     q: PathP pbc b_ c = proofP b.1 b_ b.2
-
-   -- we can't substitute bbb for aaa even though a2b2typePath and qq.1 have
-   -- the same type of Path U (P a.1) (P a.2)
-   goal : Path (Sigma A P) a b = pathSig2 A P a b (p, aaa) where
-     -- we need
-     aaa:  PathP a2b2typePath a.2 b.2 = undefined
-     -- but we have
-     bbb: PathP qq.1 a.2 b.2 = qq.2
