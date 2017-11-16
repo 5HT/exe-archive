@@ -6,10 +6,13 @@ singl (A : U) (a : A) : U = (x : A) * Path A a x
 
 trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
 
-symm (A B: U) (p: Path U A B): Path U B A = <i> p @ -i
+sym (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
 
 mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
     = <i> f (p @ i)
+
+substP (A B: U) (P : (X: U) -> X -> U) (PP: Path U A B) (a: A) (b : B) (p : PathP PP a b) (e : P A a) : P B b
+    = comp (<i> P (PP @ i) (p @ i)) e []
 
 subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
     = comp (<i> P (p @ i)) e []
@@ -21,6 +24,15 @@ substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
 composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
     = comp (<i> Path A a (q @ i)) p []
 --  = subst A (Path A a) b c q p
+
+compositeP (A B C: U) (a: A) (b: B) (c: C) (pab: Path U A B) (pbc: Path U B C) (p: PathP pab a b) (q: PathP pbc b c): (pac: Path U A C) * PathP pac a c
+  = substP B C P pbc b c q (pab, p) where
+  P (X: U) (x: X): U = (pax: Path U A X) * PathP pax a x
+
+-- if there's a path from a type then there is a path from every element
+elemPathP (A B: U) (p: Path U A B) (a: A): (p': Path U A B) * (b: B) * PathP p' a b
+  = comp (<i> P (p @ i)) (refl U A, a, refl A a) [] where
+  P (X: U): U = (p: Path U A X) * (x: X) * PathP p a x
 
 funExt (A : U) (B : A -> U) (f g : (x : A) -> B x)
        (p : (x : A) -> Path (B x) (f x) (g x)) :
@@ -42,6 +54,13 @@ isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
 contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
     = <i> (p @ i,<j> p @ i/\j)
 
-J (A: U) (a b: A) (P: singl A a -> U) (u: P (a,refl A a)) (p: Path A a b): P (b,p)
+-- incorrect
+oldJ (A: U) (a b: A) (P: singl A a -> U) (u: P (a,refl A a)) (p: Path A a b): P (b,p)
     = subst (singl A a) T (a,refl A a) (b,p) (contrSingl A a b p) u
     where T (z : singl A a) : U = P z
+
+-- based path induction from HoTT book
+J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
+  (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p =
+    subst (singl A a) T (a, refl A a) (x, p) (contrSingl A a x p) d
+      where T (z : singl A a) : U = C (z.1) (z.2)
