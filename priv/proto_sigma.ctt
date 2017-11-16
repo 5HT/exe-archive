@@ -1,0 +1,38 @@
+module proto_sigma where
+
+import proto
+import path
+import propset
+import iso
+
+sigInd (A: U) (B: A -> U) (C: Sigma A B -> U) (g: (a: A) (b: B a) -> C (a, b)) (p: Sigma A B): C p
+  = g p.1 p.2
+
+-- there are 2 sigmas of the same type. Their first components are equal and their second components
+-- are props. Prove that the sigmas are equal
+sig2PropEq (A: U) (P: A -> U) (proofP: (a: A) -> isProp (P a)) (a b: Sigma A P) (p: Path A a.1 b.1) : Path (Sigma A P) a b
+  = goal where
+   a2b2typePath : Path U (P a.1) (P b.1) = mapOnPath A U P a.1 b.1 p
+
+   qq : (aa:Path U (P a.1) (P b.1)) * (PathP aa a.2 b.2) = compositeP A B C a_ b_ c pab pbc p q where
+
+     A: U = P a.1
+     B: U = P b.1
+     C: U = P b.1
+     a_: A = a.2
+     xx : (p': Path U A B) * (b: B) * PathP p' a_ b
+       = elemPathP A B a2b2typePath a_
+     b_: B = xx.2.1
+     c: C = b.2
+     pab : Path U A B = xx.1
+     pbc : Path U B C = <_> P b.1
+     p : PathP pab a_ b_ =  xx.2.2
+     q: PathP pbc b_ c = proofP b.1 b_ b.2
+
+   -- we can't substitute bbb for aaa even though a2b2typePath and qq.1 have
+   -- the same type of Path U (P a.1) (P a.2)
+   goal : Path (Sigma A P) a b = pathSig2 A P a b (p, aaa) where
+     -- we need
+     aaa:  PathP a2b2typePath a.2 b.2 = undefined
+     -- but we have
+     bbb: PathP qq.1 a.2 b.2 = qq.2
