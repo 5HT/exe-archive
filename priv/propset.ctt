@@ -43,3 +43,7 @@ homSet (A B: Set): U = obSet A -> obSet B
 
 
 foo : homSet unitSet unitSet = idfun Unit
+
+propPi (A : U) (B : A -> U) (h : (x : A) -> isProp (B x))
+       (f0 f1 : (x : A) -> B x) : Path ((x : A) -> B x) f0 f1
+  = <i> \ (x:A) -> (h x (f0 x) (f1 x)) @ i

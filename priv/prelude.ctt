@@ -1,8 +1,6 @@
 module prelude where
 
-import path
-
-data Unit = tt
+import iso
 
 pure (A: U) (F: U -> U): U = (return: A -> F A) * Unit
 
@@ -10,21 +8,11 @@ data tuple (A B: U) = pair (a: A) (b: B)
 fst (A B: U): tuple A B -> A = split pair a b -> a
 snd (A B: U): tuple A B -> B = split pair a b -> b
 
-o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
-
-data N = Z | S (n: N)
-
 --prop     (A : U) : U = (a b : A) -> Path A a b
 --set      (A : U) : U = (a b : A) -> prop     (Path A a b)
 --groupoid (A : U) : U = (a b : A) -> set      (Path A a b)
 --gr_2     (A : U) : U = (a b : A) -> groupoid (Path A a b)
 --gr_3     (A : U) : U = (a b : A) -> gr_2     (Path A a b)
-
-mutual
-  rec (A: U) (a b: A): (k: N) -> U = split
-    Z -> Path A a b
-    S n -> n_grpd (Path A a b) n
-  n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n)
 
 prop      (A: U): U = n_grpd A Z
 set       (A: U): U = n_grpd A (S Z)
@@ -82,11 +70,6 @@ substEq (A : U) (P : A -> U) (a : A) (e : P a)
   : Path (P a) e (subst A P a a (refl A a) e) =
   fill (<i> P a) e []
 
--- different from path.J!
-J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
-  (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p =
-    subst (singl A a) T (a, refl A a) (x, p) (contrSingl A a x p) d
-      where T (z : singl A a) : U = C (z.1) (z.2)
 
 JEq (A : U) (a : A) (C : (x : A) -> Path A a x -> U) (d : C a (refl A a))
   : Path (C a (refl A a)) d (J A a C d a (refl A a)) =
@@ -156,23 +139,6 @@ PathPathTest1 (A : U) (a b : A) (p : Path A a b) :
   Path (Path A a b) p (<i> comp (<j> A) (p @ i) [(i=0) -> <j> a,(i=1) -> <j> b]) =
   <j i> fill (<k> A) (p @ i) [(i=0) -> <k> a,(i=1) -> <k> b] @ j
 
-idfun (A : U) (a : A) : A = a
-
-constfun (A B: U) (a: A) (b: B): A = a
-
---         u
---    a0 -----> a1
---    |         |
--- r0 |         | r1
---    |         |
---    V         V
---    b0 -----> b1
---         v
-Square (A : U) (a0 a1 b0 b1 : A)
-               (u : Path A a0 a1) (v : Path A b0 b1)
-               (r0 : Path A a0 b0) (r1 : Path A a1 b1) : U
-  = PathP (<i> (PathP (<j> A) (u @ i) (v @ i))) r0 r1
-
 --sq (A B:U) (a:A) (b:B) : U = PathP (<i> a @ b) a b
 
 --constSquare (A : U) (a : A) (p : Path A a a) : Square A a a a a p p p p = PathP (<i> (PathP (<j> A) a a) a a
@@ -190,13 +156,6 @@ constSquare (A : U) (a : A) (p : Path A a a) : Square A a a a a p p p p =
 -- the collection of all sets
 SET : U = (X:U) * set X
 
-propSet (A : U) (h : prop A) : set A =
- \(a b : A) (p q : Path A a b) ->
-   <j i> comp (<k>A) a [ (i=0) -> h a a
-                       , (i=1) -> h a b
-                       , (j=0) -> h a (p @ i)
-                       , (j=1) -> h a (q @ i)]
-
 propIsProp (A : U) : prop (prop A) =
   \(f g : prop A) -> <i> \(a b : A) ->
     propSet A f a b (f a b) (g a b) @ i
@@ -208,48 +167,6 @@ setIsProp (A : U) : prop (set A) =
 PathS (A : U) (P : A -> U) (a0 a1 : A)
   (p : Path A a0 a1) (u0 : P a0) (u1 : P a1) : U =
     PathP (<i> P (p @ i)) u0 u1
-
-lemProp (A : U) (h : A -> prop A) : prop A =
-  \(a : A) -> h a a
-
-propPi (A : U) (B : A -> U) (h : (x : A) -> prop (B x))
-       (f0 f1 : (x : A) -> B x) : Path ((x : A) -> B x) f0 f1
-  = <i> \ (x:A) -> (h x (f0 x) (f1 x)) @ i
-
-lemPropF (A : U) (P : A -> U) (pP : (x : A) -> prop (P x)) (a0 a1 :A)
-         (p : Path A a0 a1) (b0 : P a0) (b1 : P a1) : PathP (<i>P (p@i)) b0 b1 =
- <i>pP (p@i) (comp (<j>P (p@i/\j)) b0 [(i=0) -> <_>b0]) (comp (<j>P (p@i\/-j)) b1 [(i=1) -> <_>b1])@i
-
--- other proof
--- lemPropF (A : U) (P : A -> U) (pP : (x : A) -> prop (P x)) (a :A) :
---          (a1 : A) (p : Path A a a1) (b0 : P a) (b1 : P a1) -> PathP (<i>P (p@i)) b0 b1 =
--- J A a (\ (a1 : A) (p : Path A a a1) ->
---          (b0 : P a) (b1 : P a1) -> PathP (<i>P (p@i)) b0 b1)
---   rem
--- where rem : (b0 b1:P a) -> Path (P a) b0 b1 = pP a
-
-Sigma (A : U) (B : A -> U) : U = (x : A) * B x
-
-lemSig (A : U) (B : A -> U) (pB : (x : A) -> prop (B x))
-       (u v : (x:A) * B x) (p : Path A u.1 v.1) :
-       Path ((x:A) * B x) u v =
-  <i> (p@i,(lemPropF A B pB u.1 v.1 p u.2 v.2)@i)
-
-propSig (A : U) (B : A -> U) (pA : prop A)
-        (pB : (x : A) -> prop (B x)) (t u : (x:A) * B x) :
-        Path ((x:A) * B x) t u =
-  lemSig A B pB t u (pA t.1 u.1)
-
-isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
-
-propIsContr (A : U) : prop (isContr A) = lemProp (isContr A) rem
-  where
-    rem (t : isContr A) : prop (isContr A) = propSig A T pA pB
-      where
-        T (x : A) : U = (y : A) -> Path A x y
-        pA (x y : A) : Path A x y = compPath A x t.1 y (<i> t.2 x @ -i) (t.2 y)
-        pB (x : A) : prop (T x) =
-          propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
 
 isContrProp (A : U) (h : isContr A) : prop A =
   \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
@@ -277,9 +194,6 @@ efq (A : U) : N0 -> A = split {}
 neg (A : U) : U = A -> N0
 
 
-propUnit : prop Unit = split
- tt -> split@((x:Unit) -> Path Unit tt x) with
-  tt -> <i> tt
 
 setUnit : set Unit = propSet Unit propUnit
 
@@ -330,8 +244,6 @@ discrete (A : U) : U = (a b : A) -> dec (Path A a b)
 
 injective (A B : U) (f : A -> B) : U =
   (a0 a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1
-
-and (A B : U) : U = (_ : A) * B
 
 propAnd (A B : U) (pA : prop A) (pB : prop B) : prop (and A B) =
   propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)

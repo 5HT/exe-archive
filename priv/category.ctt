@@ -43,9 +43,6 @@ opaque substPathP
 transRefl (A : U) (a : A) : Path A (transport (<_> A) a) a = <i> comp (<_> A) a [(i=1) -> <_>a]
 opaque transRefl
 
-isContrProp (A : U) (p : isContr A) (x y : A) : Path A x y = compPath A x p.1 y (<i> p.2 x @ -i) (p.2 y)
-opaque isContrProp
-
 equivProp (A B : U) (AProp : prop A) (BProp : prop B) (F : A -> B) (G : B -> A) : equiv A B =
   (F, isoToEquiv A B F G (\(y : B) -> BProp (F (G y)) y) (\(x : A) -> AProp (G (F x)) x))
 opaque equivProp
@@ -302,7 +299,6 @@ sipPrecategory (C : precategory) (S : structure C) : precategory = ((ob, hom), (
                         (<i>sH C S x.1 w.1 x.2 w.2 (cPathC C x.1y.1 z.1 w.1 f.1 g.1 h.1 @ i))
                         (cmp x z w (cmp x y z f g) h).2 (cmp x y w f (cmp y z w g h)).2 @ i)
 
-isContrProp (A : U) (p : isContr A) (x y : A) : Path A x y = compPath A x p.1 y (<i> p.2 x @ -i) (p.2 y)
 isContrSig (A:U) (B:A-> U) (cA:isContr A) (cB : (x:A) -> isContr (B x)) : isContr (Sigma A B)
   = ((cA.1, (cB cA.1).1), \(x:Sigma A B) -> propSig A B (isContrProp A cA) (\(x:A)->isContrProp (B x) (cB x)) (cA.1, (cB cA.1).1) x)
 
@@ -962,7 +958,7 @@ catEquivIsIso (A B : precategory) (isCA : isCategory A) (isCB : isCategory B) (F
       in transport (<i>isContr ((a:cA A)*invEquiv (cA B) (F.1 a) b @ i))
         (transport (<i> isContr ((a:cA A)*lemIsCategory3 B isCB (F.1 a) b@-i)) p))
 
-equivProp (A B : U) (AProp : prop A) (BProp : prop B) (F : A -> B) (G : B -> A) : equiv A B =
+equivProp' (A B : U) (AProp : prop A) (BProp : prop B) (F : A -> B) (G : B -> A) : equiv A B =
   (F, isoToEquiv A B F G (\(y : B) -> BProp (F (G y)) y) (\(x : A) -> AProp (G (F x)) x))
 
 catIsEquivEqIso (A B : precategory) (isCA : isCategory A) (isCB : isCategory B) (F : functor A B)

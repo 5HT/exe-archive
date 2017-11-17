@@ -136,4 +136,4 @@ equalNat : nat -> nat -> bool = split
       suc n -> equalNat m n
 
 nat_instance : eq = (nat, equalNat)
-nat_instance : eq_ nat = equalNat
+nat_instance_ : eq_ nat = equalNat

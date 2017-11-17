@@ -24,6 +24,9 @@ substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
 composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
     = comp (<i> Path A a (q @ i)) p []
 --  = subst A (Path A a) b c q p
+-- eta-reduce the type
+-- J A a ( \ (b : A) (p : Path A a b) -> (c : A) -> (q : Path A b c) -> Path A a c) rem b p
+--    where rem (c : A) (p : Path A a c) : Path A a c = p
 
 compositeP (A B C: U) (a: A) (b: B) (c: C) (pab: Path U A B) (pbc: Path U B C) (p: PathP pab a b) (q: PathP pbc b c): (pac: Path U A C) * PathP pac a c
   = substP B C P pbc b c q (pab, p) where
@@ -48,8 +51,6 @@ funExtNonDep
 funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g x)
   = mapOnPath (A -> B) B ff f g p where
   ff (f: A -> B): B = f x
-
-isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
 
 contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
     = <i> (p @ i,<j> p @ i/\j)
