@@ -1,4 +1,4 @@
-module lambek where
+module lam where
 import prelude
 import list
 import nat
