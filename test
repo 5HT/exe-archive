@@ -1,12 +1,18 @@
 # Script for checking that all files compile
 
-files="algstruct functor list prelude bool girard maybe puresigma
-       category grothendieck maybenat retract circle hedberg monad setquot
-       control int nat sigma discor iso om stream
-       either lam paradox test eq lambek path univalence
-       equiv lambek.hs pi"
+files="function
+       iso_example refinement_example sigma_example
+       coproduct_noset
+       girard puresigma maybenat
+       circle om stream paradox test lambek
+       category grothendieck"
+skip="lam coproduct coproduct_set foo"
 
+rm parsed.txt
 for file in $files
 do
- cubical -b priv/$file.ctt
+ grep "^import $file$" priv/*.ctt
+ cubical -b priv/$file.ctt | tee >(grep Parsed >>parsed.txt) | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
 done
+
+echo Compiled $(sort -u parsed.txt | wc -l) files of $(ls -1 priv/*.ctt | wc -l) in priv/
