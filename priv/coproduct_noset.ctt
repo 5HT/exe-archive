@@ -67,6 +67,20 @@ sigPath1 (A: U) (P: A -> U) (a b: Sigma A P) (p: Path (Sigma A P) a b): Path A a
 
 -- funExt2 (A B C: U) (f g: A -> B -> C) (p: (a: A) (b: B) -> Path (f a b) (g a b)): Path (A -> B -> C) f g = undefined
 
+setFun (X Y: U) (proofX : isSet X) (proofY: isSet Y)
+  : isSet (X -> Y)
+  = undefined
+
+propPathFun (X Y: U) (proofX: isSet X) (proofY: isSet Y) (f g: X -> Y)
+  : isProp (Path (X -> Y) f g)
+  = setFun X Y proofX proofY f g
+
+propFoo (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al: unitEnc'): Unit = tt where
+  aaa (f: X -> Y): isProp (Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
+    = propPathFun X Y proofX proofY (o X X Y f (al X)) (o X Y Y (al Y) f)
+  bbb: isProp ((f: X -> Y) -> Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
+    = undefined
+
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal where
   P (al: (X : U) -> X -> X): U = ((X Y: U) -> (f: X -> Y) ->
     Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
