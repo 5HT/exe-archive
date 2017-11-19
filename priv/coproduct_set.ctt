@@ -29,9 +29,6 @@ unitEncRec (C: U) (proofC: isSet C) (c: C): unitEnc -> C
 unitEncBeta (C: U) (proofC: isSet C) (c: C): Path C (unitEncRec C proofC c unitEncStar) c = refl C c
 
 -- lemma 2.4.4 preliminaries (implicit in the paper)
-
-proofUnitEnc: isSet unitEnc = undefined
-
 propUnitEncCondition (al: unitEnc')
   : isProp ((X: U) (Y: U) (proofX: isSet X) (proofY: isSet Y) (f: X -> Y) -> naturality X Y (al X proofX) (al Y proofY) f)
   = lem6 where
@@ -55,6 +52,12 @@ propUnitEncCondition (al: unitEnc')
   lem6
     : isProp    ((X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f)
     = propPi U (\(X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f) lem5
+
+proofUnitEnc: isSet unitEnc = setSig unitEnc' P sA sB where
+  P (al: unitEnc'): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
+    naturality X Y (al X proofX) (al Y proofY) f
+  sA : isSet unitEnc' = undefined
+  sB (al: unitEnc'): isSet (P al) = propSet (P al) (propUnitEncCondition al)
 
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z

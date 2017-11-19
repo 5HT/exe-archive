@@ -33,3 +33,4 @@ sig2PropEq (A: U) (P: A -> U) (proofP: (a: A) -> isProp (P a)) (a b: Sigma A P) 
  p' : Path U (P a.1) (P b.1) = mapOnPath A U P a.1 b.1 p
  bbb: Path (P b.1) (transport p' a.2) b.2 = proofP b.1 (transport p' a.2) b.2
 
+setSig (A:U) (B: A-> U) (sA: isSet A) (sB : (x:A) -> isSet (B x)) (t u : Sigma A B) : isProp (Path (Sigma A B) t u) = undefined
