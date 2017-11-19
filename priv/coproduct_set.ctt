@@ -32,16 +32,19 @@ unitEncBeta (C: U) (proofC: isSet C) (c: C): Path C (unitEncRec C proofC c unitE
 
 proofUnitEnc: isSet unitEnc = undefined
 
-propUnitEncCondition (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al' : (A: U) (proofA: isSet A) -> A -> A)
-  : isProp ((f: X -> Y) -> naturality X Y (al' X proofX) (al' Y proofY) f)
-  = lem2 where
-  PP (f: X -> Y): U = naturality X Y (al' X proofX) (al' Y proofY) f
+propUnitEncCondition (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al : unitEnc')
+  : isProp ((f: X -> Y) -> naturality X Y (al X proofX) (al Y proofY) f)
+  = lem2 al where
+  PP (al : unitEnc') (f: X -> Y): U = naturality X Y (al X proofX) (al Y proofY) f
 
-  lem1 (f: X -> Y): isProp (PP f)
-    = setFun X Y proofY (upPath X Y f (al' X proofX)) (downPath X Y f (al' Y proofY))
-  lem2
-    : isProp           ((f: X -> Y) -> PP f)
-    = propPi (X -> Y) (\(f: X -> Y) -> PP f) lem1
+  lem1 (al: unitEnc') (f: X -> Y): isProp (PP al f)
+    = setFun X Y proofY (upPath X Y f (al X proofX)) (downPath X Y f (al Y proofY))
+  lem2 (al : unitEnc')
+    : isProp           ((f: X -> Y) -> PP al f)
+    = propPi (X -> Y) (\(f: X -> Y) -> PP al f) (lem1 al)
+  lem3
+    : isProp           ((al : unitEnc') -> (f: X -> Y) -> PP al f)
+    = propPi unitEnc' (\(al : unitEnc') -> (f: X -> Y) -> PP al f) lem2
 
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
