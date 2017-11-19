@@ -4,6 +4,7 @@ import proto
 import path
 import iso
 import propset
+import proto_sigma
 
 unitEnc' : U = (X: U) -> isSet X -> X -> X
 
@@ -31,8 +32,7 @@ unitEncWeakEta (z: unitEnc) (proofUnitEnc: isSet unitEnc): Path unitEnc (z.1 uni
   alStarAl: unitEnc' = alStar.1
   alStarP: P alStarAl = alStar.2
   goal : Path unitEnc (al unitEnc proofUnitEnc unitEncStar) z
-    = pathSig2 A P alStar z (q,t) where
-    A : U = unitEnc'
+    = pathSig3 unitEnc' P alStar z (q,t) where
 
     -- proposition 2.4.5
     qq (X: U) (proofX: isSet X) (x: X): Path X (alStarAl X proofX x) (al X proofX x)
@@ -52,5 +52,5 @@ unitEncWeakEta (z: unitEnc) (proofUnitEnc: isSet unitEnc): Path unitEnc (z.1 uni
       = funExtNonDep (isSet X) (X -> X) (alStarAl X) (al X) (qqEta X)
 
     q: Path unitEnc' alStarAl al = funExt U (\(X: U) -> isSet X -> X -> X) alStarAl al qqEtaEta
-    t : PathP (<i> P (q @ i)) alStarP p = undefined
--- P (X: U): U = isSet X -> X -> X
+    p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
+    t: Path (P z.1) (transport p' alStar.2) z.2 = undefined --  proofP z.1 (transport p' alStar.2) z.2
