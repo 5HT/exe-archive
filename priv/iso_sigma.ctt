@@ -3,6 +3,7 @@ module iso_sigma where
 import proto_sigma
 import iso
 
+-- used in grothedieck.ctt and below
 pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
  Path U (Path (Sigma A B) t u) ((p : Path A t.1 u.1) * PathP (<i> B (p @ i)) t.2 u.2) =
   isoPath T0 T1 f g s t where
@@ -13,12 +14,7 @@ pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
    s (z:T1) : Path T1 (f (g z)) z = refl T1 z
    t (q:T0) : Path T0 (g (f q)) q = refl T0 q
 
-pathSig2 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * PathP (<i> P (p @ i)) t.2 u.2): Path (Sigma A P) t u
-  = comp (<i> pathSig A P t u @ -i) pp []
-
-pathAnd (A B : U) (t u : and A B) :
-  Path U (Path (and A B) t u) (and (Path A t.1 u.1) (Path B t.2 u.2)) = pathSig A (\(_ : A) -> B) t u
-
+-- used in coproduct* and below
 pathSig3 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * Path (P u.1) (transport (<i>P (p @ i)) t.2) u.2): Path (Sigma A P) t u
   = pathSig2 A P t u (pp.1, transport foo pp.2) where
   p: Path A t.1 u.1 = pp.1
@@ -26,13 +22,8 @@ pathSig3 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * Path (
   T0 : U = PathP P' t.2 u.2
   T1 : U = Path (P u.1) (transport P' t.2) u.2
   foo : Path U T1 T0 = sym U T0 T1 (pathSig0 A P t u p)
-
--- there are 2 sigmas of the same type. Their first components are equal and their second components
--- are isProps. Prove that the sigmas are equal
-sig2PropEq (A: U) (P: A -> U) (proofP: (a: A) -> isProp (P a)) (a b: Sigma A P) (p: Path A a.1 b.1) : Path (Sigma A P) a b
- = pathSig3 A P a b (p, bbb) where
- p' : Path U (P a.1) (P b.1) = mapOnPath A U P a.1 b.1 p
- bbb: Path (P b.1) (transport p' a.2) b.2 = proofP b.1 (transport p' a.2) b.2
+  pathSig2 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * PathP (<i> P (p @ i)) t.2 u.2): Path (Sigma A P) t u
+    = comp (<i> pathSig A P t u @ -i) pp []
 
 -- used in algstruct
 setSig (A:U) (B: A-> U) (sA: isSet A) (sB : (x:A) -> isSet (B x)): isSet (Sigma A B) = goal where
