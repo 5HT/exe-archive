@@ -1,9 +1,6 @@
 module coproduct_noset where
 
-import proto
-import path
-import iso
-import proto_sigma
+import iso_sigma
 
 -- an endofunctor
 T (f: U -> U): U = (a b: U) -> (a -> b) -> (f a -> f b)

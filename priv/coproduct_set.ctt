@@ -1,11 +1,7 @@
 module coproduct_set where
 
-import proto
-import path
-import iso
-import propset
 import proto_pi
-import proto_sigma
+import iso_sigma
 
 -- shortcuts
 upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
