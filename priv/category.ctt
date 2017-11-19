@@ -1,7 +1,7 @@
 -- Categories with structure identity principle
 module category where
 
-import sigma
+import proto_sigma
 import univalence
 
 lemReflComp (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (compPath A a a b (<_> a) p) p =
