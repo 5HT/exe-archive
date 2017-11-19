@@ -8,7 +8,5 @@ constfun (A B: U) (a: A) (b: B): A = a
 
 o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
 
-Sigma (A : U) (B : A -> U) : U = (x : A) * B x
-
 and (A B: U): U = (_:A) * B
 

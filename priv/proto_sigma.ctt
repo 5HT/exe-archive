@@ -1,9 +1,15 @@
 module proto_sigma where
 
--- import proto
--- import path
 import propset
 import iso
+
+Sigma (A : U) (B : A -> U) : U = (x : A) * B x
+
+make (A : U) (B: A -> U) (a : A) (b: B a): Sigma A B = (a,b)
+
+pr1 (A: U) (B: A -> U) (x: Sigma A B): A = x.1
+
+pr2 (A: U) (B: A -> U) (x: Sigma A B): B (pr1 A B x) = x.2
 
 sigInd (A: U) (B: A -> U) (C: Sigma A B -> U) (g: (a: A) (b: B a) -> C (a, b)) (p: Sigma A B): C p
   = g p.1 p.2
