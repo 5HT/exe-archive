@@ -6,11 +6,19 @@ import iso
 import propset
 import proto_sigma
 
+-- shortcuts
+upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
+downPath (X Y: U) (f: X -> Y) (be: Y -> Y): X -> Y = o X Y Y be f
+
+naturality (X Y: U) (al: X -> X) (be: Y -> Y) (f: X -> Y): U
+  = Path (X -> Y) (upPath X Y f al) (downPath X Y f be)
+
 unitEnc' : U = (X: U) -> isSet X -> X -> X
 
+-- encodings of Unit, tt and the recursor/non-dependent eliminator/catamorphism respectively
 unitEnc : U
-  = (al : unitEnc') * ((X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
-    Path (X -> Y) (o X X Y f (al X proofX)) (o X Y Y (al Y proofY) f))
+  = (al : unitEnc') * (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
+    naturality X Y (al X proofX) (al Y proofY) f
 
 unitEncStar : unitEnc = (\(X: U) (proofX: isSet X) -> idfun X, \(X Y: U) (proofX: isSet X) (proofY: isSet Y)-> refl (X -> Y))
 
@@ -21,15 +29,13 @@ unitEncRec (C: U) (proofC: isSet C) (c: C): unitEnc -> C
 unitEncBeta (C: U) (proofC: isSet C) (c: C): Path C (unitEncRec C proofC c unitEncStar) c = refl C c
 
 -- lemma 2.4.4 preliminaries (implicit in the paper)
+
 proofUnitEnc: isSet unitEnc = undefined
 
-upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
-downPath (X Y: U) (f: X -> Y) (be: Y -> Y): X -> Y = o X Y Y be f
-
 propUnitEncCondition (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al' : (A: U) (proofA: isSet A) -> A -> A)
-  : isProp ((f: X -> Y) -> Path (X -> Y) (upPath X Y f (al' X proofX)) (downPath X Y f (al' Y proofY)))
-   = lem2 where
-  PP (f: X -> Y): U = Path (X -> Y) (upPath X Y f (al' X proofX)) (downPath X Y f (al' Y proofY))
+  : isProp ((f: X -> Y) -> naturality X Y (al' X proofX) (al' Y proofY) f)
+  = lem2 where
+  PP (f: X -> Y): U = naturality X Y (al' X proofX) (al' Y proofY) f
 
   lem1 (f: X -> Y): isProp (PP f)
     = setFun X Y proofY (upPath X Y f (al' X proofX)) (downPath X Y f (al' Y proofY))
@@ -41,7 +47,7 @@ propUnitEncCondition (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al' : (A: U) 
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
   = pathSig3 unitEnc' P alStar z (q,t) where
   P (al: (X : U) (proofX: isSet X) -> X -> X): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
-    Path (X -> Y) (upPath X Y f (al X proofX)) (downPath X Y f (al Y proofY))
+    naturality X Y (al X proofX) (al Y proofY) f
   al : unitEnc' = z.1
   p :  P al = z.2
 
@@ -57,8 +63,7 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
       f  : unitEnc -> X = unitEncRec X proofX x
       ff : unitEnc -> X =   upPath unitEnc X f (al unitEnc proofUnitEnc)
       gg : unitEnc -> X = downPath unitEnc X f (al X proofX)
-      pInst : U = Path (unitEnc -> X) ff gg
-      pp : pInst = p unitEnc X proofUnitEnc proofX (unitEncRec X proofX x)
+      pp : Path (unitEnc -> X) ff gg = p unitEnc X proofUnitEnc proofX (unitEncRec X proofX x)
 
     qqEta (X: U) (proofX: isSet X): Path (X -> X) (alStarAl X proofX) (al X proofX)
       = funExtNonDep X X (alStarAl X proofX) (al X proofX) (qq X proofX)
