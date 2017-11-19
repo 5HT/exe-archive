@@ -4,7 +4,7 @@ files="function
        iso_example refinement_example sigma_example
        coproduct_noset coproduct_set
        girard puresigma maybenat
-       circle om stream paradox test lambek
+       quotient om stream paradox test lambek
        category grothendieck"
 skip="lam coproduct foo"
 
@@ -12,7 +12,7 @@ rm parsed.txt
 for file in $files
 do
  grep "^import $file$" priv/*.ctt
- cubical -b priv/$file.ctt | tee >(grep Parsed >>parsed.txt) | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
+ cubical -b priv/$file.ctt | tee >(grep Parsed | sed 's|Parsed "priv/||;s|" successfully!||' >>parsed.txt) | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
 done
 
 echo Compiled $(sort -u parsed.txt | wc -l) files of $(ls -1 priv/*.ctt | wc -l) in priv/
