@@ -32,32 +32,29 @@ unitEncBeta (C: U) (proofC: isSet C) (c: C): Path C (unitEncRec C proofC c unitE
 
 proofUnitEnc: isSet unitEnc = undefined
 
-propUnitEncCondition 
-  : isProp    ((X: U) (Y: U) (proofX: isSet X) (proofY: isSet Y) (al: unitEnc') (f: X -> Y) -> naturality X Y (al X proofX) (al Y proofY) f)
-  = lem7 where
+propUnitEncCondition (al: unitEnc')
+  : isProp ((X: U) (Y: U) (proofX: isSet X) (proofY: isSet Y) (f: X -> Y) -> naturality X Y (al X proofX) (al Y proofY) f)
+  = lem6 where
 
-  PP (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al : unitEnc') (f: X -> Y): U = naturality X Y (al X proofX) (al Y proofY) f
+  PP (X Y: U) (proofX: isSet X) (proofY: isSet Y) (f: X -> Y): U = naturality X Y (al X proofX) (al Y proofY) f
 
-  lem1 (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al: unitEnc') (f: X -> Y): isProp (PP X Y proofX proofY al f)
+  lem1 (X Y: U) (proofX: isSet X) (proofY: isSet Y) (f: X -> Y): isProp (PP X Y proofX proofY f)
     = setFun X Y proofY (upPath X Y f (al X proofX)) (downPath X Y f (al Y proofY))
-  lem2 (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al : unitEnc')
-    : isProp                                                                              ((f: X -> Y) -> PP X Y proofX proofY al f)
-    = propPi (X -> Y)                                                                    (\(f: X -> Y) -> PP X Y proofX proofY al f) (lem1 X Y proofX proofY al)
-  lem3 (X Y: U) (proofX: isSet X) (proofY: isSet Y)
-    : isProp                                                            ((al: unitEnc') -> (f: X -> Y) -> PP X Y proofX proofY al f)
-    = propPi unitEnc'                                                  (\(al: unitEnc') -> (f: X -> Y) -> PP X Y proofX proofY al f) (lem2 X Y proofX proofY)
-  lem4 (X Y: U) (proofX: isSet X)
-    : isProp                                          ((proofY: isSet Y) -> (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f)
-    = propPi                               (isSet Y) (\(proofY: isSet Y) -> (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f) (lem3 X Y proofX)
-  lem5 (X Y: U)
-    : isProp                        ((proofX: isSet X) -> (proofY: isSet Y) (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f)
-    = propPi             (isSet X) (\(proofX: isSet X) -> (proofY: isSet Y) (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f) (lem4 X Y)
-  lem6 (X: U)
-    : isProp              ((Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f)
-    = propPi U           (\(Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f) (lem5 X)
-  lem7
-    : isProp    ((X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f)
-    = propPi U (\(X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (al: unitEnc') (f: X -> Y) -> PP X Y proofX proofY al f) lem6
+  lem2 (X Y: U) (proofX: isSet X) (proofY: isSet Y)
+    : isProp                                                               ((f: X -> Y) -> PP X Y proofX proofY f)
+    = propPi (X -> Y)                                                     (\(f: X -> Y) -> PP X Y proofX proofY f) (lem1 X Y proofX proofY)
+  lem3 (X Y: U) (proofX: isSet X)
+    : isProp                                          ((proofY: isSet Y) -> (f: X -> Y) -> PP X Y proofX proofY f)
+    = propPi                               (isSet Y) (\(proofY: isSet Y) -> (f: X -> Y) -> PP X Y proofX proofY f) (lem2 X Y proofX)
+  lem4 (X Y: U)
+    : isProp                        ((proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f)
+    = propPi             (isSet X) (\(proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f) (lem3 X Y)
+  lem5 (X: U)
+    : isProp              ((Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f)
+    = propPi U           (\(Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f) (lem4 X)
+  lem6
+    : isProp    ((X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f)
+    = propPi U (\(X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f) lem5
 
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
@@ -89,4 +86,4 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
 
   p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
   t: Path (P z.1) (transport p' alStar.2) p = proofP (transport p' alStarP) p where
-    proofP : isProp (P al) = undefined
+    proofP : isProp (P al) = propUnitEncCondition al
