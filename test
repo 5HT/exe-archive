@@ -5,7 +5,7 @@ files="function
        coproduct coproduct_noset coproduct_set
        girard puresigma maybenat
        quotient om stream paradox test lambek
-       category grothendieck"
+       univalence category grothendieck"
 skip="lam"
 
 rm parsed.txt

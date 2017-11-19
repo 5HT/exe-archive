@@ -1,7 +1,7 @@
 module bool where
 
 import hedberg
-import univalence
+import proto_univ
 
 data bool = false | true
 
