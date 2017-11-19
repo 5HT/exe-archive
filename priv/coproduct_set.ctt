@@ -20,7 +20,7 @@ unitEnc : U
   = (al : unitEnc') * (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
     naturality X Y (al X proofX) (al Y proofY) f
 
-unitEncStar : unitEnc = (\(X: U) (proofX: isSet X) -> idfun X, \(X Y: U) (proofX: isSet X) (proofY: isSet Y)-> refl (X -> Y))
+unitEncStar : unitEnc = (\(X: U) (_: isSet X) -> idfun X, \(X Y: U) (_: isSet X) (_: isSet Y)-> refl (X -> Y))
 
 unitEncRec (C: U) (proofC: isSet C) (c: C): unitEnc -> C
   = \(z: unitEnc) -> z.1 C proofC c
