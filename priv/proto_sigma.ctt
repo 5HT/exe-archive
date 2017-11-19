@@ -3,8 +3,6 @@ module proto_sigma where
 import propset
 import iso
 
-Sigma (A : U) (B : A -> U) : U = (x : A) * B x
-
 make (A : U) (B: A -> U) (a : A) (b: B a): Sigma A B = (a,b)
 
 pr1 (A: U) (B: A -> U) (x: Sigma A B): A = x.1
@@ -20,25 +18,6 @@ pathSig0 (A:U) (B:A-> U) (t u : Sigma A B) (p:Path A t.1 u.1)
   funDepTr (A:U) (P:A->U) (a0 a1 :A) (p:Path A a0 a1) (u0:P a0) (u1:P a1)
     : Path U (PathP (<i> P (p@i)) u0 u1) (Path (P a1) (transport (<i> P (p@i)) u0) u1)
     = <j>PathP (<i>P (p@j\/i)) (comp (<i>P (p@j/\i)) u0 [(j=0)-><_>u0]) u1
-
-pathSig3 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * Path (P u.1) (transport (<i>P (p @ i)) t.2) u.2): Path (Sigma A P) t u
-  = pathSig2 A P t u (pp.1, transport foo pp.2) where
-  p: Path A t.1 u.1 = pp.1
-  P' : Path U (P t.1) (P u.1) = <i>P (p@i)
-  T0 : U = PathP P' t.2 u.2
-  T1 : U = Path (P u.1) (transport P' t.2) u.2
-  foo : Path U T1 T0 = sym U T0 T1 (pathSig0 A P t u p)
-
-sigSecondPath (A: U) (P: A -> U) (t u: Sigma A P) (p: Path A t.1 u.1): U
-  = Path (P u.1) (transport p' t.2) u.2 where
-  p' : Path U (P t.1) (P u.1) = mapOnPath A U P t.1 u.1 p
-
--- there are 2 sigmas of the same type. Their first components are equal and their second components
--- are isProps. Prove that the sigmas are equal
-sig2PropEq (A: U) (P: A -> U) (proofP: (a: A) -> isProp (P a)) (a b: Sigma A P) (p: Path A a.1 b.1) : Path (Sigma A P) a b
- = pathSig3 A P a b (p, bbb) where
- p' : Path U (P a.1) (P b.1) = mapOnPath A U P a.1 b.1 p
- bbb: Path (P b.1) (transport p' a.2) b.2 = proofP b.1 (transport p' a.2) b.2
 
 corSigProp (A:U) (B:A-> U) (pB : (x:A) -> isProp (B x)) (t u : Sigma A B) (p:Path A t.1 u.1) :
   isProp (PathP (<i>B (p@i)) t.2 u.2) = substInv U isProp T0 T1 rem rem1
@@ -57,6 +36,43 @@ corSigSet (A:U) (B:A-> U) (sB : (x:A) -> isSet (B x)) (t u : Sigma A B) (p:Path 
        rem : Path U T0 T1 = pathSig0 A B t u p -- funDepTr (B t.1) (B u.1) P t.2 u.2
        v2 : B u.1 = transport P t.2
        rem1 : isProp T1 = sB u.1 v2 u.2
+
+sigSecondPath (A: U) (P: A -> U) (t u: Sigma A P) (p: Path A t.1 u.1): U
+  = Path (P u.1) (transport p' t.2) u.2 where
+  p' : Path U (P t.1) (P u.1) = mapOnPath A U P t.1 u.1 p
+
+-- only the declarations below depend on iso.ctt
+
+pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
+ Path U (Path (Sigma A B) t u) ((p : Path A t.1 u.1) * PathP (<i> B (p @ i)) t.2 u.2) =
+  isoPath T0 T1 f g s t where
+   T0 : U = Path (Sigma A B) t u
+   T1 : U = (p:Path A t.1 u.1) * PathP (<i> B (p@i)) t.2 u.2
+   f (q:T0) : T1 = (<i> (q@i).1,<i> (q@i).2)
+   g (z:T1) : T0 = <i>(z.1 @i,z.2 @i)
+   s (z:T1) : Path T1 (f (g z)) z = refl T1 z
+   t (q:T0) : Path T0 (g (f q)) q = refl T0 q
+
+pathSig2 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * PathP (<i> P (p @ i)) t.2 u.2): Path (Sigma A P) t u
+  = comp (<i> pathSig A P t u @ -i) pp []
+
+pathAnd (A B : U) (t u : and A B) :
+  Path U (Path (and A B) t u) (and (Path A t.1 u.1) (Path B t.2 u.2)) = pathSig A (\(_ : A) -> B) t u
+
+pathSig3 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * Path (P u.1) (transport (<i>P (p @ i)) t.2) u.2): Path (Sigma A P) t u
+  = pathSig2 A P t u (pp.1, transport foo pp.2) where
+  p: Path A t.1 u.1 = pp.1
+  P' : Path U (P t.1) (P u.1) = <i>P (p@i)
+  T0 : U = PathP P' t.2 u.2
+  T1 : U = Path (P u.1) (transport P' t.2) u.2
+  foo : Path U T1 T0 = sym U T0 T1 (pathSig0 A P t u p)
+
+-- there are 2 sigmas of the same type. Their first components are equal and their second components
+-- are isProps. Prove that the sigmas are equal
+sig2PropEq (A: U) (P: A -> U) (proofP: (a: A) -> isProp (P a)) (a b: Sigma A P) (p: Path A a.1 b.1) : Path (Sigma A P) a b
+ = pathSig3 A P a b (p, bbb) where
+ p' : Path U (P a.1) (P b.1) = mapOnPath A U P a.1 b.1 p
+ bbb: Path (P b.1) (transport p' a.2) b.2 = proofP b.1 (transport p' a.2) b.2
 
 -- used in algstruct
 setSig (A:U) (B: A-> U) (sA: isSet A) (sB : (x:A) -> isSet (B x)): isSet (Sigma A B) = goal where
