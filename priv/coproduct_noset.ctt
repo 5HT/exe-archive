@@ -3,6 +3,7 @@ module coproduct_noset where
 import proto
 import path
 import iso
+import proto_sigma
 
 -- an endofunctor
 T (f: U -> U): U = (a b: U) -> (a -> b) -> (f a -> f b)
@@ -60,12 +61,6 @@ unitEncRec (C: U) (c: C): unitEnc -> C
 unitEncBeta (C: U) (c: C): Path C (unitEncRec C c unitEncStar) c = refl C c
 
 -- lemma 2.4.4
-
-sigPath1 (A: U) (P: A -> U) (a b: Sigma A P) (p: Path (Sigma A P) a b): Path A a.1 b.1
- = undefined
-
--- funExt2 (A B C: U) (f g: A -> B -> C) (p: (a: A) (b: B) -> Path (f a b) (g a b)): Path (A -> B -> C) f g = undefined
-
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal where
   P (al: (X : U) -> X -> X): U = ((X Y: U) -> (f: X -> Y) ->
     Path (X -> Y) (o X X Y f (al X)) (o X Y Y (al Y) f))
@@ -76,7 +71,7 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal whe
   alStarAl: unitEnc' = alStar.1
   alStarP: P alStarAl = alStar.2
   goal : Path unitEnc (al unitEnc unitEncStar) z
-    = pathSig2 A P alStar z (q,t) where
+    = pathSig3 A P alStar z (q,t) where
     A : U = unitEnc'
 
     -- proposition 2.4.5
@@ -91,4 +86,6 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal whe
     qqEta (X: U): Path (X -> X) (alStarAl X) (al X) = funExtNonDep X X (alStarAl X) (al X) (qq X)
 
     q: Path unitEnc' alStar.1 al = funExt U (\(X: U) -> X -> X) alStarAl al qqEta
-    t : PathP (<i> P (q @ i)) alStarP p = undefined
+
+    p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
+    t: Path (P z.1) (transport p' alStar.2) z.2 = undefined --  proofP z.1 (transport p' alStar.2) z.2
