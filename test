@@ -1,10 +1,11 @@
 # Script for checking that all files compile
 
 files="binnat function
-       iso_example refinement_example sigma_example
+       iso_example refinement_example
        coproduct coproduct_noset coproduct_set
        girard puresigma maybenat
        quotient om stream paradox test lambek
+       collection brunerie
        univalence category grothendieck"
 skip="lam"
 
