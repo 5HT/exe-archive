@@ -4,6 +4,7 @@ import proto
 import path
 import iso
 import propset
+import proto_pi
 import proto_sigma
 
 -- shortcuts
