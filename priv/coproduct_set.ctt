@@ -23,6 +23,20 @@ unitEncBeta (C: U) (proofC: isSet C) (c: C): Path C (unitEncRec C proofC c unitE
 -- lemma 2.4.4 preliminaries (implicit in the paper)
 proofUnitEnc: isSet unitEnc = undefined
 
+upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
+downPath (X Y: U) (f: X -> Y) (be: Y -> Y): X -> Y = o X Y Y be f
+
+propUnitEncCondition (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al' : (A: U) (proofA: isSet A) -> A -> A)
+  : isProp ((f: X -> Y) -> Path (X -> Y) (upPath X Y f (al' X proofX)) (downPath X Y f (al' Y proofY)))
+   = lem2 where
+  PP (f: X -> Y): U = Path (X -> Y) (upPath X Y f (al' X proofX)) (downPath X Y f (al' Y proofY))
+
+  lem1 (f: X -> Y): isProp (PP f)
+    = setFun X Y proofY (upPath X Y f (al' X proofX)) (downPath X Y f (al' Y proofY))
+  lem2
+    : isProp           ((f: X -> Y) -> PP f)
+    = propPi (X -> Y) (\(f: X -> Y) -> PP f) lem1
+
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z = goal where
   P (al: (X : U) (proofX: isSet X) ->  X -> X): U = ((X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
