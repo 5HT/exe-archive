@@ -38,9 +38,10 @@ propUnitEncCondition (X Y: U) (proofX: isSet X) (proofY: isSet Y) (al' : (A: U) 
     = propPi (X -> Y) (\(f: X -> Y) -> PP f) lem1
 
 -- lemma 2.4.4
-unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z = goal where
-  P (al: (X : U) (proofX: isSet X) ->  X -> X): U = ((X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
-    Path (X -> Y) (o X X Y f (al X proofX)) (o X Y Y (al Y proofY) f))
+unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
+  = pathSig3 unitEnc' P alStar z (q,t) where
+  P (al: (X : U) (proofX: isSet X) -> X -> X): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
+    Path (X -> Y) (upPath X Y f (al X proofX)) (downPath X Y f (al Y proofY))
   al : unitEnc' = z.1
   p :  P al = z.2
 
@@ -53,11 +54,10 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
     qq (X: U) (proofX: isSet X) (x: X): Path X (alStarAl X proofX x) (al X proofX x)
       = funExtInv unitEnc X ff gg pp unitEncStar where
 
-      f: unitEnc -> X = unitEncRec X proofX x
-      ff : unitEnc -> X = o unitEnc unitEnc X f (al unitEnc proofUnitEnc)
-      gg : unitEnc -> X = o unitEnc X X (al X proofX) f
-      pInst : U = Path (unitEnc -> X) ff gg where
-        f: unitEnc -> X = unitEncRec X proofX x
+      f  : unitEnc -> X = unitEncRec X proofX x
+      ff : unitEnc -> X =   upPath unitEnc X f (al unitEnc proofUnitEnc)
+      gg : unitEnc -> X = downPath unitEnc X f (al X proofX)
+      pInst : U = Path (unitEnc -> X) ff gg
       pp : pInst = p unitEnc X proofUnitEnc proofX (unitEncRec X proofX x)
 
     qqEta (X: U) (proofX: isSet X): Path (X -> X) (alStarAl X proofX) (al X proofX)
@@ -69,5 +69,3 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
   p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
   t: Path (P z.1) (transport p' alStar.2) p = proofP (transport p' alStarP) p where
     proofP : isProp (P al) = undefined
-  goal : Path unitEnc (al unitEnc proofUnitEnc unitEncStar) z
-    = pathSig3 unitEnc' P alStar z (q,t) where
