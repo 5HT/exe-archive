@@ -1,6 +1,6 @@
 # Script for checking that all files compile
 
-files="function
+files="binnat function
        iso_example refinement_example sigma_example
        coproduct coproduct_noset coproduct_set
        girard puresigma maybenat

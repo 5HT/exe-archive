@@ -1,6 +1,5 @@
 module nat where
 
-import prelude
 import bool
 import eq
 
