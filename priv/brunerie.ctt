@@ -1,4 +1,5 @@
 module brunerie where
+-- https://arxiv.org/pdf/1606.05916.pdf
 
 data bool = false | true
 data nat = zero | suc (n : nat)
