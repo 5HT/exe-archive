@@ -55,8 +55,9 @@ funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g
 contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
     = <i> (p @ i,<j> p @ i/\j)
 
--- incorrect
-oldJ (A: U) (a b: A) (P: singl A a -> U) (u: P (a,refl A a)) (p: Path A a b): P (b,p)
+-- J is formulated in a form of Paulin-Mohring and implemented
+-- using two facts that singleton are contractible and dependent function transport.
+JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (a,refl A a)) (p: Path A a b): P (b,p)
     = subst (singl A a) T (a,refl A a) (b,p) (contrSingl A a b p) u
     where T (z : singl A a) : U = P z
 
