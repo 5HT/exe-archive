@@ -97,7 +97,7 @@ idnat : nat -> nat = split
   zero -> zero
   suc n -> suc (idnat n)
 
-test : Path (nat -> nat) idnat (idfun nat) = funExt nat (\(_ : nat) -> nat) idnat (idfun nat) rem
+test : Path (nat -> nat) idnat (idfun nat) = piExt nat (\(_ : nat) -> nat) idnat (idfun nat) rem
   where
   rem : (n : nat) -> Path nat (idnat n) n = split
     zero -> refl nat zero

@@ -36,7 +36,7 @@ functorMaybeId (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
 
 -- maybeMap id == id
 functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
-  = funExtNonDep (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
+  = funExt (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
 
 -- dependent eliminator, or induction principle
 maybeDElim (A: U) (P : maybe A -> U) (n: P nothing) (j: (a: A) -> P (just a)): (a: maybe A) -> P a = split

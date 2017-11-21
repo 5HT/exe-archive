@@ -69,7 +69,7 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
   alStarP: P alStarAl = alStar.2
 
   -- proposition 2.4.5
-  q: Path unitEnc' alStarAl al = funExt U (\(X: U) -> isSet X -> X -> X) alStarAl al qqEtaEta where
+  q: Path unitEnc' alStarAl al = piExt U (\(X: U) -> isSet X -> X -> X) alStarAl al qqEtaEta where
     qq (X: U) (proofX: isSet X) (x: X): Path X (alStarAl X proofX x) (al X proofX x)
       = funExtInv unitEnc X ff gg pp unitEncStar where
 
@@ -79,10 +79,10 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
       pp : Path (unitEnc -> X) ff gg = p unitEnc X proofUnitEnc proofX (unitEncRec X proofX x)
 
     qqEta (X: U) (proofX: isSet X): Path (X -> X) (alStarAl X proofX) (al X proofX)
-      = funExtNonDep X X (alStarAl X proofX) (al X proofX) (qq X proofX)
+      = funExt X X (alStarAl X proofX) (al X proofX) (qq X proofX)
 
     qqEtaEta (X: U): Path (isSet X -> X -> X) (alStarAl X) (al X)
-      = funExtNonDep (isSet X) (X -> X) (alStarAl X) (al X) (qqEta X)
+      = funExt (isSet X) (X -> X) (alStarAl X) (al X) (qqEta X)
 
   p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
   t: Path (P z.1) (transport p' alStar.2) p = proofP (transport p' alStarP) p where

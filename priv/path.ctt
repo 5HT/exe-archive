@@ -37,11 +37,11 @@ elemPathP (A B: U) (p: Path U A B) (a: A): (p': Path U A B) * (b: B) * PathP p' 
   = comp (<i> P (p @ i)) (refl U A, a, refl A a) [] where
   P (X: U): U = (p: Path U A X) * (x: X) * PathP p a x
 
-funExt (A : U) (B : A -> U) (f g : (x : A) -> B x)
+piExt (A : U) (B : A -> U) (f g : (x : A) -> B x)
        (p : (x : A) -> Path (B x) (f x) (g x)) :
        Path ((y : A) -> B y) f g = <i> \(a : A) -> (p a) @ i
 
-funExtNonDep
+funExt
   (A B: U)
   (f g : A -> B)
   (p : (x : A) -> Path B (f x) (g x))

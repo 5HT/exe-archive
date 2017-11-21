@@ -22,7 +22,7 @@ churchPairIso (A B: U): Path U (churchPairT A B) (churchPairT B A)
   bar (X: U): U = A -> B -> X
   baz (X: U): U = B -> A -> X
   p (x: U): Path U (bar x) (baz x) = flipfunIso A B x
-  quux : Path (U -> U) bar baz = funExtNonDep U U bar baz (flipfunIso A B)
+  quux : Path (U -> U) bar baz = funExt U U bar baz (flipfunIso A B)
   goal : Path U (foo bar) (foo baz) = mapOnPath (U -> U) U foo bar baz quux
 
 churchPair (A B: U) (a: A) (b: B) (R: U) (c: A -> B -> R): R = c a b

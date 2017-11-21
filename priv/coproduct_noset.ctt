@@ -80,9 +80,9 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal whe
         f: unitEnc -> X = unitEncRec X x
       pp : pInst = p unitEnc X (unitEncRec X x)
 
-    qqEta (X: U): Path (X -> X) (alStarAl X) (al X) = funExtNonDep X X (alStarAl X) (al X) (qq X)
+    qqEta (X: U): Path (X -> X) (alStarAl X) (al X) = funExt X X (alStarAl X) (al X) (qq X)
 
-    q: Path unitEnc' alStar.1 al = funExt U (\(X: U) -> X -> X) alStarAl al qqEta
+    q: Path unitEnc' alStar.1 al = piExt U (\(X: U) -> X -> X) alStarAl al qqEta
 
     p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
     t: Path (P z.1) (transport p' alStar.2) z.2 = undefined --  proofP z.1 (transport p' alStar.2) z.2

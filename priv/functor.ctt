@@ -58,13 +58,13 @@ lemma1
   = substInv A (\(X: A) -> Path B (g X) z) x y pxy pgyz
 
 functorIdFunExt (F: U -> U) (f: functor F) (A: U) : Path (F A -> F A) (f.1 A A (idfun A)) (idfun (F A))
-  = funExtNonDep (F A) (F A) (f.1 A A (idfun A)) (idfun (F A)) (f.2.1 A)
+  = funExt (F A) (F A) (f.1 A A (idfun A)) (idfun (F A)) (f.2.1 A)
 
 functorComposeFunExt (F: U -> U) (ff: functor F) (A B C: U) (f: B -> C) (g: A -> B):
   Path (F A -> F C)
     (ff.1 A C (o A B C f g))
     (o (F A) (F B) (F C) (ff.1 B C f) (ff.1 A B g))
-  = funExtNonDep (F A) (F C) (ff.1 A C (o A B C f g)) ((o (F A) (F B) (F C) (ff.1 B C f) (ff.1 A B g))) (ff.2.2.1 A B C f g)
+  = funExt (F A) (F C) (ff.1 A C (o A B C f g)) ((o (F A) (F B) (F C) (ff.1 B C f) (ff.1 A B g))) (ff.2.2.1 A B C f g)
 
 -- Functor F, Functor G => Functor (comptype F G)
 functor_comptype (F G: U -> U) (f: functor F) (g: functor G) : functor (comptype F G) = (fmap, id, compose, tt) where
