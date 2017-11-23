@@ -3,8 +3,6 @@ module iso where
 import propset
 import path
 
-isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
-
 lemPropF (A : U) (P : A -> U) (pP : (x : A) -> isProp (P x)) (a0 a1 :A)
          (p : Path A a0 a1) (b0 : P a0) (b1 : P a1) : PathP (<i>P (p@i)) b0 b1 =
  <i>pP (p@i) (comp (<j>P (p@i/\j)) b0 [(i=0) -> <_>b0]) (comp (<j>P (p@i\/-j)) b1 [(i=1) -> <_>b1])@i
@@ -13,9 +11,8 @@ lemPropF (A : U) (P : A -> U) (pP : (x : A) -> isProp (P x)) (a0 a1 :A)
 -- lemPropF (A : U) (P : A -> U) (pP : (x : A) -> prop (P x)) (a :A) :
 --          (a1 : A) (p : Path A a a1) (b0 : P a) (b1 : P a1) -> PathP (<i>P (p@i)) b0 b1 =
 -- J A a (\ (a1 : A) (p : Path A a a1) ->
---          (b0 : P a) (b1 : P a1) -> PathP (<i>P (p@i)) b0 b1)
---   rem
--- where rem : (b0 b1:P a) -> Path (P a) b0 b1 = pP a
+--          (b0 : P a) (b1 : P a1) -> PathP (<i>P (p@i)) b0 b1) rem where
+-- rem : (b0 b1:P a) -> Path (P a) b0 b1 = pP a
 
 lemSig (A : U) (B : A -> U) (pB : (x : A) -> isProp (B x))
        (u v : (x:A) * B x) (p : Path A u.1 v.1) :

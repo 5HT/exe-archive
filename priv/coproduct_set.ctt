@@ -53,7 +53,8 @@ propUnitEncCondition (al: unitEnc')
 proofUnitEnc: isSet unitEnc = setSig unitEnc' P sA sB where
   P (al: unitEnc'): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
     naturality X Y (al X proofX) (al Y proofY) f
-  sA : isSet unitEnc' = undefined
+--  sA : isSet unitEnc' = undefined
+  sA : isSet ((X: U) -> isSet X -> X -> X) = undefined
   sB (al: unitEnc'): isSet (P al) = propSet (P al) (propUnitEncCondition al)
 
 -- lemma 2.4.4

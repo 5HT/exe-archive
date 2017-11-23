@@ -53,10 +53,18 @@ compInvPath (A : U) (a b : A) (p : Path A a b) :
 --------------------------------------------------------------------------------
 -- B.3 Suspension and spheres
 
--- The circle
 data S1 = base
         | loop <i> [ (i=0) -> base
                    , (i=1) -> base]
+
+data susp (A : U) = north
+                  | south
+                  | merid (a : A) <i> [ (i=0) -> north
+                                      , (i=1) -> south ]
+
+S2 : U = susp S1
+S3 : U = susp S2
+S4 : U = susp S3
 
 loopS1 : U = Path S1 base base
 loopP : loopS1 = <i> loop{S1} @ i
@@ -79,19 +87,12 @@ loopIt : Z -> loopS1 = split
  pos n -> itLoop n
  neg n -> itLoopNeg n
 
--- Suspension
-data susp (A : U) = north
-                  | south
-                  | merid (a : A) <i> [ (i=0) -> north
-                                      , (i=1) -> south ]
 
 meridP (A : U) (a : A) : Path (susp A) north south =
   <i> merid{susp A} a @ i
 
 
 -- The 2 and 3 spheres. Maybe define directly instead?
-S2 : U = susp S1
-S3 : U = susp S2
 
 
 --------------------------------------------------------------------------------

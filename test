@@ -4,7 +4,7 @@ files="binnat function
        iso_example refinement_example
        coproduct coproduct_noset coproduct_set
        girard puresigma maybenat
-       quotient om stream paradox test lambek
+       quotient om stream paradox lambek
        collection brunerie
        univalence category grothendieck"
 skip="lam"
