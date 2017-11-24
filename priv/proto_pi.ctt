@@ -27,6 +27,7 @@ setPi (A:U) (B:A -> U) (h:(x:A) -> isSet (B x)) (f g: Pi A B)
 -- Then we apply `propPi` to `h` to prove `isProp a` - an eta-expanded version
 -- of the goal. Then we use pi-extensionality path between a and b to convert
 -- isProp a to isProp b
+{-
 setPi (A : U) (B : A -> U) (h : (x : A) -> isSet (B x)): isSet ((x: A) -> B x)
   = goal h where
   goal (h : (x : A)
@@ -38,7 +39,11 @@ setPi (A : U) (B : A -> U) (h : (x : A) -> isSet (B x)): isSet ((x: A) -> B x)
     p : Path U a b = <i> idPi A B f g @ -i
     e : isProp a = propPi A P (\(x: A) -> h x (f x) (g x)) where
       P (x: A): U = Path (B x) (f x) (g x)
+-}
+setFun' (X Y: U) (proofY: X -> isSet Y)
+  : isSet (X -> Y)
+  = setPi X (\(_: X) -> Y) proofY
 
 setFun (X Y: U) (proofY: isSet Y)
   : isSet (X -> Y)
-  = setPi X (\(_: X) -> Y) (\(_: X) -> proofY)
+  = setFun' X Y (\(_: X) -> proofY)
