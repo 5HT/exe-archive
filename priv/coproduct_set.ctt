@@ -61,7 +61,7 @@ proofUnitEnc: isSet unitEnc = setSig unitEnc' P sA sB where
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
   = pathSig3 unitEnc' P alStar z (q,t) where
-  P (al: (X : U) (proofX: isSet X) -> X -> X): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
+  P (al: unitEnc'): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
     naturality X Y (al X proofX) (al Y proofY) f
   al : unitEnc' = z.1
   p :  P al = z.2
