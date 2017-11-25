@@ -61,7 +61,7 @@ proofUnitEnc: isSet unitEnc = setSig unitEnc' P sA sB where
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
   = pathSig3 unitEnc' P alStar z (q,t) where
-  P (al: (X : U) (proofX: isSet X) -> X -> X): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
+  P (al: unitEnc'): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
     naturality X Y (al X proofX) (al Y proofY) f
   al : unitEnc' = z.1
   p :  P al = z.2
@@ -89,3 +89,15 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
   p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
   t: Path (P z.1) (transport p' alStar.2) p = proofP (transport p' alStarP) p where
     proofP : isProp (P al) = propUnitEncCondition al
+
+unitEncEta (C: U) (proofC : isSet C) (f: unitEnc -> C): Path (unitEnc -> C) (unitEncRec C proofC (f unitEncStar)) f 
+  = goal where
+  fStar: C = f unitEncStar
+  recfStar (z: unitEnc): C = z.1 C proofC fStar
+  goal : Path (unitEnc -> C) recfStar f = undefined
+  goal2 (z: unitEnc): Path C (z.1 C proofC fStar) (f (z.1 unitEnc proofUnitEnc unitEncStar)) = undefined
+
+unitEncOnlyStar (z: unitEnc): Path unitEnc unitEncStar z = undefined
+
+unitEncInd (P : unitEnc -> U) (aa: unitEnc): P unitEncStar -> P aa
+  = subst unitEnc P unitEncStar aa (unitEncOnlyStar aa)
