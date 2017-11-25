@@ -16,9 +16,6 @@ data pts
     | arrow (d c: pts)
     | pi (x: name) (d c: pts)
 
-shift: pts -> name -> nat -> pts = split
-    var x y
-
 data mltt
     = pts
     | sigma (n: name) (a b: mltt)

@@ -3,6 +3,7 @@ module collection where
 
 import proto_univ
 import sigma
+import pi
 
 eqEquivFst (A B : U) : (t u : equiv A B) ->
      Path U (Path (equiv A B) t u) (Path (A -> B) t.1 u.1)
