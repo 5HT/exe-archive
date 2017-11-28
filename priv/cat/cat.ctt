@@ -1,0 +1,42 @@
+module cat where
+
+categoryData : U = (A : U) * (A -> A -> U)
+
+isPrecategory2
+    (C: categoryData)
+    (id: (x : C.1) -> C.2 x x)
+    (c: (x y z : C.1) -> C.2 x y -> C.2 y z -> C.2 x z): U
+  = let A: U = C.1
+        hom: A -> A -> U = C.2
+     in (homSet: (x y: A) -> set (hom x y))
+      * (cPathL: (x y: A) -> (f: hom x y) -> Path (hom x y) (c x x y (id x) f) f)
+      * (cPathR: (x y: A) -> (f: hom x y) -> Path (hom x y) (c x y y f (id y)) f)
+      * ( (x y z w: A) -> (f: hom x y) -> (g: hom y z) -> (h: hom z w) ->
+         Path (hom x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
+
+isPrecategory (C: categoryData): U
+  = let A: U = C.1
+        hom: A -> A -> U = C.2
+     in (id: (x: A) -> hom x x) * (c: (x y z: A) ->
+        hom x y -> hom y z -> hom x z) * isPrecategory2 C id c
+
+precategory : U = (C : categoryData) * isPrecategory C
+
+cA (C: precategory): U = C.1.1
+cH (C: precategory) (a b: cA C): U = C.1.2 a b
+cHSet (C: precategory) (a b: cA C): set (cH C a b) = C.2.2.2.1 a b
+cC (C: precategory) (x y z: cA C) (f: cH C x y) (g: cH C y z): cH C x z = C.2.2.1 x y z f g
+cPath (C: precategory) (x: cA C) : cH C x x = C.2.1 x
+cPathL (C: precategory) (x y: cA C) (f: cH C x y) : Path (cH C x y) (cC C x x y (cPath C x) f) f = C.2.2.2.2.1 x y f
+cPathR (C: precategory) (x y: cA C) (f: cH C x y) : Path (cH C x y) (cC C x y y f (cPath C y)) f = C.2.2.2.2.2.1 x y f
+cPathC (C: precategory) (x y z w: cA C) (f: cH C x y) (g: cH C y z) (h: cH C z w) : Path (cH C x w) (cC C x z w (cC C x y z f g) h) (cC C x y w f (cC C y z w g h)) = C.2.2.2.2.2.2 x y z w f g h
+
+iso (C: precategory) (A B: cA C) : U
+  = (f: cH C A B) * (g: cH C B A)
+  * (_ : Path (cH C A A) (cC C A B A f g) (cPath C A))
+  * (Path (cH C B B) (cC C B A B g f) (cPath C B))
+
+isCategory (C: precategory): U
+  = (A : cA C) -> isContr ((B : cA C) * iso C A B)
+
+category: U = (C: precategory) * isCategory C
