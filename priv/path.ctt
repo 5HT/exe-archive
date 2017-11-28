@@ -22,8 +22,9 @@ substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
     =  subst A P b a (<i> p @ -i)
 
 composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
-    = comp (<i> Path A a (q @ i)) p []
+--  = comp (<i> Path A a (q @ i)) p []
 --  = subst A (Path A a) b c q p
+    = <i> comp (<j>A) (p @ i) [ (i = 1) -> q, (i=0) -> <j> a ]
 -- eta-reduce the type
 -- J A a ( \ (b : A) (p : Path A a b) -> (c : A) -> (q : Path A b c) -> Path A a c) rem b p
 --    where rem (c : A) (p : Path A a c) : Path A a c = p

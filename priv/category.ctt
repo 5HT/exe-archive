@@ -3,14 +3,15 @@ module category where
 
 import iso_sigma
 import proto_univ
+import path
 
-lemReflComp (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (compPath A a a b (<_> a) p) p =
+lemReflComp (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (composition A a a b (<_> a) p) p =
   <j i> comp (<k> A) (p @ i /\ j) [(i=0) -> <_> a, (j=1) -> <_> p @ i, (i=1) -> <k> p @ k \/ j ]
-opaque lemReflComp
+--opaque lemReflComp
 
-lemReflComp' (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (compPath A a b b p (<_> b)) p =
+lemReflComp' (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (composition A a b b p (<_> b)) p =
   <j i> comp (<k> A) (p @ i) [(i=0) -> <_> a, (j=1) -> <_> p @ i, (i=1) -> <_> b ]
-opaque lemReflComp'
+--opaque lemReflComp'
 
 setPi (A : U) (B : A -> U) (h : (x : A) -> set (B x))
        (f0 f1 : (x : A) -> B x)

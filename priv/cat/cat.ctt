@@ -1,5 +1,7 @@
 module cat where
 
+import propset
+
 categoryData : U = (A : U) * (A -> A -> U)
 
 isPrecategory2
@@ -8,7 +10,7 @@ isPrecategory2
     (c: (x y z : C.1) -> C.2 x y -> C.2 y z -> C.2 x z): U
   = let A: U = C.1
         hom: A -> A -> U = C.2
-     in (homSet: (x y: A) -> set (hom x y))
+     in (homSet: (x y: A) -> isSet (hom x y))
       * (cPathL: (x y: A) -> (f: hom x y) -> Path (hom x y) (c x x y (id x) f) f)
       * (cPathR: (x y: A) -> (f: hom x y) -> Path (hom x y) (c x y y f (id y)) f)
       * ( (x y z w: A) -> (f: hom x y) -> (g: hom y z) -> (h: hom z w) ->
