@@ -16,7 +16,7 @@ eqEquivFst (A B : U) : (t u : equiv A B) ->
 --  = substInv U set  (Path (equiv A B) t u) (Path (A -> B) t.1 u.1)
 --             (eqEquivFst A B t u) (groupoidFun A B gB t.1 u.1)
 
-setPath (A B : U) (sB : set B) : set (Path U A B) = 
+setPath (A B : U) (sB : set B) : set (Path U A B) =
  substInv U set (Path U A B) (equiv A B) (corrUniv A B) (rem A B sB)
   where
   rem (A B : U) (sB:set B) (t u:equiv A B) : prop (Path (equiv A B) t u)

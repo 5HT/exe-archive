@@ -1,0 +1,44 @@
+module monoid where
+
+import propset
+import comm
+
+isAssociative (M : U) (op : M -> M -> M) : U
+  = (a b c : M) -> Path M (op a (op b c)) (op (op a b) c)
+
+hasLeftIdentity (M : U) (op : M -> M -> M) (id : M) : U
+  = (x : M) -> Path M (op id x) x
+
+hasRightIdentity (M : U) (op : M -> M -> M) (id : M) : U
+  = (x : M) -> Path M (op x id) x
+
+hasIdentity (M : U) (op : M -> M -> M) (id : M) : U
+  = (_ : hasLeftIdentity M op id)
+  * (hasRightIdentity M op id)
+
+ismonoid (M : Set) : U
+  = (op : M.1 -> M.1 -> M.1)
+  * (_ : isAssociative M.1 op)
+  * (id : M.1)
+  * (hasIdentity M.1 op id)
+
+monoid : U
+  = (X : Set) * ismonoid X
+
+iscmonoid (M : Set) : U
+  = (m : ismonoid M)
+  * (isCommutative M.1 m.1)
+
+-- Monoids
+cmonoid : U = (X : Set) * iscmonoid X
+opMonoid (m : monoid) : m.1.1 -> m.1.1 -> m.1.1 = m.2.1
+isAssocMonoid (m : monoid) : isAssociative m.1.1 (opMonoid m) = m.2.2.1
+idMonoid (m : monoid) : m.1.1 = m.2.2.2.1
+hasIdMonoid (m : monoid) : hasIdentity m.1.1 (opMonoid m) (idMonoid m) = m.2.2.2.2
+
+-- Commutative Monoids
+opCMonoid (m : cmonoid) : m.1.1 -> m.1.1 -> m.1.1 = m.2.1.1
+isAssocCMonoid (m : cmonoid) : isAssociative m.1.1 (opCMonoid m) = m.2.1.2.1
+idCMonoid (m : cmonoid) : m.1.1 = m.2.1.2.2.1
+hasIdCMonoid (m : cmonoid) : hasIdentity m.1.1 (opCMonoid m) (idCMonoid m) = m.2.1.2.2.2
+isCommCMonoid (m : cmonoid) : isCommutative m.1.1 (opCMonoid m) = m.2.2

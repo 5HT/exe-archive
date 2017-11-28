@@ -1,0 +1,49 @@
+module group where
+
+import monoid
+import prop_set
+import comm
+
+hasLeftInverse (G : U) (op : G -> G -> G) (id : G) (inv : G -> G) : U
+  = (x : G) -> Path G (op (inv x) x) id
+
+hasRightInverse (G : U) (op : G -> G -> G) (id : G) (inv : G -> G) : U
+  = (x : G) -> Path G (op x (inv x)) id
+
+-- Has inverse element
+hasInverse (G : U) (op : G -> G -> G) (id : G) (inv : G -> G) : U
+  = (_ : hasLeftInverse G op id inv)
+  * (hasRightInverse G op id inv)
+
+-- Group
+isgroup (G : Set) : U
+  = (m : ismonoid G)
+  * (inv : G.1 -> G.1)
+  * (hasInverse G.1 m.1 m.2.2.1 inv)
+
+group : U
+  = (X : Set) * isgroup X
+
+iscgroup (G : SET) : U
+  = (g : isgroup G)
+  * (isCommutative G.1 g.1.1)
+
+cgroup : U
+  = (X : SET) * iscgroup X
+
+-- Groups
+opGroup (g : group) : g.1.1 -> g.1.1 -> g.1.1  = g.2.1.1
+isAssocGroup (g : group) : isAssociative g.1.1 (opGroup g)  = g.2.1.2.1
+idGroup (g : group) : g.1.1  = g.2.1.2.2.1
+hasIdGroup (g : group) : hasIdentity g.1.1 (opGroup g) (idGroup g)  = g.2.1.2.2.2
+invGroup (g : group) : g.1.1 -> g.1.1  = g.2.2.1
+hasInvGroup (g : group) : hasInverse g.1.1 (opGroup g) (idGroup g) (invGroup g)  = g.2.2.2
+
+-- Commutative groups
+opCGroup (g : cgroup) : g.1.1 -> g.1.1 -> g.1.1  = g.2.1.1.1
+isAssocCGroup (g : cgroup) : isAssociative g.1.1 (opCGroup g)  = g.2.1.1.2.1
+idCGroup (g : cgroup) : g.1.1  = g.2.1.1.2.2.1
+hasIdCGroup (g : cgroup) : hasIdentity g.1.1 (opCGroup g) (idCGroup g)  = g.2.1.1.2.2.2
+isCommCGroup (g : cgroup) : isCommutative g.1.1 (opCGroup g)  = g.2.2
+invCGroup (g : cgroup) : g.1.1 -> g.1.1  = g.2.1.2.1
+hasInvCGroup (g : cgroup) : hasInverse g.1.1 (opCGroup g) (idCGroup g) (invCGroup g) = g.2.1.2.2

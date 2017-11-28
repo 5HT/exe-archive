@@ -1,0 +1,22 @@
+module ring where
+
+import propset
+import group
+
+isLeftDistributive (R : U) (add : R -> R -> R) (mul : R -> R -> R) : U
+  = (a b c : R) -> Path R (mul a (add b c)) (add (mul a b) (mul a c))
+
+isRightDistributive (R : U) (add : R -> R -> R) (mul : R -> R -> R) : U
+  = (a b c : R) -> Path R (mul (add b c) a) (add (mul b a) (mul c a))
+
+isDistributive (R : U) (add : R -> R -> R) (mul : R -> R -> R) : U
+  = (_ : isLeftDistributive R add mul)
+  * (isRightDistributive R add mul)
+
+isring (R : Set) : U
+  = (mul : ismonoid R)
+  * (add : iscgroup R)
+  * (isDistributive R.1 add.1.1.1 mul.1)
+
+ring : U
+  = (X : Set) * isring X

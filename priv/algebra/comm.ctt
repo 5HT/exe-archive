@@ -1,0 +1,4 @@
+module comm where
+
+isCommutative (M : U) (op : M -> M -> M) : U
+  = (x y : M) -> Path M (op x y) (op y x)
