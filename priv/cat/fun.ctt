@@ -7,7 +7,8 @@ functor (A B : precategory) : U
   = (Fob : cA A -> cA B)
   * (Fmor : (x y : cA A) -> cH A x y -> cH B (Fob x) (Fob y))
   * (Fid : (x : cA A) -> Path (cH B (Fob x) (Fob x)) (Fmor x x (cPath A x)) (cPath B (Fob x)))
-  * ((x y z : cA A) -> (f : cH A x y) -> (g : cH A y z) -> Path (cH B (Fob x) (Fob z)) (Fmor x z (cC A x y z f g)) (cC B (Fob x) (Fob y) (Fob z) (Fmor x y f) (Fmor y z g)))
+  * ((x y z : cA A) -> (f : cH A x y) -> (g : cH A y z) -> 
+     Path (cH B (Fob x) (Fob z)) (Fmor x z (cC A x y z f g)) (cC B (Fob x) (Fob y) (Fob z) (Fmor x y f) (Fmor y z g)))
 
 idFunctor (A : precategory) : functor A A
   = (\(x : cA A) -> x
@@ -28,7 +29,9 @@ compFunctor (A B C : precategory) (F : functor A B) (G : functor B C) : functor 
         composition (cH C (G.1 (F.1 x)) (G.1 (F.1 z)))
                (G.2.1 (F.1 x) (F.1 z) (F.2.1 x z (cC A x y z f g)))
                (G.2.1 (F.1 x) (F.1 z) (cC B (F.1 x) (F.1 y) (F.1 z) (F.2.1 x y f) (F.2.1 y z g)))
-               (cC C (G.1 (F.1 x)) (G.1 (F.1 y)) (G.1 (F.1 z)) (G.2.1 (F.1 x) (F.1 y) (F.2.1 x y f)) (G.2.1 (F.1 y) (F.1 z) (F.2.1 y z g)))
+               (cC C (G.1 (F.1 x)) (G.1 (F.1 y)) (G.1 (F.1 z))
+                     (G.2.1 (F.1 x) (F.1 y) (F.2.1 x y f)) 
+                     (G.2.1 (F.1 y) (F.1 z) (F.2.1 y z g)))
                (<i> G.2.1 (F.1 x) (F.1 z) (F.2.2.2 x y z f g @ i))
                (G.2.2.2 (F.1 x) (F.1 y) (F.1 z) (F.2.1 x y f) (F.2.1 y z g))
     )
