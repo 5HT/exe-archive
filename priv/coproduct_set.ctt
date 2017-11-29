@@ -3,31 +3,24 @@ module coproduct_set where
 import proto_pi
 import iso_sigma
 
--- shortcuts
 upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
 downPath (X Y: U) (f: X -> Y) (be: Y -> Y): X -> Y = o X Y Y be f
-
 naturality (X Y: U) (al: X -> X) (be: Y -> Y) (f: X -> Y): U
   = Path (X -> Y) (upPath X Y f al) (downPath X Y f be)
 
 unitEnc' : U = (X: U) -> isSet X -> X -> X
-
--- encodings of Unit, tt and the recursor/non-dependent eliminator/catamorphism respectively
-unitEnc : U
-  = (al : unitEnc') * (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
+isUnitEnc (al: unitEnc'): U
+  = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
     naturality X Y (al X proofX) (al Y proofY) f
 
-unitEncStar : unitEnc = (\(X: U) (_: isSet X) -> idfun X, \(X Y: U) (_: isSet X) (_: isSet Y)-> refl (X -> Y))
-
-unitEncRec (C: U) (proofC: isSet C) (c: C): unitEnc -> C
-  = \(z: unitEnc) -> z.1 C proofC c
-
--- lemma 2.4.3
+unitEnc : U = (al : unitEnc') * isUnitEnc al
+unitEncStar: unitEnc = (\(X: U) (_: isSet X) -> idfun X, \(X Y: U) (_: isSet X) (_: isSet Y)-> refl (X -> Y))
+unitEncRec (C: U) (proofC: isSet C) (c: C): unitEnc -> C = \(z: unitEnc) -> z.1 C proofC c
 unitEncBeta (C: U) (proofC: isSet C) (c: C): Path C (unitEncRec C proofC c unitEncStar) c = refl C c
 
 -- lemma 2.4.4 preliminaries (implicit in the paper)
 propUnitEncCondition (al: unitEnc')
-  : isProp ((X: U) (Y: U) (proofX: isSet X) (proofY: isSet Y) (f: X -> Y) -> naturality X Y (al X proofX) (al Y proofY) f)
+  : isProp (isUnitEnc al)
   = lem6 where
 
   PP (X Y: U) (proofX: isSet X) (proofY: isSet Y) (f: X -> Y): U = naturality X Y (al X proofX) (al Y proofY) f
@@ -47,28 +40,24 @@ propUnitEncCondition (al: unitEnc')
     : isProp              ((Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f)
     = propPi U           (\(Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f) (lem4 X)
   lem6
-    : isProp    ((X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f)
+    : isProp (isUnitEnc al)
     = propPi U (\(X: U) -> (Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) (f: X -> Y) -> PP X Y proofX proofY f) lem5
 
-proofUnitEnc: isSet unitEnc = setSig unitEnc' P sA sB where
-  P (al: unitEnc'): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
-    naturality X Y (al X proofX) (al Y proofY) f
+proofUnitEnc: isSet unitEnc = setSig unitEnc' isUnitEnc sA sB where
   sA : isSet unitEnc' = setPi U P goal where
     P (X: U): U = isSet X -> X -> X
     goal (X: U): isSet (P X) = setFun' (isSet X) (X -> X) (setFun X X)
-  sB (al: unitEnc'): isSet (P al) = propSet (P al) (propUnitEncCondition al)
+  sB (al: unitEnc'): isSet (isUnitEnc al) = propSet (isUnitEnc al) (propUnitEncCondition al)
 
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
-  = pathSig3 unitEnc' P alStar z (q,t) where
-  P (al: unitEnc'): U = (X Y: U) -> (proofX: isSet X) -> (proofY: isSet Y) -> (f: X -> Y) ->
-    naturality X Y (al X proofX) (al Y proofY) f
+  = pathSig3 unitEnc' isUnitEnc alStar z (q,t) where
   al : unitEnc' = z.1
-  p :  P al = z.2
+  p : isUnitEnc al = z.2
 
   alStar : unitEnc = al unitEnc proofUnitEnc unitEncStar
   alStarAl: unitEnc' = alStar.1
-  alStarP: P alStarAl = alStar.2
+  alStarP: isUnitEnc alStarAl = alStar.2
 
   -- proposition 2.4.5
   q: Path unitEnc' alStarAl al = piExt U (\(X: U) -> isSet X -> X -> X) alStarAl al qqEtaEta where
@@ -86,9 +75,9 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar)
     qqEtaEta (X: U): Path (isSet X -> X -> X) (alStarAl X) (al X)
       = funExt (isSet X) (X -> X) (alStarAl X) (al X) (qqEta X)
 
-  p' : Path U (P alStar.1) (P z.1) = mapOnPath unitEnc' U P alStar.1 z.1 q
-  t: Path (P z.1) (transport p' alStar.2) p = proofP (transport p' alStarP) p where
-    proofP : isProp (P al) = propUnitEncCondition al
+  p' : Path U (isUnitEnc alStar.1) (isUnitEnc z.1) = mapOnPath unitEnc' U isUnitEnc alStar.1 z.1 q
+  t: Path (isUnitEnc z.1) (transport p' alStar.2) p = proofP (transport p' alStarP) p where
+    proofP : isProp (isUnitEnc al) = propUnitEncCondition al
 
 unitEncEta (C: U) (proofC : isSet C) (f: unitEnc -> C): Path (unitEnc -> C) (unitEncRec C proofC (f unitEncStar)) f 
   = goal where
