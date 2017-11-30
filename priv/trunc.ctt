@@ -1,0 +1,27 @@
+module trunc where
+import path
+
+data pTrunc (A : U) -- (-1)-trunc, mere proposition truncation
+  = inc (a : A)
+  | inh (x y : pTrunc A) <i>
+        [ (i=0) -> x,
+          (i=1) -> y ]
+
+data sTrunc (A : U) -- (0)-trunc, set truncation
+  = inc (a : A)
+  | line (a b: sTrunc A) (p q: Path (sTrunc A) a b) <i j>
+        [ (i=0) -> p @ j,
+          (i=1) -> q @ j,
+          (j=0) -> a,
+          (j=1) -> b ]
+
+data gTrunc (A : U) -- (1)-trunc, groupoid truncation
+  = inc (a : A)
+  | squashC (a b : gTrunc A) (p q : Path (gTrunc A) a b)
+            (r s: Path (Path (gTrunc A) a b) p q) <i j k>
+       [ (i=0) -> r @ j @ k
+       , (i=1) -> s @ j @ k
+       , (j=0) -> p @ k
+       , (j=1) -> q @ k
+       , (k=0) -> a
+       , (k=1) -> b]
