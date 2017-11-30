@@ -1,0 +1,36 @@
+module cat where
+
+import propset
+
+-- Algebra
+categoryData: U = (A: U) * (A -> A -> U)
+
+-- Definition 9.1.1. Six Precategory Properties
+isPrecategory (C: categoryData): U
+  = (id: (x: C.1) -> C.2 x x)
+  * (c: (x y z: C.1) -> C.2 x y -> C.2 y z -> C.2 x z)
+  * (homSet: (x y: C.1) -> isSet (C.2 x y))
+  * (left: (x y: C.1) -> (f: C.2 x y) -> Path (C.2 x y) (c x x y (id x) f) f)
+  * (right: (x y: C.1) -> (f: C.2 x y) -> Path (C.2 x y) (c x y y f (id y)) f)
+  * ( (x y z w: C.1) -> (f: C.2 x y) -> (g: C.2 y z) -> (h: C.2 z w) ->
+    Path (C.2 x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
+precategory: U = (C: categoryData) * isPrecategory C
+
+-- Public Accessors
+carrier (C: precategory): U = C.1.1
+hom     (C: precategory) (a b: carrier C): U = C.1.2 a b
+path    (C: precategory) (x: carrier C): hom C x x = C.2.1 x
+compose (C: precategory) (x y z: carrier C)
+        (f: hom C x y) (g: hom C y z): hom C x z = C.2.2.1 x y z f g
+
+iso (C: precategory) (A B: carrier C): U
+  = (f: hom C A B)
+  * (g: hom C B A)
+  * (_: Path (hom C A A) (compose C A B A f g) (path C A))
+  * (Path (hom C B B) (compose C B A B g f) (path C B))
+
+isCategory (C: precategory): U
+  = (A: carrier C) -> isContr ((B: carrier C) * iso C A B)
+
+-- Definition 9.1.6. Category.
+category: U = (C: precategory) * isCategory C

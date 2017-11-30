@@ -1,0 +1,37 @@
+module fun where
+
+import cat
+import path
+
+-- Definition 9.2.1. Functor on Precategories
+functor (A B: precategory): U
+  = (ob: carrier A -> carrier B)
+  * (mor: (x y: carrier A) -> hom A x y -> hom B (ob x) (ob y))
+  * (id: (x: carrier A) -> Path (hom B (ob x) (ob x)) (mor x x (path A x)) (path B (ob x)))
+  * ((x y z: carrier A) -> (f: hom A x y) -> (g: hom A y z) ->
+     Path (hom B (ob x) (ob z)) (mor x z (compose A x y z f g)) (compose B (ob x) (ob y) (ob z) (mor x y f) (mor y z g)))
+
+idFunctor (A: precategory): functor A A
+  = (\(x: carrier A) -> x
+    ,\(x y: carrier A) (h: hom A x y) -> h
+    ,\(x: carrier A) -> <_> path A x
+    ,\(x y z: carrier A) (f: hom A x y) (g: hom A y z) -> <_> compose A x y z f g)
+
+compFunctor (A B C: precategory) (F: functor A B) (G: functor B C): functor A C
+  = (\(x: carrier A) -> G.1 (F.1 x)
+    ,\(x y: carrier A) (h: hom A x y) -> G.2.1 (F.1 x) (F.1 y) (F.2.1 x y h)
+    ,\(x: carrier A) -> composition (hom C (G.1 (F.1 x)) (G.1 (F.1 x)))
+                            (G.2.1 (F.1 x) (F.1 x) (F.2.1 x x (path A x)))
+                            (G.2.1 (F.1 x) (F.1 x) (path B (F.1 x)))
+                            (path C (G.1 (F.1 x)))
+                            (<i>G.2.1 (F.1 x) (F.1 x) (F.2.2.1 x @ i))
+                            (G.2.2.1 (F.1 x))
+    ,\(x y z: carrier A) (f: hom A x y) (g: hom A y z) ->
+        composition (hom C (G.1 (F.1 x)) (G.1 (F.1 z)))
+            (G.2.1 (F.1 x) (F.1 z) (F.2.1 x z (compose A x y z f g)))
+            (G.2.1 (F.1 x) (F.1 z) (compose B (F.1 x) (F.1 y) (F.1 z) (F.2.1 x y f) (F.2.1 y z g)))
+            (compose C (G.1 (F.1 x)) (G.1 (F.1 y)) (G.1 (F.1 z))
+                (G.2.1 (F.1 x) (F.1 y) (F.2.1 x y f))
+                (G.2.1 (F.1 y) (F.1 z) (F.2.1 y z g)))
+            (<i> G.2.1 (F.1 x) (F.1 z) (F.2.2.2 x y z f g @ i))
+            (G.2.2.2 (F.1 x) (F.1 y) (F.1 z) (F.2.1 x y f) (F.2.1 y z g)))

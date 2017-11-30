@@ -1,11 +1,15 @@
 # Script for checking that all files compile
 
-files="binnat function
+files="binnat function iso control
+       path functor monad hedberg discor equiv
+       proto proto_pi proto_sigma proto_univ
        iso_example refinement_example
+       list nat prelude retract setquot
+       pi sigma stream eq either
        coproduct coproduct_noset coproduct_set
        girard puresigma maybenat
-       quotient om stream paradox lambek
-       collection brunerie
+       circle quotient om stream paradox lambek
+       collection brunerie trunc fun cat
        univalence category grothendieck"
 skip="lam"
 
