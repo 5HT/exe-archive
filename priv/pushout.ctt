@@ -1,0 +1,10 @@
+module pushout where
+
+-- Homotopy Colimits
+
+-- Paragraph 6.8
+data pushout (A B C: U) (f: C -> A) (g: C -> B)
+    = inl (_: A)
+    | inr (_: B)
+    | glue_ (c: C) <i> [ (i = 0) -> inl (f c),
+                         (i = 1) -> inr (g c) ]
