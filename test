@@ -1,3 +1,4 @@
+#!/bin/bash
 # Script for checking that all files compile
 
 files="binnat function
@@ -10,13 +11,17 @@ files="binnat function
        univalence category grothendieck"
 skip="lam"
 
-rm parsed.txt
-for file in $files
-do
- grep "^import $file$" priv/*.ctt
- cubical -b priv/$file.ctt | tee >(grep Parsed | sed 's|Parsed "priv/||;s|" successfully!||' >>parsed.txt) | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
-done
+function check_all {
+  local parsed=$1
+  rm parsed.txt
+  for file in $files
+  do
+   grep "^import $file$" priv/*.ctt
+   cubical -b priv/$file.ctt | tee $parsed | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
+  done
+}
 
-echo Compiled $(sort -u parsed.txt | wc -l) files of $(ls -1 priv/*.ctt | wc -l) in priv/
+check_all >(grep Parsed | sed 's|Parsed "priv/||;s|" successfully!||' | sort -u >parsed.txt)
+echo Compiled $(cat parsed.txt | wc -l) files of $(ls -1 priv/*.ctt | wc -l) in priv/
 echo Skipped files:
-join -v2 <(sort -u parsed.txt) <(cd priv && ls -1 *.ctt)
+join -v2 parsed.txt <(cd priv && ls -1 *.ctt)
