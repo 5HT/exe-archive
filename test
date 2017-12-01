@@ -13,14 +13,15 @@ skip="lam"
 
 function check_all {
   local parsed=$1
-  rm parsed.txt
+
   for file in $files
   do
    grep "^import $file$" priv/*.ctt
-   cubical -b priv/$file.ctt | tee $parsed | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
+   cubical -b priv/$file.ctt | tee -a $parsed | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
   done
 }
 
+rm parsed.txt || true
 check_all >(grep Parsed | sed 's|Parsed "priv/||;s|" successfully!||' | sort -u >parsed.txt)
 echo Compiled $(cat parsed.txt | wc -l) files of $(ls -1 priv/*.ctt | wc -l) in priv/
 echo Skipped files:
