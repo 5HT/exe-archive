@@ -1,8 +1,8 @@
 #!/bin/bash
-
+set -e -o pipefail
 pushd priv >/dev/null
 echo 'digraph G {'
-grep "^import" *.ctt | sed 's|.ctt:import | -> |g'
+grep "^import" $(cat ../parsed.txt) | sed 's|.ctt:import | -> |g'
 echo '}'
 popd >/dev/null
 
