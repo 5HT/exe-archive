@@ -2,6 +2,7 @@
 module category where
 
 import iso_sigma
+import iso_pi
 import univ
 
 lemReflComp (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (compPath A a a b (<_> a) p) p =
@@ -11,13 +12,6 @@ opaque lemReflComp
 lemReflComp' (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (compPath A a b b p (<_> b)) p =
   <j i> comp (<k> A) (p @ i) [(i=0) -> <_> a, (j=1) -> <_> p @ i, (i=1) -> <_> b ]
 opaque lemReflComp'
-
-setPi (A : U) (B : A -> U) (h : (x : A) -> set (B x))
-       (f0 f1 : (x : A) -> B x)
-       (p1 p2 : Path ((x : A) -> B x) f0 f1)
-       : Path (Path ((x : A) -> B x) f0 f1) p1 p2
-  = <i j> \(x : A) -> (h x (f0 x) (f1 x) (<i> (p1@i) x) (<i> (p2@i) x)) @ i @ j
-opaque setPi
 
 lemPathPProp (A B : U) (AProp : prop A) (p : Path U A B) : (x : A) -> (y : B) -> PathP p x y
   = J U A (\(B : U) -> \(p : Path U A B) -> (x : A) -> (y : B) -> PathP p x y) AProp B p

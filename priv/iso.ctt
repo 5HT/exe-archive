@@ -2,6 +2,7 @@ module iso where
 
 import proto
 import propset
+import equiv
 
 --         u
 --    a0 -----> a1
@@ -11,31 +12,11 @@ import propset
 --    V         V
 --    b0 -----> b1
 --         v
+
 Square (A : U) (a0 a1 b0 b1 : A)
                (u : Path A a0 a1) (v : Path A b0 b1)
                (r0 : Path A a0 b0) (r1 : Path A a1 b1) : U
   = PathP (<i> (PathP (<j> A) (u @ i) (v @ i))) r0 r1
-
-fiber (A B : U) (f : A -> B) (y : B) : U =
-  (x : A) * Path B y (f x)
-
-isEquiv (A B : U) (f : A -> B) : U = (y : B) -> isContr (fiber A B f y)
-
-equiv (A B : U) : U = (f : A -> B) * isEquiv A B f
-
-propIsEquiv (A B : U) (f : A -> B)
-  : isProp (isEquiv A B f) =
-  \ (u0 u1:isEquiv A B f) ->
-     <i> \ (y:B) -> propIsContr (fiber A B f y) (u0 y) (u1 y) @ i
-
-idIsEquiv (A : U) : isEquiv A A (idfun A) =
-  \(a : A) -> ((a, refl A a)
-              ,\(z : fiber A A (idfun A) a) -> contrSingl A a z.1 z.2)
-
-lemSinglContr (A:U) (a:A) : isContr ((x:A) * Path A a x) =
- ((a,refl A a),\ (z:(x:A) * Path A a x) -> contrSingl A a z.1 z.2)
-
-idEquiv (A:U) : equiv A A = (\ (x:A) -> x, lemSinglContr A)
 
 -- The iso to equiv
 lemIso (A B : U) (f : A -> B) (g : B -> A)

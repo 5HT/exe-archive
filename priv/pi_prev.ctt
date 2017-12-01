@@ -4,8 +4,8 @@ module pi_prev where
 import list
 import iso_pi
 
-groupoidPi (A:U) (B:A -> U) (h:(x:A) -> groupoid (B x)) (f g:pi A B) : set (Path (pi A B) f g) =
-    subst U set  T  (Path (pi A B) f g) (<i>pathPi A B f g@-i) rem1
+groupoidPi (A:U) (B:A -> U) (h:(x:A) -> groupoid (B x)) (f g:Pi A B) : set (Path (Pi A B) f g) =
+    subst U set  T  (Path (Pi A B) f g) (<i>pathPi A B f g@-i) rem1
  where
   T : U = (x:A) -> Path (B x) (f x) (g x)
   rem1 : set T =  setPi A (\ (x:A) -> Path (B x) (f x) (g x)) (\ (x:A) -> h x (f x) (g x))

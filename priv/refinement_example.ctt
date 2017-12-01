@@ -7,23 +7,16 @@ nat0 : Nat = Zero
 nat1 : Nat = Succ Zero
 
 DynamicCondition: U = Nat -> Bool
-
 StaticCondition (P: Nat -> U) (x: Nat): U = P x
-
 StaticEqualBool (x: Bool) (y: Bool): U = Path Bool x y
-
 -- StaticFromDynamic (x: T) (dp: DynamicPredicate x): StaticPredicate = \undefined
-
 dynamicIsPositive: DynamicCondition = split
   Zero -> False
   Succ _ -> True
 
 StaticIsPositive (n: Nat): U = StaticEqualBool (dynamicIsPositive n) True
-
 Positive: U = (n: Nat) * (StaticEqualBool (dynamicIsPositive n) True)
-
 makePositive (n: Nat) (x: StaticIsPositive n) : Positive = (n, x)
-
 BothSidesAreTextually (T: U) (a: T) : Path T a a = refl T a
 
 pos1 : Positive = makePositive n proof where
@@ -37,13 +30,6 @@ not : Bool -> Bool = split
 -- This don't work hehe as it cannot subsitute through splits so you need another approach
 -- proof1 (n: Nat): StaticEqualBool (not (not (dynamicIsPositive n))) (dynamicIsPositive n)
 --  = BothSidesAreTextually Bool (dynamicIsPositive n)
-
-
-
-
-
-
-
 
 -- staticPath Nat a b
 
