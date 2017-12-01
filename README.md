@@ -4,7 +4,7 @@ Infinity Language
 Base Library
 ------------
 
-![depgr](https://github.com/groupoid/infinity/blob/master/doc/img/baselib.png?raw=true)
+![depgr](https://github.com/groupoid/infinity/blob/master/doc/img/base.png?raw=true)
 
 The idea of Infinity Language came from the need to unify and
 arrange different calculi as extensions to the core of the
