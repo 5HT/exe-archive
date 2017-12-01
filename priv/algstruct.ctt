@@ -3,8 +3,8 @@
 module algstruct where
 import bool
 import prelude
-import pi
-import proto_sigma
+import pi_prev
+import sigma
 
 -- Properties
 --------------------------------------------------------------------------------

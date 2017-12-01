@@ -1,6 +1,6 @@
 module coproduct_noset where
 
-import iso_sigma
+import sigma_prev
 
 -- an endofunctor
 T (f: U -> U): U = (a b: U) -> (a -> b) -> (f a -> f b)

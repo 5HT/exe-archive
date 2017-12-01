@@ -1,4 +1,0 @@
-module proto_pi where
-
-Pi (A:U) (P:A->U) : U = (x:A) -> P x
-

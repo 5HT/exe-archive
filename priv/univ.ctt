@@ -1,8 +1,8 @@
-module proto_univ where
+module univ where
 
 import retract
 import equiv
-import proto_sigma
+import sigma
 
 ------------------------------------------------------------------------------
 -- Proof of univalence using unglue:

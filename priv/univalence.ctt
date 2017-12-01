@@ -9,7 +9,7 @@ module univalence where
 -- as it's the one used by category.ctt and bool.ctt
 -- the proofs below use thmUniv from the first
 -- proof so we import it here
-import proto_univ
+import univ
 
 ------------------------------------------------------------------------------
 -- Univalence proved using the canonical map defined from J

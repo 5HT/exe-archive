@@ -1,8 +1,8 @@
 # Script for checking that all files compile
 
-files="binnat function iso control
+files="binnat function iso iso_pi iso_sigma control
        path functor monad hedberg discor equiv
-       proto proto_pi proto_sigma proto_univ
+       proto pi_prev sigma_prev univ
        iso_example refinement_example
        list nat prelude retract setquot
        pi sigma stream eq either

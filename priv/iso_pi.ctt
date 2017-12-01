@@ -1,6 +1,6 @@
 module iso_pi where
 
-import proto_pi
+import pi
 import iso
 
 pathPi (A:U) (B:A->U) (f g : Pi A B) : Path U (Path (Pi A B) f g) ((x:A) -> Path (B x) (f x) (g x))
@@ -12,21 +12,29 @@ pathPi (A:U) (B:A->U) (f g : Pi A B) : Path U (Path (Pi A B) f g) ((x:A) -> Path
   S (p:T1) : Path T1 (F (G p)) p = refl T1 p
   T (p:T0) : Path T0 (G (F p)) p = refl T0 p
 
+setPi (A: U) (B: A -> U) (h: (x: A) -> isSet (B x)) (f g: Pi A B)
+      (p q: Path (Pi A B) f g): Path (Path (Pi A B) f g) p q
+  = <i j> \(x : A) -> (h x (f x) (g x) (<i>(p@i)x) (<i>(q@i)x)) @ i @ j
+
+{-
+
+-- alternative variant #1
+
 setPi (A:U) (B:A -> U) (h:(x:A) -> isSet (B x)) (f g: Pi A B)
   : isProp (Path (Pi A B) f g)
   = subst U isProp T (Path (Pi A B) f g) (<i>pathPi A B f g@-i) rem1 where
   T : U = (x:A) -> Path (B x) (f x) (g x)
   rem1 : isProp T = \ (p q : T) -> <i> \ (x:A) -> h x (f x) (g x) (p x) (q x)@i
 
+-- alrernative variant #2 nponeccop
+
 -- setPi - Sets are closed under pi-abstraction
 -- Note that `A` is any type and not merely a set
 -- Proof plan:
 -- We expand `isSet` so we see it's underlying equality on paths.
--- Then we apply `propPi` to `h` to prove `isProp a` - an eta-expanded version
--- of the goal. Then we use pi-extensionality path between a and b to convert
--- isProp a to isProp b
+-- Then we apply `propPi` to `h` to prove `isProp a` is an eta-expanded version of the goal.
+-- Then we use pi-extensionality path between a and b to convert isProp a to isProp b.
 
-{--
 setPi (A : U) (B : A -> U) (h : (x : A) -> isSet (B x)): isSet ((x: A) -> B x)
   = goal h where
   goal (h : (x : A)
@@ -45,4 +53,3 @@ setFun' (X Y: U) (proofY: X -> isSet Y): isSet (X -> Y)
 
 setFun (X Y: U) (proofY: isSet Y): isSet (X -> Y)
   = setFun' X Y (\(_: X) -> proofY)
-
