@@ -1,6 +1,6 @@
 module coproduct_noset where
 
-import sigma_prev
+import iso_sigma
 
 -- an endofunctor
 T (f: U -> U): U = (a b: U) -> (a -> b) -> (f a -> f b)
@@ -68,7 +68,7 @@ unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc unitEncStar) z = goal whe
   alStarAl: unitEnc' = alStar.1
   alStarP: P alStarAl = alStar.2
   goal : Path unitEnc (al unitEnc unitEncStar) z
-    = pathSig3 A P alStar z (q,t) where
+    = pathSigHoTT A P alStar z (q,t) where
     A : U = unitEnc'
 
     -- proposition 2.4.5

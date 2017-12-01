@@ -1,6 +1,6 @@
 module coproduct_set where
 
-import sigma_prev
+import iso_sigma
 import iso_pi
 
 upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
@@ -51,7 +51,7 @@ proofUnitEnc: isSet unitEnc = setSig unitEnc' isUnitEnc sA sB where
 
 -- lemma 2.4.4
 unitEncWeakEta (z: unitEnc): Path unitEnc (z.1 unitEnc proofUnitEnc unitEncStar) z
-  = pathSig3 unitEnc' isUnitEnc alStar z (q,t) where
+  = pathSigHoTT unitEnc' isUnitEnc alStar z (q,t) where
   al : unitEnc' = z.1
   p : isUnitEnc al = z.2
 
