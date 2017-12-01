@@ -3,24 +3,7 @@ module equiv where
 import path
 import propset
 import proto
-
-fiber   (A B : U) (f : A -> B) (y : B) : U = (x : A) * Path B y (f x)
-isEquiv (A B : U) (f : A -> B) : U = (y : B) -> isContr (fiber A B f y)
-equiv   (A B : U) : U = (f : A -> B) * isEquiv A B f
-
-propIsEquiv (A B : U) (f : A -> B)
-  : isProp (isEquiv A B f) =
-  \ (u0 u1:isEquiv A B f) ->
-     <i> \ (y:B) -> propIsContr (fiber A B f y) (u0 y) (u1 y) @ i
-
-idIsEquiv (A : U) : isEquiv A A (idfun A) =
-  \(a : A) -> ((a, refl A a)
-              ,\(z : fiber A A (idfun A) a) -> contrSingl A a z.1 z.2)
-
-lemSinglContr (A:U) (a:A) : isContr ((x:A) * Path A a x) =
- ((a,refl A a),\ (z:(x:A) * Path A a x) -> contrSingl A a z.1 z.2)
-
-idEquiv (A:U) : equiv A A = (\ (x:A) -> x, lemSinglContr A)
+import proto_equiv
 
 -- used by idTpPath
 equivLemma (A B : U)
