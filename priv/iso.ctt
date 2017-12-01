@@ -68,15 +68,15 @@ lemIso (A B : U) (f : A -> B) (g : B -> A)
                                          , (j = 1) -> s (f (p @ i))
                                          , (j = 0) -> s y ]
 
-isoToEquiv (A B : U) (f : A -> B) (g : B -> A)
-       (s : (y : B) -> Path B (f (g y)) y)
-       (t : (x : A) -> Path A (g (f x)) x) : isEquiv A B f =
+isoToEquiv (A B: U) (f: A -> B) (g: B -> A)
+       (s: (y: B) -> Path B (f (g y)) y)
+       (t: (x: A) -> Path A (g (f x)) x): isEquiv A B f =
   \(y:B) -> ((g y,<i>s y@-i),\ (z:fiber A B f y) ->
     lemIso A B f g s t y (g y) z.1 (<i>s y@-i) z.2)
 
-isoPath (A B : U) (f : A -> B) (g : B -> A)
-      (s : (y : B) -> Path B (f (g y)) y)
-      (t : (x : A) -> Path A (g (f x)) x) : Path U A B =
+isoPath (A B: U) (f: A -> B) (g: B -> A)
+      (s: (y: B) -> Path B (f (g y)) y)
+      (t: (x: A) -> Path A (g (f x)) x): Path U A B =
        <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t)
                   , (i = 1) -> (B,idfun B,idIsEquiv B) ]
 

@@ -1,18 +1,18 @@
 module monad where
 
-import prelude
 import functor
+import control
 
-monad (A B: U) (F: U -> U): U
-    = (pure_: pure A F)
+monad (F: U -> U): U
+    = (pure_: (A: U) -> pure A F)
     * (functor_: functor F)
-    * (join: F (F A) -> F B)
+    * (join: (A B: U) -> F (F A) -> F B)
     * Unit
 
-comonad (A B: U) (F: U -> U): U
-    = (pure_: pure A F)
+comonad (F: U -> U): U
+    = (pure_: (A: U) -> pure A F)
     * (functor_: functor F)
-    * (extract: F A -> A)
-    * (duplicate: F A -> F (F A))
-    * (extend: (F A -> B) -> F A -> F B)
+    * (extract: (A: U) -> F A -> A)
+    * (duplicate: (A: U) -> F A -> F (F A))
+    * (extend: (A B: U) -> (F A -> B) -> F A -> F B)
     * Unit

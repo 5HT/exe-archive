@@ -1,5 +1,7 @@
 module proto where
 
+import path
+
 data Unit = tt
 
 idfun (A : U) (a : A) : A = a
@@ -11,3 +13,4 @@ o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
 and (A B: U): U = (_:A) * B
 
 data Exists (A: U) (P: A -> U) = intro (x:A) (y: P x)
+

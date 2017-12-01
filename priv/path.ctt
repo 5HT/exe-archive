@@ -5,6 +5,7 @@ refl (A : U) (a : A) : Path A a a = <i> a
 singl (A : U) (a : A) : U = (x : A) * Path A a x
 trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
 sym (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
+cong (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b) = <i> f (p @ i)
 
 mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
     = <i> f (p @ i)
@@ -36,16 +37,14 @@ elemPathP (A B: U) (p: Path U A B) (a: A): (p': Path U A B) * (b: B) * PathP p' 
   = comp (<i> P (p @ i)) (refl U A, a, refl A a) [] where
   P (X: U): U = (p: Path U A X) * (x: X) * PathP p a x
 
-piExt (A : U) (B : A -> U) (f g : (x : A) -> B x)
+piExt  (A: U) (B: A -> U)
+       (f g: (x : A) -> B x)
        (p : (x : A) -> Path (B x) (f x) (g x)) :
        Path ((y : A) -> B y) f g = <i> \(a : A) -> (p a) @ i
 
-funExt
-  (A B: U)
-  (f g : A -> B)
-  (p : (x : A) -> Path B (f x) (g x))
-  : Path (A -> B) f g
-  = <i> \(a : A) -> p a @ i
+funExt (A B: U) (f g: A -> B)
+       (p: (x : A) -> Path B (f x) (g x)):
+       Path (A -> B) f g = <i> \(a : A) -> p a @ i
 
 funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g x)
   = mapOnPath (A -> B) B ff f g p where

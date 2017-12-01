@@ -1,10 +1,6 @@
 module control where
 
-import prelude
 import functor
-import monad
-
--- Recursion/Corecursion
 
 data fix (F: U -> U) = Fix (point: F (fix F))
 
@@ -19,12 +15,10 @@ data cofree  (F: U -> U) (A: U)    = CoFree  (_: fix (cofreeF   F A))
 unfree   (A: U) (F: U -> U): free   F A -> fix (freeF   F A) = split Free   a -> a
 uncofree (A: U) (F: U -> U): cofree F A -> fix (cofreeF F A) = split CoFree a -> a
 
--- data free (A: U) (F: U -> U) = pure (a: A) | bind (x: F (free A F)) -- non fix version
+pure (F: U -> U): U = (return: (A: U) -> A -> F A) * Unit
 
--- Control Type-Classes
-
-applicative (A B: U) (F: U -> U): U
-    = (pure_: pure A F)
-    * (functor_: functor_ A B F)
-    * (ap: F (A -> B) -> F A -> F B)
+applicative (F: U -> U): U
+    = (pure_: pure F)
+    * (functor_: functor F)
+    * (ap: (A B: U) -> F (A -> B) -> F A -> F B)
     * Unit
