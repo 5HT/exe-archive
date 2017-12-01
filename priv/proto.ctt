@@ -1,7 +1,5 @@
 module proto where
 
-import path
-
 data Unit = tt
 
 idfun (A : U) (a : A) : A = a

@@ -1,10 +1,10 @@
 module either where
 
-data either (A B: U) = left (a: A) | right (b: B)
+data either (A B: U) = inl (a: A) | inr (b: B)
 
 either_ (A B C: U) (b: A -> C) (c: B -> C) : either A B -> C = split
-	left x -> b x
-	right y -> c y
+  inl x -> b x
+  inr y -> c y
 
 -- usage
 -- see in lambek.ctt	

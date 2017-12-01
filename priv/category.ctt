@@ -5,23 +5,23 @@ import iso_sigma
 import iso_pi
 import univ
 
-lemReflComp (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (compPath A a a b (<_> a) p) p =
+lemReflComp (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (composition A a a b (<_> a) p) p =
   <j i> comp (<k> A) (p @ i /\ j) [(i=0) -> <_> a, (j=1) -> <_> p @ i, (i=1) -> <k> p @ k \/ j ]
 opaque lemReflComp
 
-lemReflComp' (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (compPath A a b b p (<_> b)) p =
+lemReflComp' (A : U) (a b : A) (p : Path A a b) : Path (Path A a b) (composition A a b b p (<_> b)) p =
   <j i> comp (<k> A) (p @ i) [(i=0) -> <_> a, (j=1) -> <_> p @ i, (i=1) -> <_> b ]
 opaque lemReflComp'
 
-lemPathPProp (A B : U) (AProp : prop A) (p : Path U A B) : (x : A) -> (y : B) -> PathP p x y
+lemPathPProp (A B : U) (AProp : isProp A) (p : Path U A B) : (x : A) -> (y : B) -> PathP p x y
   = J U A (\(B : U) -> \(p : Path U A B) -> (x : A) -> (y : B) -> PathP p x y) AProp B p
 opaque lemPathPProp
 
-lemPathPSet (A B : U) (ASet : set A) (p : Path U A B) : (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t
+lemPathPSet (A B : U) (ASet : isSet A) (p : Path U A B) : (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t
   = J U A (\(B : U) -> \(p : Path U A B) -> (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t) ASet B p
 opaque lemPathPSet
 
-lemPathPSet2 (A B : U) (ASet : set A) (p1 : Path U A B)
+lemPathPSet2 (A B : U) (ASet : isSet A) (p1 : Path U A B)
   : (p2 : Path U A B) -> (p : Path (Path U A B) p1 p2) ->
     (x : A) -> (y : B) -> (s : PathP p1 x y) -> (t : PathP p2 x y) -> PathP (<i> (PathP (p @ i) x y)) s t
   = J (Path U A B) p1 (\(p2 : Path U A B) -> \(p : Path (Path U A B) p1 p2) -> (x : A) -> (y : B) -> (s : PathP p1 x y) -> (t : PathP p2 x y) -> PathP (<i> (PathP (p @ i) x y)) s t)
@@ -37,11 +37,11 @@ opaque substPathP
 transRefl (A : U) (a : A) : Path A (transport (<_> A) a) a = <i> comp (<_> A) a [(i=1) -> <_>a]
 opaque transRefl
 
-equivProp (A B : U) (AProp : prop A) (BProp : prop B) (F : A -> B) (G : B -> A) : equiv A B =
+equivProp (A B : U) (AProp : isProp A) (BProp : isProp B) (F : A -> B) (G : B -> A) : equiv A B =
   (F, isoToEquiv A B F G (\(y : B) -> BProp (F (G y)) y) (\(x : A) -> AProp (G (F x)) x))
 opaque equivProp
 
-idProp (A B : U) (AProp : prop A) (BProp : prop B) (F : A -> B) (G : B -> A) : Path U A B
+idProp (A B : U) (AProp : isProp A) (BProp : isProp B) (F : A -> B) (G : B -> A) : Path U A B
   = equivPath A B (equivProp A B AProp BProp F G).1 (equivProp A B AProp BProp F G).2
 opaque idProp
 
@@ -57,23 +57,23 @@ categoryData : U = (A : U) * (A -> A -> U)
 isPrecategory2 (C : categoryData) (id : (x : C.1) -> C.2 x x) (c : (x y z : C.1) -> C.2 x y -> C.2 y z -> C.2 x z) : U
   = let A : U = C.1
         hom : A -> A -> U = C.2
-    in (homSet : (x y : A) -> set (hom x y))
+    in (homSet : (x y : A) -> isSet (hom x y))
      * (cPathL : (x y : A) -> (f : hom x y) -> Path (hom x y) (c x x y (id x) f) f)
      * (cPathR : (x y : A) -> (f : hom x y) -> Path (hom x y) (c x y y f (id y)) f)
      * ( (x y z w : A) -> (f : hom x y) -> (g : hom y z) -> (h : hom z w) -> Path (hom x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
 
 propIsPrecategory2 (C : categoryData) (id : (x : C.1) -> C.2 x x) (c : (x y z : C.1) -> C.2 x y -> C.2 y z -> C.2 x z)
-  : prop (isPrecategory2 C id c)
+  : isProp (isPrecategory2 C id c)
   = let A : U = C.1; hom : A->A->U = C.2 in
     propSig
-     ((x y : A) -> set (hom x y))
-     (\(_:(x y : A) -> set (hom x y))->
+     ((x y : A) -> isSet (hom x y))
+     (\(_:(x y : A) -> isSet (hom x y))->
      ((cPathL : (x y : A) -> (f : hom x y) -> Path (hom x y) (c x x y (id x) f) f)
     * (cPathR : (x y : A) -> (f : hom x y) -> Path (hom x y) (c x y y f (id y)) f)
     * ( (x y z w : A) -> (f : hom x y) -> (g : hom y z) -> (h : hom z w) -> Path (hom x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))))
-     (propPi A (\(x:A)->(y : A) -> set (hom x y))
-     (\(x:A)->propPi A (\(y : A) -> set (hom x y)) (\(y:A)->setIsProp (hom x y))))
-   (\(hset:(x y : A) -> set (hom x y))->
+     (propPi A (\(x:A)->(y : A) -> isSet (hom x y))
+     (\(x:A)->propPi A (\(y : A) -> isSet (hom x y)) (\(y:A)->setIsProp (hom x y))))
+   (\(hset:(x y : A) -> isSet (hom x y))->
    (propAnd
      ((x y : A) -> (f : hom x y) -> Path (hom x y) (c x x y (id x) f) f)
      ((cPathR : (x y : A) -> (f : hom x y) -> Path (hom x y) (c x y y f (id y)) f)
@@ -107,7 +107,7 @@ precategory : U = (C : categoryData) * isPrecategory C
 
 cA (C : precategory) : U = C.1.1
 cH (C : precategory) (a b : cA C) : U = C.1.2 a b
-cHSet (C : precategory) (a b : cA C) : set (cH C a b) = C.2.2.2.1 a b
+cHSet (C : precategory) (a b : cA C) : isSet (cH C a b) = C.2.2.2.1 a b
 cC (C : precategory) (x y z : cA C) (f : cH C x y) (g : cH C y z) : cH C x z = C.2.2.1 x y z f g
 cPath (C : precategory) (x : cA C) : cH C x x = C.2.1 x
 cPathL (C : precategory) (x y : cA C) (f : cH C x y)
@@ -153,22 +153,22 @@ invIsoEq (C : precategory) (A B : cA C) : Path U (iso C A B) (iso C B A)
 
 compIsoHelper (X : precategory) (A B C : cA X) (f : iso X A B) (g : iso X B C)
   : Path (cH X A A) (cC X A C A (cC X A B C f.1 g.1) (cC X C B A g.2.1 f.2.1)) (cPath X A)
-  = compPath (cH X A A)
+  = composition (cH X A A)
             (cC X A C A (cC X A B C f.1 g.1) (cC X C B A g.2.1 f.2.1))
             (cC X A B A f.1 (cC X B C A g.1 (cC X C B A g.2.1 f.2.1)))
             (cPath X A)
             (cPathC X A B C A f.1 g.1 (cC X C B A g.2.1 f.2.1))
-    (compPath (cH X A A)
+    (composition (cH X A A)
             (cC X A B A f.1 (cC X B C A g.1 (cC X C B A g.2.1 f.2.1)))
             (cC X A B A f.1 (cC X B B A (cC X B C B g.1 g.2.1) f.2.1))
             (cPath X A)
             (<i>cC X A B A f.1 (cPathC X B C B A g.1 g.2.1 f.2.1 @ -i))
-    (compPath (cH X A A)
+    (composition (cH X A A)
             (cC X A B A f.1 (cC X B B A (cC X B C B g.1 g.2.1) f.2.1))
             (cC X A B A f.1 (cC X B B A (cPath X B) f.2.1))
             (cPath X A)
             (<i>cC X A B A f.1 (cC X B B A (g.2.2.1 @ i) f.2.1))
-    (compPath (cH X A A)
+    (composition (cH X A A)
             (cC X A B A f.1 (cC X B B A (cPath X B) f.2.1))
             (cC X A B A f.1 f.2.1)
             (cPath X A)
@@ -206,7 +206,7 @@ eqToIso (C : precategory) (A B : cA C) (p : Path (cA C) A B) : iso C A B
   = J (cA C) A (\(B : cA C) -> \(p : Path (cA C) A B) -> iso C A B) (idIso C A) B p
 
 isCategory (C : precategory) : U = (A : cA C) -> isContr ((B : cA C) * iso C A B)
-propIsCategory (C : precategory) : prop (isCategory C)
+propIsCategory (C : precategory) : isProp (isCategory C)
   = propPi (cA C) (\(A : cA C) -> isContr ((B : cA C) * iso C A B))
     (\(A : cA C) -> propIsContr ((B : cA C) * iso C A B))
 category : U = (C:precategory)*isCategory C
@@ -230,7 +230,7 @@ setCat : precategory
     ,\(a b : hSet) (f : a.1 -> b.1) -> <_> \(x : a.1) -> f x
     ,\(a b : hSet) (f : a.1 -> b.1) -> <_> \(x : a.1) -> f x
     ,\(a b c d : hSet) (f : a.1 -> b.1) (g : b.1 -> c.1) (h : c.1 -> d.1) -> <_> \(x : a.1) -> h (g (f x)))
-  where hSet : U = Sigma U set
+  where hSet : U = Sigma U isSet
 
 --
 -- the structure identity principle
@@ -239,7 +239,7 @@ setCat : precategory
 structure (X : precategory) : U
   = (P : cA X -> U)
   * (H : (x y : cA X) -> (a : P x) -> (b : P y) -> (f : cH X x y) -> U)
-  * (propH : (x y : cA X) -> (a : P x) -> (b : P y) -> (f : cH X x y) -> prop (H x y a b f))
+  * (propH : (x y : cA X) -> (a : P x) -> (b : P y) -> (f : cH X x y) -> isProp (H x y a b f))
   * (Hid : (x : cA X) -> (a : P x) -> H x x a a (cPath X x))
   * ((x y z : cA X) -> (a : P x) -> (b : P y) -> (c : P z) ->
      (f : cH X x y) -> (g : cH X y z) ->
@@ -248,7 +248,7 @@ structure (X : precategory) : U
 sP (X : precategory) (S : structure X) : cA X -> U = S.1
 sH (X : precategory) (S : structure X) : (x y : cA X) -> (a : sP X S x) -> (b : sP X S y) -> (f : cH X x y) -> U = S.2.1
 sHProp (X : precategory) (S : structure X)
-  : (x y : cA X) -> (a : sP X S x) -> (b : sP X S y) -> (f : cH X x y) -> prop (sH X S x y a b f) = S.2.2.1
+  : (x y : cA X) -> (a : sP X S x) -> (b : sP X S y) -> (f : cH X x y) -> isProp (sH X S x y a b f) = S.2.2.1
 sHPath (X : precategory) (S : structure X) : (x : cA X) -> (a : sP X S x) -> sH X S x x a a (cPath X x) = S.2.2.2.1
 sHComp (X : precategory) (S : structure X)
   : (x y z : cA X) -> (a : sP X S x) -> (b : sP X S y) -> (c : sP X S z) ->
@@ -265,7 +265,7 @@ sipPrecategory (C : precategory) (S : structure C) : precategory = ((ob, hom), (
   where
     ob : U = Sigma (cA C) (sP C S)
     hom (X Y : ob) : U = (f : cH C X.1 Y.1) * sH C S X.1 Y.1 X.2 Y.2 f
-    homSet (X Y : ob) : set (hom X Y)
+    homSet (X Y : ob) : isSet (hom X Y)
       = setSig (cH C X.1 Y.1) (sH C S X.1 Y.1 X.2 Y.2)
         (cHSet C X.1 Y.1) (\(f : cH C X.1 Y.1) -> propSet (sH C S X.1 Y.1 X.2 Y.2 f) (sHProp C S X.1 Y.1 X.2 Y.2 f))
     id (X : ob) : hom X X = (cPath C X.1, sHPath C S X.1 X.2)
@@ -410,14 +410,14 @@ idFunctor (A : precategory) : functor A A
 compFunctor (A B C : precategory) (F : functor A B) (G : functor B C) : functor A C
   = (\(x : cA A) -> G.1 (F.1 x)
     ,\(x y : cA A) (h : cH A x y) -> G.2.1 (F.1 x) (F.1 y) (F.2.1 x y h)
-    ,\(x : cA A) -> compPath (cH C (G.1 (F.1 x)) (G.1 (F.1 x)))
+    ,\(x : cA A) -> composition (cH C (G.1 (F.1 x)) (G.1 (F.1 x)))
                            (G.2.1 (F.1 x) (F.1 x) (F.2.1 x x (cPath A x)))
                            (G.2.1 (F.1 x) (F.1 x) (cPath B (F.1 x)))
                            (cPath C (G.1 (F.1 x)))
                            (<i>G.2.1 (F.1 x) (F.1 x) (F.2.2.1 x @ i))
                            (G.2.2.1 (F.1 x))
     ,\(x y z : cA A) (f : cH A x y) (g : cH A y z) ->
-        compPath (cH C (G.1 (F.1 x)) (G.1 (F.1 z)))
+        composition (cH C (G.1 (F.1 x)) (G.1 (F.1 z)))
                (G.2.1 (F.1 x) (F.1 z) (F.2.1 x z (cC A x y z f g)))
                (G.2.1 (F.1 x) (F.1 z) (cC B (F.1 x) (F.1 y) (F.1 z) (F.2.1 x y f) (F.2.1 y z g)))
                (cC C (G.1 (F.1 x)) (G.1 (F.1 y)) (G.1 (F.1 z)) (G.2.1 (F.1 x) (F.1 y) (F.2.1 x y f)) (G.2.1 (F.1 y) (F.1 z) (F.2.1 y z g)))
@@ -430,21 +430,21 @@ ffFunctor (A B : precategory) (F : functor A B) : U
 ffEq (A B : precategory) (F : functor A B) (ff : ffFunctor A B F) (a b : cA A)
   : Path U (cH A a b) (cH B (F.1 a) (F.1 b))
   = equivPath (cH A a b) (cH B (F.1 a) (F.1 b)) (F.2.1 a b) (ff a b)
-propFFFunctor (A B : precategory) (F : functor A B) : prop (ffFunctor A B F)
+propFFFunctor (A B : precategory) (F : functor A B) : isProp (ffFunctor A B F)
   = propPi (cA A) (\(a : cA A) -> (b : cA A) -> isEquiv (cH A a b) (cH B (F.1 a) (F.1 b)) (F.2.1 a b))
     (\(a : cA A) -> propPi (cA A) (\(b : cA A) -> isEquiv (cH A a b) (cH B (F.1 a) (F.1 b)) (F.2.1 a b))
     (\(b : cA A) -> propIsEquiv (cH A a b) (cH B (F.1 a) (F.1 b)) (F.2.1 a b)))
 
 lem10 (A B : U) (e : equiv A B) (x y : B) (p : Path A (e.2 x).1.1 (e.2 y).1.1) : Path B x y
   = transport
-    (compPath U (Path B (e.1 (e.2 x).1.1) (e.1 (e.2 y).1.1)) (Path B x (e.1 (e.2 y).1.1)) (Path B x y)
+    (composition U (Path B (e.1 (e.2 x).1.1) (e.1 (e.2 y).1.1)) (Path B x (e.1 (e.2 y).1.1)) (Path B x y)
      (<i> Path B (retEq A B e x @ i) (e.1 (e.2 y).1.1)) (<i> Path B x (retEq A B e y @ i)))
     (mapOnPath A B e.1 (e.2 x).1.1 (e.2 y).1.1 p)
 opaque lem10
 
 lem10' (A B : U) (e : equiv A B) (x y : A) (p : Path B (e.1 x) (e.1 y)) : Path A x y
   = transport
-    (compPath U (Path A (e.2 (e.1 x)).1.1 (e.2 (e.1 y)).1.1) (Path A x (e.2 (e.1 y)).1.1) (Path A x y)
+    (composition U (Path A (e.2 (e.1 x)).1.1 (e.2 (e.1 y)).1.1) (Path A x (e.2 (e.1 y)).1.1) (Path A x y)
      (<i> Path A (secEq A B e x @ i) (e.2 (e.1 y)).1.1) (<i> Path A x (secEq A B e y @ i))
      )
     (mapOnPath B A (invEq A B e) (e.1 x) (e.1 y) p)
@@ -456,23 +456,23 @@ lemFF (A B : precategory) (F : functor A B) (ff : ffFunctor A B F) (x y : cA A)
   where
     F0 (f : iso A x y) : iso B (F.1 x) (F.1 y)
       = (F.2.1 x y f.1, F.2.1 y x f.2.1
-        ,compPath (cH B (F.1 x) (F.1 x))
+        ,composition (cH B (F.1 x) (F.1 x))
                 (cC B (F.1 x) (F.1 y) (F.1 x) (F.2.1 x y f.1) (F.2.1 y x f.2.1))
                 (F.2.1 x x (cC A x y x f.1 f.2.1))
                 (cPath B (F.1 x))
                 (<i>F.2.2.2 x y x f.1 f.2.1 @-i)
-        (compPath (cH B (F.1 x) (F.1 x))
+        (composition (cH B (F.1 x) (F.1 x))
                 (F.2.1 x x (cC A x y x f.1 f.2.1))
                 (F.2.1 x x (cPath A x))
                 (cPath B (F.1 x))
                 (<i>F.2.1 x x (f.2.2.1@i))
                 (F.2.2.1 x))
-        ,compPath (cH B (F.1 y) (F.1 y))
+        ,composition (cH B (F.1 y) (F.1 y))
                 (cC B (F.1 y) (F.1 x) (F.1 y) (F.2.1 y x f.2.1) (F.2.1 x y f.1))
                 (F.2.1 y y (cC A y x y f.2.1 f.1))
                 (cPath B (F.1 y))
                 (<i>F.2.2.2 y x y f.2.1 f.1 @-i)
-        (compPath (cH B (F.1 y) (F.1 y))
+        (composition (cH B (F.1 y) (F.1 y))
                 (F.2.1 y y (cC A y x y f.2.1 f.1))
                 (F.2.1 y y (cPath A y))
                 (cPath B (F.1 y))
@@ -482,34 +482,34 @@ lemFF (A B : precategory) (F : functor A B) (ff : ffFunctor A B F) (x y : cA A)
       = ((ff x y g.1).1.1
         ,(ff y x g.2.1).1.1
         ,lem10' (cH A x x) (cH B (F.1 x) (F.1 x)) (F.2.1 x x, ff x x) (cC A x y x (ff x y g.1).1.1 (ff y x g.2.1).1.1) (cPath A x)
-          (compPath (cH B (F.1 x) (F.1 x))
+          (composition (cH B (F.1 x) (F.1 x))
                   (F.2.1 x x (cC A x y x (ff x y g.1).1.1 (ff y x g.2.1).1.1))
                   (cC B (F.1 x) (F.1 y) (F.1 x) (F.2.1 x y (ff x y g.1).1.1) (F.2.1 y x (ff y x g.2.1).1.1))
                   (F.2.1 x x (cPath A x))
                   (F.2.2.2 x y x (ff x y g.1).1.1 (ff y x g.2.1).1.1)
-          (compPath (cH B (F.1 x) (F.1 x))
+          (composition (cH B (F.1 x) (F.1 x))
                   (cC B (F.1 x) (F.1 y) (F.1 x) (F.2.1 x y (ff x y g.1).1.1) (F.2.1 y x (ff y x g.2.1).1.1))
                   (cC B (F.1 x) (F.1 y) (F.1 x) g.1 g.2.1)
                   (F.2.1 x x (cPath A x))
                   (<i>cC B (F.1 x) (F.1 y) (F.1 x) ((ff x y g.1).1.2@-i) ((ff y x g.2.1).1.2@-i))
-          (compPath (cH B (F.1 x) (F.1 x))
+          (composition (cH B (F.1 x) (F.1 x))
                   (cC B (F.1 x) (F.1 y) (F.1 x) g.1 g.2.1)
                   (cPath B (F.1 x))
                   (F.2.1 x x (cPath A x))
                   g.2.2.1
                   (<i>F.2.2.1 x @ -i))))
         ,lem10' (cH A y y) (cH B (F.1 y) (F.1 y)) (F.2.1 y y, ff y y) (cC A y x y (ff y x g.2.1).1.1 (ff x y g.1).1.1) (cPath A y)
-          (compPath (cH B (F.1 y) (F.1 y))
+          (composition (cH B (F.1 y) (F.1 y))
                   (F.2.1 y y (cC A y x y (ff y x g.2.1).1.1 (ff x y g.1).1.1))
                   (cC B (F.1 y) (F.1 x) (F.1 y) (F.2.1 y x (ff y x g.2.1).1.1) (F.2.1 x y (ff x y g.1).1.1))
                   (F.2.1 y y (cPath A y))
                   (F.2.2.2 y x y (ff y x g.2.1).1.1 (ff x y g.1).1.1)
-          (compPath (cH B (F.1 y) (F.1 y))
+          (composition (cH B (F.1 y) (F.1 y))
                   (cC B (F.1 y) (F.1 x) (F.1 y) (F.2.1 y x (ff y x g.2.1).1.1) (F.2.1 x y (ff x y g.1).1.1))
                   (cC B (F.1 y) (F.1 x) (F.1 y) g.2.1 g.1)
                   (F.2.1 y y (cPath A y))
                   (<i>cC B (F.1 y) (F.1 x) (F.1 y) ((ff y x g.2.1).1.2@-i) ((ff x y g.1).1.2@-i))
-          (compPath (cH B (F.1 y) (F.1 y))
+          (composition (cH B (F.1 y) (F.1 y))
                   (cC B (F.1 y) (F.1 x) (F.1 y) g.2.1 g.1)
                   (cPath B (F.1 y))
                   (F.2.1 y y (cPath A y))
@@ -557,12 +557,12 @@ F23 (A B : precategory) (F : functor A B) (p2 : (x : cA A) -> isContr ((y : cA A
              (Path ((y : cA A) * iso B (F.1 y) x) a b)
       = (<i>Path ((y : cA A) * iso B (F.1 y) x)
                (a.1, PathLIso B (F.1 a.1) x a.2 @ i)
-               (b.1, compPath (iso B (F.1 b.1) x)
+               (b.1, composition (iso B (F.1 b.1) x)
                        (compIso B (F.1 b.1) (F.1 a.1) x (compIso B (F.1 b.1) x (F.1 a.1) b.2 (invIso B (F.1 a.1) x a.2)) a.2)
                        (compIso B (F.1 b.1) x x b.2 (compIso B x (F.1 a.1) x (invIso B (F.1 a.1) x a.2) a.2))
                        b.2
                        (PathCIso B (F.1 b.1) x (F.1 a.1) x b.2 (invIso B (F.1 a.1) x a.2) a.2)
-                    (compPath (iso B (F.1 b.1) x)
+                    (composition (iso B (F.1 b.1) x)
                        (compIso B (F.1 b.1) x x b.2 (compIso B x (F.1 a.1) x (invIso B (F.1 a.1) x a.2) a.2))
                        (compIso B (F.1 b.1) x x b.2 (idIso B x))
                        b.2
@@ -579,7 +579,7 @@ catIsEquiv (A B : precategory) (F : functor A B) : U
   = (_ : ffFunctor A B F)
   * ((b : cA B) -> (a : cA A) * iso B (F.1 a) b)
 catEquiv (A B : precategory) : U = (F : functor A B) * catIsEquiv A B F
-catPropIsEquiv (A B : precategory) (isC : isCategory A) (F : functor A B) : prop (catIsEquiv A B F)
+catPropIsEquiv (A B : precategory) (isC : isCategory A) (F : functor A B) : isProp (catIsEquiv A B F)
   = propSig (ffFunctor A B F) (\(_ : ffFunctor A B F) -> (b : cA B) -> (a : cA A) * iso B (F.1 a) b)
             (propFFFunctor A B F)
             (\(ff : ffFunctor A B F) -> propPi (cA B) (\(b : cA B) -> (a : cA A) * iso B (F.1 a) b)
@@ -591,7 +591,7 @@ catPathEquiv (A : precategory) : catEquiv A A = (idFunctor A, catPathIsEquiv A)
 
 catIsIso (A B : precategory) (F : functor A B) : U
   = (_ : ffFunctor A B F) * isEquiv (cA A) (cA B) F.1
-catPropIsIso (A B : precategory) (F : functor A B) : prop (catIsIso A B F)
+catPropIsIso (A B : precategory) (F : functor A B) : isProp (catIsIso A B F)
   = propSig (ffFunctor A B F) (\(_ : ffFunctor A B F) -> isEquiv (cA A) (cA B) F.1)
             (propFFFunctor A B F)
             (\(_ : ffFunctor A B F) -> propIsEquiv (cA A) (cA B) F.1)
@@ -663,7 +663,7 @@ eCatIso30 (A B : precategory) : Path U (catIso3 A B) (catIso30 A B)
                        [(i=1)-><j>\(x:cA A) -> transport (<j>(e2@-j) x x) (transRefl ((f21@0) x x) (cPath B (transport e1 x)) @ j)
                        ,(i=0)-><j>\(x:cA B) ->
                                transRefl ((e2@1) x x)
-                               (compPath (cH B x x)
+                               (composition (cH B x x)
                                 (transport (<k>cH B (transRefl (cA B) x@k) (transRefl (cA B) x@k))
                                            (cPath B (transport (<_> cA B) x)))
                                 (transport (<_>cH B x x) (cPath B x))
@@ -688,7 +688,7 @@ eCatIso30 (A B : precategory) : Path U (catIso3 A B) (catIso30 A B)
                       (transRefl ((f21@0) y z) (transport (<j>(e2@j) y z) g) @ j)) @ j)
                    ,(i=0)-><j>\(x y z : cA B) (f : cH B x y) (g : cH B y z) ->
                            transRefl ((e2@1) x z)
-                           (compPath (cH B x z)
+                           (composition (cH B x z)
                            (transport (<k>cH B (transRefl (cA B) x@k) (transRefl (cA B) z@k))
                             (cC B (transport (<_>cA B) x) (transport (<_>cA B) y) (transport (<_>cA B) z)
                              (transport (<k>cH B (transRefl (cA B) x@-k) (transRefl (cA B) y@-k)) (transport (<j>(e2@1) x y) f))
@@ -795,7 +795,7 @@ sigEquivLem (A A':U) (B:A->U) (B':A'->U)
             ,comp (<_> B (secEq A A' e x.1 @ i))
              ((f (secEq A A' e x.1 @ i)).2 (transport (<j> B' (e.1 (secEq A A' e x.1 @ i\/-j))) ((f x.1).1 x.2))).1.1
              [(i=0)-><k>((f (secEq A A' e x.1 @ 0)).2 (transport (<i> B' (lemEquivCoh A A' e x.1@k@i)) ((f x.1).1 x.2))).1.1
-             ,(i=1)-><k>compPath (B x.1)
+             ,(i=1)-><k>composition (B x.1)
                         ((f x.1).2 (transport (<j> B' (e.1 x.1)) ((f x.1).1 x.2))).1.1
                         ((f x.1).2 ((f x.1).1 x.2)).1.1
                         x.2
@@ -942,7 +942,7 @@ catIsoIsEquiv (A B : precategory) (F : functor A B) (e : catIsIso A B F) : catIs
   = (e.1,\(b:cA B)->((e.2 b).1.1, eqToIso B (F.1 (e.2 b).1.1) b (<i>(e.2 b).1.2@-i)))
 
 invEquiv (A:U) (a b:A) : Path U (Path A a b) (Path A b a)
- = equivPath (Path A a b) (Path A b a) (inv A a b) (isoToEquiv (Path A a b) (Path A b a) (inv A a b) (inv A b a) (\(x:Path A b a) -> <_> x) (\(x:Path A a b) -> <_> x))
+ = equivPath (Path A a b) (Path A b a) (sym A a b) (isoToEquiv (Path A a b) (Path A b a) (sym A a b) (sym A b a) (\(x:Path A b a) -> <_> x) (\(x:Path A a b) -> <_> x))
 
 catEquivIsIso (A B : precategory) (isCA : isCategory A) (isCB : isCategory B) (F : functor A B) (e : catIsEquiv A B F)
   : catIsIso A B F
@@ -952,7 +952,7 @@ catEquivIsIso (A B : precategory) (isCA : isCategory A) (isCB : isCategory B) (F
       in transport (<i>isContr ((a:cA A)*invEquiv (cA B) (F.1 a) b @ i))
         (transport (<i> isContr ((a:cA A)*lemIsCategory3 B isCB (F.1 a) b@-i)) p))
 
-equivProp' (A B : U) (AProp : prop A) (BProp : prop B) (F : A -> B) (G : B -> A) : equiv A B =
+equivProp' (A B : U) (AProp : isProp A) (BProp : isProp B) (F : A -> B) (G : B -> A) : equiv A B =
   (F, isoToEquiv A B F G (\(y : B) -> BProp (F (G y)) y) (\(x : A) -> AProp (G (F x)) x))
 
 catIsEquivEqIso (A B : precategory) (isCA : isCategory A) (isCB : isCategory B) (F : functor A B)
@@ -964,20 +964,20 @@ catEquivEqIso (A B : precategory) (isCA : isCategory A) (isCB : isCategory B) : 
  = <i> (F : functor A B) * (transEquivToPath (catIsEquiv A B F) (catIsIso A B F) (catIsEquivEqIso A B isCA isCB F) @ i)
 
 catIsoEqPath (A B : precategory) : Path U (catIso A B) (Path precategory A B)
-  = compPath U (catIso A B) (catIso2 A B) (Path precategory A B)
+  = composition U (catIso A B) (catIso2 A B) (Path precategory A B)
              (eCatIso A B)
-   (compPath U (catIso2 A B) (catIso32 A B) (Path precategory A B)
+   (composition U (catIso2 A B) (catIso32 A B) (Path precategory A B)
              (<i>eCatIso2 A B@-i)
-   (compPath U (catIso32 A B) (catIso31 A B) (Path precategory A B)
+   (composition U (catIso32 A B) (catIso31 A B) (Path precategory A B)
              (<i>eCatIso32 A B@-i)
-   (compPath U (catIso31 A B) (catIso30 A B) (Path precategory A B)
+   (composition U (catIso31 A B) (catIso30 A B) (Path precategory A B)
              (<i>eCatIso31 A B@-i)
-   (compPath U (catIso30 A B) (catIso3 A B) (Path precategory A B)
+   (composition U (catIso30 A B) (catIso3 A B) (Path precategory A B)
              (<i>eCatIso30 A B@-i)
              (<i>eCatIso3 A B@-i)))))
 
 catEquivEqPath (A B : precategory) (isCA : isCategory A) (isCB : isCategory B) : Path U (catEquiv A B) (Path precategory A B)
-  = compPath U (catEquiv A B) (catIso A B) (Path precategory A B) (catEquivEqIso A B isCA isCB) (catIsoEqPath A B)
+  = composition U (catEquiv A B) (catIso A B) (Path precategory A B) (catEquivEqIso A B isCA isCB) (catIsoEqPath A B)
 opaque catEquivEqPath
 
 catEquivEqPath' (A : category) : isContr ((B : category) * catEquiv A.1 B.1)
@@ -1020,7 +1020,7 @@ isCospanConeHom (C : precategory) (D : cospan C) (E1 E2 : cospanCone C D) (h : c
   = (_ : Path (cH C E1.1 D.2.1.1) (cC C E1.1 E2.1 D.2.1.1 h E2.2.1) E1.2.1)
   * (Path (cH C E1.1 D.2.2.1) (cC C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
 isCospanConeHomProp (C : precategory) (D : cospan C) (E1 E2 : cospanCone C D) (h : cH C E1.1 E2.1)
-  : prop (isCospanConeHom C D E1 E2 h)
+  : isProp (isCospanConeHom C D E1 E2 h)
   = propAnd (Path (cH C E1.1 D.2.1.1) (cC C E1.1 E2.1 D.2.1.1 h E2.2.1) E1.2.1)
             (Path (cH C E1.1 D.2.2.1) (cC C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
             (cHSet C E1.1 D.2.1.1 (cC C E1.1 E2.1 D.2.1.1 h E2.2.1) E1.2.1)
@@ -1033,23 +1033,23 @@ cospanConePath (C : precategory) (D : cospan C) (E : cospanCone C D) : cospanCon
 cospanConeComp (C : precategory) (D : cospan C) (X Y Z : cospanCone C D)
                (F : cospanConeHom C D X Y) (G : cospanConeHom C D Y Z) : cospanConeHom C D X Z
   = (cC C X.1 Y.1 Z.1 F.1 G.1
-    ,compPath (cH C X.1 D.2.1.1)
+    ,composition (cH C X.1 D.2.1.1)
             (cC C X.1 Z.1 D.2.1.1 (cC C X.1 Y.1 Z.1 F.1 G.1) Z.2.1)
             (cC C X.1 Y.1 D.2.1.1 F.1 (cC C Y.1 Z.1 D.2.1.1 G.1 Z.2.1))
             X.2.1
             (cPathC C X.1 Y.1 Z.1 D.2.1.1 F.1 G.1 Z.2.1)
-    (compPath (cH C X.1 D.2.1.1)
+    (composition (cH C X.1 D.2.1.1)
             (cC C X.1 Y.1 D.2.1.1 F.1 (cC C Y.1 Z.1 D.2.1.1 G.1 Z.2.1))
             (cC C X.1 Y.1 D.2.1.1 F.1 Y.2.1)
             X.2.1
             (<i> cC C X.1 Y.1 D.2.1.1 F.1 (G.2.1 @ i))
             F.2.1)
-    ,compPath (cH C X.1 D.2.2.1)
+    ,composition (cH C X.1 D.2.2.1)
             (cC C X.1 Z.1 D.2.2.1 (cC C X.1 Y.1 Z.1 F.1 G.1) Z.2.2.1)
             (cC C X.1 Y.1 D.2.2.1 F.1 (cC C Y.1 Z.1 D.2.2.1 G.1 Z.2.2.1))
             X.2.2.1
             (cPathC C X.1 Y.1 Z.1 D.2.2.1 F.1 G.1 Z.2.2.1)
-    (compPath (cH C X.1 D.2.2.1)
+    (composition (cH C X.1 D.2.2.1)
             (cC C X.1 Y.1 D.2.2.1 F.1 (cC C Y.1 Z.1 D.2.2.1 G.1 Z.2.2.1))
             (cC C X.1 Y.1 D.2.2.1 F.1 Y.2.2.1)
             X.2.2.1
@@ -1058,7 +1058,7 @@ cospanConeComp (C : precategory) (D : cospan C) (X Y Z : cospanCone C D)
 
 isPullback (C : precategory) (D : cospan C) (E : cospanCone C D) : U
   = (h : cospanCone C D) -> isContr (cospanConeHom C D h E)
-isPullbackProp (C : precategory) (D : cospan C) (E : cospanCone C D) : prop (isPullback C D E)
+isPullbackProp (C : precategory) (D : cospan C) (E : cospanCone C D) : isProp (isPullback C D E)
   = propPi (cospanCone C D) (\(h : cospanCone C D) -> isContr (cospanConeHom C D h E))
     (\(h : cospanCone C D) -> propIsContr (cospanConeHom C D h E))
 hasPullback (C : precategory) (D : cospan C) : U = (E : cospanCone C D) * isPullback C D E
@@ -1084,26 +1084,26 @@ isCategoryCospanCone (C : precategory) (D : cospan C) (isC : isCategory C) : isC
       = \(x : cA C) (a b : hasCospanCone C D x)
          (c : isCospanConeHom C D (x, a) (x, b) (cPath C x))
          (d : isCospanConeHom C D (x, b) (x, a) (cPath C x)) ->
-         <i> (compPath (cH C x D.2.1.1) a.1 (cC C x x D.2.1.1 (cPath C x) a.1) b.1 (<i>cPathL C x D.2.1.1 a.1 @-i) d.1 @ i
-             ,compPath (cH C x D.2.2.1) a.2.1 (cC C x x D.2.2.1 (cPath C x) a.2.1) b.2.1 (<i>cPathL C x D.2.2.1 a.2.1 @-i) d.2 @ i
+         <i> (composition (cH C x D.2.1.1) a.1 (cC C x x D.2.1.1 (cPath C x) a.1) b.1 (<i>cPathL C x D.2.1.1 a.1 @-i) d.1 @ i
+             ,composition (cH C x D.2.2.1) a.2.1 (cC C x x D.2.2.1 (cPath C x) a.2.1) b.2.1 (<i>cPathL C x D.2.2.1 a.2.1 @-i) d.2 @ i
              ,lemPathPProp (Path (cH C x D.1) (cC C x D.2.1.1 D.1 a.1 D.2.1.2) (cC C x D.2.2.1 D.1 a.2.1 D.2.2.2))
                          (Path (cH C x D.1) (cC C x D.2.1.1 D.1 b.1 D.2.1.2) (cC C x D.2.2.1 D.1 b.2.1 D.2.2.2))
                          (cHSet C x D.1 (cC C x D.2.1.1 D.1 a.1 D.2.1.2) (cC C x D.2.2.1 D.1 a.2.1 D.2.2.2))
                          (<i>Path (cH C x D.1)
-                           (cC C x D.2.1.1 D.1 (compPath (cH C x D.2.1.1) a.1 (cC C x x D.2.1.1 (cPath C x) a.1) b.1
+                           (cC C x D.2.1.1 D.1 (composition (cH C x D.2.1.1) a.1 (cC C x x D.2.1.1 (cPath C x) a.1) b.1
                             (<i>cPathL C x D.2.1.1 a.1 @-i) d.1 @ i) D.2.1.2)
-                           (cC C x D.2.2.1 D.1 (compPath (cH C x D.2.2.1) a.2.1 (cC C x x D.2.2.1 (cPath C x) a.2.1) b.2.1
+                           (cC C x D.2.2.1 D.1 (composition (cH C x D.2.2.1) a.2.1 (cC C x x D.2.2.1 (cPath C x) a.2.1) b.2.1
                             (<i>cPathL C x D.2.2.1 a.2.1 @-i) d.2 @ i) D.2.2.2))
                          a.2.2 b.2.2 @ i)
 
 isFinal (C : precategory) (A : cA C) : U = (B : cA C) -> isContr (cH C B A)
-isFinalProp (C : precategory) (A : cA C) : prop (isFinal C A)
+isFinalProp (C : precategory) (A : cA C) : isProp (isFinal C A)
   = propPi (cA C) (\(B : cA C) -> isContr (cH C B A))
     (\(B : cA C) -> propIsContr (cH C B A))
 
 hasFinal (C : precategory) : U = (A : cA C) * isFinal C A
 
-hasFinalProp (C : precategory) (isC : isCategory C) : prop (hasFinal C)
+hasFinalProp (C : precategory) (isC : isCategory C) : isProp (hasFinal C)
   = \(x y : hasFinal C) ->
       let p : iso C x.1 y.1
             = ((y.2 x.1).1, (x.2 y.1).1
@@ -1117,7 +1117,7 @@ hasFinalProp (C : precategory) (isC : isCategory C) : prop (hasFinal C)
                           x.2 y.2 @ i)
 opaque hasFinalProp
 
-hasPullbackProp (C : precategory) (isC : isCategory C) (D : cospan C) : prop (hasPullback C D)
+hasPullbackProp (C : precategory) (isC : isCategory C) (D : cospan C) : isProp (hasPullback C D)
   = hasFinalProp (cospanConePrecategory C D) (isCategoryCospanCone C D isC)
 opaque hasPullbackProp
 
@@ -1143,22 +1143,22 @@ pullbackPasting
            let hole : Path (cH CA c.1 F)
                          (cC CA c.1 D F c.2.1 (cC CA D E F h i))
                          (cC CA c.1 C F (cC CA c.1 B C c.2.2.1 g) l)
-                    = compPath (cH CA c.1 F)
+                    = composition (cH CA c.1 F)
                              (cC CA c.1 D F c.2.1 (cC CA D E F h i))
                              (cC CA c.1 E F (cC CA c.1 D E c.2.1 h) i)
                              (cC CA c.1 C F (cC CA c.1 B C c.2.2.1 g) l)
                              (<n>cPathC CA c.1 D E F c.2.1 h i@-n)
-                     (compPath (cH CA c.1 F)
+                     (composition (cH CA c.1 F)
                              (cC CA c.1 E F (cC CA c.1 D E c.2.1 h) i)
                              (cC CA c.1 E F (cC CA c.1 B E c.2.2.1 k) i)
                              (cC CA c.1 C F (cC CA c.1 B C c.2.2.1 g) l)
                              (<n>cC CA c.1 E F (c.2.2.2@n) i)
-                     (compPath (cH CA c.1 F)
+                     (composition (cH CA c.1 F)
                              (cC CA c.1 E F (cC CA c.1 B E c.2.2.1 k) i)
                              (cC CA c.1 B F c.2.2.1 (cC CA B E F k i))
                              (cC CA c.1 C F (cC CA c.1 B C c.2.2.1 g) l)
                              (cPathC CA c.1 B E F c.2.2.1 k i)
-                     (compPath (cH CA c.1 F)
+                     (composition (cH CA c.1 F)
                              (cC CA c.1 B F c.2.2.1 (cC CA B E F k i))
                              (cC CA c.1 B F c.2.2.1 (cC CA B C F g l))
                              (cC CA c.1 C F (cC CA c.1 B C c.2.2.1 g) l)
@@ -1173,7 +1173,7 @@ pullbackPasting
                hole2 : Path (cH CA c.1 F)
                           (cC CA c.1 E F (cC CA c.1 D E c.2.1 h) i)
                           (cC CA c.1 C F (cC CA c.1 B C c.2.2.1 g) l)
-                    = compPath (cH CA c.1 F)
+                    = composition (cH CA c.1 F)
                              (cC CA c.1 E F (cC CA c.1 D E c.2.1 h) i)
                              (cC CA c.1 D F c.2.1 (cC CA D E F h i))
                              (cC CA c.1 C F (cC CA c.1 B C c.2.2.1 g) l)
@@ -1197,17 +1197,17 @@ pullbackPasting
                             (\(p1:Path (cH CA c.1 C) (cPathC CA c.1 A B C h' f g @ 0) c'.2.2.1) ->
                               let h1 : cospanConeHom CA (F, (E, i), (C, l)) cc (B, k, g, cc2)
                                      = (cC CA c.1 A B h' f
-                                       ,compPath (cH CA c.1 E)
+                                       ,composition (cH CA c.1 E)
                                                (cC CA c.1 B E (cC CA c.1 A B h' f) k)
                                                (cC CA c.1 A E h' (cC CA A B E f k))
                                                (cC CA c.1 D E c.2.1 h)
                                                (cPathC CA c.1 A B E h' f k)
-                                       (compPath (cH CA c.1 E)
+                                       (composition (cH CA c.1 E)
                                                (cC CA c.1 A E h' (cC CA A B E f k))
                                                (cC CA c.1 A E h' (cC CA A D E j h))
                                                (cC CA c.1 D E c.2.1 h)
                                                (<i>cC CA c.1 A E h' (cc1@-i))
-                                       (compPath (cH CA c.1 E)
+                                       (composition (cH CA c.1 E)
                                                (cC CA c.1 A E h' (cC CA A D E j h))
                                                (cC CA c.1 D E (cC CA c.1 A D h' j) h)
                                                (cC CA c.1 D E c.2.1 h)

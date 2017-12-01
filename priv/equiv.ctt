@@ -1,6 +1,5 @@
 module equiv where
 
-import path
 import propset
 import proto
 import proto_equiv

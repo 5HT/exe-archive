@@ -17,7 +17,7 @@ function check_all {
   for file in $files
   do
    grep "^import $file$" priv/*.ctt
-   cubical -b priv/$file.ctt | tee -a $parsed | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
+   cubical -b priv/$file.ctt | tee $parsed | grep -vE "0m0|^ *Checking:|^Parsed|File loaded.|^$|cubical, version|shadowed"
   done
 }
 

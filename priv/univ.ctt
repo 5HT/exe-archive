@@ -1,6 +1,7 @@
 module univ where
 
 import retract
+import iso
 import equiv
 import sigma
 
@@ -126,7 +127,7 @@ thmUniv (t : (A X : U) -> Path U X A -> equiv X A) (A : U) :
       (t A) (lemSinglContr' U A) (univalenceAlt A)
 
 transEquiv' (A X : U) (p : Path U X A) : equiv X A =
-  substTrans U (\(Y : U) -> equiv Y A) A X (<i> p @ -i) (idEquiv A)
+  subst U (\(Y : U) -> equiv Y A) A X (<i> p @ -i) (idEquiv A)
 
 -- The univalence axiom
 univalence (A X : U) : isEquiv (Path U X A) (equiv X A) (transEquiv' A X) =
@@ -145,7 +146,7 @@ corrUniv' (A B : U) : equiv (Path U A B) (equiv A B) =
 contrSinglEquiv (A B : U) (f : equiv A B) :
   Path ((X : U) * equiv X B) (B,idEquiv B) (A,f) = rem
   where
-  rem1 : prop ((X : U) * equiv X B) =
+  rem1 : isProp ((X : U) * equiv X B) =
     isContrProp ((X : U) * equiv X B) (univalenceAlt B)
   rem : Path ((X : U) * equiv X B) (B,idEquiv B) (A,f) = rem1 (B,idEquiv B) (A,f)
 

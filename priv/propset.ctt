@@ -1,6 +1,7 @@
 module propset where
 
 import path
+import proto
 
 isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
 isProp  (A : U) : U = n_grpd A Z
@@ -38,13 +39,27 @@ propSet (A : U) (h : isProp A) : isSet A =
                         , (j=0) -> h a (p @ i)
                         , (j=1) -> h a (q @ i)]
 
+propIsProp (A : U) : isProp (isProp A) =
+  \(f g : isProp A) -> <i> \(a b : A) ->
+    propSet A f a b (f a b) (g a b) @ i
+
+setIsProp (A : U) : isProp (isSet A) =
+ \(f g : isSet A) -> <i> \(a b :A) ->
+   propIsProp (Path A a b) (f a b) (g a b) @ i
+
 -- propIsContr
 
 lemProp (A : U) (h : A -> isProp A) : isProp A =
   \(a : A) -> h a a
+
+isContrProp (A : U) (h : isContr A) : isProp A =
+  \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
 
 propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem where
   rem (t : isContr A) : isProp (isContr A) = propSig A T pA pB where
   T (x : A) : U = (y : A) -> Path A x y
   pA (x y : A) : Path A x y = composition A x t.1 y (<i> t.2 x @ -i) (t.2 y)
   pB (x : A) : isProp (T x) = propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
+
+propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (and A B) =
+  propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)
