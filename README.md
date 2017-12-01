@@ -1,6 +1,11 @@
 Infinity Language
 =================
 
+Base Library
+------------
+
+!(depgr)[https://github.com/groupoid/infinity/blob/master/doc/img/baselib.png?raw=true]
+
 The idea of Infinity Language came from the need to unify and
 arrange different calculi as extensions to the core of the
 language with dependent types (or MLTT core). While working on
