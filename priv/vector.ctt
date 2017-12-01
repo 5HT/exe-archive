@@ -1,0 +1,9 @@
+module vector where
+
+import nat
+
+data vector (A: U) (n: nat) = nil | cons (x: A) (xs: vector A (pred n))
+
+nil_ (A: U): vector A zero = nil
+cons_ (A: U) (x: A) (n: nat) (xs: vector A n): vector A (suc n) = cons x xs
+
