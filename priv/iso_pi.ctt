@@ -43,7 +43,7 @@ setPi (A : U) (B : A -> U) (h : (x : A) -> isSet (B x)): isSet ((x: A) -> B x)
     = subst U isProp a b p e where
     a : U = (x: A) -> Path (B x) (f x) (g x)
     b : U = Path ((x : A) -> B x) f g
-    p : Path U a b = <i> idPi A B f g @ -i
+    p : Path U a b = <i> pathPi A B f g @ -i
     e : isProp a = propPi A P (\(x: A) -> h x (f x) (g x)) where
       P (x: A): U = Path (B x) (f x) (g x)
 --}

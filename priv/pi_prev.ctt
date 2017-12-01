@@ -4,25 +4,6 @@ module pi_prev where
 import list
 import iso_pi
 
-pi (A:U) (P:A->U) : U = (x:A) -> P x
-
--- logic framework
-
-Pi (A: U) : U
-    = (intro: (A -> U) -> U)
-    * (lambda: (B: A -> U) -> pi A B -> intro B)
-    * (app:    (B: A -> U) -> intro B -> pi A B)
-    * (applam: (B: A -> U) (f: pi A B) -> (a: A) -> Path (B a) ((app B (lambda B f)) a) (f a))
-    * (lamapp: (B: A -> U) (p: intro B) -> Path (intro B) (lambda B (\(a:A) -> app B p a)) p)
-    * Unit
-
-intro (A:U):(A->U)->U = \(x:A->U)->list A
---lambda (A:U) (B:A->U):pi A B->intro B=\(x:A->U)(y:pi A B)->singl B
---app (A: U) (B: A -> U): U = intro B -> pi A B
-
-
--- todo: prove applam lamapp
-
 groupoidPi (A:U) (B:A -> U) (h:(x:A) -> groupoid (B x)) (f g:pi A B) : set (Path (pi A B) f g) =
     subst U set  T  (Path (pi A B) f g) (<i>pathPi A B f g@-i) rem1
  where
