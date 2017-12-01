@@ -15,10 +15,10 @@ data cofree  (F: U -> U) (A: U)    = CoFree  (_: fix (cofreeF   F A))
 unfree   (A: U) (F: U -> U): free   F A -> fix (freeF   F A) = split Free   a -> a
 uncofree (A: U) (F: U -> U): cofree F A -> fix (cofreeF F A) = split CoFree a -> a
 
-pure (F: U -> U): U = (return: (A: U) -> A -> F A) * Unit
+pure (A: U) (F: U -> U): U = (return: A -> F A) * Unit
 
-applicative (F: U -> U): U
-    = (pure_: pure F)
-    * (functor_: functor F)
-    * (ap: (A B: U) -> F (A -> B) -> F A -> F B)
+applicative (A B: U) (F: U -> U): U
+    = (pure_: pure A F)
+    * (functor_: functor_ A B F)
+    * (ap: F (A -> B) -> F A -> F B)
     * Unit

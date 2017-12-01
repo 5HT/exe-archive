@@ -4,6 +4,7 @@ module algstruct where
 import bool
 import prelude
 import pi_prev
+import iso_sigma
 import sigma
 
 -- Properties
