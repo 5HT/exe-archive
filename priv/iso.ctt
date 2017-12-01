@@ -1,40 +1,7 @@
 module iso where
 
+import proto
 import propset
-import path
-
-lemPropF (A : U) (P : A -> U) (pP : (x : A) -> isProp (P x)) (a0 a1 :A)
-         (p : Path A a0 a1) (b0 : P a0) (b1 : P a1) : PathP (<i>P (p@i)) b0 b1 =
- <i>pP (p@i) (comp (<j>P (p@i/\j)) b0 [(i=0) -> <_>b0]) (comp (<j>P (p@i\/-j)) b1 [(i=1) -> <_>b1])@i
-
--- other proof
--- lemPropF (A : U) (P : A -> U) (pP : (x : A) -> prop (P x)) (a :A) :
---          (a1 : A) (p : Path A a a1) (b0 : P a) (b1 : P a1) -> PathP (<i>P (p@i)) b0 b1 =
--- J A a (\ (a1 : A) (p : Path A a a1) ->
---          (b0 : P a) (b1 : P a1) -> PathP (<i>P (p@i)) b0 b1) rem where
--- rem : (b0 b1:P a) -> Path (P a) b0 b1 = pP a
-
-lemSig (A : U) (B : A -> U) (pB : (x : A) -> isProp (B x))
-       (u v : (x:A) * B x) (p : Path A u.1 v.1) :
-       Path ((x:A) * B x) u v =
-  <i> (p@i,(lemPropF A B pB u.1 v.1 p u.2 v.2)@i)
-
-propSig (A : U) (B : A -> U) (pA : isProp A)
-        (pB : (x : A) -> isProp (B x)) (t u : (x:A) * B x) :
-        Path ((x:A) * B x) t u =
-  lemSig A B pB t u (pA t.1 u.1)
-
-lemProp (A : U) (h : A -> isProp A) : isProp A =
-  \(a : A) -> h a a
-
-propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem
-  where
-    rem (t : isContr A) : isProp (isContr A) = propSig A T pA pB
-      where
-        T (x : A) : U = (y : A) -> Path A x y
-        pA (x y : A) : Path A x y = composition A x t.1 y (<i> t.2 x @ -i) (t.2 y)
-        pB (x : A) : isProp (T x) =
-          propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
 
 --         u
 --    a0 -----> a1
@@ -131,3 +98,4 @@ isoPath (A B : U) (f : A -> B) (g : B -> A)
       (t : (x : A) -> Path A (g (f x)) x) : Path U A B =
        <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t)
                   , (i = 1) -> (B,idfun B,idIsEquiv B) ]
+

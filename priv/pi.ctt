@@ -2,7 +2,7 @@
 module pi where
 
 import list
-import proto_pi
+import iso_pi
 
 pi (A:U) (P:A->U) : U = (x:A) -> P x
 
@@ -24,7 +24,7 @@ intro (A:U):(A->U)->U = \(x:A->U)->list A
 -- todo: prove applam lamapp
 
 groupoidPi (A:U) (B:A -> U) (h:(x:A) -> groupoid (B x)) (f g:pi A B) : set (Path (pi A B) f g) =
-    subst U set  T  (Path (pi A B) f g) (<i>idPi A B f g@-i) rem1
+    subst U set  T  (Path (pi A B) f g) (<i>pathPi A B f g@-i) rem1
  where
   T : U = (x:A) -> Path (B x) (f x) (g x)
   rem1 : set T =  setPi A (\ (x:A) -> Path (B x) (f x) (g x)) (\ (x:A) -> h x (f x) (g x))

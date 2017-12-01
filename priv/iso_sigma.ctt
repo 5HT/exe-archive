@@ -5,14 +5,14 @@ import iso
 
 -- used in grothedieck.ctt and below
 pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
- Path U (Path (Sigma A B) t u) ((p : Path A t.1 u.1) * PathP (<i> B (p @ i)) t.2 u.2) =
-  isoPath T0 T1 f g s t where
-   T0 : U = Path (Sigma A B) t u
-   T1 : U = (p:Path A t.1 u.1) * PathP (<i> B (p@i)) t.2 u.2
-   f (q:T0) : T1 = (<i> (q@i).1,<i> (q@i).2)
-   g (z:T1) : T0 = <i>(z.1 @i,z.2 @i)
-   s (z:T1) : Path T1 (f (g z)) z = refl T1 z
-   t (q:T0) : Path T0 (g (f q)) q = refl T0 q
+  Path U (Path (Sigma A B) t u) ((p : Path A t.1 u.1) * PathP (<i> B (p @ i)) t.2 u.2)
+  = isoPath T0 T1 f g s t where
+  T0 : U = Path (Sigma A B) t u
+  T1 : U = (p:Path A t.1 u.1) * PathP (<i> B (p@i)) t.2 u.2
+  f (q:T0) : T1 = (<i> (q@i).1,<i> (q@i).2)
+  g (z:T1) : T0 = <i>(z.1 @i,z.2 @i)
+  s (z:T1) : Path T1 (f (g z)) z = refl T1 z
+  t (q:T0) : Path T0 (g (f q)) q = refl T0 q
 
 -- used in coproduct* and below
 pathSig3 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * Path (P u.1) (transport (<i>P (p @ i)) t.2) u.2): Path (Sigma A P) t u

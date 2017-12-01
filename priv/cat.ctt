@@ -3,10 +3,10 @@ module cat where
 import propset
 
 -- Algebra
-categoryData: U = (A: U) * (A -> A -> U)
+cat: U = (A: U) * (A -> A -> U)
 
 -- Definition 9.1.1. Six Precategory Properties
-isPrecategory (C: categoryData): U
+isPrecategory (C: cat): U
   = (id: (x: C.1) -> C.2 x x)
   * (c: (x y z: C.1) -> C.2 x y -> C.2 y z -> C.2 x z)
   * (homSet: (x y: C.1) -> isSet (C.2 x y))
@@ -14,7 +14,7 @@ isPrecategory (C: categoryData): U
   * (right: (x y: C.1) -> (f: C.2 x y) -> Path (C.2 x y) (c x y y f (id y)) f)
   * ( (x y z w: C.1) -> (f: C.2 x y) -> (g: C.2 y z) -> (h: C.2 z w) ->
     Path (C.2 x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
-precategory: U = (C: categoryData) * isPrecategory C
+precategory: U = (C: cat) * isPrecategory C
 
 -- Public Accessors
 carrier (C: precategory): U = C.1.1

@@ -1,6 +1,6 @@
 module coproduct_set where
 
-import proto_pi
+import iso_pi
 import iso_sigma
 
 upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al

@@ -75,3 +75,4 @@ setGroupoid (A:U) (sA:set A) (a0 a1:A) : set (Path A a0 a1) = propSet (Path A a0
 
 -- unused
 propGroupoid (A:U) (pA: prop A) : groupoid A = setGroupoid A (propSet A pA)
+

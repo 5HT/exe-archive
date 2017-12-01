@@ -4,6 +4,10 @@ import iso
 
 pure (A: U) (F: U -> U): U = (return: A -> F A) * Unit
 
+propUnit : isProp Unit = split
+  tt -> split@((x:Unit) -> Path Unit tt x) with
+        tt -> <i> tt
+
 data tuple (A B: U) = pair (a: A) (b: B)
 fst (A B: U): tuple A B -> A = split pair a b -> a
 snd (A B: U): tuple A B -> B = split pair a b -> b

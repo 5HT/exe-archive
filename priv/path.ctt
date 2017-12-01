@@ -66,3 +66,10 @@ J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
   (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p =
     subst (singl A a) T (a, refl A a) (x, p) (contrSingl A a x p) d
       where T (z : singl A a) : U = C (z.1) (z.2)
+
+data N = Z | S (n: N)
+
+n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n) where
+  rec (A: U) (a b: A): (k: N) -> U = split
+    Z -> Path A a b
+    S n -> n_grpd (Path A a b) n

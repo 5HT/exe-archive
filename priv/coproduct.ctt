@@ -1,6 +1,24 @@
 module coproduct where
 
+import proto
 import propset
+
+Set : U = (a: U) * isSet a
+
+propUnit : isProp Unit = split
+  tt -> split@((x:Unit) -> Path Unit tt x) with
+        tt -> <i> tt
+
+unitSet : Set = (Unit, propSet Unit propUnit)
+setElem (S: Set): U = S.1
+
+-- foo (S: Set) (e: setElem S): e -> e = idfun e
+-- u : setElem unitSet = tt
+
+obSet (A: Set): U = A.1
+homSet (A B: Set): U = obSet A -> obSet B
+
+-- foo : homSet unitSet unitSet = idfun Unit
 
 -- endofunctor
 T : U = (f: Set -> Set) * ((a b: Set) -> homSet a b -> homSet (f a) (f b))
