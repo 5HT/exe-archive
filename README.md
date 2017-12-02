@@ -58,3 +58,11 @@ with cata/ana recursion and fixpoint adjoints in/out.
 This library is best to read with HoTT book at http://groupoid.space/mltt/types/
 
 ![depgr](https://github.com/groupoid/infinity/blob/master/doc/img/base.png?raw=true)
+
+Credits
+-------
+
+* Andy Melnikov
+* Maxim Sokhatsky
+
+
