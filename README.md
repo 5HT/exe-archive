@@ -6,28 +6,29 @@ Layered Core
 
 The idea of Infinity Language came from the need to unify and
 arrange different calculi as extensions to the core of the
-language with dependent types (or MLTT core). While working on
-distributed systems, data storages and stream processing, we discovered that two core
-languages: pi calculus and stream calculus were
-connected and being driven by a language with quantifiers as primitives.
-
-### PTS
-
+language with dependent types (or MLTT core).
 The language has pure functions, infinity number of universes,
 fixpoint, homotopy interval [0,1], inductive types and pi/sigma as a core.
 
+### PTS
+
+Pure Type Systems are type system based only on Pi-type. Infinity
+number of universes was added to avoid paradoxes. Sigma-type is
+derivable in PTS.
+
 ### MLTT
 
-With usage of dependent fibrations and Pi, Sigma types Martin-Lof introduced MLTT.
+With usage of dependent fibrations and Pi,Sigma-types Martin-Lof introduced a Type Theory.
 Which is known to be sound and consistent with only one impredicative contractable
 bottom space and predicative hierarchy of infinitely many spaces. It can be used both as
-an operational calculus and a logical framework. It is the core of top level AST while
-other languaages are represented as leafs of this core.
+an operational calculus and a logical framework. Inductive data types is
+an extension of MLTT with recursors for case analysis and induction for reasoning.
 
 ### HTS
 
-Homotopy calculus is an extension of MLTT with path types, intervals and circles and HITs.
-It is used to model higher inductive types and stands as a contemporary math foundation.
+Homotopy Type System is an extension of MLTT with path types, composition on paths,
+gluening eliminators. It is used to model higher inductive types and stands
+as a contemporary math foundation.
 
 You can read about Infinity Language layers at http://groupoid.space/mltt/infinity/
 
