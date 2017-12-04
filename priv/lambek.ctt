@@ -135,49 +135,72 @@ data Fin (n: nat)
 
 -- Inductive Types
 data Type
-    = var
-    | one
-    | sigma (S: U) (T: S -> Type)
-    | pi    (S: U) (T: S -> Type)
-
--- Inductive Families
-data Family (I: U)
-    = ivar (i: I)
+    = ivar
     | ione
-    | isum (n: nat) (T: Fin n -> Family I)
-    | isigma (S: U) (T: S     -> Family I)
-    | ipi    (S: U) (T: S     -> Family I)
+    | isigma (S: U) (T: S -> Type)
+    | ipi (S: U) (T: S -> Type)
 
--- Interpret Types
-i (X: U): Type -> U = split
-   var       -> X
-   one       -> Unit
-   sigma S T -> (s: S) *  i X (T s)
-   pi    S T -> (s: S) -> i X (T s)
+-- Inductive Families indexed by I
+data Family (I: U)
+    = var (i: I)
+    | one
+    | sum (n: nat) (T: Fin n -> Family I) -- data constructors have Fin naming
+    | sigma (S: U) (T: S -> Family I)
+    | pi (S: U) (T: S -> Family I)
 
-ii (I: U) (X: I -> U): Family I -> U = split
-   ivar   i   -> X i
-   ione       -> Unit
-   isum   n T -> (k: Fin n) * ii I X (T k)
-   isigma S T -> (s: S)     * ii I X (T s)
-   ipi    S T -> (s: S)    -> ii I X (T s)
+-- Logic
+Pow (I: U): U = I -> U
+Imply (I: U) (P Q: Pow I): U = (i: I) -> P i -> Q i
+
+-- Interpret Inductive Type
+ii (X: U): Type -> U = split
+    ivar -> X
+    ione -> Unit
+    isigma S T -> (s: S) *  ii X (T s)
+    ipi S T -> (s: S) -> ii X (T s)
 
 -- Canonical Lifting
-lift (X: U) (P: X -> U) : (D: Type) (xs: i X D) -> U = split
-   var       -> \(xs: i X (var)) -> P xs
-   one       -> \(xs: i X (one)) -> Unit
-   sigma S T -> \(xs: i X (sigma S T))        -> lift X P (T xs.1) xs.2
-   pi S T    -> \(xs: i X (pi S T)) -> (s: S) -> lift X P (T s) (xs s)
+ilift (X: U) (P: Pow X) : (D: Type) (xs: ii X D) -> U = split
+    ivar -> \(xs: ii X ivar) -> P xs
+    ione -> \(xs: ii X ione) -> Unit
+    isigma S T -> \(xs: ii X (isigma S T)) -> ilift X P (T xs.1) xs.2
+    ipi S T -> \(xs: ii X (ipi S T)) -> (s: S) -> ilift X P (T s) (xs s)
 
-ilift (I: U) (X: I -> U) (P: (i: I) -> X i -> U): (D: Family I) -> (xs: ii I X D) -> U = split
-   ivar i     -> \(xs: ii I X (ivar i)) -> X i
-   ione       -> \(xs: ii I X (ione)) -> Unit
-   isum n T   -> \(xs: ii I X (isum n T))   -> ilift I X P (T xs.1) xs.2
-   isigma S T -> \(xs: ii I X (isigma S T)) -> ilift I X P (T xs.1) xs.2
-   ipi S T    -> \(xs: ii I X (ipi S T))    -> (s: S) -> ilift I X P (T s) (xs s)
+-- Interpret Inductive Family
+i (I: U) (X: Pow I): Family I -> U = split
+    var x -> X x
+    one -> Unit
+    sum n T -> (k: Fin n) * i I X (T k)
+    sigma S T -> (s: S) * i I X (T s)
+    pi S T -> (s: S) -> i I X (T s)
 
--- Mu
-data Mu (D: Type) = mu (x: i (Mu D) D)
+-- Canonical Lifting
+lift (I: U) (X: Pow I) (P: (j: I) -> X j -> U): (D: Family I) -> (xs: i I X D) -> U = split
+    var x -> \(xs: i I X (var x)) -> (P x) xs
+    one -> \(xs: i I X one) -> Unit
+    sum n T -> \(xs: i I X (sum n T)) -> lift I X P (T xs.1) xs.2
+    sigma S T -> \(xs: i I X (sigma S T)) -> lift I X P (T xs.1) xs.2
+    pi S T -> \(xs: i I X (pi S T)) -> (s: S) -> lift I X P (T s) (xs s)
 
-DAlg (D: Type) (P: Mu D -> U) (xs: i (Mu D) D): U = lift (Mu D) P D xs -> P (mu xs)
+-- Interpret Map
+imap (I: U) (X Y: Pow I) (f: Imply I X Y): (D: Family I) -> i I X D -> i I Y D = split
+    var x -> \(xs: i I X (var x)) -> f x xs
+    one -> \(xs: i I X one) -> tt
+    sum n T -> \(xs: i I X (sum n T)) -> (xs.1, imap I X Y f (T xs.1) xs.2)
+    sigma S T -> \(xs: i I X (sigma S T)) -> (xs.1, imap I X Y f (T xs.1) xs.2)
+    pi S T -> \(xs: i I X (pi S T)) -> \ (s: S) -> imap I X Y f (T s) (xs s)
+
+data func (I J: U) = mkfun (x: J -> Family I)
+
+ifunc (I J: U) (X: Pow I): func I J -> J -> U = split
+    mkfun x -> \(j: J) -> i I X (x j)
+
+ifmap (I J: U) (X Y: Pow I) (f: Imply I X Y):
+    (D: func I J) -> (j: J) -> (ifunc I J X D) j -> (ifunc I J Y D) j = split
+    mkfun x -> \(j: J) -> \(xs: i I X (x j)) -> imap I X Y f (x j) xs
+
+data Mu (D: Type) = mu (x: ii (Mu D) D)
+
+DAlg (D: Type) (P: Mu D -> U) (xs: ii (Mu D) D): U = ilift (Mu D) P D xs -> P (mu xs)
+
 
