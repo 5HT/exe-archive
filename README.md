@@ -35,7 +35,7 @@ You can read about Infinity Language layers at http://groupoid.space/mltt/infini
 Base Library
 ------------
 
-This library is dedicated to <b>cubical</b>-compatible
+This library is dedicated to ![cubical](https://github.com/mortberg/cubicaltt)-compatible
 typecheckers based on homotopy interval
 <b>[0,1]</b> and MLTT as a core. The base library is founded
 on top of 5 core modules: <b>proto</b> (composition, id, const),
@@ -58,3 +58,11 @@ with cata/ana recursion and fixpoint adjoints in/out.
 This library is best to read with HoTT book at http://groupoid.space/mltt/types/
 
 ![depgr](https://github.com/groupoid/infinity/blob/master/doc/img/base.png?raw=true)
+
+Credits
+-------
+
+* Andy Melnikov
+* Maxim Sokhatsky
+
+
