@@ -196,7 +196,7 @@ ifunc (I J: U) (X: Pow I): func I J -> J -> U = split
     mkfun x -> \(j: J) -> i I X (x j)
 
 ifmap (I J: U) (X Y: Pow I) (f: Imply I X Y):
-    (D: func I J) -> (j: J) -> (ifunc I J X D) j -> (ifunc I J Y D) j = split
+    (D: func I J) -> Imply J (ifunc I J X D) (ifunc I J Y D) = split
     mkfun x -> \(j: J) -> \(xs: i I X (x j)) -> imap I X Y f (x j) xs
 
 data Mu (D: Type) = mu (x: ii (Mu D) D)
