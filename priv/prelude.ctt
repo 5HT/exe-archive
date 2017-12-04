@@ -8,10 +8,6 @@ propUnit : isProp Unit = split
   tt -> split@((x:Unit) -> Path Unit tt x) with
         tt -> <i> tt
 
-data tuple (A B: U) = pair (a: A) (b: B)
-fst (A B: U): tuple A B -> A = split pair a b -> a
-snd (A B: U): tuple A B -> B = split pair a b -> b
-
 --prop     (A : U) : U = (a b : A) -> Path A a b
 --set      (A : U) : U = (a b : A) -> prop     (Path A a b)
 --groupoid (A : U) : U = (a b : A) -> set      (Path A a b)

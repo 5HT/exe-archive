@@ -1,7 +1,14 @@
 module lambek where
-import prelude
+
+import functor
 import control
 import either
+
+data tuple (A B: U) = pair (a: A) (b: B)
+
+fst (A B: U): tuple A B -> A = split pair a b -> a
+
+snd (A B: U): tuple A B -> B = split pair a b -> b
 
 cata (A: U) (F: U -> U) (X: functor F) (alg: F A -> A) (f: fix F): A
   = alg (X.1 (fix F) A (cata A F X alg) (out_ F f))
@@ -119,3 +126,29 @@ listObject (A: U) : U
     * Unit
 
 listCategory (A: U) (o: listObject A): U = undefined
+
+-- Universe of Types
+data Desc = var
+          | one
+          | sigma (S: U) (T: S -> Desc)
+          | pi   (S: U) (T: S -> Desc)
+
+-- Interpret Types
+i (X: U): Desc -> U = split
+   var       -> X
+   one       -> Unit
+   sigma S T -> (s: S) *  i X (T s)
+   pi    S T -> (s: S) -> i X (T s)
+
+-- Canonical Lifting
+lift (X: U): (D: Desc) (P: X -> U) (xs: i X D) -> U = split
+   var       -> \(P: X -> U) -> \(xs: i X (var)) -> P xs
+   one       -> \(P: X -> U) -> \(xs: i X (one)) -> Unit
+   sigma S T -> \(P: X -> U) -> \(xs: i X (sigma S T)) -> lift X (T xs.1) P xs.2
+   pi S T -> \(P: X -> U) -> \(f: i X (pi S T)) -> (s: S) -> lift  X (T s) P (f s)
+
+-- Mu
+data Mu (D: Desc) = mu (x: i (Mu D) D)
+
+DAlg (D: Desc) (P: Mu D -> U) (xs: i (Mu D) D): U = lift (Mu D) D P xs -> P (mu xs)
+
