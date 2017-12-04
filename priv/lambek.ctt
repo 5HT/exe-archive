@@ -3,6 +3,7 @@ module lambek where
 import functor
 import control
 import either
+import nat
 
 data tuple (A B: U) = pair (a: A) (b: B)
 
@@ -127,28 +128,56 @@ listObject (A: U) : U
 
 listCategory (A: U) (o: listObject A): U = undefined
 
--- Universe of Types
-data Desc = var
-          | one
-          | sigma (S: U) (T: S -> Desc)
-          | pi   (S: U) (T: S -> Desc)
+-- Finite Sets
+data Fin (n: nat)
+    = fzero
+    | fsuc (n: nat) (i: Fin (pred n))
+
+-- Inductive Types
+data Type
+    = var
+    | one
+    | sigma (S: U) (T: S -> Type)
+    | pi    (S: U) (T: S -> Type)
+
+-- Inductive Families
+data Family (I: U)
+    = ivar (i: I)
+    | ione
+    | isum (n: nat) (T: Fin n -> Family I)
+    | isigma (S: U) (T: S     -> Family I)
+    | ipi    (S: U) (T: S     -> Family I)
 
 -- Interpret Types
-i (X: U): Desc -> U = split
+i (X: U): Type -> U = split
    var       -> X
    one       -> Unit
    sigma S T -> (s: S) *  i X (T s)
    pi    S T -> (s: S) -> i X (T s)
 
+ii (I: U) (X: I -> U): Family I -> U = split
+   ivar   i   -> X i
+   ione       -> Unit
+   isum   n T -> (k: Fin n) * ii I X (T k)
+   isigma S T -> (s: S)     * ii I X (T s)
+   ipi    S T -> (s: S)    -> ii I X (T s)
+
 -- Canonical Lifting
-lift (X: U): (D: Desc) (P: X -> U) (xs: i X D) -> U = split
-   var       -> \(P: X -> U) -> \(xs: i X (var)) -> P xs
-   one       -> \(P: X -> U) -> \(xs: i X (one)) -> Unit
-   sigma S T -> \(P: X -> U) -> \(xs: i X (sigma S T)) -> lift X (T xs.1) P xs.2
-   pi S T -> \(P: X -> U) -> \(f: i X (pi S T)) -> (s: S) -> lift  X (T s) P (f s)
+lift (X: U) (P: X -> U) : (D: Type) (xs: i X D) -> U = split
+   var       -> \(xs: i X (var)) -> P xs
+   one       -> \(xs: i X (one)) -> Unit
+   sigma S T -> \(xs: i X (sigma S T))        -> lift X P (T xs.1) xs.2
+   pi S T    -> \(xs: i X (pi S T)) -> (s: S) -> lift X P (T s) (xs s)
+
+ilift (I: U) (X: I -> U) (P: (i: I) -> X i -> U): (D: Family I) -> (xs: ii I X D) -> U = split
+   ivar i     -> \(xs: ii I X (ivar i)) -> X i
+   ione       -> \(xs: ii I X (ione)) -> Unit
+   isum n T   -> \(xs: ii I X (isum n T))   -> ilift I X P (T xs.1) xs.2
+   isigma S T -> \(xs: ii I X (isigma S T)) -> ilift I X P (T xs.1) xs.2
+   ipi S T    -> \(xs: ii I X (ipi S T))    -> (s: S) -> ilift I X P (T s) (xs s)
 
 -- Mu
-data Mu (D: Desc) = mu (x: i (Mu D) D)
+data Mu (D: Type) = mu (x: i (Mu D) D)
 
-DAlg (D: Desc) (P: Mu D -> U) (xs: i (Mu D) D): U = lift (Mu D) D P xs -> P (mu xs)
+DAlg (D: Type) (P: Mu D -> U) (xs: i (Mu D) D): U = lift (Mu D) P D xs -> P (mu xs)
 
