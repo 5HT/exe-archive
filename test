@@ -5,7 +5,7 @@ files="binnat function
        iso_example refinement_example stream helix
        coproduct coproduct_noset coproduct_set
        girard puresigma maybenat monad pushout vector
-       quotient om stream paradox lambek
+       quotient stream paradox lambek
        collection brunerie trunc fun
        univalence category grothendieck"
 

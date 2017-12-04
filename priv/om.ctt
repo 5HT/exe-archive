@@ -1,9 +1,9 @@
 module om where
 
-import prelude
 import nat
 import list
 import maybe
+import sigma
 
 data alg = z | o | max (a b: alg) | min (a b: alg) | app (a b: alg)
 name: U = list nat
@@ -105,12 +105,12 @@ func: ind  -> bool = split
 
 -- refine type
 
-var (l: name): list (tuple name ind) -> bool = undefined
+var (l: name): list (Sigma name ind) -> bool = undefined
 sh:    ind -> name -> nat -> ind             = undefined
 subst: ind -> name -> ind -> ind             = undefined
 norm:  ind -> ind                            = undefined
 equ:   ind -> bool                           = undefined
-type:  ind -> list (tuple name ind) -> ind   = undefined
+type:  ind -> list (Sigma name ind) -> ind   = undefined
 
 data hts
     = path (a b: hts)
