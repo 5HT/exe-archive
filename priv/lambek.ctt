@@ -191,6 +191,7 @@ imap (I: U) (X Y: Pow I) (f: Imply I X Y): (D: Family I) -> i I X D -> i I Y D =
     pi S T -> \(xs: i I X (pi S T)) -> \ (s: S) -> imap I X Y f (T s) (xs s)
 
 data func (I J: U) = mkfun (x: J -> Family I)
+mkf (I: U) (x: I -> Family I): func I I = mkfun x
 
 ifunc (I J: U) (X: Pow I): func I J -> J -> U = split
     mkfun x -> \(j: J) -> i I X (x j)
@@ -199,8 +200,17 @@ ifmap (I J: U) (X Y: Pow I) (f: Imply I X Y):
     (D: func I J) -> Imply J (ifunc I J X D) (ifunc I J Y D) = split
     mkfun x -> \(j: J) -> \(xs: i I X (x j)) -> imap I X Y f (x j) xs
 
-data Mu (D: Type) = mu (x: ii (Mu D) D)
+data iMu (D: Type) = imu (x: ii (iMu D) D)
+data Mu (I: U) (D: func I I) (i: I) = mu (_: ifunc I I (Mu I D) D i)
 
-DAlg (D: Type) (P: Mu D -> U) (xs: ii (Mu D) D): U = ilift (Mu D) P D xs -> P (mu xs)
+iDAlg (D: Type) (P: iMu D -> U) (xs: ii (iMu D) D): U = ilift (iMu D) P D xs -> P (imu xs)
 
+-- [_]^ : (D : func I I)(P : ∀{i} → X i → Set)(xs : Σ[ i ∈ I ] ⟦ D ⟧func X i) → Set
+-- [ D ]^ P (i , xs) = [ func.out D i ]^h P xs
+
+-- liftfun (I: U) (X: Pow I):
+--    (D: func I I) -> ((i: I) -> X i -> U) -> (i: I) * (ifunc I I X D i) -> U = split
+--    mkfun x -> \(P: (i: I) -> X i -> U) ->
+--               \(xs: (i: I) * ifunc I I X (mkf I x) i) ->
+--               lift I X P (x xs.1) xs.2
 
