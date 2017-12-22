@@ -18,4 +18,5 @@ done
 
 echo Compiled $(sort -u parsed.txt | wc -l) files of $(ls -1 priv/*.ctt | wc -l) in priv/
 echo Skipped files:
-join -v2 <(sort -u parsed.txt) <(cd priv && ls -1 *.ctt)
+sort -u parsed.txt >distinct.txt
+join -v2 distinct.txt <(cd priv && ls -1 *.ctt)
