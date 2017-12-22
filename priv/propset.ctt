@@ -1,6 +1,5 @@
 module propset where
 
-import path
 import proto
 
 isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
