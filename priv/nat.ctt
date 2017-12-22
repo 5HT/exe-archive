@@ -113,7 +113,7 @@ caseDNat (P:nat -> U) (a0 :P zero) (aS : (n:nat) -> P (suc n))
  suc n -> aS n
 
 znots (n : nat) : neg (Path nat zero (suc n)) =
- \ (h:Path nat zero (suc n)) -> subst nat (caseNat U nat N0) zero (suc n) h zero
+ \ (h:Path nat zero (suc n)) -> subst nat (caseNat U nat Empty) zero (suc n) h zero
 
 snotz (n : nat) : neg (Path nat (suc n) zero) =
  \ (h:Path nat (suc n) zero) -> znots n (inv nat (suc n) zero h)
@@ -140,19 +140,17 @@ nat_instance_ : eq_ nat = equalNat
 -- Parity
 
 -- TODO: this overloads Unit from proto
-data tt = trivial
-data ff =
 
 mutual
   evenT : nat -> U = split
-    zero -> tt
+    zero -> Unit
     suc n -> oddT n
 
   oddT : nat -> U = split
-    zero -> ff
+    zero -> Empty
     suc n -> evenT n
 
-zeroIsEvenT : evenT zero = trivial
+zeroIsEvenT : evenT zero = tt
 
 evenSuccIsOddT (n: nat) (pn: evenT n): oddT (suc n) = pn
 oddSuccIsEvenT (n: nat) (pn: oddT n): evenT (suc n) = pn
@@ -162,8 +160,8 @@ evenPredIsOddT: (n: nat) (pn: oddT (suc n)) -> evenT n = split
   suc n' ->  \(pn: oddT (suc (suc n'))) -> pn
 
 -- TODO: this overloads efq and neg from prelude
-efq (A:U) : ff -> A = split {}
-neg (A:U) : U = A -> ff
+efq (A:U) : Empty -> A = split {}
+neg (A:U) : U = A -> Empty
 
 mutual
   evenPlusEvenIsEven : (n m:nat) (pn:evenT n) (pm : evenT m) -> evenT (add m n) = split
