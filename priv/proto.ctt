@@ -1,7 +1,5 @@
 module proto where
 
-import path
-
 data Empty =
 data Unit = tt
 

@@ -1,32 +1,9 @@
 module path where
 
-Path (A : U) (a b : A) : U = PathP (<i> A) a b
-refl (A : U) (a : A) : Path A a a = <i> a
-singl (A : U) (a : A) : U = (x : A) * Path A a x
-trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
-sym (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
-cong (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b) = <i> f (p @ i)
-
-mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
-    = <i> f (p @ i)
+import proto_path
 
 substP (A B: U) (P : (X: U) -> X -> U) (PP: Path U A B) (a: A) (b : B) (p : PathP PP a b) (e : P A a) : P B b
     = comp (<i> P (PP @ i) (p @ i)) e []
-
-subst (A : U) (P : A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
-    = comp (<i> P (p @ i)) e []
---  = trans (P a) (P b) (mapOnPath A U P a b p) e
-
-substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
-    =  subst A P b a (<i> p @ -i)
-
-composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
-    = comp (<i> Path A a (q @ i)) p []
---  = subst A (Path A a) b c q p
---  = <i> comp (<j>A) (p @ i) [ (i = 1) -> q, (i=0) -> <j> a ]
--- eta-reduce the type
--- J A a ( \ (b : A) (p : Path A a b) -> (c : A) -> (q : Path A b c) -> Path A a c) rem b p
---    where rem (c : A) (p : Path A a c) : Path A a c = p
 
 compositeP (A B C: U) (a: A) (b: B) (c: C) (pab: Path U A B) (pbc: Path U B C) (p: PathP pab a b) (q: PathP pbc b c): (pac: Path U A C) * PathP pac a c
   = substP B C P pbc b c q (pab, p) where
@@ -49,25 +26,3 @@ funExt (A B: U) (f g: A -> B)
 funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g x)
   = mapOnPath (A -> B) B ff f g p where
   ff (f: A -> B): B = f x
-
-contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
-    = <i> (p @ i,<j> p @ i/\j)
-
--- J is formulated in a form of Paulin-Mohring and implemented
--- using two facts that singleton are contractible and dependent function transport.
-JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (a,refl A a)) (p: Path A a b): P (b,p)
-    = subst (singl A a) T (a,refl A a) (b,p) (contrSingl A a b p) u
-    where T (z : singl A a) : U = P z
-
--- based path induction from HoTT book
-J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
-  (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p =
-    subst (singl A a) T (a, refl A a) (x, p) (contrSingl A a x p) d
-      where T (z : singl A a) : U = C (z.1) (z.2)
-
-data N = Z | S (n: N)
-
-n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n) where
-  rec (A: U) (a b: A): (k: N) -> U = split
-    Z -> Path A a b
-    S n -> n_grpd (Path A a b) n

@@ -2,6 +2,7 @@ module coproduct_set where
 
 import iso_sigma
 import iso_pi
+import path
 
 upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
 downPath (X Y: U) (f: X -> Y) (be: Y -> Y): X -> Y = o X Y Y be f

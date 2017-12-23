@@ -1,5 +1,5 @@
 module trunc where
-import path
+import proto_path
 
 data pTrunc (A : U) -- (-1)-trunc, mere proposition truncation
   = inc (a : A)

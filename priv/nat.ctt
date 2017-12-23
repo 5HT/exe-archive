@@ -1,6 +1,7 @@
 module nat where
 
 import eq
+import path
 
 data nat = zero | suc (n : nat)
 
