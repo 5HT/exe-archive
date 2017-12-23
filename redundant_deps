@@ -5,6 +5,6 @@ reduced=$(mktemp)
 trap "rm $current $reduced" EXIT
 
 (cd priv; ls -1 *.ctt) > distinct.txt 
-./makedot > $current
-./makedot | tred >$reduced
-diff -uw <(sort $current) <(sort $reduced|sed -e's/;//')
+./makedot | grep -vF 'URL=' >$current
+./makedot | tred | grep -vF 'URL=' >$reduced
+diff -u0w <(sort $current) <(sort $reduced|sed -e's/;//')
