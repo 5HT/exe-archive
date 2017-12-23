@@ -1,6 +1,5 @@
 module equiv where
 
-import propset
 import proto_equiv
 
 -- used by idTpPath

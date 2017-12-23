@@ -1,6 +1,5 @@
 module iso where
 
-import propset
 import proto_equiv
 
 --         u
