@@ -1,0 +1,5 @@
+#!/bin/bash
+file=$1
+echo 'digraph Deps {'
+grep -Ff <(grep "^\b(.+?)\b" -Po priv/$1.ctt | grep -Evx "module|import|data") -o $(ls -1 priv/*.ctt | grep -v $file | xargs) | sort -u | sed 's|^priv/||;s|\.ctt||;s|:| -> |;'
+echo '}'
