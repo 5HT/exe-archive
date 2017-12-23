@@ -1,3 +1,4 @@
+os: osx
 language: erlang
 otp_release:
   - 19.0
@@ -10,4 +11,7 @@ notifications:
     on_success: always  # options: [always|never|change] default: always
     on_failure: always  # options: [always|never|change] default: always
     on_start: always    # options: [always|never|change] default: always
-install: "./mad dep com pla bun cub"
+install:
+  - wget http://ns.synrc.com/publications/cubical
+  - export PATH=$PATH:$PWD
+  - "./mad dep com pla bun cub"
