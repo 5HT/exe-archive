@@ -1,7 +1,7 @@
 #!/bin/bash
 # Script for checking that all files compile
 
-files="binnat function
+files="retract_unused binnat function
        iso_example refinement_example stream helix
        coproduct coproduct_noset coproduct_set
        girard puresigma maybenat monad pushout vector
