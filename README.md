@@ -57,7 +57,7 @@ with cata/ana recursion and fixpoint adjoints in/out.
 
 This library is best to read with HoTT book at http://groupoid.space/mltt/types/
 
-![depgr](https://cdn.rawgit.com/groupoid/infinity/a00c8f69/doc/img/base.svg)
+![depgr](https://github.com/groupoid/infinity/blob/master/doc/img/base.png?raw=true)
 
 * [bool](http://groupoid.space/mltt/types/#bool) — Boolean
 * [control](http://groupoid.space/mltt/types/#control) — Control Free/CoFree, fix, pure/applicative typeclasses)
