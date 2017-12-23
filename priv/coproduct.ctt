@@ -1,6 +1,5 @@
 module coproduct where
 
-import proto
 import propset
 
 Set : U = (a: U) * isSet a

@@ -1,6 +1,6 @@
 module refinement_example where
 import proto
-import path
+
 data Nat = Zero | Succ (a: Nat)
 data Bool = True | False
 nat0 : Nat = Zero

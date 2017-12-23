@@ -1,6 +1,5 @@
 module monad where
 
-import functor
 import control
 
 monad (F: U -> U): U
