@@ -12,5 +12,6 @@ notifications:
     on_start: always    # options: [always|never|change] default: always
 install:
   - wget http://ns.synrc.com/publications/cubical
+  - chmod +x cubical
   - export PATH=$PATH:$PWD
   - "./mad dep com pla bun cub"
