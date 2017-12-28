@@ -1,28 +1,47 @@
 module om where
 
 import list
+import control
 
 data alg = z | o | max (a b: alg) | min (a b: alg) | app (a b: alg)
 name: U = list nat
 
-data pts (A: U)
-    = star (n: nat)
-    | var (n: name) (n: nat)
-    | app (f a: A)
-    | lambda (x: name) (d c: A)
-    | arrow (d c: A)
-    | pi (x: name) (d c: A)
+data pts
+    = star             (n: nat)
+    | var    (x: name) (l: nat)
+    | pi     (x: name) (l: nat) (d c: pts)
+    | lambda (x: name) (l: nat) (d c: pts)
+    | app                       (f a: pts)
 
-data mltt
-    = parent (p: pts mltt)
-    | sigma (n: name) (a b: mltt)
-    | pair (a b: mltt)
-    | fst (p: mltt)
-    | snd (p: mltt)
+shift (v: name) (n: nat): pts -> pts = split
+    star x           -> star x
+    var x l           -> var x l -- error yet
+    pi x l i o         -> pi x l (shift v n i) (shift v (suc n) o)
+    lambda x l i o -> lambda x l (shift v n i) (shift v (suc n) o)
+    app f a           -> app f a
+
+subst (n: name) (v: pts) (d: nat): pts -> pts = split
+    star x           -> star x
+    var x i             -> v -- error yet
+    pi x l i o         -> pi x l (subst n v l i) (subst n (shift x zero v) (suc l) o)
+    lambda x l i o -> lambda x l (subst n v l i) (subst n (shift x zero v) (suc l) o)
+    app f a           -> app f a
+
+norm: pts -> pts = split
+    star x           -> star x
+    var x i           -> var x i
+    pi x l i o         -> pi x l (norm i) (norm o)
+    lambda x l i o -> lambda x l (norm i) (norm o)
+    app f a           -> app     (norm f) (norm a)
+
+data exists
+    = sigma (n: name) (a b: exists)
+    | pair (a b: exists)
+    | fst (p: exists)
+    | snd (p: exists)
 
 data identity
-    = mltt
-    | id (a b: identity)
+    = id (a b: identity)
     | idpair (a b: identity)
     | idelim (a b c d e: identity)
 
@@ -31,20 +50,7 @@ data branch (A: U) =          br (n: name) (args: list name) (term: A)
 data label (A: U)  =         lab (n: name) (t: tele A)
 
 data ind
-    = star                        (n: nat)
-    | var    (n: name)            (i: nat)
-    | app              (f a: ind)
-    | lambda (x: name) (d c: ind)
-    | pi     (x: name) (d c: ind)
-    | sigma  (n: name) (a b: ind)
-    | arrow            (d c: ind)
-    | pair             (a b: ind)
-    | fst              (p: ind)
-    | snd              (p: ind)
-    | id               (a b: ind)
-    | idpair           (a b: ind)
-    | idelim           (a b c d e: ind)
-    | data_  (n: name) (t: tele ind) (labels:   list (label ind))
+    = data_  (n: name) (t: tele ind) (labels:   list (label ind))
     | case   (n: name) (t: ind)      (branches: list (branch ind))
     | ctor   (n: name)               (args:     list ind)
 
@@ -54,7 +60,8 @@ nil_str:  name = cons n3 nil
 cons_str: name = cons n4 nil
 x_str:    name = cons n5 nil
 xs_str:   name = cons n6 nil
-program:  ind  = data_                      -- data
+{-
+program:  p  = data_                      -- data
                  list_str                   -- list
                  (tel a_str (star one) emp) -- (a: U) =
                 (cons (lab nil_str emp)     -- nil |
@@ -63,42 +70,8 @@ program:  ind  = data_                      -- data
                       (tel xs_str (ctor list_str (cons (var a_str zero)
                                                   nil)) emp)))
                  nil))
+-}
 
-star: ind  -> maybe nat = split
-    star n -> just n
-    var    -> nothing
-    app    -> nothing
-    lambda -> nothing
-    pi     -> nothing
-    sigma  -> nothing
-    arrow  -> nothing
-    pair   -> nothing
-    fst    -> nothing
-    snd    -> nothing
-    id     -> nothing
-    idpair -> nothing
-    idelim -> nothing
-    data_  -> nothing
-    case   -> nothing
-    ctor   -> nothing
-
-func: ind  -> bool = split
-    star n -> false
-    var    -> false
-    app    -> false
-    lambda -> false
-    pi     -> true
-    sigma  -> false
-    arrow  -> true
-    pair   -> false
-    fst    -> false
-    snd    -> false
-    id     -> false
-    idpair -> false
-    idelim -> false
-    data_  -> false
-    case   -> false
-    ctor   -> false
 
 -- refine type
 
