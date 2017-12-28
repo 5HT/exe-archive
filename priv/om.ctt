@@ -20,19 +20,26 @@ shift (v: name) (n: nat): pts -> pts = split
     lambda x l i o -> lambda x l (shift v n i) (shift v (suc n) o)
     app f a           -> app f a
 
-subst (n: name) (v: pts) (d: nat): pts -> pts = split
+subst (n: name) (v: pts) (i: nat): pts -> pts = split
     star x           -> star x
     var x i             -> v -- error yet
     pi x l i o         -> pi x l (subst n v l i) (subst n (shift x zero v) (suc l) o)
     lambda x l i o -> lambda x l (subst n v l i) (subst n (shift x zero v) (suc l) o)
     app f a           -> app f a
 
-norm: pts -> pts = split
+mutual
+  subst_on_fun (a: pts): pts -> pts = split
+    star x         -> app (star x) (norm a)
+    var x i        -> app (var x i) (norm a)
+    pi x l i o     -> app (pi x l i o) (norm a)
+    lambda x l i o -> norm (subst x o l a)
+    app f a        -> app (app f a) (norm a)
+  norm: pts -> pts = split
     star x           -> star x
     var x i           -> var x i
     pi x l i o         -> pi x l (norm i) (norm o)
     lambda x l i o -> lambda x l (norm i) (norm o)
-    app f a           -> app     (norm f) (norm a)
+    app f a           -> subst_on_fun a (norm f)
 
 data exists
     = sigma (n: name) (a b: exists)
