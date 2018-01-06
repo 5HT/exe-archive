@@ -1,1 +1,0 @@
--- Pack (X : SetoidCat) := Lim( ForgetUnder X ) 
