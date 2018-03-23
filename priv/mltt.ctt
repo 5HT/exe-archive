@@ -1,0 +1,57 @@
+module mltt where
+
+import pi
+import sigma
+import path
+import nat
+
+data Unit = tt
+data Empty =
+
+Pi (A:U)(P:A->U):U=(x:A)->P(x)
+lambda (A : U) (B: A -> U) (a : A) (b: B a): A -> B a = \(x: A) -> b
+app (A : U) (B: A -> U) (a : A) (f: A -> B a): B a = f a
+
+Sigma (A : U) (B : A -> U) : U = (x : A) * B x
+pair (A : U) (B: A -> U) (a : A) (b: B a): Sigma A B = (a,b)
+pr1 (A: U) (B: A -> U) (x: Sigma A B): A = x.1
+pr2 (A: U) (B: A -> U) (x: Sigma A B): B (pr1 A B x) = x.2
+
+Equ       (A: U) (x y: A): U = undefined -- PathP (<i> A) x y
+predicate (A: U) (a: A) : U = (x: A) -> Equ A a x -> U
+reflect   (A: U) (a: A): Equ A a a = undefined -- <i> a
+J         (A: U) (a x: A) (C: predicate A a)
+          (d: C a (reflect A a)) (p: Equ A a x): C x p = undefined
+-- subst (singl A a) T (a, refl A a) (x, p) (contrSingl A a x p) d
+--      where T (z : singl A a) : U = C (z.1) (z.2)
+
+data Equality (A: U) (x y: A) = refl_ (_: Equ A x y)
+reflection (A: U) (a: A): Equality A a a = refl_ (reflect A a)
+
+test: Equality nat zero zero -> Unit = \ (z: Equality nat zero zero) -> tt
+true: Unit = test (refl_ (reflect nat zero))
+-- typecheckFailed: Unit = test (refl_ (reflect nat one))
+
+MLTT (A: U): U
+  = (Pi_Former:    (A -> U) -> U)
+  * (Pi_Intro:     (B: A -> U) (a: A) -> B a -> (A -> B a))
+  * (Pi_Elim:      (B: A -> U) (a: A) -> (A -> B a) -> B a)
+  * (Pi_Comp1:     (B: A -> U) (a: A) (f: A -> B a) -> Equ (B a) (Pi_Elim B a (Pi_Intro B a (f a))) (f a))
+  * (Pi_Comp2:     (B: A -> U) (a: A) (f: A -> B a) -> Equ (A -> B a) f (\(x:A) -> Pi_Elim B a f))
+  * (Sigma_Former: (A -> U) -> U)
+  * (Sigma_Intro:  (B: A -> U) (a: A) -> (b: B a) -> Sigma A B)
+  * (Sigma_Elim1:  (B: A -> U) -> (_: Sigma A B) -> A)
+  * (Sigma_Elim2:  (B: A -> U) -> (x: Sigma A B) -> B (pr1 A B x))
+  * (Sigma_Comp1:  (B: A -> U) (a: A) (b: B a) -> Equ     A a (Sigma_Elim1 B (Sigma_Intro B a b)))
+  * (Sigma_Comp2:  (B: A -> U) (a: A) (b: B a) -> Equ (B a) b (Sigma_Elim2 B (a,b)))
+  * (Id_Former:     A -> A  -> U)
+  * (Id_Intro:      (a: A) -> Equ A a a)
+  * (Id_Elim: (a x: A) (C: predicate A a) (d: C a (Id_Intro a)) (p: Equ A a x) -> C x p)
+  * Unit
+
+{-
+y (A: U): MLTT A = (Pi A, lambda A, app A,
+                    Sigma A, pair A, pr1 A, pr2 A,
+                    Equ A, reflect A, J A,
+                    tt)
+-}
