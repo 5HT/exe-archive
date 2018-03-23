@@ -2,9 +2,12 @@ module om where
 
 import list
 import control
+import path
+import pi
 
 data alg = z | o | max (a b: alg) | min (a b: alg) | app (a b: alg)
 name: U = list nat
+
 
 data pts
     = star             (n: nat)
@@ -12,15 +15,15 @@ data pts
     | pi     (x: name) (l: nat) (d c: pts)
     | lambda (x: name) (l: nat) (d c: pts)
     | app                       (f a: pts)
-
-shift (v: name) (n: nat): pts -> pts = split
+{-
+shift (v: name) (n: nat): pts pts pts -> pts pts pts = split
     star x           -> star x
     var x l           -> var x l -- error yet
     pi x l i o         -> pi x l (shift v n i) (shift v (suc n) o)
     lambda x l i o -> lambda x l (shift v n i) (shift v (suc n) o)
     app f a           -> app f a
 
-subst (n: name) (v: pts) (i: nat): pts -> pts = split
+subst (n: name) (v: pts pts) (i: nat): pts pts -> pts pts  = split
     star x           -> star x
     var x i             -> v -- error yet
     pi x l i o         -> pi x l (subst n v l i) (subst n (shift x zero v) (suc l) o)
@@ -40,24 +43,36 @@ mutual
     pi x l i o         -> pi x l (norm i) (norm o)
     lambda x l i o -> lambda x l (norm i) (norm o)
     app f a           -> subst_on_fun a (norm f)
-
+-}
 data exists
-    = sigma (n: name) (a b: exists)
+    = prev (a: pts)
+    | sigma (n: name) (a b: exists)
     | pair (a b: exists)
     | fst (p: exists)
     | snd (p: exists)
-
+{-
 data identity
-    = id (a b: identity)
+    = prev (a: sigma)
+    | id (a b: identity)
     | idpair (a b: identity)
     | idelim (a b c d e: identity)
 
+
+Predicate: U = (A: U) (x y: A) (p: Path A x y) -> U
+
+id_model (A: U): U
+    = (V: (C: Predicate) -> (x y: A) -> (p: Path A x y) -> C A x y p)
+    * ( (C: Predicate) -> (x: A) -> C A x x (refl A x))
+    * (J: (C: Predicate) -> D C -> V C)
+--    * (   (C: P) (t: D C) (x: A) -> Path U (J C t x x (refl x)) (t x))
+--
 data tele (A: U)   = emp | tel (n: name) (b: A) (t: tele A)
 data branch (A: U) =          br (n: name) (args: list name) (term: A)
 data label (A: U)  =         lab (n: name) (t: tele A)
 
 data ind
-    = data_  (n: name) (t: tele ind) (labels:   list (label ind))
+    = prev   (a: identity)
+    | data_  (n: name) (t: tele ind) (labels:   list (label ind))
     | case   (n: name) (t: ind)      (branches: list (branch ind))
     | ctor   (n: name)               (args:     list ind)
 
@@ -81,7 +96,7 @@ program:  p  = data_                      -- data
 
 
 -- refine type
-
+{-
 --var (l: name): list (Sigma name ind) -> bool = undefined
 sh:    ind -> name -> nat -> ind             = undefined
 subst: ind -> name -> ind -> ind             = undefined
@@ -90,7 +105,8 @@ equ:   ind -> bool                           = undefined
 --type:  ind -> list (Sigma name ind) -> ind   = undefined
 
 data hts
-    = path (a b: hts)
+    = prev (a: ind)
+    | path (a b: hts)
     | path_lam (n: name) (a b: hts)
     | path_app (f: name) (a b: hts)
     | comp_ (a b: hts)
@@ -98,3 +114,4 @@ data hts
     | glue_ (a b c: hts)
     | glue_elem (a b: hts)
     | unglue_elem (a b: hts)
+-}
