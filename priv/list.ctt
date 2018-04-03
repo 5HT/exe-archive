@@ -19,6 +19,14 @@ tail (A: U): list A -> maybe (list A) = split
   nil -> nothing
   cons x xs -> just xs
 
+nth (A: U): nat -> list A -> maybe A = split
+  zero -> split@(list A -> maybe A) with
+    nil -> nothing
+    cons x xs -> just x
+  suc i -> split@(list A -> maybe A) with
+    nil -> nothing
+    cons x xs -> nth A (pred i) xs
+
 append (A: U): list A -> list A -> list A = split
   nil -> idfun (list A)
   cons x xs -> \(ys: list A) -> cons x (append A xs ys)

@@ -1,0 +1,58 @@
+module cwf where
+
+-- http://www.cse.chalmers.se/~peterd/papers/Ise2008.pdf
+
+import nat
+import list
+import maybe
+
+data Exp = Star (_:   nat)
+         | Var  (_:   nat)
+         | Pi   (_ _: Exp)
+         | Sigma(_ _: Exp)
+
+Ty:    U = Exp
+Ctx:   U = list Exp
+Subst: U = list Exp
+
+mutual
+
+q: Exp = Var zero
+
+p: Subst = (cons (Var one)
+           (cons (Var two)
+           (cons (Var three)
+           (cons (Var four) nil))))
+
+lift (ts: Subst): Subst = cons q (cmp ts p)
+
+cmp: Subst -> Subst -> Subst = split
+   nil -> \(ts: Subst) -> nil
+   cons x xs -> \(ts: Subst) -> cons (subst ts x) (cmp xs ts)
+
+unwrap: maybe Exp -> Exp = split { nothing -> q ; just x -> x }
+
+subst (ts: Subst): Exp -> Exp = split
+  Star  i   -> Star i
+  Var   i   -> unwrap (nth Exp i ts)
+  Pi    a b -> Pi    (subst ts a) (subst (lift ts) b)
+  Sigma a b -> Sigma (subst ts a) (subst (lift ts) b)
+
+{-
+app :: Exp -> Exp -> Exp
+    app (Lam t) s = subst t (s:ide)
+    app r s       = App r s
+-}
+
+{-
+Ctx1 = {A:U,B:A->U,Pi(A,B)}
+Ctx2 = {A:U,B:A->U,Pi(A,B),Sigma(A,B),A->A}
+Subst = [Sigma (Var 1) (Var 2),Pi (Var 1) (Var 1)]
+-}
+
+{-
+isSu :: Cxt -> Cxt -> Subst -> Bool
+    isSu cxt []     []     = True
+    isSu cxt (b:bs) (t:ts) = isSu cxt bs ts &&
+                             isTm cxt (subst b cxt) t
+-}
