@@ -6,6 +6,8 @@ data stream (A : U) = cons (x : A) (xs : stream A)
 
 fib (a b: nat) : stream nat = cons a (fib b (add a b))
 
+seq (start: nat) : stream nat = cons start (seq (suc start))
+
 tail (A : U) : stream A -> stream A = split
     cons x xs -> xs
 

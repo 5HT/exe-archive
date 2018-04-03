@@ -1,5 +1,4 @@
 module fun where
-
 import cat
 
 -- Definition 9.2.1. Functor on Precategories

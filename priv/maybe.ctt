@@ -1,6 +1,6 @@
 module maybe where
 
-import functor
+--import functor
 
 data maybe (A: U)
     = nothing
@@ -28,61 +28,3 @@ reflJust (A: U) (x: A): Path (maybe A) (just x) (just x) = maybeRefl A (just x)
 maybeIsElim (A: U): (a: maybe A) -> Path (maybe A) a (maybeElim A (maybe A) nothing (\(a:A) -> just a) a) = split
   nothing -> reflNothing A
   just x -> reflJust A x
-
--- maybeMap idfun a == a
-functorMaybeId (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
-   nothing -> reflNothing A
-   just x -> reflJust A x
-
--- maybeMap id == id
-functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
-  = funExt (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
-
--- dependent eliminator, or induction principle
-maybeDElim (A: U) (P : maybe A -> U) (n: P nothing) (j: (a: A) -> P (just a)): (a: maybe A) -> P a = split
-  nothing -> n
-  just x -> j x
-
--- an alternative proof of functorMaybeId using maybeDElim
-functorMaybeId2 (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = maybeDElim A P (reflNothing A) (reflJust A) where
-  P (x: maybe A): U = Path (maybe A) (maybeId A x) x
-
-functorMaybeComp (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
-            Path (maybe C) (maybeMap A C (o A B C f g) x)
-                 ((o (maybe A) (maybe B) (maybe C) (maybeMap B C f) (maybeMap A B g)) x)
-  = let
-    aa : maybe A -> maybe C = maybeMap A C (o A B C f g)
-    bb : maybe A -> maybe C =  o (maybe A) (maybe B) (maybe C) (maybeMap B C f) (maybeMap A B g)
-    goal: (a : maybe A) -> Path (maybe C) (aa a) (bb a) = split
-      nothing -> maybeRefl C (aa nothing)
-      just x -> maybeRefl C (aa (just x))
-  in goal
-
-functor_maybe: functor maybe = (maybeMap, functorMaybeId, functorMaybeComp, tt)
-
-data Ordering = LT | EQ | GT
-
-maybeCompare (A: U) (elemCompare : A -> A -> Ordering): maybe A -> maybe A -> Ordering = split
-  nothing -> split@ maybe A -> Ordering with
-    nothing -> EQ
-    just x -> LT
-  just x -> split@ maybe A -> Ordering with
-    nothing -> GT
-    just y -> elemCompare x y
-
-maybeCompareRefl
-  (A: U)
-  (elemCompare : A -> A -> Ordering)
-  (foo: (a: A) -> Path Ordering (elemCompare a a) EQ)
-  (x: maybe A)
-  : Path Ordering (maybeCompare A elemCompare x x) EQ
-  = undefined
-
-maybeCompareRespectsPath
-  (A: U)
-  (elemCompare: A -> A -> Ordering)
-  (elemCompareRespectsPath: (a b: A) -> Path A a b -> Path Ordering (elemCompare a b) EQ)
-  (a b: maybe A)
-  (foo: Path (maybe A) a b)
-  : Path Ordering (maybeCompare A elemCompare a b) EQ
-  = undefined

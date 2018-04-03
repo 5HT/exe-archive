@@ -2,6 +2,8 @@ module cwf where
 
 -- http://www.cse.chalmers.se/~peterd/papers/Ise2008.pdf
 
+import cat
+import fun
 import nat
 import list
 import maybe
@@ -15,22 +17,21 @@ Ty:    U = Exp
 Ctx:   U = list Exp
 Subst: U = list Exp
 
+seq (start: nat): list Exp
+    = cons (Var start) (seq (suc start))
+
+
 mutual
 
 q: Exp = Var zero
-
-p: Subst = (cons (Var one)
-           (cons (Var two)
-           (cons (Var three)
-           (cons (Var four) nil))))
-
+p: Subst = seq one
+ide: Subst = seq zero
 lift (ts: Subst): Subst = cons q (cmp ts p)
+unwrap: maybe Exp -> Exp = split { nothing -> q ; just x -> x }
 
 cmp: Subst -> Subst -> Subst = split
    nil -> \(ts: Subst) -> nil
    cons x xs -> \(ts: Subst) -> cons (subst ts x) (cmp xs ts)
-
-unwrap: maybe Exp -> Exp = split { nothing -> q ; just x -> x }
 
 subst (ts: Subst): Exp -> Exp = split
   Star  i   -> Star i
@@ -38,11 +39,6 @@ subst (ts: Subst): Exp -> Exp = split
   Pi    a b -> Pi    (subst ts a) (subst (lift ts) b)
   Sigma a b -> Sigma (subst ts a) (subst (lift ts) b)
 
-{-
-app :: Exp -> Exp -> Exp
-    app (Lam t) s = subst t (s:ide)
-    app r s       = App r s
--}
 
 {-
 Ctx1 = {A:U,B:A->U,Pi(A,B)}
@@ -50,9 +46,15 @@ Ctx2 = {A:U,B:A->U,Pi(A,B),Sigma(A,B),A->A}
 Subst = [Sigma (Var 1) (Var 2),Pi (Var 1) (Var 1)]
 -}
 
-{-
-isSu :: Cxt -> Cxt -> Subst -> Bool
-    isSu cxt []     []     = True
-    isSu cxt (b:bs) (t:ts) = isSu cxt bs ts &&
-                             isTm cxt (subst b cxt) t
--}
+fam: precategory = undefined
+isContext      (C: precategory): U = undefined
+isTerminal     (C: precategory): U = undefined
+isComprehension(C: precategory)(T: functor C fam): U = undefined
+
+CwF: U
+    = (C: precategory)
+    * (T: functor C fam)
+    * (context: isContext C)
+    * (terminal: isTerminal C)
+    * (pullback: isComprehension C T)
+    * Unit
