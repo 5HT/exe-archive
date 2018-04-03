@@ -25,6 +25,8 @@ composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
 -- J A a ( \ (b : A) (p : Path A a b) -> (c : A) -> (q : Path A b c) -> Path A a c) rem b p
 --    where rem (c : A) (p : Path A a c) : Path A a c = p
 
+eta (A:U)(a:A): singl A a = (a,refl A a)
+
 contrSingl (A : U) (a b : A) (p : Path A a b) : Path (singl A a) (a,refl A a) (b,p)
     = <i> (p @ i,<j> p @ i/\j)
 
@@ -36,7 +38,7 @@ JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (a,refl A a)) (p: Path A a b): P (
 
 -- based path induction from HoTT book
 J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
-  (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p =
+  (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p = -- comp (<i> C (p @ i) (<j> p @ i /\ j)) d []
     subst (singl A a) T (a, refl A a) (x, p) (contrSingl A a x p) d
       where T (z : singl A a) : U = C (z.1) (z.2)
 

@@ -8,6 +8,7 @@ propUnit : isProp Unit = split
   tt -> split@((x:Unit) -> Path Unit tt x) with
         tt -> <i> tt
 
+--isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
 --prop     (A : U) : U = (a b : A) -> Path A a b
 --set      (A : U) : U = (a b : A) -> prop     (Path A a b)
 --groupoid (A : U) : U = (a b : A) -> set      (Path A a b)
@@ -226,3 +227,5 @@ injective (A B : U) (f : A -> B) : U =
 
 propAnd (A B : U) (pA : prop A) (pB : prop B) : prop (and A B) =
   propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)
+
+data I = one | zero | equ <i> [(i=0)-> zero,(i=1)->one]

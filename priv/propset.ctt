@@ -10,9 +10,17 @@ n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n) where
     Z -> Path A a b
     S n -> n_grpd (Path A a b) n
 
-isContr (A : U) : U = (x : A) * ((y : A) -> Path A x y)
-isProp  (A : U) : U = n_grpd A Z
-isSet   (A : U) : U = n_grpd A (S Z)
+isContr     (A: U): U = (x : A) * ((y : A) -> Path A x y)
+isProp      (A: U): U = (x y: A) -> Path A x y
+isProp      (A: U): U = n_grpd A Z
+isSet       (A: U): U = n_grpd A (S Z)
+isGroupoid  (A: U): U = n_grpd A (S (S Z))
+isGrp2      (A: U): U = n_grpd A (S (S (S Z)))
+isGrp3      (A: U): U = n_grpd A (S (S (S (S Z))))
+
+PROP      : U = (X:U) * isProp X
+SET       : U = (X:U) * isSet X
+GRPOUPOID : U = (X:U) * isGroupoid X
 
 -- propSig
 

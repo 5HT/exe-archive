@@ -36,6 +36,10 @@ maybeNatIso : (a : fix maybe) -> Path (fix maybe) (natToMaybe (maybeToNat a)) a 
 
 maybenat_ : Path U (fix maybe) nat = isoPath (fix maybe) nat maybeToNat natToMaybe natMaybeIso maybeNatIso
 
+HeteroEqu (A B: U) (a: A) (b: B) (P: Path U A B) : U = PathP P a b
+
+-- > HeteroEqu (fix maybe) nat (Fix nothing) zero maybenat_
+
 -- > transNeg (fix maybe) (nat) maybenat_ (suc (suc zero))
 -- EVAL: Fix (just (Fix (just (Fix nothing))))
 -- > trans (fix maybe) (nat) maybenat_ (Fix nothing)
