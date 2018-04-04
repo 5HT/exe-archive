@@ -1,7 +1,8 @@
 -- or A B is discrete if A and B are
 module discor where
 
-import prelude
+import proto
+import propset
 
 inlNotinr (A B:U) (a:A) (b:B) (h: Path (or A B) (inl a) (inr b)) : Empty =
  subst (or A B) T (inl a) (inr b) h tt

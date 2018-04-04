@@ -3,6 +3,12 @@ module proto where
 data Empty =
 data Unit = tt
 
+efq (A : U) : Empty -> A = split {}
+
+neg (A : U) : U = A -> Empty
+
+stable (A:U) : U = neg (neg A) -> A
+
 idfun (A : U) (a : A) : A = a
 
 constfun (A B: U) (a: A) (b: B): A = a

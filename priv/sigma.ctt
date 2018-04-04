@@ -45,3 +45,4 @@ corSigSet (A:U) (B:A-> U) (sB : (x:A) -> isSet (B x)) (t u : Sigma A B) (p:Path 
 sigSecondPath (A: U) (P: A -> U) (t u: Sigma A P) (p: Path A t.1 u.1): U
   = Path (P u.1) (transport p' t.2) u.2 where
   p' : Path U (P t.1) (P u.1) = mapOnPath A U P t.1 u.1 p
+

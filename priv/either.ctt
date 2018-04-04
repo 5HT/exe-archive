@@ -1,5 +1,7 @@
 module either where
 
+import proto
+
 data either (A B: U) = inl (a: A) | inr (b: B)
 
 either_ (A B C: U) (b: A -> C) (c: B -> C) : either A B -> C = split
@@ -7,4 +9,4 @@ either_ (A B C: U) (b: A -> C) (c: B -> C) : either A B -> C = split
   inr y -> c y
 
 -- usage
--- see in lambek.ctt	
+-- see in lambek.ctt

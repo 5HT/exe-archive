@@ -4,6 +4,7 @@ module int where
 
 import nat
 import discor
+import hedberg
 
        ---------------------------------------------------
        -- Example: Non-trivial equality between Z and Z --
@@ -64,4 +65,4 @@ testNOneZ : Z = transport (<i> sucPathZ @ - i) zeroZ
 
 
 
-ZSet : set Z = hedberg Z (orDisc nat nat natDec natDec)
+ZSet : isSet Z = hedberg Z (orDisc nat nat natDec natDec)

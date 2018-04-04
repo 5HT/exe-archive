@@ -1,6 +1,9 @@
 module hedberg where
 
-import prelude
+import either
+import proto
+import path
+import iso
 
 hedbergLemma (A: U) (a b:A) (f : (x : A) -> Path A a x -> Path A a x) (p : Path A a b) :
             Square A a a a b (refl A a) p (f a (refl A a)) (f b p) =
@@ -24,10 +27,10 @@ hedbergStable (A : U) (a b : A) (h : (x : A) -> stable (Path A a x))
    rem2 : Square A a a a b ra p r (f b p) = hedbergLemma A a b f p
    rem3 : Square A a a a b ra q r (f b q) = hedbergLemma A a b f q
 
-hedbergS (A:U) (h : (a x:A) -> stable (Path A a x)) : set A =
+hedbergS (A:U) (h : (a x:A) -> stable (Path A a x)) : isSet A =
  \(a b : A) -> hedbergStable A a b (h a)
 
-hedberg (A : U) (h : discrete A) : set A =
+hedberg (A : U) (h : discrete A) : isSet A =
  \(a b : A) -> hedbergStable A a b (\(b : A) -> decStable (Path A a b) (h a b))
 
 -- Alternative version:

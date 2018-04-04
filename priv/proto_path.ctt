@@ -5,7 +5,15 @@ refl (A : U) (a : A) : Path A a a = <i> a
 singl (A : U) (a : A) : U = (x : A) * Path A a x
 trans (A B : U) (p : Path U A B) (a : A) : B = comp p a []
 sym (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
+inv (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
 cong (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b) = <i> f (p @ i)
+const (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
+exConst (A: U): U = (f: A -> A) * const A f
+
+kan (A: U) (a b c d: A) (p: Path A a b)
+    (q: Path A a c) (r: Path A b d): Path A c d =
+    <i> comp (<j>A) (p @ i) [(i = 0) -> q,
+                             (i = 1) -> r ]
 
 mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
     = <i> f (p @ i)

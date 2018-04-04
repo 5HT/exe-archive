@@ -1,6 +1,6 @@
 module maybe where
 
---import functor
+import functor
 
 data maybe (A: U)
     = nothing

@@ -12,6 +12,7 @@
 --
 module binnat where
 
+import univ
 import nat
 
 -- Positive binary numbers like in Coq
@@ -65,7 +66,7 @@ PosToNK : (n : nat) -> Path nat (PosToN (NtoPos (suc n))) (suc n) = split
   zero  -> <_> (suc zero)
   suc n ->
     let ih : Path nat (suc (PosToN (NtoPos' n))) (suc (suc n)) = <i> suc (PosToNK n @ i)
-    in compPath nat (PosToN (NtoPos (suc (suc n)))) (suc (PosToN (NtoPos' n)))
+    in composition nat (PosToN (NtoPos (suc (suc n)))) (suc (PosToN (NtoPos' n)))
              (suc (suc n)) (sucPosSuc (NtoPos' n)) ih
 
 NtoPosSuc : (n : nat) -> neg (Path nat zero n) -> Path pos (NtoPos (suc n)) (sucPos (NtoPos n)) = split
@@ -86,8 +87,8 @@ NtoPosK (p:pos) : Path pos (NtoPos (PosToN p)) p
 
         H3 : Path pos (sucPos (NtoPos (PosToN p))) (sucPos p)
          = mapOnPath pos pos sucPos (NtoPos (PosToN p)) p hp
-    in compPath pos (NtoPos (PosToN (sucPos p))) (sucPos (NtoPos (PosToN p))) (sucPos p)
-         (compPath pos (NtoPos (PosToN (sucPos p))) (NtoPos (suc (PosToN p))) (sucPos (NtoPos (PosToN p))) H1 H2)
+    in composition pos (NtoPos (PosToN (sucPos p))) (sucPos (NtoPos (PosToN p))) (sucPos p)
+         (composition pos (NtoPos (PosToN (sucPos p))) (NtoPos (suc (PosToN p))) (sucPos (NtoPos (PosToN p))) H1 H2)
          H3
 
 posToNinj : injective pos nat PosToN
@@ -110,15 +111,15 @@ NtoBinNK : (n:nat) -> Path nat (BinNtoN (NtoBinN n)) n = split
   suc n -> PosToNK n
 
 rem (p : pos) : Path binN (NtoBinN (PosToN (sucPos p))) (binNpos (sucPos p)) =
- compPath binN (NtoBinN (PosToN (sucPos p))) (binNpos (NtoPos (suc (PosToN p))))
+ composition binN (NtoBinN (PosToN (sucPos p))) (binNpos (NtoPos (suc (PosToN p))))
                  (binNpos (sucPos p)) rem1 rem2
      where
       rem1 : Path binN (NtoBinN (PosToN (sucPos p))) (binNpos (NtoPos (suc (PosToN p))))
            = mapOnPath nat binN NtoBinN (PosToN (sucPos p)) (suc (PosToN p)) (sucPosSuc p)
 
       rem2 : Path binN (binNpos (NtoPos (suc (PosToN p)))) (binNpos (sucPos p))
-           = <i>binNpos 
-                (compPath pos (NtoPos (suc (PosToN p))) (sucPos (NtoPos (PosToN p))) (sucPos p)
+           = <i>binNpos
+                (composition pos (NtoPos (suc (PosToN p))) (sucPos (NtoPos (PosToN p))) (sucPos p)
                 (NtoPosSuc (PosToN p) (zeronPosToN p))
                 (mapOnPath pos pos sucPos (NtoPos (PosToN p)) p (NtoPosK p))@i)
 
@@ -212,9 +213,9 @@ eqDouble2 : Path Double DoubleBinN' DoubleBinN
       = split
       binN0     -> <_> binN0
       binNpos p -> lem1 (x0 p)
-      
+
 eqDouble : Path Double DoubleN DoubleBinN =
-  compPath Double DoubleN DoubleBinN' DoubleBinN eqDouble1 eqDouble2
+  composition Double DoubleN DoubleBinN' DoubleBinN eqDouble1 eqDouble2
 
 opaque doubleN
 

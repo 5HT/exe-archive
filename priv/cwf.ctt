@@ -6,38 +6,86 @@ import cat
 import fun
 import nat
 import list
+import bool
 import maybe
 
 data Exp = Star (_:   nat)
          | Var  (_:   nat)
          | Pi   (_ _: Exp)
-         | Sigma(_ _: Exp)
+         | Lam  (_:   Exp)
+         | App  (_ _: Exp)
 
 Ty:    U = Exp
-Ctx:   U = list Exp
+Ctx:   U = list Ty
 Subst: U = list Exp
 
-seq (start: nat): list Exp
-    = cons (Var start) (seq (suc start))
-
+seq (start: nat): list Exp = cons (Var start) (seq (suc start))
 
 mutual
 
-q: Exp = Var zero
-p: Subst = seq one
+p:   Subst = seq one
+q:   Exp   = Var zero
 ide: Subst = seq zero
+cmp: Subst -> Subst -> Subst = split
+     nil -> \(ts: Subst) -> nil
+     cons x xs -> \(ts: Subst) -> cons (sub ts x) (cmp xs ts)
+
 lift (ts: Subst): Subst = cons q (cmp ts p)
 unwrap: maybe Exp -> Exp = split { nothing -> q ; just x -> x }
+shift (t: Exp) (i: nat): Exp = sub (seq i) t
 
-cmp: Subst -> Subst -> Subst = split
-   nil -> \(ts: Subst) -> nil
-   cons x xs -> \(ts: Subst) -> cons (subst ts x) (cmp xs ts)
+isCo: Ctx -> bool = split
+  nil -> true
+  cons x xs -> and_ (isCo xs) (isTy xs x)
 
-subst (ts: Subst): Exp -> Exp = split
+isU (c:Ctx)(a b:Exp): Exp -> bool = split
+  Star  i   -> (and_ (isTm c (Star i) a) (isTm (cons a c) (Star i) b))
+  Var   i   -> false
+  Pi    a b -> false
+  Lam     x -> false
+  App   a b -> false
+
+isPi (c:Ctx)(e:Exp): Exp -> bool = split
+  Star  i   -> false
+  Var   i   -> false
+  Pi    a b -> isTm (cons a c) b e
+  Lam     x -> false
+  App   a b -> false
+
+isTy (c:Ctx): Ty -> bool = split
+  Star  i   -> true
+  Var   i   -> isTm c (Star zero) (Var i)
+  Pi    a b -> and_ (isTy c a) (isTy (cons a c) b)
+  Lam     x -> isTm c (Star zero) (Lam x)
+  App   a b -> isTm c (Star zero) (App a b)
+
+isTm (c:Ctx)(e:Exp): Ty -> bool = split
+  Star  i   -> false
+  Var   i   -> false
+  Pi    a b -> isU c a b e
+  Lam     x -> isPi c x e
+  App   a b -> false
+
+app (s: Exp): Exp -> Exp = split
+  Star  i   -> App (Star i) s
+  Var   i   -> App (Var i) s
+  Pi    a b -> App (Pi a b) s
+  Lam   x   -> sub (cons s ide) x
+  App   a b -> App (App a b) s
+
+sub (ts: Subst): Exp -> Exp = split
   Star  i   -> Star i
   Var   i   -> unwrap (nth Exp i ts)
-  Pi    a b -> Pi    (subst ts a) (subst (lift ts) b)
-  Sigma a b -> Sigma (subst ts a) (subst (lift ts) b)
+  Pi    a b -> Pi  (sub ts a) (sub (lift ts) b)
+  Lam   x   -> Lam (sub (lift ts) x)
+  App   s t -> app (sub ts t) (sub ts s)
+
+inferTy (c: Ctx): Exp -> maybe Ty = split
+  Star  i   -> just (Star i)
+  Var   i   -> just (shift (unwrap (nth Exp i c)) (suc i))
+  Pi    a b -> just (Star one)   -- implement
+  Lam   x   -> just (Star zero)  -- implement
+  App   s t -> just (Star zero)  -- implement
 
 
 {-
@@ -46,6 +94,7 @@ Ctx2 = {A:U,B:A->U,Pi(A,B),Sigma(A,B),A->A}
 Subst = [Sigma (Var 1) (Var 2),Pi (Var 1) (Var 1)]
 -}
 
+{-
 fam: precategory = undefined
 isContext      (C: precategory): U = undefined
 isTerminal     (C: precategory): U = undefined
@@ -58,3 +107,4 @@ CwF: U
     * (terminal: isTerminal C)
     * (pullback: isComprehension C T)
     * Unit
+-}

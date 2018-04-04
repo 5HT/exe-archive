@@ -3,6 +3,9 @@ module nat where
 import eq
 import path
 import maybe
+import either
+import propset
+import iso
 
 data nat = zero | suc (n : nat)
 
@@ -133,7 +136,7 @@ natDec : (n m:nat) -> dec (Path nat n m) = split
    (\ (m:nat) -> decEqCong (Path nat n m) (Path nat (suc n) (suc m)) (\ (p:Path nat n m) -> <i> suc (p @ i))
                  (sucInj n m) (natDec n m))
 
-natSet : set nat = hedberg nat natDec
+-- natSet : SET nat = hedberg nat natDec
 
 equalNat : nat -> nat -> bool = split
     zero -> split@(nat -> bool) with
