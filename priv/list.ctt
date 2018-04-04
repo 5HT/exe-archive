@@ -40,7 +40,7 @@ map (A B: U) (f: A -> B) : list A -> list B = split
   nil -> nil
   cons x xs -> cons (f x) (map A B f xs)
 
-zipWith (A B C: U) (f: A -> B -> C) (la: list A) (lb: list B): list C = go la lb where
+zipWith (A B C: U) (f: A -> B -> C) : list A -> list B -> list C = go where
   go: list A -> list B -> list C = split
     nil -> split@(list B -> list C) with
       nil -> nil
