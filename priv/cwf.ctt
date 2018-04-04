@@ -100,7 +100,7 @@ Ty:    U = Exp
 Ctx:   U = list Ty
 Subst: U = list Exp
 
-seq (start: nat): list Exp = cons (Var start) (seq (suc start))
+seq (start: nat): list Exp = cons (Var start) (seq (succ start))
 
 mutual
 
@@ -163,7 +163,7 @@ sub (ts: Subst): Exp -> Exp = split
 
 inferTy (c: Ctx): Exp -> maybe Ty = split
   Star  i   -> just (Star i)
-  Var   i   -> just (shift (unwrap (nth Exp i c)) (suc i))
+  Var   i   -> just (shift (unwrap (nth Exp i c)) (succ i))
   Pi    a b -> just (Star one)   -- implement
   Lam   x   -> just (Star zero)  -- implement
   App   s t -> just (Star zero)  -- implement

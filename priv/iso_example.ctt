@@ -10,11 +10,11 @@ PathElem  (A B: U) (a: A) (b: B) (P: PathTypes A B) : U = PathP P a b
 
 toNat : nat2 -> nat = split
   zero2 -> zero
-  suc2 n -> suc (toNat n)
+  suc2 n -> succ (toNat n)
 
 fromNat : nat -> nat2 = split
   zero -> zero2
-  suc n -> suc2 (fromNat n)
+  succ n -> suc2 (fromNat n)
 
 toNatK : (n : nat2) -> Path nat2 (fromNat (toNat n)) n = split
   zero2 -> <_> zero2
@@ -22,6 +22,6 @@ toNatK : (n : nat2) -> Path nat2 (fromNat (toNat n)) n = split
 
 fromNatK : (n : nat) -> Path nat (toNat (fromNat n)) n = split
   zero -> <_> zero
-  suc n -> <i> suc (fromNatK n @ i)
+  succ n -> <i> succ (fromNatK n @ i)
 
 nat2nat : Path U nat2 nat = isoPath nat2 nat toNat fromNat fromNatK toNatK

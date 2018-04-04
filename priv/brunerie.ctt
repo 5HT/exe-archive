@@ -2,26 +2,26 @@ module brunerie where
 -- https://arxiv.org/pdf/1606.05916.pdf
 
 data bool = false | true
-data nat = zero | suc (n : nat)
+data nat = zero | succ (n : nat)
 
 idfun (A : U) (a : A) : A = a
 
 {- Z is represented as:
 
-  +2 = pos (suc (suc zero))
-  +1 = pos (suc zero)
+  +2 = pos (succ (succ zero))
+  +1 = pos (succ zero)
    0 = pos zero
   -1 = neg zero
-  -2 = neg (suc zero)
+  -2 = neg (succ zero)
 
 -}
 data Z = pos (n : nat) | neg (n : nat)
 
-twoZ : Z = pos (suc (suc zero))
-oneZ : Z = pos (suc zero)
+twoZ : Z = pos (succ (succ zero))
+oneZ : Z = pos (succ zero)
 zeroZ : Z = pos zero
 moneZ : Z = neg zero
-mtwoZ : Z = neg (suc zero)
+mtwoZ : Z = neg (succ zero)
 
 Path (A : U) (a0 a1 : A) : U = PathP (<i> A) a0 a1
 
@@ -77,11 +77,11 @@ backTurn (l : loopS1) : loopS1 = compS1 l invLoop
 
 itLoop : nat -> loopS1 = split
  zero -> triv
- suc n -> oneTurn (itLoop n)
+ succ n -> oneTurn (itLoop n)
 
 itLoopNeg : nat -> loopS1 = split
  zero -> invLoop
- suc n -> backTurn (itLoopNeg n)
+ succ n -> backTurn (itLoopNeg n)
 
 loopIt : Z -> loopS1 = split
  pos n -> itLoop n

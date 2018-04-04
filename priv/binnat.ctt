@@ -27,12 +27,12 @@ sucPos : pos -> pos = split
 
 doubleN : nat -> nat = split
   zero  -> zero
-  suc n -> suc (suc (doubleN n))
+  succ n -> succ (succ (doubleN n))
 
 PosToN : pos -> nat = split
-  pos1 -> suc zero
+  pos1 -> succ zero
   x0 p -> doubleN (PosToN p)
-  x1 p -> suc (doubleN (PosToN p))
+  x1 p -> succ (doubleN (PosToN p))
 
 posInd (P : pos -> U) (h1 : P pos1) (hS : (p : pos) -> P p -> P (sucPos p)) (p : pos) : P p =
   let H (p : pos) (hx0p : P (x0 p)) : P (x0 (sucPos p)) = hS (x1 p) (hS (x0 p) hx0p)
@@ -42,36 +42,36 @@ posInd (P : pos -> U) (h1 : P pos1) (hS : (p : pos) -> P p -> P (sucPos p)) (p :
         x1 p -> hS (x0 p) (posInd (\(p : pos) -> P (x0 p)) (hS pos1 h1) H p)
   in f p
 
-sucPosSuc : (p : pos) -> Path nat (PosToN (sucPos p)) (suc (PosToN p)) = split
-  pos1 -> <_> suc (suc zero)
-  x0 p -> <_> suc (doubleN (PosToN p))
-  x1 p -> <i> doubleN (sucPosSuc p @ i)
+sucPossucc : (p : pos) -> Path nat (PosToN (sucPos p)) (succ (PosToN p)) = split
+  pos1 -> <_> succ (succ zero)
+  x0 p -> <_> succ (doubleN (PosToN p))
+  x1 p -> <i> doubleN (sucPossucc p @ i)
 
 zeronPosToN (p : pos) : neg (Path nat zero (PosToN p)) =
   posInd (\(p : pos) -> neg (Path nat zero (PosToN p))) (\(prf : Path nat zero one) -> znots zero prf) hS p
    where
    hS (p : pos) (_ : neg (Path nat zero (PosToN p))) (prf : Path nat zero (PosToN (sucPos p))) : Empty =
-    znots (PosToN p) (<i> comp (<j> nat) (prf @ i) [ (i=0) -> <_> zero, (i = 1) -> sucPosSuc p ])
+    znots (PosToN p) (<i> comp (<j> nat) (prf @ i) [ (i=0) -> <_> zero, (i = 1) -> sucPossucc p ])
 
 -- Inverse of PosToN:
 NtoPos' : nat -> pos = split
   zero -> pos1
-  suc n -> sucPos (NtoPos' n)
+  succ n -> sucPos (NtoPos' n)
 
 NtoPos : nat -> pos = split
   zero  -> pos1
-  suc n -> NtoPos' n
+  succ n -> NtoPos' n
 
-PosToNK : (n : nat) -> Path nat (PosToN (NtoPos (suc n))) (suc n) = split
-  zero  -> <_> (suc zero)
-  suc n ->
-    let ih : Path nat (suc (PosToN (NtoPos' n))) (suc (suc n)) = <i> suc (PosToNK n @ i)
-    in composition nat (PosToN (NtoPos (suc (suc n)))) (suc (PosToN (NtoPos' n)))
-             (suc (suc n)) (sucPosSuc (NtoPos' n)) ih
+PosToNK : (n : nat) -> Path nat (PosToN (NtoPos (succ n))) (succ n) = split
+  zero  -> <_> (succ zero)
+  succ n ->
+    let ih : Path nat (succ (PosToN (NtoPos' n))) (succ (succ n)) = <i> succ (PosToNK n @ i)
+    in composition nat (PosToN (NtoPos (succ (succ n)))) (succ (PosToN (NtoPos' n)))
+             (succ (succ n)) (sucPossucc (NtoPos' n)) ih
 
-NtoPosSuc : (n : nat) -> neg (Path nat zero n) -> Path pos (NtoPos (suc n)) (sucPos (NtoPos n)) = split
-  zero -> \(p : neg (Path nat zero zero)) -> efq (Path pos (NtoPos (suc zero)) (sucPos (NtoPos zero))) (p (<_> zero))
-  suc n -> \(_ : neg (Path nat zero (suc n))) -> <_> (sucPos (NtoPos' n))
+NtoPossucc : (n : nat) -> neg (Path nat zero n) -> Path pos (NtoPos (succ n)) (sucPos (NtoPos n)) = split
+  zero -> \(p : neg (Path nat zero zero)) -> efq (Path pos (NtoPos (succ zero)) (sucPos (NtoPos zero))) (p (<_> zero))
+  succ n -> \(_ : neg (Path nat zero (succ n))) -> <_> (sucPos (NtoPos' n))
 
 
 NtoPosK (p:pos) : Path pos (NtoPos (PosToN p)) p
@@ -79,16 +79,16 @@ NtoPosK (p:pos) : Path pos (NtoPos (PosToN p)) p
  where
   hS (p : pos) (hp: Path pos (NtoPos (PosToN p)) p) :  Path pos (NtoPos (PosToN (sucPos p))) (sucPos p)
    =
-    let H1 : Path pos (NtoPos (PosToN (sucPos p))) (NtoPos (suc (PosToN p)))
-         = mapOnPath nat pos NtoPos (PosToN (sucPos p)) (suc (PosToN p)) (sucPosSuc p)
+    let H1 : Path pos (NtoPos (PosToN (sucPos p))) (NtoPos (succ (PosToN p)))
+         = mapOnPath nat pos NtoPos (PosToN (sucPos p)) (succ (PosToN p)) (sucPossucc p)
 
-        H2 : Path pos (NtoPos (suc (PosToN p))) (sucPos (NtoPos (PosToN p)))
-         = NtoPosSuc (PosToN p) (zeronPosToN p)
+        H2 : Path pos (NtoPos (succ (PosToN p))) (sucPos (NtoPos (PosToN p)))
+         = NtoPossucc (PosToN p) (zeronPosToN p)
 
         H3 : Path pos (sucPos (NtoPos (PosToN p))) (sucPos p)
          = mapOnPath pos pos sucPos (NtoPos (PosToN p)) p hp
     in composition pos (NtoPos (PosToN (sucPos p))) (sucPos (NtoPos (PosToN p))) (sucPos p)
-         (composition pos (NtoPos (PosToN (sucPos p))) (NtoPos (suc (PosToN p))) (sucPos (NtoPos (PosToN p))) H1 H2)
+         (composition pos (NtoPos (PosToN (sucPos p))) (NtoPos (succ (PosToN p))) (sucPos (NtoPos (PosToN p))) H1 H2)
          H3
 
 posToNinj : injective pos nat PosToN
@@ -100,7 +100,7 @@ data binN = binN0 | binNpos (p : pos)
 
 NtoBinN : nat -> binN = split
   zero  -> binN0
-  suc n -> binNpos (NtoPos (suc n))
+  succ n -> binNpos (NtoPos (succ n))
 
 BinNtoN : binN -> nat = split
   binN0     -> zero
@@ -108,19 +108,19 @@ BinNtoN : binN -> nat = split
 
 NtoBinNK : (n:nat) -> Path nat (BinNtoN (NtoBinN n)) n = split
   zero  -> <_> zero
-  suc n -> PosToNK n
+  succ n -> PosToNK n
 
 rem (p : pos) : Path binN (NtoBinN (PosToN (sucPos p))) (binNpos (sucPos p)) =
- composition binN (NtoBinN (PosToN (sucPos p))) (binNpos (NtoPos (suc (PosToN p))))
+ composition binN (NtoBinN (PosToN (sucPos p))) (binNpos (NtoPos (succ (PosToN p))))
                  (binNpos (sucPos p)) rem1 rem2
      where
-      rem1 : Path binN (NtoBinN (PosToN (sucPos p))) (binNpos (NtoPos (suc (PosToN p))))
-           = mapOnPath nat binN NtoBinN (PosToN (sucPos p)) (suc (PosToN p)) (sucPosSuc p)
+      rem1 : Path binN (NtoBinN (PosToN (sucPos p))) (binNpos (NtoPos (succ (PosToN p))))
+           = mapOnPath nat binN NtoBinN (PosToN (sucPos p)) (succ (PosToN p)) (sucPossucc p)
 
-      rem2 : Path binN (binNpos (NtoPos (suc (PosToN p)))) (binNpos (sucPos p))
+      rem2 : Path binN (binNpos (NtoPos (succ (PosToN p)))) (binNpos (sucPos p))
            = <i>binNpos
-                (composition pos (NtoPos (suc (PosToN p))) (sucPos (NtoPos (PosToN p))) (sucPos p)
-                (NtoPosSuc (PosToN p) (zeronPosToN p))
+                (composition pos (NtoPos (succ (PosToN p))) (sucPos (NtoPos (PosToN p))) (sucPos p)
+                (NtoPossucc (PosToN p) (zeronPosToN p))
                 (mapOnPath pos pos sucPos (NtoPos (PosToN p)) p (NtoPosK p))@i)
 
 lem1 (p : pos) : Path binN (NtoBinN (PosToN p)) (binNpos p)
@@ -139,7 +139,7 @@ PathbinNN : Path U binN nat
 -- doublesN n m = 2^n * m
 doublesN : nat -> nat -> nat = split
   zero  -> \(m:nat) -> m
-  suc n -> \(m:nat) -> doublesN n (doubleN m)
+  succ n -> \(m:nat) -> doublesN n (doubleN m)
 
 -- 1024 = 2^8 * 2^2 = 2^10
 n1024 : nat = doublesN (add four four) four
@@ -150,7 +150,7 @@ doubleBinN : binN -> binN = split
 
 doublesBinN : nat -> binN -> binN = split
   zero  -> \(m:binN) -> m
-  suc n -> \(m:binN) -> doublesBinN n (doubleBinN m)
+  succ n -> \(m:binN) -> doublesBinN n (doubleBinN m)
 
 -- Doubling structure
 data Double =
@@ -174,7 +174,7 @@ DoubleBinN : Double = D binN doubleBinN bin1024
 -- iterate
 iter (A : U) : nat -> (A -> A) -> A -> A = split
   zero  -> \(f:A->A) (z:A) -> z
-  suc n -> \(f:A->A) (z:A) -> f (iter A n f z)
+  succ n -> \(f:A->A) (z:A) -> f (iter A n f z)
 
 -- Compute: 2^n * x
 doubles (D : Double) (n : nat) (x : carrier D) : carrier D = 

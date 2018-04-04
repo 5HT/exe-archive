@@ -22,7 +22,7 @@ nth (A: U): nat -> list A -> maybe A = split
   zero -> split@(list A -> maybe A) with
     nil -> nothing
     cons x xs -> just x
-  suc i -> split@(list A -> maybe A) with
+  succ i -> split@(list A -> maybe A) with
     nil -> nothing
     cons x xs -> nth A (pred i) xs
 
@@ -104,7 +104,7 @@ cpo : list S = cons C (cons P (cons O nil))
 
 f : nat -> bool = split
   zero -> true
-  suc -> false
+  succ -> false
 
 -- theorems
 

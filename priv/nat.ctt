@@ -7,55 +7,55 @@ import either
 import propset
 import iso
 
-data nat = zero | suc (n : nat)
+data nat = zero | succ (n : nat)
 
 -- Eq Nat -- type class instance
 
 nat_eq: nat -> nat -> bool = split
   zero -> split@(nat -> bool) with
     zero  -> true
-    suc n -> false
-  suc m -> split@(nat -> bool) with
+    succ n -> false
+  succ m -> split@(nat -> bool) with
     zero  -> false
-    suc n -> nat_eq m n
+    succ n -> nat_eq m n
 
 eq_nat: eq = (nat, nat_eq)
 
-one : nat = suc zero
-two : nat = suc one
-three : nat = suc two
-four : nat  = suc three
-five : nat  = suc four
+one : nat = succ zero
+two : nat = succ one
+three : nat = succ two
+four : nat  = succ three
+five : nat  = succ four
 
 n0 : nat = zero
-n1 : nat = suc n0
-n2 : nat = suc n1
-n3 : nat = suc n2
-n4 : nat = suc n3
-n5 : nat = suc n4
-n6 : nat = suc n5
-n7 : nat = suc n6
-n8 : nat = suc n7
-n9 : nat = suc n8
-n10 : nat = suc n9
-n11 : nat = suc n10
-n12 : nat = suc n11
-n13 : nat = suc n12
-n14 : nat = suc n13
-n15 : nat = suc n14
-n16 : nat = suc n15
-n17 : nat = suc n16
-n18 : nat = suc n17
-n19 : nat = suc n18
-n20 : nat = suc n19
+n1 : nat = succ n0
+n2 : nat = succ n1
+n3 : nat = succ n2
+n4 : nat = succ n3
+n5 : nat = succ n4
+n6 : nat = succ n5
+n7 : nat = succ n6
+n8 : nat = succ n7
+n9 : nat = succ n8
+n10 : nat = succ n9
+n11 : nat = succ n10
+n12 : nat = succ n11
+n13 : nat = succ n12
+n14 : nat = succ n13
+n15 : nat = succ n14
+n16 : nat = succ n15
+n17 : nat = succ n16
+n18 : nat = succ n17
+n19 : nat = succ n18
+n20 : nat = succ n19
 
 pred : nat -> nat = split
   zero -> zero
-  suc n -> n
+  succ n -> n
 
 extract: nat -> maybe nat = split
   zero -> nothing
-  suc x -> just x
+  succ x -> just x
 
 pred_ : maybe nat -> maybe nat = split
   nothing -> nothing
@@ -63,36 +63,36 @@ pred_ : maybe nat -> maybe nat = split
 
 add (m : nat) : nat -> nat = split
   zero  -> m
-  suc n -> suc (add m n)
+  succ n -> succ (add m n)
 
 add_zero : (n : nat) -> Path nat (add zero n) n = split
   zero  -> <i> zero
-  suc n -> <i> suc (add_zero n @ i)
+  succ n -> <i> succ (add_zero n @ i)
 
-add_suc (a:nat) : (n : nat) -> Path nat (add (suc a) n) (suc (add a n)) = split
-  zero  ->  <i> suc a
-  suc m -> <i> suc (add_suc a m @ i)
+add_succ (a:nat) : (n : nat) -> Path nat (add (succ a) n) (succ (add a n)) = split
+  zero  ->  <i> succ a
+  succ m -> <i> succ (add_succ a m @ i)
 
 add_comm (a : nat) : (n : nat) -> Path nat (add a n) (add n a) = split
   zero  -> <i> add_zero a @ -i
-  suc m -> <i> comp (<_> nat) (suc (add_comm a m @ i))
-                    [ (i = 0) -> <j> suc (add a m)
-                    , (i = 1) -> <j> add_suc m a @ -j ]
+  succ m -> <i> comp (<_> nat) (succ (add_comm a m @ i))
+                    [ (i = 0) -> <j> succ (add a m)
+                    , (i = 1) -> <j> add_succ m a @ -j ]
 
 assocAdd (a b:nat) : (c:nat) -> Path nat (add a (add b c)) (add (add a b) c) = split
  zero -> <i>add a b
- suc c1 -> <i>suc (assocAdd a b c1@i)
+ succ c1 -> <i>succ (assocAdd a b c1@i)
 
 add' : nat -> nat -> nat = split
   zero -> \(x : nat) -> x
-  suc n -> \(x : nat) -> suc (add' n x)
+  succ n -> \(x : nat) -> succ (add' n x)
 
-sucInj (n m : nat) (p : Path nat (suc n) (suc m)) : Path nat n m =
+sucInj (n m : nat) (p : Path nat (succ n) (succ m)) : Path nat n m =
  <i> pred (p @ i)
 
 addZero : (a : nat) -> Path nat (add zero a) a = split
   zero -> <i> zero
-  suc a' -> <i> suc (addZero a' @ i)
+  succ a' -> <i> succ (addZero a' @ i)
 
 add_comm3 (a b c : nat) : Path nat (add a (add b c)) (add c (add b a)) =
   let rem : Path nat (add a (add b c)) (add a (add c b)) = <i> add a (add_comm b c @ i)
@@ -102,38 +102,38 @@ add_comm3 (a b c : nat) : Path nat (add a (add b c)) (add c (add b a)) =
 
 natcancelr (a b : nat) : (x : nat) -> Path nat (add a x) (add b x) -> Path nat a b = split
   zero -> \(h : Path nat a b) -> h
-  suc x' -> \(h : Path nat (suc (add a x')) (suc (add b x'))) ->
+  succ x' -> \(h : Path nat (succ (add a x')) (succ (add b x'))) ->
     natcancelr a b x' (sucInj (add a x') (add b x') h)
 
 idnat : nat -> nat = split
   zero -> zero
-  suc n -> suc (idnat n)
+  succ n -> succ (idnat n)
 
 test : Path (nat -> nat) idnat (idfun nat) = piExt nat (\(_ : nat) -> nat) idnat (idfun nat) rem
   where
   rem : (n : nat) -> Path nat (idnat n) n = split
     zero -> refl nat zero
-    suc n -> mapOnPath nat nat (\(x : nat) -> suc x) (idnat n) n (rem n)
+    succ n -> mapOnPath nat nat (\(x : nat) -> succ x) (idnat n) n (rem n)
 
 caseNat (A : U) (a0 aS : A) : nat -> A = split
  zero -> a0
- suc n -> aS
+ succ n -> aS
 
-caseDNat (P:nat -> U) (a0 :P zero) (aS : (n:nat) -> P (suc n))
+caseDNat (P:nat -> U) (a0 :P zero) (aS : (n:nat) -> P (succ n))
             : (n:nat) -> P n = split
  zero -> a0
- suc n -> aS n
+ succ n -> aS n
 
-znots (n : nat) : neg (Path nat zero (suc n)) =
- \ (h:Path nat zero (suc n)) -> subst nat (caseNat U nat Empty) zero (suc n) h zero
+znots (n : nat) : neg (Path nat zero (succ n)) =
+ \ (h:Path nat zero (succ n)) -> subst nat (caseNat U nat Empty) zero (succ n) h zero
 
-snotz (n : nat) : neg (Path nat (suc n) zero) =
- \ (h:Path nat (suc n) zero) -> znots n (inv nat (suc n) zero h)
+snotz (n : nat) : neg (Path nat (succ n) zero) =
+ \ (h:Path nat (succ n) zero) -> znots n (inv nat (succ n) zero h)
 
 natDec : (n m:nat) -> dec (Path nat n m) = split
  zero -> caseDNat (\ (m:nat) -> dec (Path nat zero m)) (inl (refl nat zero)) (\ (m:nat) -> inr (znots m))
- suc n -> caseDNat (\ (m:nat) -> dec (Path nat (suc n) m)) (inr (snotz n))
-   (\ (m:nat) -> decEqCong (Path nat n m) (Path nat (suc n) (suc m)) (\ (p:Path nat n m) -> <i> suc (p @ i))
+ succ n -> caseDNat (\ (m:nat) -> dec (Path nat (succ n) m)) (inr (snotz n))
+   (\ (m:nat) -> decEqCong (Path nat n m) (Path nat (succ n) (succ m)) (\ (p:Path nat n m) -> <i> succ (p @ i))
                  (sucInj n m) (natDec n m))
 
 -- natSet : SET nat = hedberg nat natDec
@@ -141,10 +141,10 @@ natDec : (n m:nat) -> dec (Path nat n m) = split
 equalNat : nat -> nat -> bool = split
     zero -> split@(nat -> bool) with
       zero  -> true
-      suc n -> false
-    suc m -> split@(nat -> bool) with
+      succ n -> false
+    succ m -> split@(nat -> bool) with
       zero  -> false
-      suc n -> equalNat m n
+      succ n -> equalNat m n
 
 nat_instance : eq = (nat, equalNat)
 nat_instance_ : eq_ nat = equalNat
@@ -156,20 +156,20 @@ nat_instance_ : eq_ nat = equalNat
 mutual
   evenT : nat -> U = split
     zero -> Unit
-    suc n -> oddT n
+    succ n -> oddT n
 
   oddT : nat -> U = split
     zero -> Empty
-    suc n -> evenT n
+    succ n -> evenT n
 
 zeroIsEvenT : evenT zero = tt
 
-evenSuccIsOddT (n: nat) (pn: evenT n): oddT (suc n) = pn
-oddSuccIsEvenT (n: nat) (pn: oddT n): evenT (suc n) = pn
+evenSuccIsOddT (n: nat) (pn: evenT n): oddT (succ n) = pn
+oddSuccIsEvenT (n: nat) (pn: oddT n): evenT (succ n) = pn
 
-evenPredIsOddT: (n: nat) (pn: oddT (suc n)) -> evenT n = split
-  zero -> \(pn: oddT (suc zero)) -> pn
-  suc n' ->  \(pn: oddT (suc (suc n'))) -> pn
+evenPredIsOddT: (n: nat) (pn: oddT (succ n)) -> evenT n = split
+  zero -> \(pn: oddT (succ zero)) -> pn
+  succ n' ->  \(pn: oddT (succ (succ n'))) -> pn
 
 -- TODO: this overloads efq and neg from prelude
 efq (A:U) : Empty -> A = split {}
@@ -178,35 +178,35 @@ neg (A:U) : U = A -> Empty
 mutual
   evenPlusEvenIsEven : (n m:nat) (pn:evenT n) (pm : evenT m) -> evenT (add m n) = split
     zero   -> \(m : nat) (pn : evenT zero)    (pm : evenT m) -> pm
-    suc n' -> \(m : nat) (pn : oddT n')       (pm : evenT m) -> oddPlusEvenIsOdd n' m pn pm
+    succ n' -> \(m : nat) (pn : oddT n')       (pm : evenT m) -> oddPlusEvenIsOdd n' m pn pm
 
   oddPlusEvenIsOdd : (n m:nat) (pn:oddT n) (pm: evenT m) -> oddT (add m n) = split
     zero   -> \(m : nat) (pn : oddT zero)  (pm : evenT m) -> efq (oddT m) pn
-    suc n' -> \(m : nat) (pn : evenT n')   (pm : evenT m) -> evenPlusEvenIsEven n' m pn pm
+    succ n' -> \(m : nat) (pn : evenT n')   (pm : evenT m) -> evenPlusEvenIsEven n' m pn pm
 
   oddPlusOddIsEven : (n m:nat) (pn:oddT n) (pm : oddT m) -> evenT (add m n) = split
     zero   -> \(m : nat) (pn : oddT zero)  (pm : oddT m) -> efq (evenT m) pn
-    suc n' -> \(m : nat) (pn : evenT n')   (pm : oddT m) -> evenPlusOddIsOdd n' m pn pm
+    succ n' -> \(m : nat) (pn : evenT n')   (pm : oddT m) -> evenPlusOddIsOdd n' m pn pm
 
   evenPlusOddIsOdd : (n m:nat) (pn:evenT n) (pm : oddT m) -> oddT (add m n) = split
     zero   -> \(m : nat) (pn : evenT zero)  (pm : oddT m) -> pm
-    suc n' -> \(m : nat) (pn : oddT n')     (pm : oddT m) -> oddPlusOddIsEven n' m pn pm
+    succ n' -> \(m : nat) (pn : oddT n')     (pm : oddT m) -> oddPlusOddIsEven n' m pn pm
 
 -- rec_N from HOTT book, section 1.9
 rec_nat (A:U) (c_0 : A) (c_s : nat -> A -> A) : (n:nat) -> A = split
   zero  -> c_0
-  suc n -> c_s n (rec_nat A c_0 c_s n)
+  succ n -> c_s n (rec_nat A c_0 c_s n)
 
 -- examples 1.9.1 and 1.9.2
 double_via_rec_nat : nat -> nat =
-  rec_nat nat zero (\(_:nat) (y:nat) -> suc (suc y))
+  rec_nat nat zero (\(_:nat) (y:nat) -> succ (succ y))
 add_via_rec_nat : nat -> nat -> nat =
-  rec_nat (nat->nat) (\(x:nat)->x) (\(_:nat) (add_:nat->nat) (m:nat) -> suc(add_ m))
+  rec_nat (nat->nat) (\(x:nat)->x) (\(_:nat) (add_:nat->nat) (m:nat) -> succ(add_ m))
 
 -- ind_N from HOTT book, section 1.9
-ind_nat (A:nat->U) (c_0:A zero) (c_s : (n:nat) -> A n -> A (suc n)) : (n:nat) -> A n = split
+ind_nat (A:nat->U) (c_0:A zero) (c_s : (n:nat) -> A n -> A (succ n)) : (n:nat) -> A n = split
   zero  -> c_0
-  suc n -> c_s n (ind_nat A c_0 c_s n)
+  succ n -> c_s n (ind_nat A c_0 c_s n)
 
 -- exercise 1.8, part 1: define multiplication using rec_nat
 mult : nat -> nat -> nat =
@@ -220,23 +220,23 @@ exponent : nat -> nat -> nat =
 
 -- exercise 1.9: Define the type family Fin : N → U mentioned at the end of §1.3, and the dependent
 -- function fmax : ∏(n:N) Fin(n + 1) mentioned in §1.4.
-data Fin (n: maybe nat) = fzero | fsuc (_: Fin (pred_ n))
+data Fin (n: maybe nat) = fzero | fsucc (_: Fin (pred_ n))
 
 x1:  Fin (just zero) = fzero
--- x1:  Fin (just zero) = fsuc x1
+-- x1:  Fin (just zero) = fsucc x1
 -- Fin (just zero)
 -- /=
 -- Fin nothing
 x21: Fin (just one) = fzero
-x22: Fin (just one) = fsuc x1
--- x23: Fin (just one) = fsuc (fsuc x1)
+x22: Fin (just one) = fsucc x1
+-- x23: Fin (just one) = fsucc (fsucc x1)
 -- Fin (just zero)
 -- /=
 -- Fin nothing
 
-fmax : (n:nat) -> Fin (just (suc n)) = split
-  zero -> fsuc fzero
-  suc n -> fsuc (fmax n)
+fmax : (n:nat) -> Fin (just (succ n)) = split
+  zero -> fsucc fzero
+  succ n -> fsucc (fmax n)
 
 -- exercise 1.10: Show that the Ackermann function ack : N → N → N is definable using only rec_nat
 -- satisfying the following equations:
@@ -245,9 +245,9 @@ fmax : (n:nat) -> Fin (just (suc n)) = split
 --   ack(succ(m),succ(n)) ≡ ack(m, ack(succ(m), n)).
 ack : nat -> nat -> nat =
   rec_nat (nat->nat)
-          (\(n:nat) -> suc n)
+          (\(n:nat) -> succ n)
           (\(m:nat) (_:nat->nat) (n:nat) ->
-            rec_nat nat (ack m one) (\(n':nat) (_:nat) -> ack m (ack (suc m) n')) n
+            rec_nat nat (ack m one) (\(n':nat) (_:nat) -> ack m (ack (succ m) n')) n
           )
 
 
@@ -255,28 +255,28 @@ ack : nat -> nat -> nat =
 -- lets prove that double x = add x x
 double : nat -> nat = split
   zero -> zero
-  suc n -> suc (suc (double n))
+  succ n -> succ (succ (double n))
 
 double_n_is_add_n_n : (n:nat) -> Path nat (double n) (add n n) = split
   zero -> <i> zero
-  suc x -> composition nat
-                (suc (suc (double x)))
-                (suc (suc (add x x)))
-                (suc (add (suc x) x))
-             (<j> (suc (suc (double_n_is_add_n_n x @ j)))) 
-             (<k> suc (add_suc x x @ -k))
+  succ x -> composition nat
+                (succ (succ (double x)))
+                (succ (succ (add x x)))
+                (succ (add (succ x) x))
+             (<j> (succ (succ (double_n_is_add_n_n x @ j)))) 
+             (<k> succ (add_succ x x @ -k))
 
 -- Same result, but with cryptic comp application obtained by expanding composition
 -- Note the empty third argument to comp
 double_n_is_add_n_n_via_cryptic_comp : (n:nat) -> Path nat (double n) (add n n) = split
   zero -> <i> zero
-  suc x -> comp (<i> Path nat (suc (suc (double x))) (suc (add_suc x x @ -i)))
-                (<j> (suc (suc (double_n_is_add_n_n x @ j)))) []
+  succ x -> comp (<i> Path nat (succ (succ (double x))) (succ (add_succ x x @ -i)))
+                (<j> (succ (succ (double_n_is_add_n_n x @ j)))) []
 
 -- Same result, but with more typical comp application
 double_n_is_add_n_n_via_comp : (n:nat) -> Path nat (double n) (add n n) = split
   zero -> <i> zero
-  suc x -> <i> comp (<_> nat) (suc (suc (double_n_is_add_n_n x @ i)))
-                [ (i=0) -> <j> (suc (suc (double x)))   -- 2+(double x) => 2+(add x x)
-                , (i=1) -> <j> (suc (add_suc x x @ -j)) -- 2+(add x x)  => 1+(add (x+1) x)
+  succ x -> <i> comp (<_> nat) (succ (succ (double_n_is_add_n_n x @ i)))
+                [ (i=0) -> <j> (succ (succ (double x)))   -- 2+(double x) => 2+(add x x)
+                , (i=1) -> <j> (succ (add_succ x x @ -j)) -- 2+(add x x)  => 1+(add (x+1) x)
                 ]

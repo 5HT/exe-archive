@@ -81,11 +81,11 @@ encode (x:S1) (p:Path S1 base x) : helix x = subst S1 helix base x p zeroZ
 
 itLoop : nat -> loopS1 = split
  zero -> triv
- suc n -> oneTurn (itLoop n)
+ succ n -> oneTurn (itLoop n)
 
 itLoopNeg : nat -> loopS1 = split
  zero -> invLoop
- suc n -> backTurn (itLoopNeg n)
+ succ n -> backTurn (itLoopNeg n)
 
 loopIt : Z -> loopS1 = split
  inl n -> itLoopNeg n
@@ -107,7 +107,7 @@ lemCompInv (A:U) (a b c:A) (p:Path A a b) (q:Path A b c)
 
 lemItNeg : (n:nat) -> Path loopS1  (transport (<i>Path S1 base (loop{S1} @ i)) (loopIt (inl n))) (loopIt (sucZ (inl n))) = split
  zero ->  lemInv S1 base base loop1
- suc n -> lemCompInv S1 base base base (itLoopNeg n) invLoop
+ succ n -> lemCompInv S1 base base base (itLoopNeg n) invLoop
 
 l0 : loopS1 = <i>base
 l1 : loopS1 = oneTurn l0
@@ -116,13 +116,13 @@ test1ItPos (n:nat) : U = Path loopS1 (loopIt (sucZ (inr n))) (oneTurn ((loopIt (
 
 lem1ItPos : (n:nat) -> Path loopS1 (loopIt (sucZ (inr n))) (oneTurn ((loopIt (inr n)))) = split
  zero -> refl loopS1 l1
- suc p -> <i>oneTurn (lem1ItPos p@i)
+ succ p -> <i>oneTurn (lem1ItPos p@i)
 
 test1ItNeg (n:nat) : U = Path loopS1 (loopIt (sucZ (inl n))) (oneTurn ((loopIt (inl n))))
 
 lem1ItNeg : (n:nat) -> Path loopS1  (loopIt (sucZ (inl n))) (oneTurn (loopIt (inl n))) = split
  zero -> compInvS1
- suc p -> compInv S1 base base (loopIt (inl p)) base invLoop
+ succ p -> compInv S1 base base (loopIt (inl p)) base invLoop
 
 lem1It : (n:Z) -> Path loopS1 (loopIt (sucZ n)) (oneTurn  (loopIt n)) = split
  inl n -> lem1ItNeg n
@@ -146,11 +146,11 @@ encodeDecode (x:S1) (p : Path S1 base x) : Path (Path S1 base x) (decode x (enco
 --  J S1 base (\ (c : S1) (p : Path S1 base c) -> Path (Path S1 base c) (decode c (encode c p)) p)
 --    (<_> (<_> base))
 
-lemTransOneTurn (n:nat) : Path Z (transport (<i>helix (loop1@i)) (inr n)) (inr (suc n)) =
- <i>inr (suc (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))
+lemTransOneTurn (n:nat) : Path Z (transport (<i>helix (loop1@i)) (inr n)) (inr (succ n)) =
+ <i>inr (succ (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))
 
-lemTransBackTurn (n:nat) : Path Z (transport (<i>helix (loop1@-i)) (inl n)) (inl (suc n)) =
- <i>inl (suc (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))
+lemTransBackTurn (n:nat) : Path Z (transport (<i>helix (loop1@-i)) (inl n)) (inl (succ n)) =
+ <i>inl (succ (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))
 
 corFib2 (u:Z) (l:loopS1) : Path Z (transport (<i>helix (oneTurn l@i)) u)
                                 (transport (<i>helix (loop1@i)) (transport (<i>helix (l@i)) u)) =
@@ -162,7 +162,7 @@ corFib3 (u:Z) (l:loopS1) : Path Z (transport (<i>helix (backTurn l@i)) u)
 
 decodeEncodeBasePos : (n : nat) -> Path Z (transport (<x> helix (itLoop n @ x)) (inr zero)) (inr n) = split
   zero -> <_> inr zero
-  suc n ->  comp (<j>Path Z (transport (<i>helix (oneTurn l@i)) (inr zero)) (lemTransOneTurn n@j)) rem3 []
+  succ n ->  comp (<j>Path Z (transport (<i>helix (oneTurn l@i)) (inr zero)) (lemTransOneTurn n@j)) rem3 []
     where l : loopS1 = itLoop n
           rem1 : Path Z (transport (<i> helix (l@i)) (inr zero)) (inr n) = decodeEncodeBasePos n
           rem2 : Path Z (transport (<i>helix (oneTurn l@i)) (inr zero))
@@ -175,7 +175,7 @@ decodeEncodeBasePos : (n : nat) -> Path Z (transport (<x> helix (itLoop n @ x)) 
 
 decodeEncodeBaseNeg : (n : nat) -> Path Z (transport (<x> helix (itLoopNeg n @ x)) (inr zero)) (inl n) = split
   zero -> <_> inl zero
-  suc n ->  comp (<j>Path Z (transport (<i>helix (backTurn l@i)) (inr zero)) (lemTransBackTurn n@j)) rem3 []
+  succ n ->  comp (<j>Path Z (transport (<i>helix (backTurn l@i)) (inr zero)) (lemTransBackTurn n@j)) rem3 []
     where l : loopS1 = itLoopNeg n
           rem1 : Path Z (transport (<i> helix (l@i)) (inr zero)) (inl n) = decodeEncodeBaseNeg n
           rem2 : Path Z (transport (<i>helix (backTurn l@i)) (inr zero))
@@ -332,13 +332,13 @@ loopInvS1 : U = Path S1 (invS1 base) (invS1 base)
 rePar (l: loopInvS1) : loopS1 = transport (<i>Path S1 (lemInvS1@i) (lemInvS1@i)) l
 
 test2 : Z = winding (rePar (<i>invS1 (loop2@i)))
--- EVAL: inl (suc zero)                Time: 1m26.400s
+-- EVAL: inl (succ zero)                Time: 1m26.400s
 test21 : Z = winding (rePar (<i>invS1 (compS1 loop2 loop1 @i)))
--- EVAL: inl (suc (suc zero))          Time: 4m30.717s
+-- EVAL: inl (succ (succ zero))          Time: 4m30.717s
 test12 : Z = winding (rePar (<i>invS1 (compS1 loop1 loop2 @i)))
--- EVAL: inl (suc (suc zero))          Time: 9m40.535s
+-- EVAL: inl (succ (succ zero))          Time: 9m40.535s
 test4 : Z = winding (rePar (<i>invS1 (compS1 loop2 loop2 @i)))
--- EVAL: inl (suc (suc (suc zero)))    Time: 14m5.128s
+-- EVAL: inl (succ (succ (succ zero)))    Time: 14m5.128s
 test0 : Z = winding (rePar (<i>invMult (loop2@i) (loop2@i)))
 -- EVAL: inr zero                      Time: 1m39.599s
 

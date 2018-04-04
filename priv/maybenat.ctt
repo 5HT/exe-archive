@@ -14,18 +14,18 @@ three : fix maybe = Fix (just (Fix (just (Fix (just (Fix nothing))))))
 
 natToMaybe : nat -> fix maybe = split
   zero -> Fix nothing
-  suc n -> Fix (just (natToMaybe n))
+  succ n -> Fix (just (natToMaybe n))
 
 maybeToNat : fix maybe -> nat = split
   Fix m -> go m
    where
     go : maybe (fix maybe) -> nat = split
        nothing -> zero
-       just f -> suc (maybeToNat f)
+       just f -> succ (maybeToNat f)
 
 natMaybeIso : (a : nat) -> Path nat (maybeToNat (natToMaybe a)) a = split
   zero -> <i> zero
-  suc n -> <i> suc (natMaybeIso n @ i)
+  succ n -> <i> succ (natMaybeIso n @ i)
 
 maybeNatIso : (a : fix maybe) -> Path (fix maybe) (natToMaybe (maybeToNat a)) a = split
   Fix m -> go m
@@ -40,7 +40,7 @@ HeteroEqu (A B: U) (a: A) (b: B) (P: Path U A B) : U = PathP P a b
 
 -- > HeteroEqu (fix maybe) nat (Fix nothing) zero maybenat_
 
--- > transNeg (fix maybe) (nat) maybenat_ (suc (suc zero))
+-- > transNeg (fix maybe) (nat) maybenat_ (succ (succ zero))
 -- EVAL: Fix (just (Fix (just (Fix nothing))))
 -- > trans (fix maybe) (nat) maybenat_ (Fix nothing)
 -- EVAL: zero
@@ -56,7 +56,7 @@ HeteroEqu (A B: U) (a: A) (b: B) (P: Path U A B) : U = PathP P a b
 -- natEq : Path U nat (fix maybe) =
 --   ua nat (fix maybe) (natToMaybe, natEquiv)
 
--- > transport natEq (suc (suc zero))
+-- > transport natEq (succ (succ zero))
 -- EVAL: Fix (just (Fix (just (Fix nothing))))
 -- > transport (<i> natEq @ -i) (Fix (just (Fix (just (Fix (just (Fix nothing)))))))
--- EVAL: suc (suc (suc zero))
+-- EVAL: succ (succ (succ zero))

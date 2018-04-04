@@ -1,4 +1,4 @@
--- The integers as nat + nat with proof that suc is an iso giving a
+-- The integers as nat + nat with proof that succ is an iso giving a
 -- non-trivial path from Z to Z
 module int where
 
@@ -14,11 +14,11 @@ Z : U = or nat nat
 
 {- Z represents:
 
-  +2 = inr (suc (suc zero))
-  +1 = inr (suc zero)
+  +2 = inr (succ (succ zero))
+  +1 = inr (succ zero)
    0 = inr zero
   -1 = inl zero
-  -2 = inl (suc zero)
+  -2 = inl (succ zero)
 
 -}
 
@@ -29,16 +29,16 @@ sucZ : Z -> Z = split
     where
     auxsucZ : nat -> Z = split
       zero  -> inr zero
-      suc n -> inl n
-  inr v -> inr (suc v)
+      succ n -> inl n
+  inr v -> inr (succ v)
 
 predZ : Z -> Z = split
-  inl u -> inl (suc u)
+  inl u -> inl (succ u)
   inr v -> auxpredZ v
     where
     auxpredZ : nat -> Z = split
       zero  -> inl zero
-      suc n -> inr n
+      succ n -> inr n
 
 sucpredZ : (x : Z) -> Path Z (sucZ (predZ x)) x = split
   inl u -> refl Z (inl u)
@@ -46,14 +46,14 @@ sucpredZ : (x : Z) -> Path Z (sucZ (predZ x)) x = split
    where
     lem : (u : nat) -> Path Z (sucZ (predZ (inr u))) (inr u) = split
       zero  -> refl Z (inr zero)
-      suc n -> refl Z (inr (suc n))
+      succ n -> refl Z (inr (succ n))
 
 predsucZ : (x : Z) -> Path Z (predZ (sucZ x)) x = split
   inl u -> lem u
    where
     lem : (u : nat) -> Path Z (predZ (sucZ (inl u))) (inl u) = split
       zero  -> refl Z (inl zero)
-      suc n -> refl Z (inl (suc n))
+      succ n -> refl Z (inl (succ n))
   inr v -> refl Z (inr v)
 
 
