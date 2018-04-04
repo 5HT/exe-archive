@@ -2,6 +2,7 @@ module list where
 
 import nat
 import maybe
+import proto
 
 data list (A: U) = nil
                  | cons (a: A) (as: list A)
@@ -38,6 +39,18 @@ reverse (A: U): list A -> list A = rev nil where
 map (A B: U) (f: A -> B) : list A -> list B = split
   nil -> nil
   cons x xs -> cons (f x) (map A B f xs)
+
+zipWith (A B C: U) (f: A -> B -> C) (la: list A) (lb: list B): list C = go la lb where
+  go: list A -> list B -> list C = split
+    nil -> split@(list B -> list C) with
+      nil -> nil
+      cons y ys -> nil
+    cons x xs -> split@(list B -> list C) with
+      nil -> nil
+      cons y ys -> cons (f x y) (go xs ys)
+
+zip (A B: U): list A -> list B -> list (tuple A B) = 
+  zipWith A B (tuple A B) (\(x: A) (y: B) -> pair x y)
 
 maybe_map (A B: U): maybe ((_: A) * list A) -> maybe ((_: A) * B) = undefined
 foldr_ (A B: U) (alg: maybe ((_: A) * B) -> B) (xs: list A): B = undefined
