@@ -1,0 +1,110 @@
+module set where
+
+import proto
+import path
+import prop
+import iso
+
+propSet (A : U) (h : isProp A) : isSet A =
+ \(a b : A) (p q : Path A a b) ->
+   <j i> comp (<k>A) a [ (i=0) -> h a a
+                       , (i=1) -> h a b
+                       , (j=0) -> h a (p @ i)
+                       , (j=1) -> h a (q @ i)]
+
+setUnit : isSet Unit = propSet Unit propUnit
+
+inj0 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B) : U
+  = (a0 a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1
+
+-- Second definition of injectivity, informally: for any b in B, there are
+-- only one elment a in A such that f a is equal to b.
+inj1 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B) : U
+  = (b : B) -> isProp ((a : A) * Path B (f a) b)
+
+-- A map from the first to the second definition.
+inj01 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B) : inj0 A B f sA sB ->
+    inj1 A B f sA sB
+  = \ (i0 : inj0 A B f sA sB) (b : B) (c d : (a : A) * Path B (f a) b) -> let
+    F (a : A) : U
+      = Path B (f a) b
+    pF (a : A) : isProp (F a)
+      = sB (f a) b
+    p : Path B (f c.1) (f d.1)
+      = <i> comp (<j> B) (c.2 @ i) [ (i = 0) -> <j> f c.1
+                                   , (i = 1) -> <j> d.2 @ -j ]
+    q : Path A c.1 d.1
+      = i0 c.1 d.1 p
+  in
+    lemSig A F pF c d q
+
+-- A map from the second to the first definition.
+inj10 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B) : inj1 A B f sA sB ->
+    inj0 A B f sA sB
+  = \ (i1 : inj1 A B f sA sB) (a0 a1 : A) (p : Path B (f a0) (f a1)) -> let
+    c : (a : A) * Path B (f a) (f a1)
+      = (a0, p)
+    d : (a : A) * Path B (f a) (f a1)
+      = (a1, <i> f a1)
+    q : Path ((a : A) * Path B (f a) (f a1)) c d
+      = i1 (f a1) c d
+    fst : ((a : A) * Path B (f a) (f a1)) -> A
+      = \ (x : (a : A) * Path B (f a) (f a1)) -> x.1
+  in
+    <i> fst (q @ i)
+
+-- A proof that the first definition of injectivity is a proposition.
+prop_inj0 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B)
+  : isProp (inj0 A B f sA sB)
+  = let
+    c (a0 a1 : A) : isProp (Path B (f a0) (f a1) -> Path A a0 a1)
+      = let
+        P : Path B (f a0) (f a1) -> U
+          = \ (_ : Path B (f a0) (f a1)) -> Path A a0 a1
+        h : (x : Path B (f a0) (f a1)) -> isProp (P x)
+          = \ (_ : Path B (f a0) (f a1)) -> sA a0 a1
+      in
+        propPi (Path B (f a0) (f a1)) P h
+    d (a0 : A) : isProp ((a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1)
+      = let
+        P : A -> U
+          = \ (a1 : A) -> ( Path B (f a0) (f a1) -> Path A a0 a1 )
+        h : (a1 : A) -> isProp (P a1)
+          = \ (a1 : A) -> c a0 a1
+      in
+        propPi A P h
+    e : isProp (inj0 A B f sA sB)
+      = let
+        P : A -> U
+          = \ (a0 : A) -> ( (a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1 )
+        h : (a0 : A) -> isProp ( (a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1 )
+          = \ (a0 : A) -> d a0
+      in
+        propPi A P h
+  in
+    e
+
+-- A proof that the second definition of injectivity is a proposition.
+prop_inj1 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B) :
+    isProp (inj1 A B f sA sB)
+  = let
+    P : B -> U
+      = \ (b : B) -> (a : A) * Path B (f a) b
+    Q : B -> U
+      = \ (b : B) -> isProp (P b)
+    h : (b : B) -> isProp (Q b)
+      = \ (b : B) -> propIsProp (P b)
+  in
+    propPi B Q h
+
+-- A proof that two propositions with maps between them can be identified with
+-- each other
+propPath (A B: U) (f: A -> B) (g: B -> A) (pA: isProp A) (pB: isProp B): Path U A B
+  = isoPath A B f g (\ (b: B) -> pB (f (g b)) b) (\ (a: A) -> pA (g (f a)) a)
+
+-- A proof that the two definitions of injectivity can be identified with each
+-- other
+injPath (A B: U) (f: A -> B) (sA: isSet A) (sB: isSet B): Path U (inj0 A B f sA sB) (inj1 A B f sA sB)
+  = propPath (inj0 A B f sA sB) (inj1 A B f sA sB)
+             (inj01 A B f sA sB) (inj10 A B f sA sB)
+             (prop_inj0 A B f sA sB) (prop_inj1 A B f sA sB)

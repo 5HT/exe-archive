@@ -3,6 +3,10 @@ module prop where
 import proto
 import path
 
+propUnit : isProp Unit = split
+ tt -> split@((x:Unit) -> Path Unit tt x) with
+  tt -> <i> tt
+
 -- propSig
 
 lemPropF (A : U) (P : A -> U) (pP : (x : A) -> isProp (P x)) (a0 a1 :A)

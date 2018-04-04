@@ -1,0 +1,42 @@
+-- The interval as a HIT. Proof of funtion extensionality from it.
+
+module interval where
+
+import equiv
+import iso
+import prop
+import set
+
+data I = i0 | i1 | seg <i> [(i=0) -> i0, (i=1) -> i1]
+
+-- Proof of funext from the interval
+fext (A B: U) (f g: A -> B) (p: (x: A) -> Path B (f x) (g x)): Path (A -> B) f g
+   = <j> (\(x : A) -> htpy x (seg{I} @ j))
+   where htpy (x : A) : I -> B = split
+         i0    -> f x
+         i1     -> g x
+         seg @ i -> p x @ i
+
+toUnit : I -> Unit = split
+  i0 -> tt
+  i1  -> tt
+  seg @ i -> tt
+
+fromUnit : Unit -> I = split
+  tt -> i0
+
+toUnitK : (a : Unit) -> Path Unit (toUnit (fromUnit a)) a = split
+  tt -> <i> tt
+
+fromUnitK : (a : I) -> Path I (fromUnit (toUnit a)) a = split
+  i0 -> <i> i0
+  i1 -> <i> seg {I} @ i
+  seg @ i -> <j> seg {I} @ i /\ j
+
+unitEqI: Path U Unit I = isoPath Unit I fromUnit toUnit fromUnitK toUnitK
+propI: isProp I = subst U isProp Unit I unitEqI propUnit
+setI: isSet I = subst U isSet Unit I unitEqI setUnit
+
+T: U = Path I i0 i0
+p0: T = refl I i0
+test: T = propI i0 i0

@@ -31,9 +31,6 @@ composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
 JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (eta A a)) (p: Path A a b): P (b,p)
     = subst (singl A a) T (eta A a) (b,p) (contr A a b p) u where T (z : singl A a) : U = P z
 
--- interval type
-data I = i0 | i1 | path <i> [ (i=0) -> i0 , (i=1) -> i1 ]
-
 -- n-Groupoid
 data N = Z  | S (n: N)
 
