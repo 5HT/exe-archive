@@ -1,6 +1,6 @@
 module sigma where
 
-import propset
+import prop
 
 Sigma (A : U) (B : A -> U) : U = (x : A) * B x
 

@@ -1,26 +1,7 @@
-module propset where
+module prop where
 
 import proto
 import proto_path
-
-data N = Z | S (n: N)
-
-n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n) where
-  rec (A: U) (a b: A): (k: N) -> U = split
-    Z -> Path A a b
-    S n -> n_grpd (Path A a b) n
-
-isContr     (A: U): U = (x : A) * ((y : A) -> Path A x y)
-isProp      (A: U): U = (x y: A) -> Path A x y
-isProp      (A: U): U = n_grpd A Z
-isSet       (A: U): U = n_grpd A (S Z)
-isGroupoid  (A: U): U = n_grpd A (S (S Z))
-isGrp2      (A: U): U = n_grpd A (S (S (S Z)))
-isGrp3      (A: U): U = n_grpd A (S (S (S (S Z))))
-
-PROP      : U = (X:U) * isProp X
-SET       : U = (X:U) * isSet X
-GROUPOID  : U = (X:U) * isGroupoid X
 
 -- propSig
 
@@ -80,8 +61,6 @@ propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (and A B) =
   propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)
 
 ---------
-
-data or (A B : U) = inl (a : A) | inr (b : B)
 
 propN0 : isProp Empty = \ (x y: Empty) -> efq (Path Empty x y) x
 

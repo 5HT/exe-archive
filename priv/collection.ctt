@@ -3,7 +3,7 @@ module collection where
 
 import equiv
 import univ
-import propset
+import prop
 import sigma
 import pi
 import iso_sigma

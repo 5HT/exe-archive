@@ -2,20 +2,13 @@ module proto where
 
 data Empty =
 data Unit = tt
+data Exists (A: U) (P: A -> U) = exists (x:A) (y: P x)
+data or (A B: U) = inl (a: A) | inr (b: B)
 
-efq (A : U) : Empty -> A = split {}
-
-neg (A : U) : U = A -> Empty
-
-stable (A:U) : U = neg (neg A) -> A
-
-idfun (A : U) (a : A) : A = a
-
+efq        (A: U): Empty -> A = split {}
+neg        (A: U): U = A -> Empty
+stable     (A: U): U = neg (neg A) -> A
+idfun      (A: U) (a: A): A = a
 constfun (A B: U) (a: A) (b: B): A = a
-
-o (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
-
-and (A B: U): U = (_:A) * B
-
-data Exists (A: U) (P: A -> U) = intro (x:A) (y: P x)
-
+o      (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
+and      (A B: U): U = (_:A) * B

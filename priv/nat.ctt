@@ -4,7 +4,7 @@ import eq
 import path
 import maybe
 import either
-import propset
+import prop
 import iso
 
 data nat = zero | succ (n : nat)

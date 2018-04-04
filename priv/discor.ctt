@@ -2,7 +2,7 @@
 module discor where
 
 import proto
-import propset
+import prop
 
 inlNotinr (A B:U) (a:A) (b:B) (h: Path (or A B) (inl a) (inr b)) : Empty =
  subst (or A B) T (inl a) (inr b) h tt

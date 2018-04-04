@@ -1,6 +1,6 @@
 module pi where
 
-import propset
+import prop
 import proto_path
 
 Pi (A:U) (P:A->U) : U = (x:A) -> P x

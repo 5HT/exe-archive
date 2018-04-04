@@ -1,6 +1,6 @@
 module cat where
 
-import propset
+import prop
 
 -- Algebra
 cat: U = (A: U) * (A -> A -> U)
