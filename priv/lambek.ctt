@@ -4,12 +4,6 @@ import control
 import either
 import nat
 
-data tuple (A B: U) = pair (a: A) (b: B)
-
-fst (A B: U): tuple A B -> A = split pair a b -> a
-
-snd (A B: U): tuple A B -> B = split pair a b -> b
-
 cata (A: U) (F: U -> U) (X: functor F) (alg: F A -> A) (f: fix F): A
   = alg (X.1 (fix F) A (cata A F X alg) (out_ F f))
 

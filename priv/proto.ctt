@@ -4,7 +4,10 @@ data Empty =
 data Unit = tt
 data Exists (A: U) (P: A -> U) = exists (x:A) (y: P x)
 data or (A B: U) = inl (a: A) | inr (b: B)
+data tuple (A B: U) = pair (a: A) (b: B)
 
+fst      (A B: U): tuple A B -> A = split pair a b -> a
+snd      (A B: U): tuple A B -> B = split pair a b -> b
 efq        (A: U): Empty -> A = split {}
 neg        (A: U): U = A -> Empty
 stable     (A: U): U = neg (neg A) -> A

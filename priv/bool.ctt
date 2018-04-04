@@ -11,7 +11,7 @@ or_: bool -> bool -> bool = split
   true -> \(_: bool) -> true
 
 and_: bool -> bool -> bool = split
-  false -> \(b: bool) ->false
+  false -> \(b: bool) -> false
   true -> \(b: bool) -> b
 
 neg_ : bool -> bool = split
