@@ -26,19 +26,10 @@ reflect   (A: U) (a: A): Equ A a a = <i> a
 J         (A: U) (x: A) (C: D A) (d: C x x (reflect A x))
           (y: A) (p: Equ A x y): C x y p =
   subst (singl A x) T (x, reflect A x) (y, p)
-        (contrSingl A x y p) d where
+        (contr A x y p) d where
     T (z: singl A x): U = C x (z.1) (z.2)
 
 HeteroEqu (A B: U) (a: A) (b: B) (P: Equ U A B) : U = PathP P a b
-
-{-
-data Equality (A: U) (x y: A) = refl_ (_: Equ A x y)
-reflection (A: U) (a: A): Equality A a a = refl_ (reflect A a)
-
-test: Equality nat zero zero -> Unit = \ (z: Equality nat zero zero) -> tt
-true: Unit = test (refl_ (reflect nat zero))
--- typecheckFailed: Unit = test (refl_ (reflect nat one))
--}
 
 comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a)))(f a) = refl (B a) (f a)
 comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (lambda A B a (f a)) = undefined

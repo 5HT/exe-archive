@@ -1,5 +1,5 @@
 module trunc where
-import proto_path
+import path
 
 data pTrunc (A : U) -- (-1)-trunc, mere proposition truncation
   = inc (a : A)
@@ -25,3 +25,14 @@ data gTrunc (A : U) -- (1)-trunc, groupoid truncation
        , (j=1) -> q @ k
        , (k=0) -> a
        , (k=1) -> b]
+
+sTr (A : U) (a b : sTrunc A) (p q: Path (sTrunc A) a b) : Path (Path (sTrunc A) a b) p q =
+  <i j> line {sTrunc A} a b p q @ i @ j
+
+sTruncRec (A: U) (B: U) (bS: isSet B) (f: A -> B): sTrunc A -> B = split
+  inc a -> f a
+  line a b p q @ i j -> (bS (sTruncRec A B bS f a)
+                              (sTruncRec A B bS f b)
+                              (<k> sTruncRec A B bS f (p @ k))
+                              (<k> sTruncRec A B bS f (q @ k))) @ i @ j
+

@@ -2,27 +2,59 @@ module path where
 
 import proto_path
 
-substP (A B: U) (P : (X: U) -> X -> U) (PP: Path U A B) (a: A) (b : B) (p : PathP PP a b) (e : P A a) : P B b
-    = comp (<i> P (PP @ i) (p @ i)) e []
+subst    (A: U) (P: A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
+    = comp (<i> P (p @ i)) e []
+--  = trans (P a) (P b) (mapOnPath A U P a b p) e
 
-compositeP (A B C: U) (a: A) (b: B) (c: C) (pab: Path U A B) (pbc: Path U B C) (p: PathP pab a b) (q: PathP pbc b c): (pac: Path U A C) * PathP pac a c
-  = substP B C P pbc b c q (pab, p) where
-  P (X: U) (x: X): U = (pax: Path U A X) * PathP pax a x
+substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
+    =  subst A P b a (<i> p @ -i)
+
+const    (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
+
+exConst  (A: U): U = (f: A -> A) * const A f
+
+kan (A: U) (a b c d: A) (p: Path A a b)
+    (q: Path A a c) (r: Path A b d): Path A c d =
+    <i> comp (<j>A) (p @ i) [(i = 0) -> q,
+                             (i = 1) -> r ]
+
+mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
+    = <i> f (p @ i)
+
+composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
+    = comp (<i> Path A a (q @ i)) p []
+--  = subst A (Path A a) b c q p
+--  = <i> comp (<j>A) (p @ i) [ (i = 1) -> q, (i=0) -> <j> a ]
+
+-- J is formulated in a form of Paulin-Mohring and implemented
+-- using two facts that singleton are contractible and dependent function transport.
+JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (eta A a)) (p: Path A a b): P (b,p)
+    = subst (singl A a) T (eta A a) (b,p) (contr A a b p) u where T (z : singl A a) : U = P z
+
+-- interval type
+data I = i0 | i1 | path <i> [ (i=0) -> i0 , (i=1) -> i1 ]
+
+-- n-Groupoid
+data N = Z  | S (n: N)
+
+n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n) where
+  rec (A: U) (a b: A): (k: N) -> U = split
+    Z -> Path A a b
+    S n -> n_grpd (Path A a b) n
+
+isContr     (A: U): U = (x: A) * ((y: A) -> Path A x y)
+isProp      (A: U): U = (x y: A) -> Path A x y
+isProp      (A: U): U = n_grpd A Z
+isSet       (A: U): U = n_grpd A (S Z)
+isGroupoid  (A: U): U = n_grpd A (S (S Z))
+isGrp2      (A: U): U = n_grpd A (S (S (S Z)))
+isGrp3      (A: U): U = n_grpd A (S (S (S (S Z))))
+
+PROP      : U = (X:U) * isProp X
+SET       : U = (X:U) * isSet X
+GROUPOID  : U = (X:U) * isGroupoid X
 
 -- if there's a path from a type then there is a path from every element
 elemPathP (A B: U) (p: Path U A B) (a: A): (p': Path U A B) * (b: B) * PathP p' a b
   = comp (<i> P (p @ i)) (refl U A, a, refl A a) [] where
   P (X: U): U = (p: Path U A X) * (x: X) * PathP p a x
-
-piExt  (A: U) (B: A -> U)
-       (f g: (x : A) -> B x)
-       (p : (x : A) -> Path (B x) (f x) (g x)) :
-       Path ((y : A) -> B y) f g = <i> \(a : A) -> (p a) @ i
-
-funExt (A B: U) (f g: A -> B)
-       (p: (x : A) -> Path B (f x) (g x)):
-       Path (A -> B) f g = <i> \(a : A) -> p a @ i
-
-funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g x)
-  = mapOnPath (A -> B) B ff f g p where
-  ff (f: A -> B): B = f x

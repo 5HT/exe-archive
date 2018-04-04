@@ -2,6 +2,7 @@ module functor where
 
 import proto
 import path
+import pi
 
 functor_ (A B: U) (F: U -> U): U
     = (fmap: (A -> B) -> F A -> F B) * Unit

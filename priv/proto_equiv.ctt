@@ -14,9 +14,9 @@ propIsEquiv (A B : U) (f : A -> B)
 
 idIsEquiv (A : U) : isEquiv A A (idfun A) =
   \(a : A) -> ((a, refl A a)
-              ,\(z : fiber A A (idfun A) a) -> contrSingl A a z.1 z.2)
+              ,\(z : fiber A A (idfun A) a) -> contr A a z.1 z.2)
 
 lemSinglContr (A:U) (a:A) : isContr ((x:A) * Path A a x) =
- ((a,refl A a),\ (z:(x:A) * Path A a x) -> contrSingl A a z.1 z.2)
+ ((a,refl A a),\ (z:(x:A) * Path A a x) -> contr A a z.1 z.2)
 
 idEquiv (A:U) : equiv A A = (\ (x:A) -> x, lemSinglContr A)

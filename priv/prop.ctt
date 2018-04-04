@@ -1,7 +1,7 @@
 module prop where
 
 import proto
-import proto_path
+import path
 
 -- propSig
 

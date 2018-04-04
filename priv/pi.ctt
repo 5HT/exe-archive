@@ -1,20 +1,11 @@
 module pi where
 
 import prop
-import proto_path
+import path
 
 Pi (A:U) (P:A->U) : U = (x:A) -> P x
-
 lambda (A : U) (B: A -> U) (a : A) (b: B a): A -> B a = \(x: A) -> b
-
 app (A : U) (B: A -> U) (a : A) (f: A -> B a): B a = f a
-
-lambda_model (A: U) : U
-  = (intro: (A -> U) -> U)
-  * (lambda: (B: A -> U) -> Pi A B -> intro B)
-  * (app:    (B: A -> U) -> intro B -> Pi A B)
-  * (applam: (B: A -> U) (f: Pi A B) -> (a: A) -> Path (B a) ((app B (lambda B f)) a) (f a))
-  * ((B: A -> U) (p: intro B) -> Path (intro B) (lambda B (\(a:A) -> app B p a)) p)
 
 piExt  (A: U) (B: A -> U)
        (f g: (x : A) -> B x)
@@ -24,4 +15,7 @@ piExt  (A: U) (B: A -> U)
 funExt (A B: U) (f g: A -> B)
        (p: (x : A) -> Path B (f x) (g x)):
        Path (A -> B) f g = <i> \(a : A) -> p a @ i
+
+funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g x)
+  = mapOnPath (A -> B) B ff f g p where ff (f: A -> B): B = f x
 
