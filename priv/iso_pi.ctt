@@ -53,3 +53,29 @@ setFun' (X Y: U) (proofY: X -> isSet Y): isSet (X -> Y)
 
 setFun (X Y: U) (proofY: isSet Y): isSet (X -> Y)
   = setFun' X Y (\(_: X) -> proofY)
+
+groupoidPi (A:U) (B:A -> U) (h:(x:A) -> isGroupoid (B x)) (f g:Pi A B) : isSet (Path (Pi A B) f g) =
+    subst U isSet  T  (Path (Pi A B) f g) (<i>pathPi A B f g@-i) rem1
+ where
+  T : U = (x:A) -> Path (B x) (f x) (g x)
+  rem1 : isSet T =  setPi A (\ (x:A) -> Path (B x) (f x) (g x)) (\ (x:A) -> h x (f x) (g x))
+
+propPi2 (A : U) (B0 : A -> A -> U) (h0 : (x y : A) -> isProp (B0 x y))
+  : isProp ((x y : A) -> B0 x y)
+  = let
+    p0 (a : A) : isProp ((b : A) -> B0 a b)
+      = propPi A (B0 a) (h0 a)
+    B1 (a : A) : U
+      = (b : A) -> B0 a b
+  in propPi A B1 p0
+
+propPi3 (A : U) (B0 : A -> A -> A -> U) (h0 : (x y z : A) -> isProp (B0 x y z))
+  : isProp ((x y z : A) -> B0 x y z)
+  = let
+    p0 (a b : A) : isProp ((c : A) -> B0 a b c)
+      = propPi A (B0 a b) (h0 a b)
+    B1 (a b : A) : U
+      = (c : A) -> B0 a b c
+  in propPi2 A B1 p0
+
+

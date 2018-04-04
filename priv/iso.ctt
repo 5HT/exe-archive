@@ -16,6 +16,13 @@ Square (A : U) (a0 a1 b0 b1 : A)
                (r0 : Path A a0 b0) (r1 : Path A a1 b1) : U
   = PathP (<i> (PathP (<j> A) (u @ i) (v @ i))) r0 r1
 
+constSquare (A : U) (a : A) (p : Path A a a) : Square A a a a a p p p p =
+  <i j> comp (<_> A) a
+             [ (i = 0) -> <k> p @ j \/ - k
+             , (i = 1) -> <k> p @ j /\ k
+             , (j = 0) -> <k> p @ i \/ - k
+             , (j = 1) -> <k> p @ i /\ k ]
+
 -- The iso to equiv
 lemIso (A B : U) (f : A -> B) (g : B -> A)
        (s : (y : B) -> Path B (f (g y)) y)

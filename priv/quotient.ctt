@@ -59,6 +59,6 @@ data setquot (A : U) (R : A -> A -> U) =
 identsetquot (A : U) (R : A -> A -> U) (a b : A) (r : R a b)
   : Path (setquot A R) (quot a) (quot b) = <i> identification {setquot A R} a b r @ i
 
-setsetquot (A : U) (R : A -> A -> U) : set (setquot A R) =
+setsetquot (A : U) (R : A -> A -> U) : isSet (setquot A R) =
    \(a b : setquot A R) (p q : Path (setquot A R) a b) ->
      <i j> setTruncation {setquot A R} a b p q @ i @ j

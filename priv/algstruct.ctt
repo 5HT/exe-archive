@@ -1,7 +1,8 @@
 -- This file contains the definitions of some standard algebraic structures
 -- and homomorphisms, as well as some related identities.
 module algstruct where
-import pi_prev
+
+import iso_pi
 import iso_sigma
 
 -- Properties
@@ -12,12 +13,12 @@ import iso_sigma
 isAssociative (M : U) (op : M -> M -> M) : U
   = (a b c : M) -> Path M (op a (op b c)) (op (op a b) c)
 
-propisAssociative (M : U) (sM : set M) (op : M -> M -> M)
-  : prop (isAssociative M op)
+propisAssociative (M : U) (sM : isSet M) (op : M -> M -> M)
+  : isProp (isAssociative M op)
   = let
     B (a b c : M) : U
       = Path M (op a (op b c)) (op (op a b) c)
-    h (a b c : M) : prop (B a b c)
+    h (a b c : M) : isProp (B a b c)
       = sM (op a (op b c)) (op (op a b) c)
   in propPi3 M B h
 
@@ -26,24 +27,24 @@ propisAssociative (M : U) (sM : set M) (op : M -> M -> M)
 hasLeftIdentity (M : U) (op : M -> M -> M) (id : M) : U
   = (x : M) -> Path M (op id x) x
 
-prophasLeftIdentity (M : U) (sM : set M) (op : M -> M -> M) (id : M)
-  : prop (hasLeftIdentity M op id)
+prophasLeftIdentity (M : U) (sM : isSet M) (op : M -> M -> M) (id : M)
+  : isProp (hasLeftIdentity M op id)
   = let
     B (x : M) : U
       = Path M (op id x) x
-    h (x : M) : prop (B x)
+    h (x : M) : isProp (B x)
       = sM (op id x) x
   in propPi M B h
 
 hasRightIdentity (M : U) (op : M -> M -> M) (id : M) : U
   = (x : M) -> Path M (op x id) x
 
-prophasRightIdentity (M : U) (sM : set M) (op : M -> M -> M) (id : M)
-  : prop (hasRightIdentity M op id)
+prophasRightIdentity (M : U) (sM : isSet M) (op : M -> M -> M) (id : M)
+  : isProp (hasRightIdentity M op id)
   = let
     B (x : M) : U
       = Path M (op x id) x
-    h (x : M) : prop (B x)
+    h (x : M) : isProp (B x)
       = sM (op x id) x
   in propPi M B h
 
@@ -51,8 +52,8 @@ hasIdentity (M : U) (op : M -> M -> M) (id : M) : U
   = (_ : hasLeftIdentity M op id)
   * (hasRightIdentity M op id)
 
-prophasIdentity (M : U) (sM : set M) (op : M -> M -> M) (id : M)
-  : prop (hasIdentity M op id)
+prophasIdentity (M : U) (sM : isSet M) (op : M -> M -> M) (id : M)
+  : isProp (hasIdentity M op id)
   = propAnd (hasLeftIdentity M op id) (hasRightIdentity M op id)
       (prophasLeftIdentity M sM op id) (prophasRightIdentity M sM op id)
 
@@ -61,12 +62,12 @@ prophasIdentity (M : U) (sM : set M) (op : M -> M -> M) (id : M)
 isCommutative (M : U) (op : M -> M -> M) : U
   = (x y : M) -> Path M (op x y) (op y x)
 
-propisCommutative (M : U) (sM : set M) (op : M -> M -> M)
-  : prop (isCommutative M op)
+propisCommutative (M : U) (sM : isSet M) (op : M -> M -> M)
+  : isProp (isCommutative M op)
   = let
     B (x y : M) : U
       = Path M (op x y) (op y x)
-    h (x y : M) : prop (B x y)
+    h (x y : M) : isProp (B x y)
       = sM (op x y) (op y x)
   in propPi2 M B h
 
@@ -75,16 +76,16 @@ propisCommutative (M : U) (sM : set M) (op : M -> M -> M)
 isLeftCancellative (M : U) (op : M -> M -> M) : U
   = (c x y : M) -> Path M (op c x) (op c y) -> Path M x y
 
-propisLeftCancellative (M : U) (sM : set M) (op : M -> M -> M)
-  : prop (isLeftCancellative M op)
+propisLeftCancellative (M : U) (sM : isSet M) (op : M -> M -> M)
+  : isProp (isLeftCancellative M op)
   = let
     B (c x y : M) : U
       = Path M (op c x) (op c y) -> Path M x y
-    h (c x y : M) : prop (B c x y)
+    h (c x y : M) : isProp (B c x y)
       = let
         B0 (p : Path M (op c x) (op c y)) : U
           = Path M x y
-        h0 (p : Path M (op c x) (op c y)) : prop (B0 p)
+        h0 (p : Path M (op c x) (op c y)) : isProp (B0 p)
           = sM x y
       in propPi (Path M (op c x) (op c y)) B0 h0
   in propPi3 M B h
@@ -92,16 +93,16 @@ propisLeftCancellative (M : U) (sM : set M) (op : M -> M -> M)
 isRightCancellative (M : U) (op : M -> M -> M) : U
   = (c x y : M) -> Path M (op x c) (op y c) -> Path M x y
 
-propisRightCancellative (M : U) (sM : set M) (op : M -> M -> M)
-  : prop (isRightCancellative M op)
+propisRightCancellative (M : U) (sM : isSet M) (op : M -> M -> M)
+  : isProp (isRightCancellative M op)
   = let
     B (c x y : M) : U
       = Path M (op x c) (op y c) -> Path M x y
-    h (c x y : M) : prop (B c x y)
+    h (c x y : M) : isProp (B c x y)
       = let
         B0 (p : Path M (op x c) (op y c)) : U
           = Path M x y
-        h0 (p : Path M (op x c) (op y c)) : prop (B0 p)
+        h0 (p : Path M (op x c) (op y c)) : isProp (B0 p)
           = sM x y
       in propPi (Path M (op x c) (op y c)) B0 h0
   in propPi3 M B h
@@ -110,8 +111,8 @@ isCancellative (M : U) (op : M -> M -> M) : U
   = (_ : isLeftCancellative M op)
   * (isRightCancellative M op)
 
-propisCancellative (M : U) (sM : set M) (op : M -> M -> M)
-  : prop (isCancellative M op)
+propisCancellative (M : U) (sM : isSet M) (op : M -> M -> M)
+  : isProp (isCancellative M op)
   = propAnd (isLeftCancellative M op) (isRightCancellative M op)
       (propisLeftCancellative M sM op) (propisRightCancellative M sM op)
 
@@ -120,24 +121,24 @@ propisCancellative (M : U) (sM : set M) (op : M -> M -> M)
 hasLeftInverse (G : U) (op : G -> G -> G) (id : G) (inv : G -> G) : U
   = (x : G) -> Path G (op (inv x) x) id
 
-prophasLeftInverse (G : U) (sG : set G) (op : G -> G -> G) (id : G) (inv : G -> G)
-  : prop (hasLeftInverse G op id inv)
+prophasLeftInverse (G : U) (sG : isSet G) (op : G -> G -> G) (id : G) (inv : G -> G)
+  : isProp (hasLeftInverse G op id inv)
   = let
     B (x : G) : U
       = Path G (op (inv x) x) id
-    h (x : G) : prop (B x)
+    h (x : G) : isProp (B x)
       = sG (op (inv x) x) id
   in propPi G B h
 
 hasRightInverse (G : U) (op : G -> G -> G) (id : G) (inv : G -> G) : U
   = (x : G) -> Path G (op x (inv x)) id
 
-prophasRightInverse (G : U) (sG : set G) (op : G -> G -> G) (id : G) (inv : G -> G)
-  : prop (hasRightInverse G op id inv)
+prophasRightInverse (G : U) (sG : isSet G) (op : G -> G -> G) (id : G) (inv : G -> G)
+  : isProp (hasRightInverse G op id inv)
   = let
     B (x : G) : U
       = Path G (op x (inv x)) id
-    h (x : G) : prop (B x)
+    h (x : G) : isProp (B x)
       = sG (op x (inv x)) id
   in propPi G B h
 
@@ -145,8 +146,8 @@ hasInverse (G : U) (op : G -> G -> G) (id : G) (inv : G -> G) : U
   = (_ : hasLeftInverse G op id inv)
   * (hasRightInverse G op id inv)
 
-prophasInverse (G : U) (sG : set G) (op : G -> G -> G) (id : G) (inv : G -> G)
-  : prop (hasInverse G op id inv)
+prophasInverse (G : U) (sG : isSet G) (op : G -> G -> G) (id : G) (inv : G -> G)
+  : isProp (hasInverse G op id inv)
   = propAnd (hasLeftInverse G op id inv) (hasRightInverse G op id inv)
       (prophasLeftInverse G sG op id inv) (prophasRightInverse G sG op id inv)
 
@@ -155,24 +156,24 @@ prophasInverse (G : U) (sG : set G) (op : G -> G -> G) (id : G) (inv : G -> G)
 isLeftDistributive (R : U) (add : R -> R -> R) (mul : R -> R -> R) : U
   = (a b c : R) -> Path R (mul a (add b c)) (add (mul a b) (mul a c))
 
-propisLeftDistributive (R : U) (sR : set R) (add : R -> R -> R) (mul : R -> R -> R)
-  : prop (isLeftDistributive R add mul)
+propisLeftDistributive (R : U) (sR : isSet R) (add : R -> R -> R) (mul : R -> R -> R)
+  : isProp (isLeftDistributive R add mul)
   = let
     B (a b c : R) : U
       = Path R (mul a (add b c)) (add (mul a b) (mul a c))
-    h (a b c : R) : prop (B a b c)
+    h (a b c : R) : isProp (B a b c)
       = sR (mul a (add b c)) (add (mul a b) (mul a c))
   in propPi3 R B h
 
 isRightDistributive (R : U) (add : R -> R -> R) (mul : R -> R -> R) : U
   = (a b c : R) -> Path R (mul (add b c) a) (add (mul b a) (mul c a))
 
-propisRightDistributive (R : U) (sR : set R) (add : R -> R -> R) (mul : R -> R -> R)
-  : prop (isRightDistributive R add mul)
+propisRightDistributive (R : U) (sR : isSet R) (add : R -> R -> R) (mul : R -> R -> R)
+  : isProp (isRightDistributive R add mul)
   = let
     B (a b c : R) : U
       = Path R (mul (add b c) a) (add (mul b a) (mul c a))
-    h (a b c : R) : prop (B a b c)
+    h (a b c : R) : isProp (B a b c)
       = sR (mul (add b c) a) (add (mul b a) (mul c a))
   in propPi3 R B h
 
@@ -180,8 +181,8 @@ isDistributive (R : U) (add : R -> R -> R) (mul : R -> R -> R) : U
   = (_ : isLeftDistributive R add mul)
   * (isRightDistributive R add mul)
 
-propisDistributive (R : U) (sR : set R) (add : R -> R -> R) (mul : R -> R -> R)
-  : prop (isDistributive R add mul)
+propisDistributive (R : U) (sR : isSet R) (add : R -> R -> R) (mul : R -> R -> R)
+  : isProp (isDistributive R add mul)
   = propAnd (isLeftDistributive R add mul) (isRightDistributive R add mul)
       (propisLeftDistributive R sR add mul) (propisRightDistributive R sR add mul)
 
@@ -190,16 +191,16 @@ propisDistributive (R : U) (sR : set R) (add : R -> R -> R) (mul : R -> R -> R)
 preservesOp (A B : U) (oA : A -> A -> A) (oB : B -> B -> B) (f : A -> B) : U
   = (a0 a1 : A) -> Path B (f (oA a0 a1)) (oB (f a0) (f a1))
 
-proppreservesOp (A B : U) (sB : set B) (oA : A -> A -> A) (oB : B -> B -> B)
-    (f : A -> B) : prop (preservesOp A B oA oB f)
+proppreservesOp (A B : U) (sB : isSet B) (oA : A -> A -> A) (oB : B -> B -> B)
+    (f : A -> B) : isProp (preservesOp A B oA oB f)
   = propPi2 A (\ (a0 a1 : A) -> Path B (f (oA a0 a1)) (oB (f a0) (f a1)))
       (\ (a0 a1 : A) -> sB (f (oA a0 a1)) (oB (f a0) (f a1)))
 
 preservesId (A B : U) (iA : A) (iB : B) (f : A -> B) : U
   = Path B (f iA) iB
 
-proppreservesId (A B : U) (sB : set B) (iA : A) (iB : B) (f : A -> B)
-  : prop (preservesId A B iA iB f)
+proppreservesId (A B : U) (sB : isSet B) (iA : A) (iB : B) (f : A -> B)
+  : isProp (preservesId A B iA iB f)
   = sB (f iA) iB
 
 
@@ -431,7 +432,7 @@ ismonoidhom (a b : monoid) (f : a.1.1 -> b.1.1) : U
   = (_ : preservesOp a.1.1 b.1.1 (opMonoid a) (opMonoid b) f)
   * (preservesId a.1.1 b.1.1 (idMonoid a) (idMonoid b) f)
 
-propismonoidhom (a b : monoid) (f : a.1.1 -> b.1.1) : prop (ismonoidhom a b f)
+propismonoidhom (a b : monoid) (f : a.1.1 -> b.1.1) : isProp (ismonoidhom a b f)
   = propAnd (preservesOp a.1.1 b.1.1 (opMonoid a) (opMonoid b) f)
       (preservesId a.1.1 b.1.1 (idMonoid a) (idMonoid b) f)
       (proppreservesOp a.1.1 b.1.1 b.1.2 (opMonoid a) (opMonoid b) f)
@@ -441,11 +442,11 @@ monoidhom (a b : monoid) : U
   = (f : a.1.1 -> b.1.1)
   * (ismonoidhom a b f)
 
-setmonoidhom (a b : monoid) : set (monoidhom a b)
+setmonoidhom (a b : monoid) : isSet (monoidhom a b)
   = let
-    setf : set (a.1.1 -> b.1.1)
+    setf : isSet (a.1.1 -> b.1.1)
       = setPi a.1.1 (\ (_ : a.1.1) -> b.1.1) (\ (_ : a.1.1) -> b.1.2)
-    setm (f : a.1.1 -> b.1.1) : set (ismonoidhom a b f)
+    setm (f : a.1.1 -> b.1.1) : isSet (ismonoidhom a b f)
       = propSet (ismonoidhom a b f) (propismonoidhom a b f) 
   in setSig (a.1.1 -> b.1.1) (ismonoidhom a b) setf setm 
 

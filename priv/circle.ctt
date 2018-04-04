@@ -2,6 +2,8 @@
 module circle where
 
 import int
+import iso
+import bool_theory
 
 data S1 = base
         | loop <i> [ (i=0) -> base
@@ -25,12 +27,12 @@ winding (p : loopS1) : Z = trans Z Z rem zeroZ
   where
     rem : Path U Z Z = <i> helix (p @ i)
 
-compS1 : loopS1 -> loopS1 -> loopS1 = compPath S1 base base base
+compS1 : loopS1 -> loopS1 -> loopS1 = composition S1 base base base
 
 -- All of these should be equal to "posZ (suc zero)":
 loop2 : loopS1 = compS1 loop1 loop1
-loop2' : loopS1 = compPath' S1 base base base loop1 loop1
-loop2'' : loopS1 = compPath'' S1 base base loop1 base loop1
+loop2' : loopS1 = composition S1 base base base loop1 loop1
+--loop2'' : loopS1 = composition' S1 base base loop1 base loop1
 
 -- More examples:
 loopZ1  : Z = winding loop1

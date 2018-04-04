@@ -1,5 +1,6 @@
 module pi where
 
+import propset
 import proto_path
 
 Pi (A:U) (P:A->U) : U = (x:A) -> P x
@@ -23,3 +24,4 @@ piExt  (A: U) (B: A -> U)
 funExt (A B: U) (f g: A -> B)
        (p: (x : A) -> Path B (f x) (g x)):
        Path (A -> B) f g = <i> \(a : A) -> p a @ i
+
