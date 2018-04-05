@@ -2,51 +2,60 @@ module path where
 
 import proto_path
 
+const (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
+
+exConst (A: U): U = (f: A -> A) * const A f
+
+mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
+--  = cong A B f a b p
+    = <i> f (p @ i)
+
 subst (A: U) (P: A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
-    = comp (<i> P (p @ i)) e []
+    = comp (<i> P (p @ i)) e [] -- normal form
 --  = trans (P a) (P b) (mapOnPath A U P a b p) e
 
 substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
     = subst A P b a (<i> p @ -i)
 
-const (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
-
-exConst (A: U): U = (f: A -> A) * const A f
-
-kan (A: U) (a b c d: A) (p: Path A a b)
-    (q: Path A a c) (r: Path A b d): Path A c d =
-    <i> comp (<j>A) (p @ i) [(i = 0) -> q,
-                             (i = 1) -> r ]
-
-mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
-    = <i> f (p @ i)
-
+-- composition operation
 composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
-    = comp (<i> Path A a (q @ i)) p []
---  = subst A (Path A a) b c q p
---  = <i> comp (<j>A) (p @ i) [ (i = 1) -> q, (i=0) -> <j> a ]
+    = subst A (Path A a) b c q p
+--  = comp (<i> Path A a (q @ i)) p []
+--  = <i> comp (<j>A) (p @ i) [(i=0) -> <j> a, (i=1) -> q ]
+
+-- Kan filling operation
+kan (A: U) (a b c d: A) (p: Path A a b) (q: Path A a c) (r: Path A b d): Path A c d
+    = <i> comp (<j>A) (p @ i) [(i=0) -> q, (i=1) -> r ]
 
 -- J is formulated in a form of Paulin-Mohring and implemented
 -- using two facts that singleton are contractible and dependent function transport.
 JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (eta A a)) (p: Path A a b): P (b,p)
     = subst (singl A a) T (eta A a) (b,p) (contr A a b p) u where T (z : singl A a) : U = P z
 
--- n-Groupoid
 data N = Z  | S (n: N)
 
+-- n-Groupoid
 n_grpd (A: U) (n: N): U = (a b: A) -> ((rec A a b) n) where
   rec (A: U) (a b: A): (k: N) -> U = split
     Z -> Path A a b
     S n -> n_grpd (Path A a b) n
 
 isContr     (A: U): U = (x: A) * ((y: A) -> Path A x y)
-isProp      (A: U): U = (x y: A) -> Path A x y
 isProp      (A: U): U = n_grpd A Z
 isSet       (A: U): U = n_grpd A (S Z)
 isGroupoid  (A: U): U = n_grpd A (S (S Z))
 isGrp2      (A: U): U = n_grpd A (S (S (S Z)))
 isGrp3      (A: U): U = n_grpd A (S (S (S (S Z))))
 
+-- ∞-Groupoid
+inf_grpd (A: U): U
+  = (carrier: A)
+  * (eq: (a b: A) -> Path A a b)
+  * ((a b: A) -> inf_grpd (Path A a b))
+
+isInfinityGroupoid (A: U): U = inf_grpd A
+
+-- h-Types
 PROP      : U = (X:U) * isProp X
 SET       : U = (X:U) * isSet X
 GROUPOID  : U = (X:U) * isGroupoid X
