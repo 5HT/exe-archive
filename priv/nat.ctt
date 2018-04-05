@@ -7,6 +7,10 @@ import bool
 
 data nat = zero | succ (n: nat)
 
+natElim (A: U) (n: A) (s: nat -> A) : nat -> A = split
+  zero -> n
+  succ a -> s a
+
 nat_eq: nat -> nat -> bool = split
   zero      -> split@(nat -> bool) with
      zero   -> true
@@ -76,12 +80,8 @@ n20 : nat = succ n19
 
 {- Finite Set Datatype -}
 
-fin : maybe nat -> maybe nat = split
-  nothing -> nothing
-  just x -> extract x where
-  extract: nat -> maybe nat = split
-     zero -> nothing
-     succ x -> just x
+fin : maybe nat -> maybe nat = 
+  maybeElim nat (maybe nat) nothing (natElim (maybe nat) nothing (\(n: nat) -> just n))
 
 data Fin (n: maybe nat) = fzero | fsucc (_: Fin (fin n))
 
