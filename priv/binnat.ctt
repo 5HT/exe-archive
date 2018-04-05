@@ -13,7 +13,7 @@
 module binnat where
 
 import univ
-import nat
+import nat_theory
 
 -- Positive binary numbers like in Coq
 data pos = pos1

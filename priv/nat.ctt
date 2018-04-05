@@ -1,43 +1,48 @@
 module nat where
 
-{- Basic run-time nat module -}
-
 import maybe
 import bool
 
-data nat = zero | succ (n : nat)
+{- Simple run-time nat Datatype -}
 
--- Eq Nat -- type class instance
-
-nat_eq: nat -> nat -> bool = split
-  zero -> split@(nat -> bool) with
-    zero  -> true
-    succ n -> false
-  succ m -> split@(nat -> bool) with
-    zero  -> false
-    succ n -> nat_eq m n
-
-pred : nat -> nat = split
-  zero -> zero
-  succ n -> n
-
-extract: nat -> maybe nat = split
-  zero -> nothing
-  succ x -> just x
-
-pred_ : maybe nat -> maybe nat = split
-  nothing -> nothing
-  just x -> extract x
-
-add (m : nat) : nat -> nat = split
-  zero  -> m
-  succ n -> succ (add m n)
+data nat = zero | succ (n: nat)
 
 one   : nat = succ zero
 two   : nat = succ one
 three : nat = succ two
 four  : nat = succ three
 five  : nat = succ four
+
+-- Section 1.9 HoTT
+rec_nat (A:U) (c_0 : A) (c_s : nat -> A -> A) : (n:nat) -> A = split
+  zero  -> c_0
+  succ n -> c_s n (rec_nat A c_0 c_s n)
+
+-- Section 1.9 HoTT
+ind_nat (A:nat->U) (c_0:A zero) (c_s : (n:nat) -> A n -> A (succ n)) : (n:nat) -> A n = split
+  zero  -> c_0
+  succ n -> c_s n (ind_nat A c_0 c_s n)
+
+nat_eq: nat -> nat -> bool = split
+  zero -> split@(nat -> bool) with { zero -> true; succ n -> false }
+  succ m -> split@(nat -> bool) with { zero -> false; succ n -> nat_eq m n }
+
+pred: nat -> nat = split
+  zero -> zero
+  succ n -> n
+
+add (m: nat): nat -> nat = split { zero -> m; succ n -> succ (add m n) }
+
+mult: nat -> nat -> nat
+  = rec_nat (nat->nat) (\(_:nat) -> zero)
+            (\(_:nat) (mult_:nat->nat) (m:nat) -> add m (mult_ m))
+
+exponent : nat -> nat -> nat =
+  \(x:nat) (power:nat) ->
+     (rec_nat (nat->nat) (\(_:nat) -> one)
+     (\(_:nat) (exponent_:nat->nat) (m:nat) -> mult m (exponent_ m)))
+     power x
+
 
 n0  : nat = zero
 n1  : nat = succ n0
@@ -60,4 +65,31 @@ n17 : nat = succ n16
 n18 : nat = succ n17
 n19 : nat = succ n18
 n20 : nat = succ n19
+
+{- Finite Set Datatype -}
+
+extract: nat -> maybe nat = split
+  zero -> nothing
+  succ x -> just x
+
+pred_ : maybe nat -> maybe nat = split
+  nothing -> nothing
+  just x -> extract x
+
+data Fin (n: maybe nat) = fzero | fsuc (_: Fin (pred_ n))
+
+x11: Fin (just zero) = fzero
+
+-- x12:  Fin (just zero) = fsuc x11
+-- Fin (just zero)
+-- /=
+-- Fin nothing
+
+x21: Fin (just one) = fzero
+x22: Fin (just one) = fsuc x11
+
+-- x23: Fin (just one) = fsuc (fsuc x11)
+-- Fin (just zero)
+-- /=
+-- Fin nothing
 

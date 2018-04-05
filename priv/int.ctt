@@ -2,7 +2,7 @@
 -- non-trivial path from Z to Z
 module int where
 
-import nat
+import nat_theory
 import discor
 import hedberg
 
@@ -62,7 +62,5 @@ sucPathZ : Path U Z Z = isoPath Z Z sucZ predZ sucpredZ predsucZ
 -- We can transport along the proof forward and backwards:
 testOneZ : Z = transport sucPathZ zeroZ
 testNOneZ : Z = transport (<i> sucPathZ @ - i) zeroZ
-
-
 
 ZSet : isSet Z = hedberg Z (orDisc nat nat natDec natDec)

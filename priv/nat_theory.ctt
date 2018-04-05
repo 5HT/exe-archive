@@ -82,20 +82,8 @@ natDec : (n m:nat) -> dec (Path nat n m) = split
 
 natSet : isSet nat = hedberg nat natDec
 
-equalNat : nat -> nat -> bool = split
-    zero -> split@(nat -> bool) with
-      zero  -> true
-      succ n -> false
-    succ m -> split@(nat -> bool) with
-      zero  -> false
-      succ n -> equalNat m n
-
-nat_instance : eq = (nat, equalNat)
-nat_instance_ : eq_ nat = equalNat
-
--- Parity
-
--- TODO: this overloads Unit from proto
+nat_instance : eq = (nat, nat_eq)
+nat_instance_ : eq_ nat = nat_eq
 
 mutual
   evenT : nat -> U = split
@@ -115,10 +103,6 @@ evenPredIsOddT: (n: nat) (pn: oddT (succ n)) -> evenT n = split
   zero -> \(pn: oddT (succ zero)) -> pn
   succ n' ->  \(pn: oddT (succ (succ n'))) -> pn
 
--- TODO: this overloads efq and neg from prelude
-efq (A:U) : Empty -> A = split {}
-neg (A:U) : U = A -> Empty
-
 mutual
   evenPlusEvenIsEven : (n m:nat) (pn:evenT n) (pm : evenT m) -> evenT (add m n) = split
     zero   -> \(m : nat) (pn : evenT zero)    (pm : evenT m) -> pm
@@ -136,51 +120,18 @@ mutual
     zero   -> \(m : nat) (pn : evenT zero)  (pm : oddT m) -> pm
     succ n' -> \(m : nat) (pn : oddT n')     (pm : oddT m) -> oddPlusOddIsEven n' m pn pm
 
--- rec_N from HOTT book, section 1.9
-rec_nat (A:U) (c_0 : A) (c_s : nat -> A -> A) : (n:nat) -> A = split
-  zero  -> c_0
-  succ n -> c_s n (rec_nat A c_0 c_s n)
-
 -- examples 1.9.1 and 1.9.2
 double_via_rec_nat : nat -> nat =
   rec_nat nat zero (\(_:nat) (y:nat) -> succ (succ y))
 add_via_rec_nat : nat -> nat -> nat =
   rec_nat (nat->nat) (\(x:nat)->x) (\(_:nat) (add_:nat->nat) (m:nat) -> succ(add_ m))
 
--- ind_N from HOTT book, section 1.9
-ind_nat (A:nat->U) (c_0:A zero) (c_s : (n:nat) -> A n -> A (succ n)) : (n:nat) -> A n = split
-  zero  -> c_0
-  succ n -> c_s n (ind_nat A c_0 c_s n)
-
--- exercise 1.8, part 1: define multiplication using rec_nat
-mult : nat -> nat -> nat =
- rec_nat (nat->nat) (\(_:nat) -> zero) (\(_:nat) (mult_:nat->nat) (m:nat) -> add m (mult_ m))
-
--- exercise 1.8, part 2: define exponentiation using rec_nat
-exponent : nat -> nat -> nat =
-  \(x:nat) (power:nat) ->
-     (rec_nat (nat->nat) (\(_:nat) -> one) (\(_:nat) (exponent_:nat->nat) (m:nat) -> mult m (exponent_ m)))
-     power x
-
 -- exercise 1.9: Define the type family Fin : N → U mentioned at the end of §1.3, and the dependent
 -- function fmax : ∏(n:N) Fin(n + 1) mentioned in §1.4.
-data Fin (n: maybe nat) = fzero | fsucc (_: Fin (pred_ n))
-
-x1:  Fin (just zero) = fzero
--- x1:  Fin (just zero) = fsucc x1
--- Fin (just zero)
--- /=
--- Fin nothing
-x21: Fin (just one) = fzero
-x22: Fin (just one) = fsucc x1
--- x23: Fin (just one) = fsucc (fsucc x1)
--- Fin (just zero)
--- /=
--- Fin nothing
 
 fmax : (n:nat) -> Fin (just (succ n)) = split
-  zero -> fsucc fzero
-  succ n -> fsucc (fmax n)
+  zero -> fsuc fzero
+  succ n -> fsuc (fmax n)
 
 -- exercise 1.10: Show that the Ackermann function ack : N → N → N is definable using only rec_nat
 -- satisfying the following equations:
@@ -207,7 +158,7 @@ double_n_is_add_n_n : (n:nat) -> Path nat (double n) (add n n) = split
                 (succ (succ (double x)))
                 (succ (succ (add x x)))
                 (succ (add (succ x) x))
-             (<j> (succ (succ (double_n_is_add_n_n x @ j)))) 
+             (<j> (succ (succ (double_n_is_add_n_n x @ j))))
              (<k> succ (add_succ x x @ -k))
 
 -- Same result, but with cryptic comp application obtained by expanding composition
