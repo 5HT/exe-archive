@@ -8,3 +8,7 @@ retract (A B : U) (f : A -> B) (g : B -> A) : U = (a : A) -> Path A (g (f a)) a
 compUp (A : U) (a a' b b' : A)
        (p : Path A a a') (q : Path A b b') (r : Path A a b) : Path A a' b' =
   <i> comp (<j>A) (r @ i) [(i = 0) -> p, (i = 1) -> q]
+
+compDown (A : U) (a a' b b' : A)
+         (p : Path A a a') (q: Path A b b') : Path A a' b' -> Path A a b =
+ compUp A a' a b' b (inv A a a' p) (inv A b b' q)

@@ -7,7 +7,8 @@ catfunctor (A B: precategory): U
   * (mor: (x y: carrier A) -> hom A x y -> hom B (ob x) (ob y))
   * (id: (x: carrier A) -> Path (hom B (ob x) (ob x)) (mor x x (path A x)) (path B (ob x)))
   * ((x y z: carrier A) -> (f: hom A x y) -> (g: hom A y z) ->
-     Path (hom B (ob x) (ob z)) (mor x z (compose A x y z f g)) (compose B (ob x) (ob y) (ob z) (mor x y f) (mor y z g)))
+     Path (hom B (ob x) (ob z)) (mor x z (compose A x y z f g))
+      (compose B (ob x) (ob y) (ob z) (mor x y f) (mor y z g)))
 
 idFunctor (A: precategory): catfunctor A A
   = (\(x: carrier A) -> x

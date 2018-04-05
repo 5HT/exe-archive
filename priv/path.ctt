@@ -2,16 +2,16 @@ module path where
 
 import proto_path
 
-subst    (A: U) (P: A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
+subst (A: U) (P: A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
     = comp (<i> P (p @ i)) e []
 --  = trans (P a) (P b) (mapOnPath A U P a b p) e
 
 substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
-    =  subst A P b a (<i> p @ -i)
+    = subst A P b a (<i> p @ -i)
 
-const    (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
+const (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
 
-exConst  (A: U): U = (f: A -> A) * const A f
+exConst (A: U): U = (f: A -> A) * const A f
 
 kan (A: U) (a b c d: A) (p: Path A a b)
     (q: Path A a c) (r: Path A b d): Path A c d =
