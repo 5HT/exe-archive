@@ -1,5 +1,5 @@
 -- Categories with structure identity principle
-module category where
+module cat_theory where
 
 import iso_sigma
 import iso_pi

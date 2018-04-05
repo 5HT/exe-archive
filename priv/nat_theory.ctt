@@ -130,8 +130,8 @@ add_via_rec_nat : nat -> nat -> nat =
 -- function fmax : ∏(n:N) Fin(n + 1) mentioned in §1.4.
 
 fmax : (n:nat) -> Fin (just (succ n)) = split
-  zero -> fsuc fzero
-  succ n -> fsuc (fmax n)
+  zero -> fsucc fzero
+  succ n -> fsucc (fmax n)
 
 -- exercise 1.10: Show that the Ackermann function ack : N → N → N is definable using only rec_nat
 -- satisfying the following equations:

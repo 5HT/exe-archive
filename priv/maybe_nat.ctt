@@ -1,4 +1,4 @@
-module maybenat where
+module maybe_nat where
 -- by @esmolanka
 -- here is simple one tweet equality sample with transport
 
@@ -38,15 +38,15 @@ maybeNatIso : (a : fix maybe) -> Path (fix maybe) (natToMaybe (maybeToNat a)) a 
       nothing -> <i> Fix nothing
       just f -> <i> Fix (just (maybeNatIso f @ i))
 
-maybenat_ : Path U (fix maybe) nat = isoPath (fix maybe) nat maybeToNat natToMaybe natMaybeIso maybeNatIso
+maybenat : Path U (fix maybe) nat = isoPath (fix maybe) nat maybeToNat natToMaybe natMaybeIso maybeNatIso
 
 HeteroEqu (A B: U) (a: A) (b: B) (P: Path U A B) : U = PathP P a b
 
--- > HeteroEqu (fix maybe) nat (Fix nothing) zero maybenat_
+-- > HeteroEqu (fix maybe) nat (Fix nothing) zero maybenat
 
--- > transNeg (fix maybe) (nat) maybenat_ (succ (succ zero))
+-- > transNeg (fix maybe) (nat) maybenat (succ (succ zero))
 -- EVAL: Fix (just (Fix (just (Fix nothing))))
--- > trans (fix maybe) (nat) maybenat_ (Fix nothing)
+-- > trans (fix maybe) (nat) maybenat (Fix nothing)
 -- EVAL: zero
 
 -- import univalence

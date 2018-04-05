@@ -1,4 +1,4 @@
-module maybe_functor where
+module maybe_theory where
 
 import functor
 import maybe

@@ -84,19 +84,19 @@ pred_ : maybe nat -> maybe nat = split
   nothing -> nothing
   just x -> extract x
 
-data Fin (n: maybe nat) = fzero | fsuc (_: Fin (pred_ n))
+data Fin (n: maybe nat) = fzero | fsucc (_: Fin (pred_ n))
 
 x11: Fin (just zero) = fzero
 
--- x12:  Fin (just zero) = fsuc x11
+-- x12:  Fin (just zero) = fsucc x11
 -- Fin (just zero)
 -- /=
 -- Fin nothing
 
 x21: Fin (just one) = fzero
-x22: Fin (just one) = fsuc x11
+x22: Fin (just one) = fsucc x11
 
--- x23: Fin (just one) = fsuc (fsuc x11)
+-- x23: Fin (just one) = fsucc (fsucc x11)
 -- Fin (just zero)
 -- /=
 -- Fin nothing
