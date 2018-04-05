@@ -3,6 +3,8 @@ module prop where
 import proto
 import path
 
+discrete (A: U): U = (a b: A) -> dec (Path A a b)
+
 propUnit : isProp Unit = split
  tt -> split@((x:Unit) -> Path Unit tt x) with
   tt -> <i> tt
@@ -30,18 +32,25 @@ propPi (A : U) (B : A -> U) (h : (x : A) -> isProp (B x))
        (f0 f1 : (x : A) -> B x) : Path ((x : A) -> B x) f0 f1
   = <i> \ (x:A) -> (h x (f0 x) (f1 x)) @ i
 
--- Contractible is a Prop
+---------
 
-lemProp (A : U) (h : A -> isProp A) : isProp A = \(a : A) -> h a a
+propN0 : isProp Empty = \ (x y: Empty) -> efq (Path Empty x y) x
 
-isContrProp (A : U) (h : isContr A) : isProp A =
-  \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
+propNeg (A:U) : isProp (neg A) = \ (f g:neg A) -> <i>\(x:A) -> (propN0 (f x) (g x))@i
 
-propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem where
-  rem (t : isContr A) : isProp (isContr A) = propSig A T pA pB where
-  T (x : A) : U = (y : A) -> Path A x y
-  pA (x y : A) : Path A x y = composition A x t.1 y (<i> t.2 x @ -i) (t.2 y)
-  pB (x : A) : isProp (T x) = propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
+propOr (A B : U) (hA : isProp A) (hB : isProp B) (h : A -> neg B) : isProp (or A B) = split
+    inl a' -> split@((b : or A B) -> Path (or A B) (inl a') b) with
+        inl b' -> <i> inl (hA a' b' @ i)
+        inr b' -> efq (Path (or A B) (inl a') (inr b')) (h a' b')
+    inr a' -> split@((b : or A B) -> Path (or A B) (inr a') b) with
+        inl b' -> efq (Path (or A B) (inr a') (inl b')) (h b' a')
+        inr b' -> <i> inr (hB a' b' @ i)
+
+propDec (A : U) (h : isProp A) : isProp (dec A) =
+  propOr A (neg A) h (propNeg A) (\(x : A) (h : neg A) -> h x)
+
+propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (and A B) =
+  propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)
 
 ---------
 
@@ -62,23 +71,3 @@ stableConst (A : U) (sA: stable A) : exConst A =
 
 injective (A B : U) (f : A -> B) : U =
   (a0 a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1
-
----------
-
-propN0 : isProp Empty = \ (x y: Empty) -> efq (Path Empty x y) x
-
-propNeg (A:U) : isProp (neg A) = \ (f g:neg A) -> <i>\(x:A) -> (propN0 (f x) (g x))@i
-
-propOr (A B : U) (hA : isProp A) (hB : isProp B) (h : A -> neg B) : isProp (or A B) = split
-    inl a' -> split@((b : or A B) -> Path (or A B) (inl a') b) with
-        inl b' -> <i> inl (hA a' b' @ i)
-        inr b' -> efq (Path (or A B) (inl a') (inr b')) (h a' b')
-    inr a' -> split@((b : or A B) -> Path (or A B) (inr a') b) with
-        inl b' -> efq (Path (or A B) (inr a') (inl b')) (h b' a')
-        inr b' -> <i> inr (hB a' b' @ i)
-
-propDec (A : U) (h : isProp A) : isProp (dec A) =
-  propOr A (neg A) h (propNeg A) (\(x : A) (h : neg A) -> h x)
-
-propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (and A B) =
-  propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)

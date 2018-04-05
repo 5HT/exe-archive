@@ -10,6 +10,9 @@ import nat
 import maybe
 import control
 import proto
+import path
+import set
+import iso
 
 three : fix maybe = Fix (just (Fix (just (Fix (just (Fix nothing))))))
 

@@ -1,6 +1,6 @@
 module iso_sigma where
 
-import prop
+import set
 import sigma
 import iso
 

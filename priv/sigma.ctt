@@ -1,6 +1,6 @@
 module sigma where
 
-import prop
+import set
 
 Sigma (A : U) (B : A -> U) : U = (x : A) * B x
 pair (A: U) (B: A -> U) (a : A) (b: B a): Sigma A B = (a,b)

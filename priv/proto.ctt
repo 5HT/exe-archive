@@ -21,5 +21,4 @@ efq        (A: U): Empty -> A = split {}
 neg        (A: U): U = A -> Empty
 dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
 dec        (A: U): U = or A (neg A)
-discrete   (A: U): U = (a b: A) -> dec (Path A a b)
 stable     (A: U): U = neg (neg A) -> A

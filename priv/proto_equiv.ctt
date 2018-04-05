@@ -2,7 +2,7 @@ module proto_equiv where
 
 {- Equivalence from HoTT -}
 
-import prop
+import set
 
 fiber (A B: U) (f: A -> B) (y: B): U = (x: A) * Path B y (f x)
 isSingleton (X:U): U = (c:X) * ((x:X) -> Path X c x)

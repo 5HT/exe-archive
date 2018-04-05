@@ -3,7 +3,8 @@ module set where
 import proto
 import path
 import prop
-import iso
+
+-- Contractible is a Prop
 
 propSet (A : U) (h : isProp A) : isSet A =
  \(a b : A) (p q : Path A a b) ->
@@ -11,6 +12,17 @@ propSet (A : U) (h : isProp A) : isSet A =
                         , (i=1) -> h a b
                         , (j=0) -> h a (p @ i)
                         , (j=1) -> h a (q @ i)]
+
+lemProp (A : U) (h : A -> isProp A) : isProp A = \(a : A) -> h a a
+
+isContrProp (A : U) (h : isContr A) : isProp A =
+  \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
+
+propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem where
+  rem (t : isContr A) : isProp (isContr A) = propSig A T pA pB where
+  T (x : A) : U = (y : A) -> Path A x y
+  pA (x y : A) : Path A x y = composition A x t.1 y (<i> t.2 x @ -i) (t.2 y)
+  pB (x : A) : isProp (T x) = propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
 
 propIsProp (A : U) : isProp (isProp A) =
   \(f g : isProp A) -> <i> \(a b : A) ->
@@ -105,14 +117,3 @@ prop_inj1 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B) :
   in
     propPi B Q h
 
--- A proof that two propositions with maps between them can be identified with
--- each other
-propPath (A B: U) (f: A -> B) (g: B -> A) (pA: isProp A) (pB: isProp B): Path U A B
-  = isoPath A B f g (\ (b: B) -> pB (f (g b)) b) (\ (a: A) -> pA (g (f a)) a)
-
--- A proof that the two definitions of injectivity can be identified with each
--- other
-injPath (A B: U) (f: A -> B) (sA: isSet A) (sB: isSet B): Path U (inj0 A B f sA sB) (inj1 A B f sA sB)
-  = propPath (inj0 A B f sA sB) (inj1 A B f sA sB)
-             (inj01 A B f sA sB) (inj10 A B f sA sB)
-             (prop_inj0 A B f sA sB) (prop_inj1 A B f sA sB)
