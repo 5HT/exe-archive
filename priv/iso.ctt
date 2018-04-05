@@ -82,8 +82,11 @@ isoToEquiv (A B: U)
  \(y:B) -> ((g y,<i>s y@-i),\ (z:fiber A B f y) ->
            lemIso A B f g s t y (g y) z.1 (<i>s y@-i) z.2)
 
-isoPath (A B: U) (f: A -> B) (g: B -> A)
-        (s: section A B f g) (t: retract A B f g): Path U A B =
+isoPath (A B: U)
+        (f: A -> B)
+        (g: B -> A)
+        (s: section A B f g)
+        (t: retract A B f g): Path U A B =
     <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t) ,
                  (i = 1) -> (B,idfun B,idIsEquiv B) ]
 

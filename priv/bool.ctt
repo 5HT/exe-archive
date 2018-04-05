@@ -3,18 +3,13 @@ module bool where
 {- Simple run-time bool module.
    Theorems are in bool_theory module. -}
 
+import proto
+
 data bool = false | true
 
 neg_: bool -> bool         = split { false -> true ; true -> false }
-or_:  bool -> bool -> bool = split { false->\(b:bool)->b;true->\(_:bool)->true }
-and_: bool -> bool -> bool = split { false->\(b:bool)->false;true->\(b:bool)->b }
+or_:  bool -> bool -> bool = split { false -> idfun bool ; true -> constfun bool bool true }
+and_: bool -> bool -> bool = split { false -> constfun bool bool false ; true -> idfun bool }
 
-caseBool (A: U) (f t: A): bool -> A = split { false -> f ; true -> t }
-
-equalBool: bool -> bool -> bool = split
-  false -> split@ (bool -> bool) with
-           false -> false
-           true  -> true
-  true ->  split@ (bool -> bool) with
-           false -> true
-           true  -> false
+bool_case (A: U) (f t: A): bool -> A = split { false -> f ; true -> t }
+bool_eq: bool -> bool -> bool = constfun bool (bool -> bool) neg_

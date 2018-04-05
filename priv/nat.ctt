@@ -76,15 +76,14 @@ n20 : nat = succ n19
 
 {- Finite Set Datatype -}
 
-extract: nat -> maybe nat = split
-  zero -> nothing
-  succ x -> just x
-
-pred_ : maybe nat -> maybe nat = split
+fin : maybe nat -> maybe nat = split
   nothing -> nothing
-  just x -> extract x
+  just x -> extract x where
+  extract: nat -> maybe nat = split
+     zero -> nothing
+     succ x -> just x
 
-data Fin (n: maybe nat) = fzero | fsucc (_: Fin (pred_ n))
+data Fin (n: maybe nat) = fzero | fsucc (_: Fin (fin n))
 
 x11: Fin (just zero) = fzero
 
