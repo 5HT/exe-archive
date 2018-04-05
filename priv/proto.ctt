@@ -12,7 +12,6 @@ case   (A B C: U)(b:A->C)(c:B->C):or A B->C = split{inl x->b(x);inr y->c(y)}
 fst      (A B: U): tuple A B -> A = split pair a b -> a
 snd      (A B: U): tuple A B -> B = split pair a b -> b
 idfun      (A: U) (a: A): A = a
-constfun (A B: U) (a: A) (b: B): A = a
 o      (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
 and      (A B: U): U = (_:A) * B
 
