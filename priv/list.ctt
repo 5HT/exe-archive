@@ -2,12 +2,11 @@ module list where
 
 {- Simple run-time list module -}
 
+import eq
 import nat
 import maybe
-import proto
 
-data list (A: U) = nil
-                 | cons (a: A) (as: list A)
+data list (A: U) = nil | cons (a: A) (as: list A)
 
 null (A: U): list A -> bool = split
   nil -> true
@@ -50,9 +49,6 @@ zipWith (A B C: U) (f: A -> B -> C) : list A -> list B -> list C = go where
 zip (A B: U): list A -> list B -> list (tuple A B) =
   zipWith A B (tuple A B) (\(x: A) (y: B) -> pair x y)
 
-maybe_map (A B: U): maybe ((_: A) * list A) -> maybe ((_: A) * B) = undefined
-foldr_ (A B: U) (alg: maybe ((_: A) * B) -> B) (xs: list A): B = undefined
-
 foldr (A B: U) (f: A -> B -> B) (Z: B): list A -> B = split
   nil -> Z
   cons x xs -> f x (foldr A B f Z xs)
@@ -78,11 +74,6 @@ length (A: U): list A -> nat = split
   nil -> zero
   cons x xs -> add one (length A xs)
 
--- typeclass instances
-
--- Eq List Nat
--- Eq List (List Nat)
-
 list_eq (A: eq): list A.1 -> list A.1 -> bool = split
   nil -> split@(list A.1 -> bool) with
     nil -> true
@@ -91,50 +82,3 @@ list_eq (A: eq): list A.1 -> list A.1 -> bool = split
     nil -> false
     cons a as -> or_ (A.2 a x) (list_eq A xs as)
 
-eq_list_nat:               eq                   = (list nat,        list_eq eq_nat)
-eq_list_list_nat:          eq                   = (list (list nat), list_eq eq_list_nat)
---pure_list          (A: U): pure          A list = (\(x: A) -> cons x nil, tt)
---functor_list     (A B: U): functor_    A B list = (map A B,         tt)
---applicative_list (A B: U): applicative A B list = (pure_list A,     functor_list A B,
---                                                  \(x:list (A -> B)) -> \(y:list A) -> nil, tt)
-
---x : list (maybe nat) = (functor_list nat (maybe nat)).1 (\(x: nat) -> just zero) nil
-
---pure_list_nat: pure nat list = (\(x: nat) -> cons one nil, tt)
---y : list nat = pure_list_nat.1 one
-
--- tests/usage
-
--- let b : nat = foldr nat nat (\(x : nat) (y : nat) -> add x y) one (cons zero nil) in b
--- let a : list nat = append nat nil nil in a
--- filter nat f (cons zero (cons n1 (cons n2 (cons n3 (cons zero nil)))))
-
-data S = O | P | C
-opc : list S = cons O (cons P (cons C nil))
-cpo : list S = cons C (cons P (cons O nil))
-
-f : nat -> bool = split
-  zero -> true
-  succ -> false
-
--- theorems
-
-funPath (A:U) (x:A) : A = x
-
-assoc (A:U) : (xs ys zs : list A) ->
-  Path (list A) (append A (append A xs ys) zs) (append A xs (append A ys zs)) = split
-  nil -> \ (ys zs:list A) -> <i>append A ys zs
-  cons x xs -> \ (ys zs:list A) -> <i>cons x (assoc A xs ys zs@i)
-
-lem (A B C:U) (f:A->B) (g:B -> C) : (xs:list A) ->
-  Path (list C) (map B C g (map A B f xs)) (map A C (\ (x:A) -> g (f x)) xs) = split
-  nil -> <i>nil
-  cons x xs -> <i>cons (g (f x)) (lem A B C f g xs@i)
-
-lem1 (A:U) : (xs:list A) -> Path (list A) (map A A (funPath A) xs) xs = split
-  nil -> <i>nil
-  cons x xs -> <i>cons x (lem1 A xs@i)
-
-lem2 (A:U) : (xs:list A) -> Path (list A) (append A xs nil) xs = split
-  nil -> <i>nil
-  cons x xs -> <i>cons x (lem2 A xs@i)
