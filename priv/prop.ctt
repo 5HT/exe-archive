@@ -7,7 +7,7 @@ propUnit : isProp Unit = split
  tt -> split@((x:Unit) -> Path Unit tt x) with
   tt -> <i> tt
 
--- propSig
+-- Exists(A,B) = ||Sigma(A,B)||
 
 lemPropF (A : U) (P : A -> U) (pP : (x : A) -> isProp (P x)) (a0 a1 :A)
          (p : Path A a0 a1) (b0 : P a0) (b1 : P a1) : PathP (<i>P (p@i)) b0 b1 =
@@ -24,33 +24,15 @@ propSig (A : U) (B : A -> U) (pA : isProp A)
         Path ((x:A) * B x) t u =
   lemSig A B pB t u (pA t.1 u.1)
 
--- propPi
+-- Forall(A,B) = ||Pi(A,B)||
 
 propPi (A : U) (B : A -> U) (h : (x : A) -> isProp (B x))
        (f0 f1 : (x : A) -> B x) : Path ((x : A) -> B x) f0 f1
   = <i> \ (x:A) -> (h x (f0 x) (f1 x)) @ i
 
--- propSet
+-- Contractible is a Prop
 
-propSet (A : U) (h : isProp A) : isSet A =
- \(a b : A) (p q : Path A a b) ->
-   <j i> comp (<_> A) a [ (i=0) -> h a a
-                        , (i=1) -> h a b
-                        , (j=0) -> h a (p @ i)
-                        , (j=1) -> h a (q @ i)]
-
-propIsProp (A : U) : isProp (isProp A) =
-  \(f g : isProp A) -> <i> \(a b : A) ->
-    propSet A f a b (f a b) (g a b) @ i
-
-setIsProp (A : U) : isProp (isSet A) =
- \(f g : isSet A) -> <i> \(a b :A) ->
-   propIsProp (Path A a b) (f a b) (g a b) @ i
-
--- propIsContr
-
-lemProp (A : U) (h : A -> isProp A) : isProp A =
-  \(a : A) -> h a a
+lemProp (A : U) (h : A -> isProp A) : isProp A = \(a : A) -> h a a
 
 isContrProp (A : U) (h : isContr A) : isProp A =
   \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
@@ -61,29 +43,7 @@ propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem where
   pA (x y : A) : Path A x y = composition A x t.1 y (<i> t.2 x @ -i) (t.2 y)
   pB (x : A) : isProp (T x) = propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
 
-propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (and A B) =
-  propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)
-
 ---------
-
-propN0 : isProp Empty = \ (x y: Empty) -> efq (Path Empty x y) x
-
-propNeg (A:U) : isProp (neg A) = \ (f g:neg A) -> <i>\(x:A) -> (propN0 (f x) (g x))@i
-
-dNeg (A:U) (a:A) : neg (neg A) = \ (h : neg A) -> h a
-
-dec (A : U) : U = or A (neg A)
-
-propOr (A B : U) (hA : isProp A) (hB : isProp B) (h : A -> neg B) : isProp (or A B) = split
-    inl a' -> split@((b : or A B) -> Path (or A B) (inl a') b) with
-        inl b' -> <i> inl (hA a' b' @ i)
-        inr b' -> efq (Path (or A B) (inl a') (inr b')) (h a' b')
-    inr a' -> split@((b : or A B) -> Path (or A B) (inr a') b) with
-        inl b' -> efq (Path (or A B) (inr a') (inl b')) (h b' a')
-        inr b' -> <i> inr (hB a' b' @ i)
-
-propDec (A : U) (h : isProp A) : isProp (dec A) =
-  propOr A (neg A) h (propNeg A) (\(x : A) (h : neg A) -> h x)
 
 decEqCong (A B : U) (f : A -> B) (g : B -> A) : dec A -> dec B = split
   inl a -> inl (f a)
@@ -98,13 +58,27 @@ decConst (A : U) : dec A -> exConst A = split
   inr h -> (\ (x:A) -> x, \ (x y:A) -> efq (Path A x y) (h x))
 
 stableConst (A : U) (sA: stable A) : exConst A =
- (\ (x:A) -> sA (dNeg A x),\ (x y:A) -> <i>sA (propNeg (neg A) (dNeg A x) (dNeg A y) @ i))
-
-discrete (A : U) : U = (a b : A) -> dec (Path A a b)
+ (\ (x:A) -> sA (dneg A x),\ (x y:A) -> <i>sA (propNeg (neg A) (dneg A x) (dneg A y) @ i))
 
 injective (A B : U) (f : A -> B) : U =
   (a0 a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1
 
+---------
+
+propN0 : isProp Empty = \ (x y: Empty) -> efq (Path Empty x y) x
+
+propNeg (A:U) : isProp (neg A) = \ (f g:neg A) -> <i>\(x:A) -> (propN0 (f x) (g x))@i
+
+propOr (A B : U) (hA : isProp A) (hB : isProp B) (h : A -> neg B) : isProp (or A B) = split
+    inl a' -> split@((b : or A B) -> Path (or A B) (inl a') b) with
+        inl b' -> <i> inl (hA a' b' @ i)
+        inr b' -> efq (Path (or A B) (inl a') (inr b')) (h a' b')
+    inr a' -> split@((b : or A B) -> Path (or A B) (inr a') b) with
+        inl b' -> efq (Path (or A B) (inr a') (inl b')) (h b' a')
+        inr b' -> <i> inr (hB a' b' @ i)
+
+propDec (A : U) (h : isProp A) : isProp (dec A) =
+  propOr A (neg A) h (propNeg A) (\(x : A) (h : neg A) -> h x)
+
 propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (and A B) =
   propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)
-

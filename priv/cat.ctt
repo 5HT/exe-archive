@@ -1,19 +1,25 @@
 module cat where
 
-import prop
+import path
 
--- Algebra
+-- Category is the Algebra of Hom Functions on Ob domain
 cat: U = (A: U) * (A -> A -> U)
 
--- Definition 9.1.1. Six Precategory Properties
+-- HoTT Definition 9.1.1. Precategory Properties
 isPrecategory (C: cat): U
   = (id: (x: C.1) -> C.2 x x)
-  * (c: (x y z: C.1) -> C.2 x y -> C.2 y z -> C.2 x z)
+  * (c: (x y z:C.1)->C.2 x y->C.2 y z->C.2 x z)
   * (homSet: (x y: C.1) -> isSet (C.2 x y))
-  * (left: (x y: C.1) -> (f: C.2 x y) -> Path (C.2 x y) (c x x y (id x) f) f)
-  * (right: (x y: C.1) -> (f: C.2 x y) -> Path (C.2 x y) (c x y y f (id y)) f)
-  * ( (x y z w: C.1) -> (f: C.2 x y) -> (g: C.2 y z) -> (h: C.2 z w) ->
-    Path (C.2 x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
+  * (left: (x y: C.1) -> (f: C.2 x y) ->
+    Path (C.2 x y) (c x x y (id x) f) f)
+  * (right: (x y: C.1) -> (f: C.2 x y) ->
+    Path (C.2 x y) (c x y y f (id y)) f)
+  * ((x y z w: C.1) -> (f: C.2 x y) ->
+    (g: C.2 y z) -> (h: C.2 z w) ->
+    Path (C.2 x w) (c x z w (c x y z f g) h)
+         (c x y w f (c y z w g h)))
+
+-- type refinment: algebraic structure and its theorems
 precategory: U = (C: cat) * isPrecategory C
 
 -- Public Accessors
@@ -32,5 +38,5 @@ iso (C: precategory) (A B: carrier C): U
 isCategory (C: precategory): U
   = (A: carrier C) -> isContr ((B: carrier C) * iso C A B)
 
--- Definition 9.1.6. Category.
+-- HoTT Definition 9.1.6. Category.
 category: U = (C: precategory) * isCategory C

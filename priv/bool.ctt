@@ -1,38 +1,20 @@
 module bool where
 
-import path
-import proto
-import either
+{- Simple run-time bool module.
+   Theorems are in bool_theory module. -}
 
 data bool = false | true
 
-or_: bool -> bool -> bool = split
-  false -> \(b: bool) -> b
-  true -> \(_: bool) -> true
+neg_: bool -> bool         = split { false -> true ; true -> false }
+or_:  bool -> bool -> bool = split { false->\(b:bool)->b;true->\(_:bool)->true }
+and_: bool -> bool -> bool = split { false->\(b:bool)->false;true->\(b:bool)->b }
 
-and_: bool -> bool -> bool = split
-  false -> \(b: bool) -> false
-  true -> \(b: bool) -> b
+caseBool (A: U) (f t: A): bool -> A = split { false -> f ; true -> t }
 
-neg_ : bool -> bool = split
-  false -> true
-  true  -> false
-
--- Proof that bool is a set using hedberg:
-caseBool (A : U) (f t : A) : bool -> A = split
- false -> f
- true  -> t
-
-falseNeqTrue : neg (Path bool false true) =
-  \(h : Path bool false true) -> subst bool (caseBool U bool Empty) false true h false
-
-trueNeqFalse : neg (Path bool true false) =
-  \(h : Path bool true false) -> subst bool (caseBool U Empty bool) true false h true
-
-equalBool : bool -> bool -> bool = split
-    false -> split@(bool -> bool) with
-      false -> false
-      true  -> true
-    true -> split@(bool -> bool) with
-      false -> true
-      true  -> false
+equalBool: bool -> bool -> bool = split
+  false -> split@ (bool -> bool) with
+           false -> false
+           true  -> true
+  true ->  split@ (bool -> bool) with
+           false -> true
+           true  -> false

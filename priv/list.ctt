@@ -1,5 +1,7 @@
 module list where
 
+{- Simple run-time list module -}
+
 import nat
 import maybe
 

@@ -6,6 +6,12 @@ import bool
 import hedberg
 import univ
 
+falseNeqTrue : neg (Path bool false true) =
+  \(h : Path bool false true) -> subst bool (caseBool U bool Empty) false true h false
+
+trueNeqFalse : neg (Path bool true false) =
+  \(h : Path bool true false) -> subst bool (caseBool U Empty bool) true false h true
+
 boolDec : (b1 b2 : bool) -> dec (Path bool b1 b2) = split
  false -> rem
   where

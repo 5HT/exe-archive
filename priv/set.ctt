@@ -7,10 +7,18 @@ import iso
 
 propSet (A : U) (h : isProp A) : isSet A =
  \(a b : A) (p q : Path A a b) ->
-   <j i> comp (<k>A) a [ (i=0) -> h a a
-                       , (i=1) -> h a b
-                       , (j=0) -> h a (p @ i)
-                       , (j=1) -> h a (q @ i)]
+   <j i> comp (<_> A) a [ (i=0) -> h a a
+                        , (i=1) -> h a b
+                        , (j=0) -> h a (p @ i)
+                        , (j=1) -> h a (q @ i)]
+
+propIsProp (A : U) : isProp (isProp A) =
+  \(f g : isProp A) -> <i> \(a b : A) ->
+    propSet A f a b (f a b) (g a b) @ i
+
+setIsProp (A : U) : isProp (isSet A) =
+ \(f g : isSet A) -> <i> \(a b :A) ->
+   propIsProp (Path A a b) (f a b) (g a b) @ i
 
 setUnit : isSet Unit = propSet Unit propUnit
 

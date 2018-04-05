@@ -9,6 +9,7 @@ module maybenat where
 import nat
 import maybe
 import control
+import proto
 
 three : fix maybe = Fix (just (Fix (just (Fix (just (Fix nothing))))))
 

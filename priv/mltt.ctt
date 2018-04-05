@@ -1,15 +1,8 @@
 module mltt where
 
-import pi
-import sigma
-import path
-import nat
-import list
-import equiv
-import proto_equiv
+{- MLTT model (Pi,Sigma,Equ) in CTT -}
 
 data Unit = tt
-data Empty =
 
 Pi (A:U)(P:A->U):U=(x:A)->P(x)
 lambda (A : U) (B: A -> U) (a : A) (b: B a): A -> B a = \(x: A) -> b
@@ -21,22 +14,28 @@ pr1 (A: U) (B: A -> U) (x: Sigma A B): A = x.1
 pr2 (A: U) (B: A -> U) (x: Sigma A B): B (pr1 A B x) = x.2
 
 Equ       (A: U) (x y: A): U = PathP (<i> A) x y
-D         (A: U) : U = (x y: A) -> Equ A x y -> U
 reflect   (A: U) (a: A): Equ A a a = <i> a
+D         (A: U) : U = (x y: A) -> Equ A x y -> U
+singl     (A: U) (a: A): U = (x : A) * Equ A a x
+cong    (A B: U) (f: A->B) (a b: A) (p: Equ A a b): Equ B (f a) (f b) = <i> f (p @ i)
+eta       (A: U) (a: A): singl A a = (a,reflect A a)
+contr     (A: U) (a b: A) (p: Equ A a b): Equ (singl A a) (eta A a) (b,p) = <i> (p@i,<j>p@i/\j)
+subst     (A: U) (P: A->U) (a b: A) (p: Equ A a b) (e: P a): P b = transport (cong A U P a b p) e
+
+-- HoTT Definition. J.
 J         (A: U) (x: A) (C: D A) (d: C x x (reflect A x))
-          (y: A) (p: Equ A x y): C x y p =
-  subst (singl A x) T (x, reflect A x) (y, p)
-        (contr A x y p) d where
-    T (z: singl A x): U = C x (z.1) (z.2)
+          (y: A) (p: Equ A x y): C x y p = subst (singl A x) T (x, reflect A x) (y, p)
+                                                 (contr A x y p) d where
+                     T (z: singl A x): U = C x (z.1) (z.2)
 
 HeteroEqu (A B: U) (a: A) (b: B) (P: Equ U A B) : U = PathP P a b
 
-comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a)))(f a) = refl (B a) (f a)
+comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a)))(f a) = reflect (B a) (f a)
 comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (lambda A B a (f a)) = undefined
-comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b)) = refl A a
-comp4 (A:U)(B:A->U)(a:A)(b: B a): Equ (B a) b (pr2 A B (a,b)) = refl (B a) b
+comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b)) = reflect A a
+comp4 (A:U)(B:A->U)(a:A)(b: B a): Equ (B a) b (pr2 A B (a,b)) = reflect (B a) b
 comp5 (A:U)(x y:A)(C: D A)(p: Equ A x y)(b: C x x (reflect A x))
-      (X: Path U (C x x (reflect A x)) (C x y p)):
+      (X: Equ U (C x x (reflect A x)) (C x y p)):
       PathP (<i>X @ i) b (J A x C b y p) = undefined
 
 MLTT (A: U): U

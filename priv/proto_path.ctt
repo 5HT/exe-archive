@@ -1,12 +1,14 @@
 module proto_path where
 
--- Path type
+{- Path Equality from HoTT -}
+
+-- Path type and basic axioms
 Path     (A: U) (a b: A): U = PathP (<i> A) a b
-singl    (A: U) (a: A): U = (x : A) * Path A a x
+singl    (A: U) (a: A): U = (x: A) * Path A a x
 refl     (A: U) (a: A): Path A a a = <i> a
-eta      (A: U) (a: A): singl A a = (a,refl A a)
 sym      (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
 inv      (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
+eta      (A: U) (a: A): singl A a = (a,refl A a)
 contr    (A: U) (a b: A) (p: Path A a b): Path (singl A a) (eta A a) (b,p) = <i> (p@i,<j>p@i/\j)
 cong   (A B: U) (f: A->B) (a b: A) (p: Path A a b): Path B (f a) (f b) = <i> f (p@i)
 trans  (A B: U) (p: Path U A B) (a : A): B = comp p a [] -- transport p a

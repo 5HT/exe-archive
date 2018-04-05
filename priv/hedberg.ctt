@@ -1,6 +1,5 @@
 module hedberg where
 
-import either
 import proto
 import path
 import iso

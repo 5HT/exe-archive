@@ -1,9 +1,10 @@
 module nat where
 
+{- Basic run-time nat module -}
+
 import eq
 import path
 import maybe
-import either
 import prop
 import iso
 
