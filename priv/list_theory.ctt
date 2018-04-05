@@ -6,6 +6,7 @@ import proto
 import list
 import control
 import functor
+import nat_theory
 
 eq_list_nat:               eq                   = (list nat,        list_eq eq_nat)
 eq_list_list_nat:          eq                   = (list (list nat), list_eq eq_list_nat)

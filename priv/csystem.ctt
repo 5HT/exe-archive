@@ -10,7 +10,7 @@ module csystem where
 
 import sigma
 import equiv
-import nat
+import nat_theory
 import category
 import hedberg
 import set

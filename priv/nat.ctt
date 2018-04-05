@@ -7,6 +7,14 @@ import bool
 
 data nat = zero | succ (n: nat)
 
+nat_eq: nat -> nat -> bool = split
+  zero      -> split@(nat -> bool) with
+     zero   -> true
+     succ n -> false
+  succ m    -> split@(nat -> bool) with
+     zero   -> false
+     succ n -> nat_eq m n
+
 one   : nat = succ zero
 two   : nat = succ one
 three : nat = succ two
