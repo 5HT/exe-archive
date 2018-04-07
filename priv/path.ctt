@@ -6,19 +6,19 @@ const (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
 
 exConst (A: U): U = (f: A -> A) * const A f
 
-mapOnPath (A B : U) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
+mapOnPath (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b)
 --  = cong A B f a b p
     = <i> f (p @ i)
 
-subst (A: U) (P: A -> U) (a b : A) (p : Path A a b) (e : P a) : P b
+subst (A: U) (P: A -> U) (a b: A) (p: Path A a b) (e: P a): P b
     = comp (<i> P (p @ i)) e [] -- normal form
 --  = trans (P a) (P b) (mapOnPath A U P a b p) e
 
-substInv (A : U) (P : A -> U) (a b : A) (p : Path A a b) : P b -> P a
+substInv (A: U) (P: A -> U) (a b: A) (p: Path A a b): P b -> P a
     = subst A P b a (<i> p @ -i)
 
 -- composition operation
-composition (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c
+composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
     = subst A (Path A a) b c q p
 --  = comp (<i> Path A a (q @ i)) p []
 --  = <i> comp (<j>A) (p @ i) [(i=0) -> <j> a, (i=1) -> q ]
@@ -56,9 +56,10 @@ inf_grpd (A: U): U
 isInfinityGroupoid (A: U): U = inf_grpd A
 
 -- h-Types
-PROP      : U = (X:U) * isProp X
-SET       : U = (X:U) * isSet X
-GROUPOID  : U = (X:U) * isGroupoid X
+PROP         : U = (X:U) * isProp X
+SET          : U = (X:U) * isSet X
+GROUPOID     : U = (X:U) * isGroupoid X
+INF_GROUPOID : U = (X:U) * isInfinityGroupoid X
 
 -- if there's a path from a type then there is a path from every element
 elemPathP (A B: U) (p: Path U A B) (a: A): (p': Path U A B) * (b: B) * PathP p' a b

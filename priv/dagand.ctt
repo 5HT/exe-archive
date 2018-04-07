@@ -14,7 +14,7 @@ data Type
 data Family (I: U)
     = var (i: I)
     | one
-    | sum (n: nat) (T: Fin (just n) -> Family I) -- data constructors have Fin naming
+    | sum (n: nat) (T: Fin n -> Family I) -- data constructors have Fin naming
     | sigma (S: U) (T: S -> Family I)
     | pi (S: U) (T: S -> Family I)
 
@@ -40,7 +40,7 @@ ilift (X: U) (P: Pow X) : (D: Type) (xs: ii X D) -> U = split
 i (I: U) (X: Pow I): Family I -> U = split
     var x -> X x
     one -> Unit
-    sum n T -> (k: Fin (just n)) * i I X (T k)
+    sum n T -> (k: Fin n) * i I X (T k)
     sigma S T -> (s: S) * i I X (T s)
     pi S T -> (s: S) -> i I X (T s)
 

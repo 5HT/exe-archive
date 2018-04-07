@@ -2,6 +2,8 @@ module nat where
 
 import maybe
 import bool
+import proto
+import sigma
 
 {- Simple run-time nat Datatype -}
 
@@ -80,23 +82,13 @@ n20 : nat = succ n19
 
 {- Finite Set Datatype -}
 
-fin : maybe nat -> maybe nat = 
-  maybeElim nat (maybe nat) nothing (natElim (maybe nat) nothing (\(n: nat) -> just n))
+data Fin (n: nat) = fzero | fsucc (_: Fin (pred n))
+fz (n: nat): Fin (succ n)          = fzero
+fs (n: nat): Fin n -> Fin (succ n) = \(x: Fin n) -> fsucc x
 
-data Fin (n: maybe nat) = fzero | fsucc (_: Fin (fin n))
-
-x11: Fin (just zero) = fzero
-
--- x12:  Fin (just zero) = fsucc x11
--- Fin (just zero)
--- /=
--- Fin nothing
-
-x21: Fin (just one) = fzero
-x22: Fin (just one) = fsucc x11
-
--- x23: Fin (just one) = fsucc (fsucc x11)
--- Fin (just zero)
--- /=
--- Fin nothing
-
+fin11: Fin one   = fz zero
+fin21: Fin two   = fz one
+fin22: Fin two   = fs one fin11
+fin31: Fin three = fz two
+fin32: Fin three = fs two fin21
+fin33: Fin three = fs two fin22

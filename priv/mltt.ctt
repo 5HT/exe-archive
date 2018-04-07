@@ -30,10 +30,11 @@ J         (A: U) (x: A) (C: D A) (d: C x x (reflect A x))
 
 HeteroEqu (A B: U) (a: A) (b: B) (P: Equ U A B) : U = PathP P a b
 
-comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a)))(f a) = reflect (B a) (f a)
-comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (lambda A B a (f a)) = undefined
-comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b)) = reflect A a
-comp4 (A:U)(B:A->U)(a:A)(b: B a): Equ (B a) b (pr2 A B (a,b)) = reflect (B a) b
+comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a))) (f a) = reflect (B a) (f a) -- beta
+comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (\(x:A) -> f x)                 = reflect (A -> B a) f -- eta
+comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b))                            = reflect A          a
+comp4 (A:U)(B:A->U)(a:A)(b: B a): Equ (B a) b (pr2 A B (a,b))                        = reflect (B a)      b
+
 comp5 (A:U)(x y:A)(C: D A)(p: Equ A x y)(b: C x x (reflect A x))
       (X: Equ U (C x x (reflect A x)) (C x y p)):
       PathP (<i>X @ i) b (J A x C b y p) = undefined
@@ -42,8 +43,8 @@ MLTT (A: U): U
   = (Pi_Former:    (A -> U) -> U)
   * (Pi_Intro:     (B: A -> U) (a: A) -> B a -> (A -> B a))
   * (Pi_Elim:      (B: A -> U) (a: A) -> (A -> B a) -> B a)
-  * (Pi_Comp1:     (B: A -> U) (a: A) (f: A -> B a) -> Equ (B a) (Pi_Elim B a (Pi_Intro B a (Pi_Elim B a f))) (f a))
-  * (Pi_Comp2:     (B: A -> U) (a: A) (f: A -> B a) -> Equ (A -> B a) f (Pi_Intro B a (Pi_Elim B a f)))
+  * (Pi_Comp1:     (B: A -> U) (a: A) (f: A -> B a) -> Equ (B a) (Pi_Elim B a (Pi_Intro B a (f a))) (f a))
+  * (Pi_Comp2:     (B: A -> U) (a: A) (f: A -> B a) -> Equ (A -> B a) f (\(x:A)-> (f x)))
   * (Sigma_Former: (A -> U) -> U)
   * (Sigma_Intro:  (B: A -> U) (a: A) -> (b: B a) -> Sigma A B)
   * (Sigma_Elim1:  (B: A -> U) -> (_: Sigma A B) -> A)
