@@ -40,3 +40,9 @@ isCategory (C: precategory): U
 
 -- HoTT Definition 9.1.6. Category.
 category: U = (C: precategory) * isCategory C
+
+isInitial      (C: precategory) (x: carrier C): U = (y: carrier C) -> isContr (hom C x y)
+isTerminal     (C: precategory) (y: carrier C): U = (x: carrier C) -> isContr (hom C x y)
+initialObject  (C: precategory): U = (x: carrier C) * isInitial C x
+terminalObject (C: precategory): U = (y: carrier C) * isTerminal C y
+
