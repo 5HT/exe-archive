@@ -1,0 +1,53 @@
+
+Functional Programming Course by Groupoid Infinity
+
+0. Metamathematics
+ - Countable Sets
+ - Diagonal Method (Cantor)
+ - Cardinal Sets
+ - Natural Numbers
+ - Induction Principle
+ - Arithmetics
+ - Functions
+
+1. Logic
+ - Formal System
+ - Natural Deduction
+ - Propositional Calculus
+ - Predicate Calculus
+ - Formal Arithmetics
+ - Completness. Godel Theorems
+ - Consistency. Gentzen Calculus
+
+2. Categories
+ - Category
+ - Topos
+ - Logic
+ - Intuitionism
+ - Functors
+ - Formal Laguages
+ - Set Theory
+ - Arithmetic
+ - Grothiendieck Topoi
+ - Quantifiers
+ - Presheaf model of Set Theory
+
+3. Type Theory
+ - Untyped Lambda Calculus
+ - STLC
+ - System F (Girard)
+ - System Fw (Girard)
+ - CoC, PTS^\infinity (Coquand, Henk)
+ - Pi,Sigma (MLTT 72)
+ - Path-type (MLTT 84)
+ - Cubical Sets model of Type Theory (CCHM)
+ - Presheaf model of Type Theory
+ - Inductive Types (W-types, IR-types, F-algebras)
+ - Higher Inductive Types
+ - Isomorphism, Equality, Univalence
+
+5. Homotopy Type Theory
+ - Circle
+ - Homotopy Groups of Spheres
+ - Suspensions
+ - Hopf Fibrations
