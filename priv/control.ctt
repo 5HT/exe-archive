@@ -25,10 +25,17 @@ unfree      (F:U->U) (A:U): free   F A -> fix (mu F A) = split Free   a -> a
 uncofree    (F:U->U) (A:U): cofree F A -> fix (nu F A) = split CoFree a -> a
 
 -- Signatures
-pure_sig (F:U->U):U=   (A: U) ->         A  -> F A
-fmap_sig (F:U->U):U= (A B: U) ->   (A -> B) -> F A -> F B
-appl_sig (F:U->U):U= (A B: U) -> F (A -> B) -> F A -> F B
-bind_sig (F:U->U):U=   (A: U) -> F    (F A) -> F A
+pure_sig (F:U->U):U=   (A: U) ->           A  -> F A
+extr_sig (F:U->U):U=   (A: U) ->         F A  -> A
+etnd_sig (F:U->U):U= (A B: U) ->   (F A -> B) -> F A -> F B
+appl_sig (F:U->U):U= (A B: U) ->   F (A -> B) -> F A -> F B
+fmap_sig (F:U->U):U= (A B: U) ->     (A -> B) -> F A -> F B
+unma_sig (F:U->U):U= (A B: U) -> (F A -> F B) ->  (A -> B)
+ctrv_sig (F:U->U):U= (A B: U) ->     (B -> A) -> F A -> F B
+cofm_sig (F:U->U):U= (A B: U) ->     (B -> A) -> F B -> F A
+join_sig (F:U->U):U=   (A: U) ->      F (F A) -> F A
+bind_sig (F:U->U):U= (A B: U) ->    F A -> (A -> F B)-> F B
+dupl_sig (F:U->U):U=   (A: U) ->         F A  -> F (F A)
 
 {- The signatures are made external for code compactification.
    The we select F: U -> U functor as common head for sigma types.
@@ -95,7 +102,8 @@ isApplicative (F: applicative_): U
     * Unit
 
 isMonad (F: monad_): U
-    = Unit
+    = (_: U)
+    * Unit
 
 FUNCTOR:     U = (f: functor_)
                * isFunctor f
