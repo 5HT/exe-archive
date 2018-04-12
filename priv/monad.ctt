@@ -2,6 +2,7 @@ module monad where
 
 import control
 
+{-
 monad (F: U -> U): U
     = (pure_: (A: U) -> pure A F)
     * (functor_: functor F)
@@ -15,3 +16,5 @@ comonad (F: U -> U): U
     * (duplicate: (A: U) -> F A -> F (F A))
     * (extend: (A B: U) -> (F A -> B) -> F A -> F B)
     * Unit
+-}
+

@@ -82,8 +82,8 @@ natDec : (n m:nat) -> dec (Path nat n m) = split
 
 natSet : isSet nat = hedberg nat natDec
 
-eq_nat  : eq = (nat, nat_eq)
-eq_nat_ : eq_ nat = nat_eq
+eq_nat  : eq_ = (nat, nat_eq)
+eq_nat_ : eq nat = nat_eq
 
 mutual
   evenT : nat -> U = split

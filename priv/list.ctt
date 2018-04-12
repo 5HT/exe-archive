@@ -74,7 +74,7 @@ length (A: U): list A -> nat = split
   nil -> zero
   cons x xs -> add one (length A xs)
 
-list_eq (A: eq): list A.1 -> list A.1 -> bool = split
+list_eq (A: eq_): list A.1 -> list A.1 -> bool = split
   nil -> split@(list A.1 -> bool) with
     nil -> true
     cons b bs -> false

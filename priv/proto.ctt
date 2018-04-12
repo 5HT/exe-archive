@@ -10,14 +10,17 @@ data tuple (A B: U) = pair (a: A) (b: B)
 case   (A B C: U)(b:A->C)(c:B->C):or A B->C = split{inl x->b(x);inr y->c(y)}
 fst      (A B: U): tuple A B -> A = split pair a b -> a
 snd      (A B: U): tuple A B -> B = split pair a b -> b
+id         (A: U): U = A -> A
 idfun      (A: U) (a: A): A = a
-constfun   (A B: U) (a: B): A -> B = \(_:A) -> a
-o      (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f (g x)
+constfun   (A B: U) (b: B): A -> B = \(_:A) -> b
+ot     (A B C: U): U = (B->C)->(A->B)->(A->C)
+o      (A B C: U) (f: B->C) (g: A->B): A -> C = \(x:A) -> f(g(x))
 and      (A B: U): U = (_:A) * B
 
 -- datatype properties: decideability, discretness, stability
 efq        (A: U): Empty -> A = split {}
 neg        (A: U): U = A -> Empty
 dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
+neg        (A: U): U = A -> Empty
 dec        (A: U): U = or A (neg A)
 stable     (A: U): U = neg (neg A) -> A

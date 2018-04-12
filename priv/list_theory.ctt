@@ -5,17 +5,12 @@ module list_theory where
 import proto
 import list
 import control
-import functor
 import nat_theory
 
-eq_list_nat:               eq                   = (list nat,        list_eq eq_nat)
-eq_list_list_nat:          eq                   = (list (list nat), list_eq eq_list_nat)
-pure_list          (A: U): pure          A list = (\(x: A) -> cons x nil, tt)
-functor_list     (A B: U): functor_    A B list = (map A B,         tt)
-
-x : list (maybe nat) = (functor_list nat (maybe nat)).1 (\(x: nat) -> just zero) nil
-pure_list_nat: pure nat list = (\(x: nat) -> cons one nil, tt)
-y : list nat = pure_list_nat.1 one
+eq_list_nat:      eq_      = (list nat,        list_eq eq_nat)
+eq_list_list_nat: eq_      = (list (list nat), list_eq eq_list_nat)
+pure_list:        pure_    = (list,\(A:U)(x:A)->cons x nil)
+functor_list:     functor_ = (list,map)
 
 -- tests/usage
 

@@ -1,24 +1,95 @@
+-- Fixpoint and Control Algebraic Structures
+-- Maxim Sokhatsky 2018 Groupoid Infinity
+
 module control where
 
-import functor
+import proto
+import pi
+import proto_path
 
-data fix (F: U -> U) = Fix (point: F (fix F))
+-- mu  (F) = A+F(B)
+-- fix (F) = F(fix(F))
+-- nu  (F) = A*F(B)
+
+-- Fixpoint
+data fix  (F: U -> U) = Fix (point: F (fix F))
 
 out_ (F: U -> U): fix F -> F (fix F) = split Fix f -> f
 in_  (F: U -> U): F (fix F) -> fix F = \(x: F (fix F)) -> Fix x
 
-data freeF   (F: U -> U) (A B: U)  = ReturnF (a: A) | BindF (f: F B)
-data cofreeF (F: U -> U) (A B: U)  = CoBindF (a: A)         (f: F B)
-data free    (F: U -> U) (A: U)    = Free    (_: fix (freeF     F A))
-data cofree  (F: U -> U) (A: U)    = CoFree  (_: fix (cofreeF   F A))
+-- Mu, Nu
+data mu     (F: U -> U) (A B: U)  = ReturnF (a: A) | BindF (f: F B)
+data nu     (F: U -> U) (A B: U)  = CoBindF (a: A)         (f: F B)
 
-unfree   (A: U) (F: U -> U): free   F A -> fix (freeF   F A) = split Free   a -> a
-uncofree (A: U) (F: U -> U): cofree F A -> fix (cofreeF F A) = split CoFree a -> a
+-- Free, Cofree
+data free   (F: U -> U) (A: U)    = Free    (_: fix (mu F A))
+data cofree (F: U -> U) (A: U)    = CoFree  (_: fix (nu F A))
 
-pure (A: U) (F: U -> U): U = (return: A -> F A) * Unit
+unfree      (F: U -> U) (A: U): free   F A -> fix (mu F A) = split Free   a -> a
+uncofree    (F: U -> U) (A: U): cofree F A -> fix (nu F A) = split CoFree a -> a
 
-applicative (A B: U) (F: U -> U): U
-    = (pure_: pure A F)
-    * (functor_: functor_ A B F)
-    * (ap: F (A -> B) -> F A -> F B)
+-- ot is a type of composition o operator
+ot (A B C: U): U = (B -> C) -> (A -> B) -> A -> C
+
+-- Signatures
+pure_sig (F: U -> U): U =  (A: U)  ->         A  -> F A
+fmap_sig (F: U -> U): U = (A B: U) ->   (A -> B) -> F A -> F B
+appl_sig (F: U -> U): U = (A B: U) -> F (A -> B) -> F A -> F B
+
+{- The signatures are made external for code compactification.
+   The we select F: U -> U functor as common head for sigma types.
+   All quantifiers for members and laws are carried in with in projections.
+   Projections contains full signature expect F.
+   These type could be considered for run-time.  -}
+
+-- Run-time types
+pure_:        U = (F: U -> U) *     pure_sig F
+functor_:     U = (F: U -> U) *     fmap_sig F
+applicative_: U = (F: U -> U) * (_: pure_sig F)
+                              * (_: fmap_sig F)
+                              *     appl_sig F
+
+{- Accessor are common technique in Type Refinement approach
+   for beautifying the code. -}
+
+-- Accessors
+fmap (a: functor_):     fmap_sig a.1 = a.2
+pure (a: applicative_): pure_sig a.1 = a.2.1
+amap (a: applicative_): fmap_sig a.1 = a.2.2.1
+ap   (a: applicative_): appl_sig a.1 = a.2.2.2
+
+-- Theorems. Erased in run-time.
+
+-- fmap(id(x)) = id(x)
+-- fmap(o(g,h)) = o(fmap(g),fmap(h))
+
+isFunctor (F: functor_): U
+    = (id: (A: U) -> (x: F.1 A) -> Path (F.1 A) x ((fmap F) A A (idfun A) x))
+    * (compose: (A B C: U) (f: B -> C) (g: A -> B) (x: F.1 A) ->
+      Path (F.1 C) (F.2 A C (o A B C f g) x)
+       ((o (F.1 A) (F.1 B) (F.1 C)
+           (F.2 B C f) (F.2 A B g)) x)) * Unit
+
+-- ap(pure(id),x) = id(x)
+-- ap(pure(f),pure(x)) = pure(f(x))
+-- ap(ap(ap(pure(o),u),v),w) = ap(u,ap(v,w))
+-- ap(u,pure(y)) == ap(pure(\f.f(y)),u)
+
+isApplicative (F: applicative_): U
+    = (id:  (A:U) -> (x: F.1 A) ->
+       Path (F.1 A) x ((ap F) A A ((pure F) (id A) (idfun A)) x))
+    * (hom: (A B:U)(f:A->B)(x: A) ->
+       Path (F.1 B) ((pure F) B (f x)) ((ap F) A B ((pure F) (A->B) f) ((pure F) A x)))
+    * (cmp: (A B C:U)(v: F.1(A->B))(u:F.1(B->C))(w:F.1 A) ->
+       Path (F.1 C) ((ap F) B C u ((ap F) A B v w))
+                    ((ap F) A C ((ap F) (A->B) (A->C) ((ap F)(B->C)((A->B)->(A->C))
+                    ((pure F) (ot A B C) (o A B C)) u) v) w))
+    * (xchg: (A B:U)(x:A)(u:F.1(A->B))(f:A->B) ->
+       Path (F.1 B) ((ap F) A B u ((pure F) A x))
+                    ((ap F) (A->B) B ((pure F) ((A->B)->B) (\(f:A->B)->f(x))) u))
     * Unit
+
+FUNCTOR:     U = (f: functor_) * isFunctor f
+APPLICATIVE: U = (f: applicative_)
+               * (_: isFunctor (f.1,amap f))
+               * isApplicative f

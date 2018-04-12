@@ -3,7 +3,7 @@ module eq where
 import bool
 
 -- sigma typeclass encoding
-eq: U = (type: U) * (type -> type -> bool)
+eq_: U = (type: U) * (type -> type -> bool)
 
 -- parametric functor typeclass encoding
-eq_ (type: U): U = type -> type -> bool
+eq (type: U): U = type -> type -> bool

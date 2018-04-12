@@ -1,4 +1,4 @@
--- The interval as a HIT. Proof of funtion extensionality from it.
+-- The interval as a HIT. Proof of function extensionality from it.
 
 module interval where
 
@@ -8,6 +8,7 @@ import prop
 import set
 
 data I = i0 | i1 | seg <i> [(i=0) -> i0, (i=1) -> i1]
+data P (A B: U) (x:A)(y:B)= p0 (_:A)| p1 (_:B) | pseg <i> [(i=0) -> p0 x, (i=1) -> p1 y]
 
 -- Proof of funext from the interval
 fext (A B: U) (f g: A -> B) (p: (x: A) -> Path B (f x) (g x)): Path (A -> B) f g
