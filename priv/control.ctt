@@ -4,37 +4,31 @@
 module control where
 
 import proto
-import pi
 import proto_path
 
+-- Fixpoint Control
 -- mu  (F) = A+F(B)
 -- fix (F) = F(fix(F))
 -- nu  (F) = A*F(B)
 
 -- Fixpoint
-data fix  (F: U -> U) = Fix (point: F (fix F))
+data fix    (F:U->U)= Fix (point: F (fix F))
+out_        (F:U->U): fix F -> F (fix F) = split Fix f -> f
+in_         (F:U->U): F (fix F) -> fix F = \(x: F (fix F)) -> Fix x
 
-out_ (F: U -> U): fix F -> F (fix F) = split Fix f -> f
-in_  (F: U -> U): F (fix F) -> fix F = \(x: F (fix F)) -> Fix x
-
--- Mu, Nu
-data mu     (F: U -> U) (A B: U)  = ReturnF (a: A) | BindF (f: F B)
-data nu     (F: U -> U) (A B: U)  = CoBindF (a: A)         (f: F B)
-
--- Free, Cofree
-data free   (F: U -> U) (A: U)    = Free    (_: fix (mu F A))
-data cofree (F: U -> U) (A: U)    = CoFree  (_: fix (nu F A))
-
-unfree      (F: U -> U) (A: U): free   F A -> fix (mu F A) = split Free   a -> a
-uncofree    (F: U -> U) (A: U): cofree F A -> fix (nu F A) = split CoFree a -> a
-
--- ot is a type of composition o operator
-ot (A B C: U): U = (B -> C) -> (A -> B) -> A -> C
+-- Mu,Nu
+data mu     (F:U->U) (A B:U)= Return (a: A) | Bind (f: F B)
+data nu     (F:U->U) (A B:U)= CoBind (a: A)        (f: F B)
+data free   (F:U->U) (A:U)  = Free    (_: fix (mu F A))
+data cofree (F:U->U) (A:U)  = CoFree  (_: fix (nu F A))
+unfree      (F:U->U) (A:U): free   F A -> fix (mu F A) = split Free   a -> a
+uncofree    (F:U->U) (A:U): cofree F A -> fix (nu F A) = split CoFree a -> a
 
 -- Signatures
-pure_sig (F: U -> U): U =  (A: U)  ->         A  -> F A
-fmap_sig (F: U -> U): U = (A B: U) ->   (A -> B) -> F A -> F B
-appl_sig (F: U -> U): U = (A B: U) -> F (A -> B) -> F A -> F B
+pure_sig (F:U->U):U=   (A: U) ->         A  -> F A
+fmap_sig (F:U->U):U= (A B: U) ->   (A -> B) -> F A -> F B
+appl_sig (F:U->U):U= (A B: U) -> F (A -> B) -> F A -> F B
+bind_sig (F:U->U):U=   (A: U) -> F    (F A) -> F A
 
 {- The signatures are made external for code compactification.
    The we select F: U -> U functor as common head for sigma types.
@@ -42,12 +36,23 @@ appl_sig (F: U -> U): U = (A B: U) -> F (A -> B) -> F A -> F B
    Projections contains full signature expect F.
    These type could be considered for run-time.  -}
 
--- Run-time types
-pure_:        U = (F: U -> U) *     pure_sig F
-functor_:     U = (F: U -> U) *     fmap_sig F
-applicative_: U = (F: U -> U) * (_: pure_sig F)
-                              * (_: fmap_sig F)
-                              *     appl_sig F
+-- Run-time types aka Type-classes.
+-- Also you may read Oleg Kiselev Type-Classes in ML.
+-- Here is we encode type-classes with Sigma and instances with nested tuples.
+
+pure_:        U = (F: U -> U) * pure_sig F
+functor_:     U = (F: U -> U) * fmap_sig F
+
+applicative_: U = (F: U -> U)
+                * (_: pure_sig F)
+                * (_: fmap_sig F)
+                *     appl_sig F
+
+monad_:       U = (F: U -> U)
+                * (_: pure_sig F)
+                * (_: fmap_sig F)
+                * (_: appl_sig F)
+                *     bind_sig F
 
 {- Accessor are common technique in Type Refinement approach
    for beautifying the code. -}
@@ -89,7 +94,18 @@ isApplicative (F: applicative_): U
                     ((ap F) (A->B) B ((pure F) ((A->B)->B) (\(f:A->B)->f(x))) u))
     * Unit
 
-FUNCTOR:     U = (f: functor_) * isFunctor f
+isMonad (F: monad_): U
+    = Unit
+
+FUNCTOR:     U = (f: functor_)
+               * isFunctor f
+
 APPLICATIVE: U = (f: applicative_)
-               * (_: isFunctor (f.1,amap f))
+               * (_: isFunctor (f.1,f.2.2.1))
                * isApplicative f
+
+MONAD:       U = (f: monad_)
+               * (_: isFunctor (f.1,f.2.2.1))
+               * (_: isApplicative (f.1,f.2.1,f.2.2.1,f.2.2.2.1))
+               * isMonad f
+

@@ -2,6 +2,8 @@ module monad where
 
 import control
 
+bind_sig (F: U -> U): U =   (A: U) -> F    (F A) -> F A
+
 {-
 monad (F: U -> U): U
     = (pure_: (A: U) -> pure A F)
