@@ -24,18 +24,18 @@ data cofree (F:U->U) (A:U)  = CoFree  (_: fix (nu F A))
 unfree      (F:U->U) (A:U): free   F A -> fix (mu F A) = split Free   a -> a
 uncofree    (F:U->U) (A:U): cofree F A -> fix (nu F A) = split CoFree a -> a
 
--- Signatures
-pure_sig (F:U->U):U=   (A: U) ->           A  -> F A
-extr_sig (F:U->U):U=   (A: U) ->         F A  -> A
-etnd_sig (F:U->U):U= (A B: U) ->   (F A -> B) -> F A -> F B
-appl_sig (F:U->U):U= (A B: U) ->   F (A -> B) -> F A -> F B
-fmap_sig (F:U->U):U= (A B: U) ->     (A -> B) -> F A -> F B
-unma_sig (F:U->U):U= (A B: U) -> (F A -> F B) ->  (A -> B)
-ctrv_sig (F:U->U):U= (A B: U) ->     (B -> A) -> F A -> F B
-cofm_sig (F:U->U):U= (A B: U) ->     (B -> A) -> F B -> F A
-join_sig (F:U->U):U=   (A: U) ->      F (F A) -> F A
-bind_sig (F:U->U):U= (A B: U) ->    F A -> (A -> F B)-> F B
-dupl_sig (F:U->U):U=   (A: U) ->         F A  -> F (F A)
+-- Signature equations
+pure_sig      (F:U->U):U=   (A: U) ->           A  -> F A
+extract_sig   (F:U->U):U=   (A: U) ->         F A  ->   A
+etndend_sig   (F:U->U):U= (A B: U) ->   (F A -> B) -> F A -> F B
+unmap_sig     (F:U->U):U= (A B: U) -> (F A -> F B) ->  (A -> B)
+bind_sig      (F:U->U):U= (A B: U) ->    F A ->(A  -> F B)-> F B
+apply_sig     (F:U->U):U= (A B: U) ->   F (A -> B) -> F A -> F B
+fmap_sig      (F:U->U):U= (A B: U) ->     (A -> B) -> F A -> F B
+contramap_sig (F:U->U):U= (A B: U) ->     (B -> A) -> F A -> F B
+cofmap_sig    (F:U->U):U= (A B: U) ->     (B -> A) -> F B -> F A
+join_sig      (F:U->U):U=   (A: U) ->      F (F A) -> F A
+dup_sig       (F:U->U):U=   (A: U) ->         F A  -> F (F A)
 
 {- The signatures are made external for code compactification.
    The we select F: U -> U functor as common head for sigma types.
@@ -53,22 +53,22 @@ functor_:     U = (F: U -> U) * fmap_sig F
 applicative_: U = (F: U -> U)
                 * (_: pure_sig F)
                 * (_: fmap_sig F)
-                *     appl_sig F
+                *     apply_sig F
 
 monad_:       U = (F: U -> U)
                 * (_: pure_sig F)
                 * (_: fmap_sig F)
-                * (_: appl_sig F)
+                * (_: apply_sig F)
                 *     bind_sig F
 
 {- Accessor are common technique in Type Refinement approach
    for beautifying the code. -}
 
 -- Accessors
-fmap (a: functor_):     fmap_sig a.1 = a.2
-pure (a: applicative_): pure_sig a.1 = a.2.1
-amap (a: applicative_): fmap_sig a.1 = a.2.2.1
-ap   (a: applicative_): appl_sig a.1 = a.2.2.2
+fmap (a: functor_):     fmap_sig  a.1 = a.2
+pure (a: applicative_): pure_sig  a.1 = a.2.1
+amap (a: applicative_): fmap_sig  a.1 = a.2.2.1
+ap   (a: applicative_): apply_sig a.1 = a.2.2.2
 
 -- Theorems. Erased in run-time.
 
