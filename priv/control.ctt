@@ -51,11 +51,12 @@ monad_:       U = (F: U -> U)
    for beautifying the code. -}
 
 -- Accessors
-fmap (a: functor_):     fmap_sig  a.1 = a.2
-pure (a: applicative_): pure_sig  a.1 = a.2.1
-amap (a: applicative_): fmap_sig  a.1 = a.2.2.1
-ap   (a: applicative_): apply_sig a.1 = a.2.2.2
-bind (a: monad_):       bind_sig  a.1 = a.2.2.2.2
+fmap  (a: functor_):     fmap_sig  a.1 = a.2
+pure  (a: applicative_): pure_sig  a.1 = a.2.1
+amap  (a: applicative_): fmap_sig  a.1 = a.2.2.1
+ap    (a: applicative_): apply_sig a.1 = a.2.2.2
+bind  (a: monad_):       bind_sig  a.1 = a.2.2.2.2
+mpure (a: monad_):       pure_sig  a.1 = a.2.1
 
 kleisli_compose (A B C: U) (M: monad_) (f: B -> M.1 C) (g: A -> M.1 B) (x: A) : M.1 C = bind M B C (g x) f
 
@@ -65,7 +66,7 @@ kleisli_compose (A B C: U) (M: monad_) (f: B -> M.1 C) (g: A -> M.1 B) (x: A) : 
 -- fmap(o(g,h)) = o(fmap(g),fmap(h))
 
 isFunctor (F: functor_): U
-    = (id: (A: U) -> (x: F.1 A) -> Path (F.1 A) x ((fmap F) A A (idfun A) x))
+    = (id: (A: U) -> (x: F.1 A) -> Path (F.1 A) x (fmap F A A (idfun A) x))
     * (compose: (A B C: U) (f: B -> C) (g: A -> B) (x: F.1 A) ->
       Path (F.1 C) (F.2 A C (o A B C f g) x)
        ((o (F.1 A) (F.1 B) (F.1 C)
@@ -78,21 +79,23 @@ isFunctor (F: functor_): U
 
 isApplicative (F: applicative_): U
     = (id:  (A:U) -> (x: F.1 A) ->
-       Path (F.1 A) x ((ap F) A A ((pure F) (id A) (idfun A)) x))
+       Path (F.1 A) x (ap F A A (pure F (id A) (idfun A)) x))
     * (hom: (A B:U)(f:A->B)(x: A) ->
-       Path (F.1 B) ((pure F) B (f x)) ((ap F) A B ((pure F) (A->B) f) ((pure F) A x)))
+       Path (F.1 B) (pure F B (f x)) (ap F A B (pure F (A->B) f) (pure F A x)))
     * (cmp: (A B C:U)(v: F.1(A->B))(u:F.1(B->C))(w:F.1 A) ->
-       Path (F.1 C) ((ap F) B C u ((ap F) A B v w))
-                    ((ap F) A C ((ap F) (A->B) (A->C) ((ap F)(B->C)((A->B)->(A->C))
-                    ((pure F) (ot A B C) (o A B C)) u) v) w))
+       Path (F.1 C) (ap F B C u (ap F A B v w))
+                    (ap F A C (ap F (A->B) (A->C) (ap F(B->C)((A->B)->(A->C))
+                    (pure F (ot A B C) (o A B C)) u) v) w))
     * (xchg: (A B:U)(x:A)(u:F.1(A->B))(f:A->B) ->
-       Path (F.1 B) ((ap F) A B u ((pure F) A x))
-                    ((ap F) (A->B) B ((pure F) ((A->B)->B) (\(f:A->B)->f(x))) u))
+       Path (F.1 B) (ap F A B u ((pure F) A x))
+                    (ap F (A->B) B (pure F ((A->B)->B) (\(f:A->B)->f(x))) u))
     * Unit
 
 isMonad (F: monad_): U
-    = (left_id: (A B:U) (f:A->F.1 B) (x:A) -> Path (F.1 B) (bind F A B (F.2.1 A x) f) (f x))
-    * (right_id: (A:U) (m: F.1 A) -> Path (F.1 A) (bind F A A m (F.2.1 A)) m)
+    = (left_id:  (A B:U)(f:A->F.1 B)(x:A) ->
+                 Path (F.1 B) (bind F A B (mpure F A x) f) (f x))
+    * (right_id: (A:U) (m: F.1 A) ->
+                 Path (F.1 A) (bind F A A m (mpure F A)) m)
     * (assoc: (A B C: U) (f: A -> F.1 B) (g: B -> F.1 C) (m: F.1 A) -> 
        Path (F.1 C) (bind F B C (bind F A B m f) g) (bind F A C m (\(x: A) -> bind F B C (f x) g)))
     * Unit
