@@ -51,11 +51,12 @@ monad_:       U = (F: U -> U)
    for beautifying the code. -}
 
 -- Accessors
-fmap (a: functor_):     fmap_sig  a.1 = a.2
-pure (a: applicative_): pure_sig  a.1 = a.2.1
-amap (a: applicative_): fmap_sig  a.1 = a.2.2.1
-ap   (a: applicative_): apply_sig a.1 = a.2.2.2
-bind (a: monad_):       bind_sig  a.1 = a.2.2.2.2
+fmap  (a: functor_):     fmap_sig  a.1 = a.2
+pure  (a: applicative_): pure_sig  a.1 = a.2.1
+amap  (a: applicative_): fmap_sig  a.1 = a.2.2.1
+ap    (a: applicative_): apply_sig a.1 = a.2.2.2
+bind  (a: monad_):       bind_sig  a.1 = a.2.2.2.2
+mpure (a: monad_):       pure_sig  a.1 = a.2.1
 
 -- Theorems. Erased in run-time.
 
@@ -89,8 +90,10 @@ isApplicative (F: applicative_): U
     * Unit
 
 isMonad (F: monad_): U
-    = (left_id: (A B:U)(f:A->F.1 B)(x:A) ->
-                   Path (F.1 B) (bind F A B ((F.2.1) A x) f) (f x))
+    = (left_id:  (A B:U)(f:A->F.1 B)(x:A) ->
+                 Path (F.1 B) (bind F A B (mpure F A x) f) (f x))
+    * (right_id: (A:U) (m: F.1 A) ->
+                 Path (F.1 A) (bind F A A m (mpure F A)) m)
     * Unit
 
 FUNCTOR:     U = (f: functor_)
