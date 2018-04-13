@@ -25,21 +25,21 @@ unfree      (F:U->U) (A:U): free   F A -> fix (mu F A) = split Free   a -> a
 uncofree    (F:U->U) (A:U): cofree F A -> fix (nu F A) = split CoFree a -> a
 
 -- Signature equations
-pure_sig      (F:U->U):U=   (A: U) ->           A  -> F A
-extract_sig   (F:U->U):U=   (A: U) ->         F A  ->   A
-extend_sig   (F:U->U):U= (A B: U) ->    (F A -> B) -> F A -> F B
-apply_sig     (F:U->U):U= (A B: U) ->   F (A -> B) -> F A -> F B
-fmap_sig      (F:U->U):U= (A B: U) ->     (A -> B) -> F A -> F B
-unmap_sig     (F:U->U):U= (A B: U) -> (F A -> F B) ->  (A -> B)
-contra_sig    (F:U->U):U= (A B: U) ->     (B -> A) -> F A -> F B
-uncontra_sig  (F:U->U):U= (A B: U) -> (F A -> F B) ->  (B -> A)
-cofmap_sig    (F:U->U):U= (A B: U) ->     (B -> A) -> F B -> F A
-uncofmap_sig  (F:U->U):U= (A B: U) -> (F B -> F A) ->  (B -> A)
-cocontra_sig  (F:U->U):U= (A B: U) ->     (A -> B) -> F B -> F A
-uncoco_sig    (F:U->U):U= (A B: U) -> (F B -> F A) ->  (A -> B)
-join_sig      (F:U->U):U=   (A: U) ->      F (F A) -> F A
-dup_sig       (F:U->U):U=   (A: U) ->         F A  -> F (F A)
-bind_sig      (F:U->U):U= (A B: U) ->    F A ->(A  -> F B)-> F B
+pure_sig       (F:U->U):U=   (A: U) ->           A  -> F A
+extract_sig    (F:U->U):U=   (A: U) ->         F A  ->   A
+extend_sig     (F:U->U):U= (A B: U) ->   (F A -> B) -> F A -> F B
+apply_sig      (F:U->U):U= (A B: U) ->   F (A -> B) -> F A -> F B
+fmap_sig       (F:U->U):U= (A B: U) ->     (A -> B) -> F A -> F B
+unmap_sig      (F:U->U):U= (A B: U) -> (F A -> F B) ->  (A -> B)
+contra_sig     (F:U->U):U= (A B: U) ->     (B -> A) -> F A -> F B
+uncontra_sig   (F:U->U):U= (A B: U) -> (F A -> F B) ->  (B -> A)
+cofmap_sig     (F:U->U):U= (A B: U) ->     (B -> A) -> F B -> F A
+uncofmap_sig   (F:U->U):U= (A B: U) -> (F B -> F A) ->  (B -> A)
+cocontra_sig   (F:U->U):U= (A B: U) ->     (A -> B) -> F B -> F A
+uncocontra_sig (F:U->U):U= (A B: U) -> (F B -> F A) ->  (A -> B)
+join_sig       (F:U->U):U=   (A: U) ->      F (F A) -> F A
+dup_sig        (F:U->U):U=   (A: U) ->         F A  -> F (F A)
+bind_sig       (F:U->U):U= (A B: U) ->    F A ->(A  -> F B)-> F B
 
 {- The signatures are made external for code compactification.
    The we select F: U -> U functor as common head for sigma types.
@@ -51,8 +51,11 @@ bind_sig      (F:U->U):U= (A B: U) ->    F A ->(A  -> F B)-> F B
 -- Also you may read Oleg Kiselev Type-Classes in ML.
 -- Here is we encode type-classes with Sigma and instances with nested tuples.
 
-pure_:        U = (F: U -> U) * pure_sig F
-functor_:     U = (F: U -> U) * fmap_sig F
+pure_:        U = (F: U -> U)
+                *     pure_sig F
+
+functor_:     U = (F: U -> U)
+                *     fmap_sig F
 
 applicative_: U = (F: U -> U)
                 * (_: pure_sig F)
