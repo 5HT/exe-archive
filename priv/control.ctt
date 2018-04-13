@@ -55,6 +55,9 @@ fmap (a: functor_):     fmap_sig  a.1 = a.2
 pure (a: applicative_): pure_sig  a.1 = a.2.1
 amap (a: applicative_): fmap_sig  a.1 = a.2.2.1
 ap   (a: applicative_): apply_sig a.1 = a.2.2.2
+bind (a: monad_):       bind_sig  a.1 = a.2.2.2.2
+
+kleisli_compose (A B C: U) (M: monad_) (f: B -> M.1 C) (g: A -> M.1 B) (x: A) : M.1 C = bind M B C (g x) f
 
 -- Theorems. Erased in run-time.
 
@@ -88,7 +91,10 @@ isApplicative (F: applicative_): U
     * Unit
 
 isMonad (F: monad_): U
-    = (_: U)
+    = (left_id: (A B:U) (f:A->F.1 B) (x:A) -> Path (F.1 B) (bind F A B (F.2.1 A x) f) (f x))
+    * (right_id: (A:U) (m: F.1 A) -> Path (F.1 A) (bind F A A m (F.2.1 A)) m)
+    * (assoc: (A B C: U) (f: A -> F.1 B) (g: B -> F.1 C) (m: F.1 A) -> 
+       Path (F.1 C) (bind F B C (bind F A B m f) g) (bind F A C m (\(x: A) -> bind F B C (f x) g)))
     * Unit
 
 FUNCTOR:     U = (f: functor_)
