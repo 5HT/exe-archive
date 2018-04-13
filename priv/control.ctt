@@ -1,5 +1,4 @@
--- Fixpoint and Control Algebraic Structures
--- Maxim Sokhatsky 2018 Groupoid Infinity
+-- Control Structures 2018 Groupoid Infinity
 
 module control where
 
@@ -24,14 +23,12 @@ dup_sig        (F:U->U):U=   (A: U) ->         F A  -> F (F A)
 bind_sig       (F:U->U):U= (A B: U) ->    F A ->(A  -> F B)-> F B
 
 {- The signatures are made external for code compactification.
-   The we select F: U -> U functor as common head for sigma types.
-   All quantifiers for members and laws are carried in with in projections.
-   Projections contains full signature expect F.
-   These type could be considered for run-time.  -}
-
--- Run-time types aka Type-classes.
--- Also you may read Oleg Kiselev Type-Classes in ML.
--- Here is we encode type-classes with Sigma and instances with nested tuples.
+   Then we select F: U -> U functor as common head for sigma types.
+   All quantifiers for members and laws are carried within projections.
+   Projections contains full signature except F.
+   These types could be considered for run-time.
+   Also you may read Oleg Kiselev Type-Classes in ML.
+    Here is we encode type-classes with Sigma and instances with nested tuples. -}
 
 pure_:        U = (F: U -> U)
                 *     pure_sig F
