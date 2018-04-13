@@ -6,24 +6,6 @@ module control where
 import proto
 import proto_path
 
--- Fixpoint Control
--- mu  (F) = A+F(B)
--- fix (F) = F(fix(F))
--- nu  (F) = A*F(B)
-
--- Fixpoint
-data fix    (F:U->U)= Fix (point: F (fix F))
-out_        (F:U->U): fix F -> F (fix F) = split Fix f -> f
-in_         (F:U->U): F (fix F) -> fix F = \(x: F (fix F)) -> Fix x
-
--- Mu,Nu
-data mu     (F:U->U) (A B:U)= Return (a: A) | Bind (f: F B)
-data nu     (F:U->U) (A B:U)= CoBind (a: A)        (f: F B)
-data free   (F:U->U) (A:U)  = Free    (_: fix (mu F A))
-data cofree (F:U->U) (A:U)  = CoFree  (_: fix (nu F A))
-unfree      (F:U->U) (A:U): free   F A -> fix (mu F A) = split Free   a -> a
-uncofree    (F:U->U) (A:U): cofree F A -> fix (nu F A) = split CoFree a -> a
-
 -- Signature equations
 pure_sig       (F:U->U):U=   (A: U) ->           A  -> F A
 extract_sig    (F:U->U):U=   (A: U) ->         F A  ->   A
