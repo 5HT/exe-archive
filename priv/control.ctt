@@ -96,8 +96,9 @@ isMonad (F: monad_): U
                  Path (F.1 B) (bind F A B (mpure F A x) f) (f x))
     * (right_id: (A:U) (m: F.1 A) ->
                  Path (F.1 A) (bind F A A m (mpure F A)) m)
-    * (assoc: (A B C: U) (f: A -> F.1 B) (g: B -> F.1 C) (m: F.1 A) -> 
-       Path (F.1 C) (bind F B C (bind F A B m f) g) (bind F A C m (\(x: A) -> bind F B C (f x) g)))
+    * (assoc: (A B C: U) (f: A -> F.1 B) (g: B -> F.1 C) (m: F.1 A) ->
+       Path (F.1 C) (bind F B C (bind F A B m f) g)
+                    (bind F A C m (\(x: A) -> bind F B C (f x) g)))
     * Unit
 
 FUNCTOR:     U = (f: functor_)
