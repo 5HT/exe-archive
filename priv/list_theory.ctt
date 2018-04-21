@@ -42,8 +42,10 @@ lem2 (A:U) : (xs:list A) -> Path (list A) (append A xs nil) xs = split
   nil -> <i>nil
   cons x xs -> <i>cons x (lem2 A xs@i)
 
-list_compose (A B C: U) (f: B -> C) (g: A -> B): (x: list A) ->
-      Path (list C) (map A C (o A B C f g) x)
-       ((o (list A) (list B) (list C) (map B C f) (map A B g)) x) = undefined
+list_compose (A B C: U) (f: B->C) (g: A->B): (x: list A) ->
+  Path (list C) (map A C (o A B C f g) x)
+                ((o (list A) (list B) (list C) (map B C f) (map A B g)) x) = split
+  nil -> <i> nil
+  cons x xs -> <i>cons ((o A B C f g) x) (list_compose A B C f g xs@i)
 
 functor_sample: FUNCTOR = ((list,map),(lem1,list_compose,tt))
