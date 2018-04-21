@@ -28,7 +28,8 @@ bind_sig       (F:U->U):U= (A B: U) ->    F A ->(A  -> F B)-> F B
    Projections contains full signature except F.
    These types could be considered for run-time.
    Also you may read Oleg Kiselev Type-Classes in ML.
-    Here is we encode type-classes with Sigma and instances with nested tuples. -}
+   Here is we encode type-classes with Sigma and instances with nested tuples.
+-}
 
 pure_:        U = (F: U -> U)
                 *     pure_sig F
@@ -58,7 +59,11 @@ ap    (a: applicative_): apply_sig a.1 = a.2.2.2
 bind  (a: monad_):       bind_sig  a.1 = a.2.2.2.2
 mpure (a: monad_):       pure_sig  a.1 = a.2.1
 
-kleisli_compose (A B C: U) (M: monad_) (f: B -> M.1 C) (g: A -> M.1 B) (x: A) : M.1 C = bind M B C (g x) f
+kleisli_compose (A B C: U)
+                (M: monad_)
+                (f: B -> M.1 C)
+                (g: A -> M.1 B)
+                (x: A): M.1 C = bind M B C (g x) f
 
 -- Theorems. Erased in run-time.
 
@@ -66,7 +71,7 @@ kleisli_compose (A B C: U) (M: monad_) (f: B -> M.1 C) (g: A -> M.1 B) (x: A) : 
 -- fmap(o(g,h)) = o(fmap(g),fmap(h))
 
 isFunctor (F: functor_): U
-    = (id: (A: U) -> (x: F.1 A) -> Path (F.1 A) x (fmap F A A (idfun A) x))
+    = (id: (A: U) -> (x: F.1 A) -> Path (F.1 A) (fmap F A A (idfun A) x) x)
     * (compose: (A B C: U) (f: B -> C) (g: A -> B) (x: F.1 A) ->
       Path (F.1 C) (F.2 A C (o A B C f g) x)
        ((o (F.1 A) (F.1 B) (F.1 C)
