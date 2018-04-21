@@ -3,9 +3,10 @@ module vector where
 import nat
 import list
 
-data vector (A: U) (n: nat) = nil2 | cons2 (x: A) (xs: vector A (pred n))
+data vector (A: U) (n: nat) = vzero | vsucc (x: A) (xs: vector A (pred n))
 
-nil_ (A: U): vector A zero = nil2
-cons_ (A: U) (x: A) (n: nat) (xs: vector A n): vector A (succ n) = cons2 x xs
+nil_ (A: U): vector A zero = vzero
+cons_ (A: U) (x: A) (n: nat) (xs: vector A n): vector A (succ n) = vsucc x xs
 
 vector2 (n: nat) (A: U): U = (c: list nat) * (Path nat (length nat c) n)
+
