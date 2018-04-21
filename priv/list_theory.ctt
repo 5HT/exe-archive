@@ -7,21 +7,6 @@ import list
 import control
 import nat_theory
 
-eq_list_nat:      eq_      = (list nat,        list_eq eq_nat)
-eq_list_list_nat: eq_      = (list (list nat), list_eq eq_list_nat)
-pure_list:        pure_    = (list,\(A:U)(x:A)->cons x nil)
-functor_list:     functor_ = (list,map)
-
--- tests/usage
-
--- let b : nat = foldr nat nat (\(x : nat) (y : nat) -> add x y) one (cons zero nil) in b
--- let a : list nat = append nat nil nil in a
--- filter nat f (cons zero (cons n1 (cons n2 (cons n3 (cons zero nil)))))
-
-data S = O | P | C
-opc : list S = cons O (cons P (cons C nil))
-cpo : list S = cons C (cons P (cons O nil))
-
 -- theorems
 
 assoc (A:U) : (xs ys zs : list A) ->
@@ -34,13 +19,13 @@ lem (A B C:U) (f:A->B) (g:B -> C) : (xs:list A) ->
   nil -> <i>nil
   cons x xs -> <i>cons (g (f x)) (lem A B C f g xs@i)
 
-list_id (A:U) : (xs:list A) -> Path (list A) (map A A (idfun A) xs) xs = split
-  nil -> <i>nil
-  cons x xs -> <i>cons x (list_id A xs@i)
-
 lem2 (A:U) : (xs:list A) -> Path (list A) (append A xs nil) xs = split
   nil -> <i>nil
   cons x xs -> <i>cons x (lem2 A xs@i)
+
+list_id (A:U) : (xs:list A) -> Path (list A) (map A A (idfun A) xs) xs = split
+  nil -> <i>nil
+  cons x xs -> <i>cons x (list_id A xs@i)
 
 list_compose (A B C: U) (f: B->C) (g: A->B): (x: list A) ->
   Path (list C) (map A C (o A B C f g) x)
@@ -48,4 +33,9 @@ list_compose (A B C: U) (f: B->C) (g: A->B): (x: list A) ->
   nil -> <i> nil
   cons x xs -> <i>cons ((o A B C f g) x) (list_compose A B C f g xs@i)
 
-functor_sample: FUNCTOR = ((list,map),(list_id,list_compose,tt))
+eq_list_nat:      eq_      = (list nat,        list_eq eq_nat)
+eq_list_list_nat: eq_      = (list (list nat), list_eq eq_list_nat)
+pure_list:        pure_    = (list,\(A:U)(x:A)->cons x nil)
+functor_list:     functor_ = (list,map)
+functor_laws:     FUNCTOR  = ((list,map),(list_id,list_compose,tt))
+
