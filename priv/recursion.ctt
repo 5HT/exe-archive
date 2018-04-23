@@ -1,4 +1,9 @@
--- Recursion Schemes 2018 Groupoid Infinity
+{- Recursion Schemes:
+   - Ana, Cata, Futu, Histo;
+   - Inductive and Coinductive types.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
+
 module recursion where
 
 {-

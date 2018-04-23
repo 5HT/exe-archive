@@ -1,6 +1,10 @@
+{- Equivalence Type:
+   - Fibers;
+   - Contractability of Fibers and Singletons;
+   - Equivalence.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
 module proto_equiv where
-
-{- Equivalence from HoTT -}
 
 import set
 
@@ -18,8 +22,7 @@ idIsEquiv (A : U) : isEquiv A A (idfun A) =
   contr A a z.1 z.2)
 
 lemSinglContr (A:U) (a:A) : isContr ((x:A) * Path A a x) =
-  ((a,refl A a),\ (z:(x:A) * Path A a x) ->
-  contr A a z.1 z.2)
+  ((a,refl A a),\ (z:(x:A) * Path A a x) -> contr A a z.1 z.2)
 
 idEquiv (A:U): equiv A A = (\ (x:A) -> x, lemSinglContr A)
 

@@ -16,38 +16,6 @@ setPi (A: U) (B: A -> U) (h: (x: A) -> isSet (B x)) (f g: Pi A B)
       (p q: Path (Pi A B) f g): Path (Path (Pi A B) f g) p q
   = <i j> \(x : A) -> (h x (f x) (g x) (<i>(p@i)x) (<i>(q@i)x)) @ i @ j
 
-{-
-
--- alternative variant #1
-
-setPi (A:U) (B:A -> U) (h:(x:A) -> isSet (B x)) (f g: Pi A B)
-  : isProp (Path (Pi A B) f g)
-  = subst U isProp T (Path (Pi A B) f g) (<i>pathPi A B f g@-i) rem1 where
-  T : U = (x:A) -> Path (B x) (f x) (g x)
-  rem1 : isProp T = \ (p q : T) -> <i> \ (x:A) -> h x (f x) (g x) (p x) (q x)@i
-
--- alrernative variant #2 nponeccop
-
--- setPi - Sets are closed under pi-abstraction
--- Note that `A` is any type and not merely a set
--- Proof plan:
--- We expand `isSet` so we see it's underlying equality on paths.
--- Then we apply `propPi` to `h` to prove `isProp a` is an eta-expanded version of the goal.
--- Then we use pi-extensionality path between a and b to convert isProp a to isProp b.
-
-setPi (A : U) (B : A -> U) (h : (x : A) -> isSet (B x)): isSet ((x: A) -> B x)
-  = goal h where
-  goal (h : (x : A)
-    (g0 g1 :            B x) -> isProp (Path (           B x) g0 g1))
-    (f  g  : (x : A) -> B x) :  isProp (Path ((x : A) -> B x) f g)
-    = subst U isProp a b p e where
-    a : U = (x: A) -> Path (B x) (f x) (g x)
-    b : U = Path ((x : A) -> B x) f g
-    p : Path U a b = <i> pathPi A B f g @ -i
-    e : isProp a = propPi A P (\(x: A) -> h x (f x) (g x)) where
-      P (x: A): U = Path (B x) (f x) (g x)
---}
-
 setFun' (X Y: U) (proofY: X -> isSet Y): isSet (X -> Y)
   = setPi X (\(_: X) -> Y) proofY
 
@@ -59,23 +27,4 @@ groupoidPi (A:U) (B:A -> U) (h:(x:A) -> isGroupoid (B x)) (f g:Pi A B) : isSet (
  where
   T : U = (x:A) -> Path (B x) (f x) (g x)
   rem1 : isSet T =  setPi A (\ (x:A) -> Path (B x) (f x) (g x)) (\ (x:A) -> h x (f x) (g x))
-
-propPi2 (A : U) (B0 : A -> A -> U) (h0 : (x y : A) -> isProp (B0 x y))
-  : isProp ((x y : A) -> B0 x y)
-  = let
-    p0 (a : A) : isProp ((b : A) -> B0 a b)
-      = propPi A (B0 a) (h0 a)
-    B1 (a : A) : U
-      = (b : A) -> B0 a b
-  in propPi A B1 p0
-
-propPi3 (A : U) (B0 : A -> A -> A -> U) (h0 : (x y z : A) -> isProp (B0 x y z))
-  : isProp ((x y z : A) -> B0 x y z)
-  = let
-    p0 (a b : A) : isProp ((c : A) -> B0 a b c)
-      = propPi A (B0 a b) (h0 a b)
-    B1 (a b : A) : U
-      = (c : A) -> B0 a b c
-  in propPi2 A B1 p0
-
 

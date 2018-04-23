@@ -203,9 +203,10 @@ invEquiv (A:U) (a b:A) : Path U (Path A a b) (Path A b a)
              (isoToEquiv (Path A a b) (Path A b a) (inv A a b) (inv A b a)
                          (\(x:Path A b a) -> <_> x) (\(x:Path A a b) -> <_> x))
 
-equivFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (cB : isContr (Sigma A B)) (cC : isContr (Sigma A C)) (x:A)
-  : isEquiv (B x) (C x) (f x) = undefined
-
+equivFunFib (A:U) (B C: A -> U) (f: (x:A) -> B x -> C x)
+            (cB: isContr (Sigma A B))
+            (cC: isContr (Sigma A C))
+            (x:A): isEquiv (B x) (C x) (f x) = undefined
 
 eqToIso (C : precategory) (A B : carrier C) (p : Path (carrier C) A B) : iso C A B
   = J (carrier C) A (\(B : carrier C) -> \(p : Path (carrier C) A B) -> iso C A B) (idIso C A) B p
@@ -227,9 +228,6 @@ catEquivIsIso (A B: precategory) (isCA: isCategory A) (isCB: isCategory B)
             = (e.2 b, F23 A B F (F12 A B isCA F e.1) b (e.2 b))
       in transport (<i>isContr ((a:carrier A) * invEquiv (carrier B) (F.1 a) b @ i))
         (transport (<i> isContr ((a:carrier A) * lemIsCategory3 B isCB (F.1 a) b@-i)) p))
-
-
-
 
 catIsoIsEquiv (A B : precategory) (F: catfunctor A B) (e: catIsIso A B F) : catIsEquiv A B F
   = (e.1,\(b:carrier B)->((e.2 b).1.1, eqToIso B (F.1 (e.2 b).1.1) b (<i>(e.2 b).1.2@-i)))

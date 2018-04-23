@@ -1,55 +1,49 @@
+{- Equivalence:
+   - Theorems.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
+
 module equiv where
 
 import proto_equiv
 
--- used by idTpPath
 equivLemma (A B: U)
   : (v w: equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
   = lemSig (A -> B) (isEquiv A B) (propIsEquiv A B)
 
--- used by univalence.ctt
 equivPath (T A: U) (f: T -> A) (p: isEquiv T A f): Path U T A =
   <i> Glue A [ (i=0) -> (T,f,p), (i=1) -> (A,idfun A, idIsEquiv A)]
 
--- used by category.ctt
-invEq (A B:U) (w:equiv A B) (y:B) : A = (w.2 y).1.1
+invEq (A B:U)(w:equiv A B)(y:B): A = (w.2 y).1.1
+retEq (A B:U)(w:equiv A B)(y:B): Path B (w.1 (invEq A B w y)) y = <i> (w.2 y).1.2@-i
+secEq (A B:U)(w:equiv A B)(x:A): Path A (invEq A B w (w.1 x)) x = <i> ((w.2(w.1 x)).2(x,<j>w.1 x)@i).1
 
--- used by category.ctt
-retEq (A B:U) (w:equiv A B) (y:B) : Path B (w.1 (invEq A B w y)) y =
- <i>(w.2 y).1.2@-i
+pathToEquiv (A B: U) (p: Path U A B): equiv A B
+  = subst U (equiv A) A B p (idEquiv A)
 
--- used by category.ctt
-secEq (A B:U) (w:equiv A B) (x:A) : Path A (invEq A B w (w.1 x)) x =
- <i> ((w.2 (w.1 x)).2 (x,<j>w.1 x)@i).1
-
-pathToEquiv (A B: U) (p: Path U A B): equiv A B = subst U (equiv A) A B p (idEquiv A)
 equivToPath (A B: U) (p: equiv A B): Path U A B
   = <i> Glue B [(i=1) -> (B,subst U (equiv B) B B (<k>B) (idEquiv B)),
                 (i=0) -> (A,p) ]
 
--- used by univalence.ctt
 eqToEq (A B : U) (p : Path U A B)
   : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p
   = <j i> let e: equiv A B = pathToEquiv A B p
               f: equiv B B = pathToEquiv B B (<k> B)
               Ai: U = p@i
               g: equiv Ai B = pathToEquiv Ai B (<k> p @ (i \/ k))
-          in Glue B
-           [ (i = 0) -> (A,e)
-           , (i = 1) -> (B,f)
-           , (j = 1) -> (p@i,g)]
+          in Glue B [ (i=0) -> (A,e),
+                      (i=1) -> (B,f),
+                      (j=1) -> (p@i,g) ]
 
--- used by idToPath
 transPathFun (A B : U) (w : equiv A B)
-  : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1 =
- <i> \ (a:A) ->
+  : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1
+  = <i> \ (a:A) ->
    let b : B = w.1 a
        u : A = comp (<j>A) a []
        q : Path B (w.1 u) b = <i>w.1 (comp (<j>A) a [(i=1) -> <j>a])
-   in comp (<j> B)
-        (comp (<j> B) (comp (<j> B) (comp (<j> B) (w.1 u) [(i=0)->q]) [(i=0)-><k>b]) [(i=0)-><k>b]) [(i=0)-><k>b]
+    in comp (<j> B) (comp (<j> B) (comp (<j> B) (comp (<j> B) (w.1 u)
+            [(i=0)->q]) [(i=0)-><k>b]) [(i=0)-><k>b]) [(i=0)-><k>b]
 
--- used by univalence.ctt
 idToPath (A B : U) (w : equiv A B)
   : Path (equiv A B) (pathToEquiv A B (equivToPath A B w)) w
   = equivLemma A B (pathToEquiv A B (equivToPath A B w)) w

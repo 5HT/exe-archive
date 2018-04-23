@@ -23,16 +23,6 @@ transRefl (A: U) (a: A): Path A (transport (<_> A) a) a
 substPathP (A B: U) (p: Path U A B) (x: A) (y: B) (q: Path B (transport p x) y): PathP p x y
     = transport (<i> PathP p x (q@i)) (<i> comp (<j> p @ (i /\ j)) x [(i=0) -> <_> x])
 
--- composition operation
-composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
-    = subst A (Path A a) b c q p
---  = comp (<i> Path A a (q @ i)) p []
---  = <i> comp (<j>A) (p @ i) [(i=0) -> <j> a, (i=1) -> q ]
-
--- Kan filling operation
-kan (A: U) (a b c d: A) (p: Path A a b) (q: Path A a c) (r: Path A b d): Path A c d
-    = <i> comp (<j>A) (p @ i) [(i=0) -> q, (i=1) -> r ]
-
 -- J is formulated in a form of Paulin-Mohring and implemented
 -- using two facts that singleton are contractible and dependent function transport.
 JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (eta A a)) (p: Path A a b): P (b,p)

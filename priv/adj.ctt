@@ -1,6 +1,6 @@
 {- Category Theory:
    - Natural Transformations;
-   - Adjoints.
+   - Adjunctions.
    Copyright (c) Groupoid Infinity, 2014-2018.
 -}
 
@@ -8,6 +8,7 @@ module adj where
 
 import cat
 import fun
+import algebra
 
 isNaturalTrans (C D: precategory) (F G: catfunctor C D) (eta: (x: carrier C) -> hom D (F.1 x) (G.1 x)): U
   = (x y: carrier C) (h: hom C x y) ->
@@ -45,9 +46,11 @@ ntransR (C D: precategory) (F G: catfunctor C D) (f: ntrans C D F G) (E: precate
         , (i = 1) -> H.2.2.2 (F.1 x) (G.1 x) (G.1 y) (f.1 x) (G.2.1 x y h) ]
   in (eta, p)
 
-areAdjoint (C D: precategory) (F: catfunctor D C) (G: catfunctor C D)
-    (unit: ntrans D D (idFunctor D) (compFunctor D C D F G))
-    (counit: ntrans C C (compFunctor C D C G F) (idFunctor C)) : U
+areAdjoint (C D: precategory)
+           (F: catfunctor D C)
+           (G: catfunctor C D)
+           (unit: ntrans D D (idFunctor D) (compFunctor D C D F G))
+           (counit: ntrans C C (compFunctor C D C G F) (idFunctor C)) : U
   = let
     h0 (x: carrier C) : hom D (G.1 x) (G.1 x) = compose D (G.1 x) (G.1 (F.1 (G.1 x))) (G.1 x)
           ((ntransL D D (idFunctor D) (compFunctor D C D F G) unit C G).1 x)
@@ -63,3 +66,18 @@ adjoint (C D: precategory) (F: catfunctor D C) (G: catfunctor C D) : U
   * (counit: ntrans C C (compFunctor C D C G F) (idFunctor C))
   * areAdjoint C D F G unit counit
 
+Ab: precategory
+  = let
+    Hom (A B: abgroup) : U = abgrouphom A B
+    id (A: abgroup): Hom A A = idmonoidhom (A.1, A.2.1.1)
+    c (A B C: abgroup) (f: Hom A B) (g: Hom B C): Hom A C
+      = monoidhomcomp (A.1, A.2.1.1) (B.1, B.2.1.1) (C.1, C.2.1.1) f g
+    HomSet (A B: abgroup):isSet(Hom A B)=setmonoidhom(A.1,A.2.1.1)(B.1,B.2.1.1)
+    L (A B: abgroup) (f: Hom A B) : Path (Hom A B) (c A A B (id A) f) f
+      = lemma_idmonoidhom0 (A.1, A.2.1.1) (B.1, B.2.1.1) f
+    R (A B: abgroup) (f: Hom A B) : Path (Hom A B) (c A B B f (id B)) f
+      = lemma_idmonoidhom1 (A.1, A.2.1.1) (B.1, B.2.1.1) f
+    C (A B C D: abgroup) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+      : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+      = lemma_monoidcomp0(A.1,A.2.1.1)(B.1,B.2.1.1)(C.1,C.2.1.1)(D.1,D.2.1.1)f g h
+  in ((abgroup, abgrouphom),(id,c,HomSet,L,R,C))

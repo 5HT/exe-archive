@@ -367,8 +367,8 @@ setmonoidhom (a b: monoid): isSet (monoidhom a b)
 
 cmonoidhom  (a b: cmonoid): U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
 grouphom    (a b: group):   U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
-cgrouphom   (a b: abgroup): U = monoidhom (a.1, a.2.1.1) (b.1, b.2.1.1)
-cmoncgrouphom (a: cmonoid) (b: abgroup): U = monoidhom (a.1, a.2.1) (b.1, b.2.1.1)
+abgrouphom   (a b: abgroup): U = monoidhom (a.1, a.2.1.1) (b.1, b.2.1.1)
+cmonabgrouphom (a: cmonoid) (b: abgroup): U = monoidhom (a.1, a.2.1) (b.1, b.2.1.1)
 
 -- Homomorphism constructors
 
@@ -382,7 +382,7 @@ grouphom' (a b : group) (f : a.1.1 -> b.1.1)
         , (i = 1) -> <j> (hasIdGroup b).2 (f (idGroup a)) @ -j ]
   in (f, pO, (lem_group_cancellative b).1 (f (idGroup a)) (f (idGroup a)) (idGroup b) p)
 
-cgrouphom' (a b : abgroup) (f : a.1.1 -> b.1.1)
+abgrouphom' (a b : abgroup) (f : a.1.1 -> b.1.1)
     (pO : preservesOp a.1.1 b.1.1 (opCGroup a) (opCGroup b) f)
   : monoidhom (a.1, a.2.1.1) (b.1, b.2.1.1)
   = grouphom' (a.1, a.2.1) (b.1, b.2.1) f pO
@@ -403,7 +403,7 @@ monoidhomcomp (a b c : monoid)
         , (i = 1) -> g.2.2 ]
   in (h, pO, pI)
 
--- h ∘ (g ∘ f) ≡ (h ∘ g) ∘ f 
+-- h ∘ (g ∘ f) ≡ (h ∘ g) ∘ f
 lemma_monoidcomp0 (a b c d : monoid) (f : monoidhom a b)
     (g : monoidhom b c) (h : monoidhom c d)
   : Path (monoidhom a d) (monoidhomcomp a c d (monoidhomcomp a b c f g) h)

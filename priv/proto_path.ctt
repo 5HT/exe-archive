@@ -1,6 +1,12 @@
-module proto_path where
+{- Path Type:
+   - Reflexivity, Symmetry, Composition, Kan;
+   - Congruence and Respect;
+   - Contractability of Singletons;
+   - Substitution, Transport, J.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
 
-{- Path Equality Type from HoTT -}
+module proto_path where
 
 -- Path type and its eliminators
 Path     (A: U) (a b: A): U = PathP (<i> A) a b
@@ -21,3 +27,13 @@ J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
 -- = comp  (<i> C (p @ i) (<j> p @ i /\ j)) d [] -- normal form
    = subst (singl A a) T (eta A a) (x, p) (contr A a x p) d
            where T (z : singl A a) : U = C (z.1) (z.2)
+
+-- composition operation
+composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
+    = subst A (Path A a) b c q p
+--  = comp (<i> Path A a (q @ i)) p []
+--  = <i> comp (<j>A) (p @ i) [(i=0) -> <j> a, (i=1) -> q ]
+
+-- Kan filling operation
+kan (A: U) (a b c d: A) (p: Path A a b) (q: Path A a c) (r: Path A b d): Path A c d
+    = <i> comp (<j>A) (p @ i) [(i=0) -> q, (i=1) -> r ]
