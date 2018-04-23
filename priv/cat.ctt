@@ -49,6 +49,9 @@ iso (C: precategory) (A B: carrier C): U
   * (_: Path (hom C A A) (compose C A B A f g) (path C A))
   * (Path (hom C B B) (compose C B A B g f) (path C B))
 
+idIso (C: precategory) (A: carrier C): iso C A A
+  = (path C A, path C A, pathL C A A (path C A), pathL C A A (path C A))
+
 -- https://arxiv.org/pdf/1303.0584.pdf
 isCategory (C: precategory): U = (A: carrier C) -> isContr ((B: carrier C) * iso C A B)
 
@@ -57,6 +60,15 @@ category: U = (C: precategory) * isCategory C
 
 isInitial      (C: precategory) (x: carrier C): U = (y: carrier C) -> isContr (hom C x y)
 isTerminal     (C: precategory) (y: carrier C): U = (x: carrier C) -> isContr (hom C x y)
+
 initialObject  (C: precategory): U = (x: carrier C) * isInitial C x
 terminalObject (C: precategory): U = (y: carrier C) * isTerminal C y
 
+initialProp   (C: precategory) (isC: isCategory C): isProp (initialObject C) = undefined
+terminalProp   (C: precategory) (isC: isCategory C): isProp (terminalObject C) = undefined
+
+isCommutative (CA : precategory)
+              (A B C D : carrier CA)
+              (f : hom CA A B) (g : hom CA C D)
+              (h : hom CA A C) (i : hom CA B D)
+            : U = Path (hom CA A D) (compose CA A C D h g) (compose CA A B D f i)

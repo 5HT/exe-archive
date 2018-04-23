@@ -3,12 +3,12 @@ module equiv where
 import proto_equiv
 
 -- used by idTpPath
-equivLemma (A B : U)
-  : (v w : equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
+equivLemma (A B: U)
+  : (v w: equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
   = lemSig (A -> B) (isEquiv A B) (propIsEquiv A B)
 
 -- used by univalence.ctt
-equivPath (T A : U) (f : T -> A) (p : isEquiv T A f) : Path U T A =
+equivPath (T A: U) (f: T -> A) (p: isEquiv T A f): Path U T A =
   <i> Glue A [ (i=0) -> (T,f,p), (i=1) -> (A,idfun A, idIsEquiv A)]
 
 -- used by category.ctt
@@ -22,48 +22,18 @@ retEq (A B:U) (w:equiv A B) (y:B) : Path B (w.1 (invEq A B w y)) y =
 secEq (A B:U) (w:equiv A B) (x:A) : Path A (invEq A B w (w.1 x)) x =
  <i> ((w.2 (w.1 x)).2 (x,<j>w.1 x)@i).1
 
--- used by univalence.ctt
-transEquivDirect (A B:U) (p:Path U A B) : equiv A B = (f,p)
- where
-  f (x:A) : B = comp p x []
-  g (y:B) : A = comp (<i>p@-i) y []
-  lem1 (x:A) : PathP p x (f x) = <i>comp (<j>p@(i/\j)) x [(i=0) -> <j>x]
-  lem2 (y:B) : PathP p (g y) y = <i>comp (<j>p@(i\/-j)) y [(i=1) -> <j>y]
-  lem3 (y:B) : Path B y (f (g y)) = <i>comp p (g y) [(i=0) -> lem2 y,(i=1) -> lem1 (g y)]
-  lem4 (y:B) : PathP (<i>Path (p@i) (lem2 y@i) (lem1 (g y)@i)) (<j>g y) (lem3 y) =
-    <j i>fill p (g y) [(i=0) -> lem2 y,(i=1) -> lem1 (g y)] @ j
-  lem5 (y:B) (x:A) (q:Path B y (f x)) : Path A (g y) x =
-    <i>comp (<j>p@-j) (q@i) [(i=0) -> <j>lem2 y@-j,(i=1) -> <j>lem1 x@-j]
-  lem6 (y:B) (x:A) (q:Path B y (f x)) : PathP (<i>Path (p@i) (lem2 y@i) (lem1 x@i)) (lem5 y x q) q =
-    <j i>fill (<j>p@-j) (q@i) [(i=0) -> <k>lem2 y@-k,(i=1) -> <k>lem1 x@-k] @ -j
-  lem7 (y:B) (x:A) (q:Path B y (f x)) : PathP (<i>Path B y (f (lem5 y x q@i))) (lem3 y) q =
-    <j i>comp p (lem5 y x q@i/\j) [(i=0) -> lem2 y, (i=1) -> lem1 (lem5 y x q@j),(j=0) -> <k>lem4 y@k@i,(j=1) -> <k>lem6 y x q@k@i]
-  lem8 (y:B) : fiber A B f y = (g y,lem3 y)
-  lem9 (y:B) (z:fiber A B f y) : Path (fiber A B f y) (lem8 y) z =
-    <i>(lem5 y z.1 z.2@i,lem7 y z.1 z.2@i)
-  p (y:B) : isContr (fiber A B f y) = (lem8 y,lem9 y)
-
--- used by transEquiv
-transEquiv (A X:U) (p:Path U A X) : equiv A X =
--- substTrans U (equiv A) A X p (idEquiv A)
-    subst U (equiv A) A X p (idEquiv A)
-
--- used by univalence.ctt
-transDelta (A:U) : equiv A A = transEquiv A A (<i>A)
-
--- UNUSED
-transEquivToPath (A B : U) (w : equiv A B) : Path U A B =
-  <i> Glue B [ (i = 1) -> (B,eB)
-             , (i = 0) -> (A,w) ]
- where eB : equiv B B = transDelta B
+pathToEquiv (A B: U) (p: Path U A B): equiv A B = subst U (equiv A) A B p (idEquiv A)
+equivToPath (A B: U) (p: equiv A B): Path U A B
+  = <i> Glue B [(i=1) -> (B,subst U (equiv B) B B (<k>B) (idEquiv B)),
+                (i=0) -> (A,p) ]
 
 -- used by univalence.ctt
 eqToEq (A B : U) (p : Path U A B)
-  : Path (Path U A B) (transEquivToPath A B (transEquiv A B p)) p
-  = <j i> let e : equiv A B = transEquiv A B p
-              f : equiv B B = transDelta B
-              Ai : U = p@i
-              g : equiv Ai B = transEquiv Ai B (<k> p @ (i \/ k))
+  : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p
+  = <j i> let e: equiv A B = pathToEquiv A B p
+              f: equiv B B = pathToEquiv B B (<k> B)
+              Ai: U = p@i
+              g: equiv Ai B = pathToEquiv Ai B (<k> p @ (i \/ k))
           in Glue B
            [ (i = 0) -> (A,e)
            , (i = 1) -> (B,f)
@@ -71,7 +41,7 @@ eqToEq (A B : U) (p : Path U A B)
 
 -- used by idToPath
 transPathFun (A B : U) (w : equiv A B)
-  : Path (A -> B) w.1 (transEquiv A B (transEquivToPath A B w)).1 =
+  : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1 =
  <i> \ (a:A) ->
    let b : B = w.1 a
        u : A = comp (<j>A) a []
@@ -81,6 +51,6 @@ transPathFun (A B : U) (w : equiv A B)
 
 -- used by univalence.ctt
 idToPath (A B : U) (w : equiv A B)
-  : Path (equiv A B) (transEquiv A B (transEquivToPath A B w)) w
-  = equivLemma A B (transEquiv A B (transEquivToPath A B w)) w
+  : Path (equiv A B) (pathToEquiv A B (equivToPath A B w)) w
+  = equivLemma A B (pathToEquiv A B (equivToPath A B w)) w
       (<i>transPathFun A B w@-i)

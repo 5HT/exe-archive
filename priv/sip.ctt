@@ -38,9 +38,6 @@ lemPathPProp (A B : U) (AProp : isProp A) (p : Path U A B) : (x : A) -> (y : B) 
 lemPathPSet (A B : U) (ASet : isSet A) (p : Path U A B) : (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t
   = J U A (\(B : U) -> \(p : Path U A B) -> (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t) ASet B p
 
-idIso (C: precategory) (A: carrier C): iso C A A
-  = (path C A, path C A, pathL C A A (path C A), pathL C A A (path C A))
-
 lemIsCategory (C: precategory) (isC: isCategory C) (A B: carrier C) (e: iso C A B): Path ((B: carrier C) * iso C A B) (A, idIso C A) (B, e)
   = <i> (isContrProp ((B : carrier C) * iso C A B) (isC A) (A, idIso C A) (B, e) @ i)
 

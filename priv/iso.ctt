@@ -82,6 +82,9 @@ isoToEquiv (A B: U)
  \(y:B) -> ((g y,<i>s y@-i),\ (z:fiber A B f y) ->
            lemIso A B f g s t y (g y) z.1 (<i>s y@-i) z.2)
 
+equivProp (A B: U) (AProp: isProp A) (BProp: isProp B) (F: A -> B) (G: B -> A): equiv A B
+  = (F, isoToEquiv A B F G (\(y: B) -> BProp (F (G y)) y) (\(x: A) -> AProp (G (F x)) x))
+
 isoPath (A B: U)
         (f: A -> B)
         (g: B -> A)

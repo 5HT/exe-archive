@@ -17,6 +17,12 @@ subst (A: U) (P: A -> U) (a b: A) (p: Path A a b) (e: P a): P b
 substInv (A: U) (P: A -> U) (a b: A) (p: Path A a b): P b -> P a
     = subst A P b a (<i> p @ -i)
 
+transRefl (A: U) (a: A): Path A (transport (<_> A) a) a
+    = <i> comp (<_> A) a [(i=1) -> <_>a]
+
+substPathP (A B: U) (p: Path U A B) (x: A) (y: B) (q: Path B (transport p x) y): PathP p x y
+    = transport (<i> PathP p x (q@i)) (<i> comp (<j> p @ (i /\ j)) x [(i=0) -> <_> x])
+
 -- composition operation
 composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
     = subst A (Path A a) b c q p
