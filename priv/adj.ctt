@@ -1,0 +1,65 @@
+{- Category Theory:
+   - Natural Transformations;
+   - Adjoints.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
+
+module adj where
+
+import cat
+import fun
+
+isNaturalTrans (C D: precategory) (F G: catfunctor C D) (eta: (x: carrier C) -> hom D (F.1 x) (G.1 x)): U
+  = (x y: carrier C) (h: hom C x y) ->
+    Path (hom D (F.1 x) (G.1 y))
+         (compose D (F.1 x) (F.1 y) (G.1 y) (F.2.1 x y h) (eta y))
+         (compose D (F.1 x) (G.1 x) (G.1 y) (eta x) (G.2.1 x y h))
+
+ntrans (C D: precategory) (F G: catfunctor C D): U
+  = (eta: (x: carrier C) -> hom D (F.1 x) (G.1 x))
+  * (isNaturalTrans C D F G eta)
+
+ntransL (C D: precategory) (F G: catfunctor C D) (f: ntrans C D F G) (B: precategory) (H: catfunctor B C)
+  : ntrans B D (compFunctor B C D H F) (compFunctor B C D H G)
+  = let
+    F' : catfunctor B D = compFunctor B C D H F
+    G' : catfunctor B D = compFunctor B C D H G
+    eta (x : carrier B) : hom D (F'.1 x) (G'.1 x) = f.1 (H.1 x)
+    p (x y : carrier B) (h : hom B x y) : Path (hom D (F'.1 x) (G'.1 y))
+        (compose D (F'.1 x) (F'.1 y) (G'.1 y) (F'.2.1 x y h) (eta y))
+        (compose D (F'.1 x) (G'.1 x) (G'.1 y) (eta x) (G'.2.1 x y h))
+      = f.2 (H.1 x) (H.1 y) (H.2.1 x y h)
+  in (eta, p)
+
+ntransR (C D: precategory) (F G: catfunctor C D) (f: ntrans C D F G) (E: precategory) (H: catfunctor D E)
+  : ntrans C E (compFunctor C D E F H) (compFunctor C D E G H)
+  = let
+    F' : catfunctor C E = compFunctor C D E F H
+    G' : catfunctor C E = compFunctor C D E G H
+    eta (x: carrier C) : hom E (F'.1 x) (G'.1 x) = H.2.1 (F.1 x) (G.1 x) (f.1 x)
+    p (x y: carrier C) (h: hom C x y) : Path (hom E (F'.1 x) (G'.1 y))
+        (compose E (F'.1 x) (F'.1 y) (G'.1 y) (F'.2.1 x y h) (eta y))
+        (compose E (F'.1 x) (G'.1 x) (G'.1 y) (eta x) (G'.2.1 x y h))
+      = <i> comp (<_> hom E (F'.1 x) (G'.1 y)) (H.2.1 (F.1 x) (G.1 y) (f.2 x y h @ i))
+        [ (i = 0) -> H.2.2.2 (F.1 x) (F.1 y) (G.1 y) (F.2.1 x y h) (f.1 y)
+        , (i = 1) -> H.2.2.2 (F.1 x) (G.1 x) (G.1 y) (f.1 x) (G.2.1 x y h) ]
+  in (eta, p)
+
+areAdjoint (C D: precategory) (F: catfunctor D C) (G: catfunctor C D)
+    (unit: ntrans D D (idFunctor D) (compFunctor D C D F G))
+    (counit: ntrans C C (compFunctor C D C G F) (idFunctor C)) : U
+  = let
+    h0 (x: carrier C) : hom D (G.1 x) (G.1 x) = compose D (G.1 x) (G.1 (F.1 (G.1 x))) (G.1 x)
+          ((ntransL D D (idFunctor D) (compFunctor D C D F G) unit C G).1 x)
+          ((ntransR C C (compFunctor C D C G F) (idFunctor C) counit D G).1 x)
+    h1 (x: carrier D) : hom C (F.1 x) (F.1 x) = compose C (F.1 x) (F.1 (G.1 (F.1 x))) (F.1 x)
+          ((ntransR D D (idFunctor D) (compFunctor D C D F G) unit C F).1 x)
+          ((ntransL C C (compFunctor C D C G F) (idFunctor C) counit D F).1 x)
+  in and ((x: carrier C) -> Path (hom D (G.1 x) (G.1 x)) (path D (G.1 x)) (h0 x))
+         ((x: carrier D) -> Path (hom C (F.1 x) (F.1 x)) (path C (F.1 x)) (h1 x))
+
+adjoint (C D: precategory) (F: catfunctor D C) (G: catfunctor C D) : U
+  = (unit: ntrans D D (idFunctor D) (compFunctor D C D F G))
+  * (counit: ntrans C C (compFunctor C D C G F) (idFunctor C))
+  * areAdjoint C D F G unit counit
+

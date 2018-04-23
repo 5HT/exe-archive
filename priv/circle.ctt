@@ -1,4 +1,8 @@
--- The circle as a HIT.
+{- Homotopy Theory.
+   - Circle HIT
+   Copyright (c) Groupoid Infinity, 2014-2018
+-}
+
 module circle where
 
 import int

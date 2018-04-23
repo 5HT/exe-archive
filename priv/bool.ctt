@@ -1,7 +1,10 @@
-module bool where
+{- Run-time Bool:
+   - Bool type.
+   - Theorems are in bool_theory module.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
 
-{- Simple run-time bool module.
-   Theorems are in bool_theory module. -}
+module bool where
 
 import proto
 

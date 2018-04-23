@@ -1,3 +1,10 @@
+{- Universal Algbera:
+   - Monoid and CMonoid;
+   - Group and AbGroup;
+   - Ring and AbRing.
+   Copyright (c) Groupoid Infinity, 2014-1018.
+-}
+
 module algebra where
 
 -- TOC:
@@ -242,50 +249,47 @@ ring:    U = (X: SET) * isRing X
 abring:  U = (X: SET) * isAbRing X
 
 -- Accessors
-
-opMonoid (m : monoid) : m.1.1 -> m.1.1 -> m.1.1 = m.2.1
-isAssocMonoid (m : monoid) : isAssociative m.1.1 (opMonoid m) = m.2.2.1
-idMonoid (m : monoid) : m.1.1 = m.2.2.2.1
-hasIdMonoid (m : monoid) : hasIdentity m.1.1 (opMonoid m) (idMonoid m) = m.2.2.2.2
+opMonoid       (m: monoid): m.1.1 -> m.1.1 -> m.1.1 = m.2.1
+isAssocMonoid  (m: monoid): isAssociative m.1.1 (opMonoid m) = m.2.2.1
+idMonoid       (m: monoid): m.1.1 = m.2.2.2.1
+hasIdMonoid    (m: monoid): hasIdentity m.1.1 (opMonoid m) (idMonoid m) = m.2.2.2.2
 
 -- Commutative monoids
-
-opCMonoid (m : cmonoid) : m.1.1 -> m.1.1 -> m.1.1 = m.2.1.1
-isAssocCMonoid (m : cmonoid) : isAssociative m.1.1 (opCMonoid m) = m.2.1.2.1
-idCMonoid (m : cmonoid) : m.1.1 = m.2.1.2.2.1
-hasIdCMonoid (m : cmonoid) : hasIdentity m.1.1 (opCMonoid m) (idCMonoid m) = m.2.1.2.2.2
-isCommCMonoid (m : cmonoid) : isCommutative m.1.1 (opCMonoid m) = m.2.2
+opCMonoid      (m: cmonoid): m.1.1 -> m.1.1 -> m.1.1 = m.2.1.1
+isAssocCMonoid (m: cmonoid): isAssociative m.1.1 (opCMonoid m) = m.2.1.2.1
+idCMonoid      (m: cmonoid): m.1.1 = m.2.1.2.2.1
+hasIdCMonoid   (m: cmonoid): hasIdentity m.1.1 (opCMonoid m) (idCMonoid m) = m.2.1.2.2.2
+isCommCMonoid  (m: cmonoid): isCommutative m.1.1 (opCMonoid m) = m.2.2
 
 -- Groups
-
-opGroup (g : group) : g.1.1 -> g.1.1 -> g.1.1 = g.2.1.1
-isAssocGroup (g : group) : isAssociative g.1.1 (opGroup g) = g.2.1.2.1
-idGroup (g : group) : g.1.1 = g.2.1.2.2.1
-hasIdGroup (g : group) : hasIdentity g.1.1 (opGroup g) (idGroup g) = g.2.1.2.2.2
-invGroup (g : group) : g.1.1 -> g.1.1 = g.2.2.1
-hasInvGroup (g : group) : hasInverse g.1.1 (opGroup g) (idGroup g) (invGroup g) = g.2.2.2
+opGroup       (g: group): g.1.1 -> g.1.1 -> g.1.1 = g.2.1.1
+isAssocGroup  (g: group): isAssociative g.1.1 (opGroup g) = g.2.1.2.1
+idGroup       (g: group): g.1.1 = g.2.1.2.2.1
+hasIdGroup    (g: group): hasIdentity g.1.1 (opGroup g) (idGroup g) = g.2.1.2.2.2
+invGroup      (g: group): g.1.1 -> g.1.1 = g.2.2.1
+hasInvGroup   (g: group): hasInverse g.1.1 (opGroup g) (idGroup g) (invGroup g) = g.2.2.2
 
 -- Commutative groups
-
-opCGroup (g : abgroup) : g.1.1 -> g.1.1 -> g.1.1 = g.2.1.1.1
-isAssocCGroup (g : abgroup) : isAssociative g.1.1 (opCGroup g) = g.2.1.1.2.1
-idCGroup (g : abgroup) : g.1.1 = g.2.1.1.2.2.1
-hasIdCGroup (g : abgroup) : hasIdentity g.1.1 (opCGroup g) (idCGroup g) = g.2.1.1.2.2.2
-isCommCGroup (g : abgroup) : isCommutative g.1.1 (opCGroup g) = g.2.2
-invCGroup (g : abgroup) : g.1.1 -> g.1.1 = g.2.1.2.1
-hasInvCGroup (g : abgroup) : hasInverse g.1.1 (opCGroup g) (idCGroup g) (invCGroup g) = g.2.1.2.2
+opCGroup      (g: abgroup) : g.1.1 -> g.1.1 -> g.1.1 = g.2.1.1.1
+isAssocCGroup (g: abgroup) : isAssociative g.1.1 (opCGroup g) = g.2.1.1.2.1
+idCGroup      (g: abgroup) : g.1.1 = g.2.1.1.2.2.1
+hasIdCGroup   (g: abgroup) : hasIdentity g.1.1 (opCGroup g) (idCGroup g) = g.2.1.1.2.2.2
+isCommCGroup  (g: abgroup) : isCommutative g.1.1 (opCGroup g) = g.2.2
+invCGroup     (g: abgroup) : g.1.1 -> g.1.1 = g.2.1.2.1
+hasInvCGroup  (g: abgroup) : hasInverse g.1.1 (opCGroup g) (idCGroup g) (invCGroup g) = g.2.1.2.2
 
 -- Groups are cancellative
 
-lem_group_lcancellative (g : group) (c x y : g.1.1) (p : Path g.1.1 (opGroup g c x) (opGroup g c y))
-  : Path g.1.1 x y
+lem_group_lcancellative (g: group)
+                        (c x y: g.1.1)
+                        (p: Path g.1.1 (opGroup g c x) (opGroup g c y)) : Path g.1.1 x y
   = <i> comp (<_> g.1.1) (opGroup g (invGroup g c) (p @ i))
-    [ (i = 0) -> <j> comp (<_> g.1.1) (opGroup g ((hasInvGroup g).1 c @ j) x)
-        [ (j = 0) -> <k> isAssocGroup g (invGroup g c) c x @ -k
-        , (j = 1) -> (hasIdGroup g).1 x ]
-    , (i = 1) -> <j> comp (<_> g.1.1) (opGroup g ((hasInvGroup g).1 c @ j) y)
-        [ (j = 0) -> <k> isAssocGroup g (invGroup g c) c y @ -k
-        , (j = 1) -> (hasIdGroup g).1 y ] ]
+             [(i=0) -> <j> comp (<_> g.1.1) (opGroup g ((hasInvGroup g).1 c @ j) x)
+                                [(j=0) -> <k> isAssocGroup g (invGroup g c) c x @ -k,
+                                 (j=1) -> (hasIdGroup g).1 x ],
+              (i=1) -> <j> comp (<_> g.1.1) (opGroup g ((hasInvGroup g).1 c @ j) y)
+                                [(j=0) -> <k> isAssocGroup g (invGroup g c) c y @ -k,
+                                 (j=1) -> (hasIdGroup g).1 y ] ]
 
 lem_group_rcancellative (g : group) (c x y : g.1.1) (p : Path g.1.1 (opGroup g x c) (opGroup g y c))
   : Path g.1.1 x y
@@ -304,14 +308,10 @@ lem_group_cancellative (g : group) : isCancellative g.1.1 (opGroup g)
 lem_cgroup_inv_dist (g : abgroup) (a b : g.1.1)
   : Path g.1.1 (opCGroup g (invCGroup g a) (invCGroup g b)) (invCGroup g (opCGroup g a b))
   = let
-    a' : g.1.1
-      = invCGroup g a
-    b' : g.1.1
-      = invCGroup g b
-    x : g.1.1
-      = opCGroup g a b
-    x' : g.1.1
-      = invCGroup g (opCGroup g a b)
+    a' : g.1.1 = invCGroup g a
+    b' : g.1.1 = invCGroup g b
+    x  : g.1.1 = opCGroup g a b
+    x' : g.1.1 = invCGroup g (opCGroup g a b)
     p0 : Path g.1.1 (opCGroup g x' a) b'
       = <i> comp (<_> g.1.1) (opCGroup g ((hasInvCGroup g).1 (opCGroup g a b) @ i) b')
         [ (i = 1) -> (hasIdCGroup g).1 b'
@@ -353,31 +353,22 @@ propismonoidhom (a b : monoid) (f : a.1.1 -> b.1.1) : isProp (ismonoidhom a b f)
       (proppreservesOp a.1.1 b.1.1 b.1.2 (opMonoid a) (opMonoid b) f)
       (proppreservesId a.1.1 b.1.1 b.1.2 (idMonoid a) (idMonoid b) f)
 
-monoidhom (a b : monoid) : U
-  = (f : a.1.1 -> b.1.1)
+monoidhom (a b: monoid): U
+  = (f: a.1.1 -> b.1.1)
   * (ismonoidhom a b f)
 
-setmonoidhom (a b : monoid) : isSet (monoidhom a b)
+setmonoidhom (a b: monoid): isSet (monoidhom a b)
   = let
-    setf : isSet (a.1.1 -> b.1.1)
-      = setPi a.1.1 (\ (_ : a.1.1) -> b.1.1) (\ (_ : a.1.1) -> b.1.2)
-    setm (f : a.1.1 -> b.1.1) : isSet (ismonoidhom a b f)
-      = propSet (ismonoidhom a b f) (propismonoidhom a b f) 
-  in setSig (a.1.1 -> b.1.1) (ismonoidhom a b) setf setm 
+    setf: isSet (a.1.1 -> b.1.1) = setPi a.1.1 (\ (_ : a.1.1) -> b.1.1) (\ (_ : a.1.1) -> b.1.2)
+    setm (f : a.1.1 -> b.1.1) : isSet (ismonoidhom a b f) = propSet (ismonoidhom a b f) (propismonoidhom a b f)
+ in setSig (a.1.1 -> b.1.1) (ismonoidhom a b) setf setm
 
 -- Homomorphisms between underlying monoids
 
-cmonoidhom (a b : cmonoid) : U
-  = monoidhom (a.1, a.2.1) (b.1, b.2.1)
-
-grouphom (a b : group) : U
-  = monoidhom (a.1, a.2.1) (b.1, b.2.1)
-
-cgrouphom (a b : abgroup) : U
-  = monoidhom (a.1, a.2.1.1) (b.1, b.2.1.1)
-
-cmoncgrouphom (a : cmonoid) (b : abgroup) : U
-  = monoidhom (a.1, a.2.1) (b.1, b.2.1.1)
+cmonoidhom  (a b: cmonoid): U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
+grouphom    (a b: group):   U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
+cgrouphom   (a b: abgroup): U = monoidhom (a.1, a.2.1.1) (b.1, b.2.1.1)
+cmoncgrouphom (a: cmonoid) (b: abgroup): U = monoidhom (a.1, a.2.1) (b.1, b.2.1.1)
 
 -- Homomorphism constructors
 
@@ -401,8 +392,7 @@ monoidhomcomp (a b c : monoid)
     (f : monoidhom a b) (g : monoidhom b c)
   : monoidhom a c
   = let
-    h (x : a.1.1) : c.1.1
-      = g.1 (f.1 x)
+    h (x : a.1.1) : c.1.1 = g.1 (f.1 x)
     pO (x0 x1 : a.1.1) : Path c.1.1 (h (a.2.1 x0 x1)) (c.2.1 (h x0) (h x1))
       = <i> comp (<_> c.1.1) (g.1 (f.2.1 x0 x1 @ i))
         [ (i = 0) -> <_> h (a.2.1 x0 x1)
@@ -418,12 +408,9 @@ lemma_monoidcomp0 (a b c d : monoid) (f : monoidhom a b)
     (g : monoidhom b c) (h : monoidhom c d)
   : Path (monoidhom a d) (monoidhomcomp a c d (monoidhomcomp a b c f g) h)
                          (monoidhomcomp a b d f (monoidhomcomp b c d g h))
-  = let
-    f0 : monoidhom a d
-      = monoidhomcomp a c d (monoidhomcomp a b c f g) h
-    f1 : monoidhom a d
-      = monoidhomcomp a b d f (monoidhomcomp b c d g h)
-  in lemSig (a.1.1 -> d.1.1) (ismonoidhom a d) (propismonoidhom a d) f0 f1 (<_> f0.1)
+  = let f0 : monoidhom a d = monoidhomcomp a c d (monoidhomcomp a b c f g) h
+        f1 : monoidhom a d = monoidhomcomp a b d f (monoidhomcomp b c d g h)
+     in lemSig (a.1.1 -> d.1.1) (ismonoidhom a d) (propismonoidhom a d) f0 f1 (<_> f0.1)
 
 -- 1_a
 idmonoidhom (a : monoid) : monoidhom a a
@@ -432,41 +419,33 @@ idmonoidhom (a : monoid) : monoidhom a a
 -- f ∘ 1_a ≡ f
 lemma_idmonoidhom0 (a b : monoid) (f : monoidhom a b)
   : Path (monoidhom a b) (monoidhomcomp a a b (idmonoidhom a) f) f
-  = let
-    h : monoidhom a b
-      = monoidhomcomp a a b (idmonoidhom a) f
-  in lemSig (a.1.1 -> b.1.1) (ismonoidhom a b) (propismonoidhom a b) h f (<_> f.1)
+  = let h: monoidhom a b = monoidhomcomp a a b (idmonoidhom a) f
+     in lemSig (a.1.1 -> b.1.1) (ismonoidhom a b) (propismonoidhom a b) h f (<_> f.1)
 
 -- 1_b ∘ f ≡ f
 lemma_idmonoidhom1 (a b : monoid) (f : monoidhom a b)
   : Path (monoidhom a b) (monoidhomcomp a b b f (idmonoidhom b)) f
-  = let
-    h : monoidhom a b
-      = monoidhomcomp a b b f (idmonoidhom b)
-  in lemSig (a.1.1 -> b.1.1) (ismonoidhom a b) (propismonoidhom a b) h f (<_> f.1)
+  = let h: monoidhom a b = monoidhomcomp a b b f (idmonoidhom b)
+     in lemSig (a.1.1 -> b.1.1) (ismonoidhom a b) (propismonoidhom a b) h f (<_> f.1)
 
 -- f(x⁻¹) ≡ f(x)⁻¹
-lem_grouphom_inv (g h : group) (f : grouphom g h) (x : g.1.1)
-  : Path h.1.1 (f.1 (invGroup g x)) (invGroup h (f.1 x))
-  = let
-    x' : g.1.1
-      = invGroup g x
-    y : h.1.1
-      = f.1 x
-    y' : h.1.1
-      = invGroup h y
-    p0 : Path h.1.1 (opGroup h y (f.1 x')) (idGroup h)
-      = <i> comp (<_> h.1.1) (f.1 ((g.2.2.2).2 x @ i))
-        [ (i = 0) -> f.2.1 x x'
-        , (i = 1) -> f.2.2 ]
-    p1 : Path h.1.1 (opGroup h (opGroup h y' y) (f.1 x')) y'
-      = <i> comp (<_> h.1.1) (opGroup h y' (p0 @ i))
-        [ (i = 0) -> isAssocGroup h y' y (f.1 x')
-        , (i = 1) -> (hasIdGroup h).2 y' ]
-    p2 : Path h.1.1 (opGroup h (idGroup h) (f.1 x')) y'
-      = <i> comp (<_> h.1.1) (p1 @ i)
-        [ (i = 0) -> <j> opGroup h ((h.2.2.2).1 y @ j) (f.1 x')
-        , (i = 1) -> <_> y' ]
-  in <i> comp (<_> h.1.1) (p2 @ i)
-    [ (i = 0) -> (hasIdGroup h).1 (f.1 x')
-    , (i = 1) -> <_> y' ]
+lem_grouphom_inv (g h: group) (f: grouphom g h) (x: g.1.1):
+  Path h.1.1 (f.1 (invGroup g x)) (invGroup h (f.1 x)) =
+  let x' : g.1.1 = invGroup g x
+      y  : h.1.1 = f.1 x
+      y' : h.1.1 = invGroup h y
+      p0 : Path h.1.1 (opGroup h y (f.1 x')) (idGroup h)
+           = <i> comp (<_> h.1.1) (f.1 ((g.2.2.2).2 x @ i))
+                      [(i=0) -> f.2.1 x x',
+                       (i=1) -> f.2.2 ]
+      p1 : Path h.1.1 (opGroup h (opGroup h y' y) (f.1 x')) y'
+           = <i> comp (<_> h.1.1) (opGroup h y' (p0 @ i))
+                      [(i=0) -> isAssocGroup h y' y (f.1 x'),
+                       (i=1) -> (hasIdGroup h).2 y' ]
+      p2 : Path h.1.1 (opGroup h (idGroup h) (f.1 x')) y'
+           = <i> comp (<_> h.1.1) (p1 @ i)
+                      [(i=0) -> <j> opGroup h ((h.2.2.2).1 y @ j) (f.1 x'),
+                       (i=1) -> <_> y' ]
+   in <i> comp (<_> h.1.1) (p2 @ i)
+               [(i=0) -> (hasIdGroup h).1 (f.1 x'),
+                (i=1) -> <_> y' ]

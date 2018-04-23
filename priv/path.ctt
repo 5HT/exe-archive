@@ -65,3 +65,4 @@ INF_GROUPOID : U = (X:U) * isInfinityGroupoid X
 elemPathP (A B: U) (p: Path U A B) (a: A): (p': Path U A B) * (b: B) * PathP p' a b
   = comp (<i> P (p @ i)) (refl U A, a, refl A a) [] where
   P (X: U): U = (p: Path U A X) * (x: X) * PathP p a x
+

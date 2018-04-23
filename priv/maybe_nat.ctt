@@ -9,38 +9,35 @@ module maybe_nat where
 import nat
 import maybe
 import control
+import recursion
 import proto
 import path
 import set
 import iso
 
-three : fix maybe = Fix (just (Fix (just (Fix (just (Fix nothing))))))
+three: fix maybe = Fix (just (Fix (just (Fix (just (Fix nothing))))))
 
-natToMaybe : nat -> fix maybe = split
-  zero -> Fix nothing
+natToMaybe: nat -> fix maybe = split
+  zero   -> Fix nothing
   succ n -> Fix (just (natToMaybe n))
 
-maybeToNat : fix maybe -> nat = split
-  Fix m -> go m
-   where
-    go : maybe (fix maybe) -> nat = split
-       nothing -> zero
-       just f -> succ (maybeToNat f)
+maybeToNat: fix maybe -> nat = split
+  Fix m  -> go m where go: maybe (fix maybe) -> nat = split
+            nothing -> zero
+            just f -> succ (maybeToNat f)
 
-natMaybeIso : (a : nat) -> Path nat (maybeToNat (natToMaybe a)) a = split
-  zero -> <i> zero
+natMaybeIso: (a: nat) -> Path nat (maybeToNat (natToMaybe a)) a = split
+  zero   -> <i> zero
   succ n -> <i> succ (natMaybeIso n @ i)
 
 maybeNatIso : (a : fix maybe) -> Path (fix maybe) (natToMaybe (maybeToNat a)) a = split
-  Fix m -> go m
-   where
-    go : (a : maybe (fix maybe)) -> Path (fix maybe) (natToMaybe (maybeToNat (Fix a))) (Fix a) = split
-      nothing -> <i> Fix nothing
-      just f -> <i> Fix (just (maybeNatIso f @ i))
+  Fix m  -> go m where go: (a: maybe (fix maybe)) -> Path (fix maybe) (natToMaybe (maybeToNat (Fix a))) (Fix a) = split
+            nothing -> <i> Fix nothing
+            just f -> <i> Fix (just (maybeNatIso f @ i))
 
-maybenat : Path U (fix maybe) nat = isoPath (fix maybe) nat maybeToNat natToMaybe natMaybeIso maybeNatIso
+maybenat: Path U (fix maybe) nat = isoPath (fix maybe) nat maybeToNat natToMaybe natMaybeIso maybeNatIso
 
-HeteroEqu (A B: U) (a: A) (b: B) (P: Path U A B) : U = PathP P a b
+HeteroEqu (A B:U)(a:A)(b:B)(P:Path U A B):U = PathP P a b
 
 -- > HeteroEqu (fix maybe) nat (Fix nothing) zero maybenat
 

@@ -28,9 +28,18 @@ propSig (A : U) (B : A -> U) (pA : isProp A)
 
 -- Forall(A,B) = ||Pi(A,B)||
 
-propPi (A : U) (B : A -> U) (h : (x : A) -> isProp (B x))
-       (f0 f1 : (x : A) -> B x) : Path ((x : A) -> B x) f0 f1
+propPi (A : U) (B: A -> U) (h: (x : A) -> isProp (B x)) (f0 f1: (x: A) -> B x) : Path ((x: A) -> B x) f0 f1
   = <i> \ (x:A) -> (h x (f0 x) (f1 x)) @ i
+
+propPi2 (A: U) (B: A -> A -> U) (h: (x y: A) -> isProp (B x y)): isProp ((x y: A) -> B x y)
+  = let p (a: A): isProp ((b: A) -> B a b) = propPi A (B a) (h a)
+        B1 (a: A): U = (b: A) -> B a b
+     in propPi A B1 p
+
+propPi3 (A: U) (B: A -> A -> A -> U) (h: (x y z: A) -> isProp (B x y z)): isProp ((x y z: A) -> B x y z)
+  = let p (a b: A): isProp ((c : A) -> B a b c) = propPi A (B a b) (h a b)
+        B1 (a b: A): U = (c: A) -> B a b c
+     in propPi2 A B1 p
 
 ---------
 

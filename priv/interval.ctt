@@ -7,32 +7,31 @@ import iso
 import prop
 import set
 
-data I = i0 | i1 | seg <i> [(i=0) -> i0, (i=1) -> i1]
-data P (A B: U) (x:A)(y:B)= p0 (_:A)| p1 (_:B) | pseg <i> [(i=0) -> p0 x, (i=1) -> p1 y]
+data I = i0
+       | i1
+       | seg <i> [(i=0) -> i0,
+                  (i=1) -> i1]
+
+data P (A B: U) = p0 (_:A)
+                | p1 (_:B)
+                | pseg (x:A) (y:B) <i> [(i=0) -> p0 x,
+                                        (i=1) -> p1 y]
+
+-- H_{f,g:X→Y}: X × [0,1] → Y,  f(x)=g(x)
+homotopy  (X Y: U)
+   (f g: X -> Y)
+   (p: (x: X) -> Path Y (f x) (g x))
+   (x: X): I -> Y = split { i0 -> f(x); i1 -> g(x); seg @ i -> p(x) @ i }
 
 -- Proof of funext from the interval
 fext (A B: U) (f g: A -> B) (p: (x: A) -> Path B (f x) (g x)): Path (A -> B) f g
-   = <j> (\(x : A) -> htpy x (seg{I} @ j))
-   where htpy (x : A) : I -> B = split
-         i0    -> f x
-         i1     -> g x
-         seg @ i -> p x @ i
+   = <j> (\(x : A) -> homotopy A B f g p x (seg{I} @ j))
 
-toUnit : I -> Unit = split
-  i0 -> tt
-  i1  -> tt
-  seg @ i -> tt
-
-fromUnit : Unit -> I = split
-  tt -> i0
-
-toUnitK : (a : Unit) -> Path Unit (toUnit (fromUnit a)) a = split
-  tt -> <i> tt
-
-fromUnitK : (a : I) -> Path I (fromUnit (toUnit a)) a = split
-  i0 -> <i> i0
-  i1 -> <i> seg {I} @ i
-  seg @ i -> <j> seg {I} @ i /\ j
+toUnit : I -> Unit = split { i0 -> tt; i1  -> tt; seg @ i -> tt }
+fromUnit : Unit -> I = split tt -> i0
+toUnitK : (a : Unit) -> Path Unit (toUnit (fromUnit a)) a = split tt -> <i> tt
+fromUnitK : (a : I) -> Path I (fromUnit (toUnit a)) a
+   = split { i0 -> <i> i0; i1 -> <i> seg {I} @ i; seg @ i -> <j> seg {I} @ i /\ j }
 
 unitEqI: Path U Unit I = isoPath Unit I fromUnit toUnit fromUnitK toUnitK
 propI: isProp I = subst U isProp Unit I unitEqI propUnit
