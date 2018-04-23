@@ -4,6 +4,7 @@
    - Initial and Terminal Objects.
    Copyright (c) Groupoid Infinity, 2014-2018
 -}
+
 module cat where
 
 import path
@@ -15,7 +16,7 @@ cat: U = (A: U) * (A -> A -> U)
 -- HoTT Definition 9.1.1. Precategory Properties
 isPrecategory (C: cat): U
   = (id: (x: C.1) -> C.2 x x)
-  * (c: (x y z:C.1)->C.2 x y->C.2 y z->C.2 x z)
+  * (c: (x y z:C.1) -> C.2 x y -> C.2 y z -> C.2 x z)
   * (homSet: (x y: C.1) -> isSet (C.2 x y))
   * (left: (x y: C.1) -> (f: C.2 x y) ->
     Path (C.2 x y) (c x x y (id x) f) f)
@@ -41,34 +42,29 @@ pathC   (C: precategory) (x y z w: carrier C) (f: hom C x y) (g: hom C y z) (h: 
         Path (hom C x w) (compose C x z w (compose C x y z f g) h)
                          (compose C x y w f (compose C y z w g h)) = C.2.2.2.2.2.2 x y z w f g h
 
-
 -- iso record
 iso (C: precategory) (A B: carrier C): U
   = (f: hom C A B)
   * (g: hom C B A)
   * (_: Path (hom C A A) (compose C A B A f g) (path C A))
-  * (Path (hom C B B) (compose C B A B g f) (path C B))
+  * (   Path (hom C B B) (compose C B A B g f) (path C B))
 
 idIso (C: precategory) (A: carrier C): iso C A A
   = (path C A, path C A, pathL C A A (path C A), pathL C A A (path C A))
 
 -- https://arxiv.org/pdf/1303.0584.pdf
-isCategory (C: precategory): U = (A: carrier C) -> isContr ((B: carrier C) * iso C A B)
-
 -- HoTT Definition 9.1.6. Category.
+isCategory    (C: precategory): U = (A: carrier C) -> isContr ((B: carrier C) * iso C A B)
 category: U = (C: precategory) * isCategory C
-
-isInitial      (C: precategory) (x: carrier C): U = (y: carrier C) -> isContr (hom C x y)
-isTerminal     (C: precategory) (y: carrier C): U = (x: carrier C) -> isContr (hom C x y)
-
-initialObject  (C: precategory): U = (x: carrier C) * isInitial C x
-terminalObject (C: precategory): U = (y: carrier C) * isTerminal C y
-
-initialProp   (C: precategory) (isC: isCategory C): isProp (initialObject C) = undefined
-terminalProp   (C: precategory) (isC: isCategory C): isProp (terminalObject C) = undefined
-
-isCommutative (CA : precategory)
-              (A B C D : carrier CA)
-              (f : hom CA A B) (g : hom CA C D)
-              (h : hom CA A C) (i : hom CA B D)
-            : U = Path (hom CA A D) (compose CA A C D h g) (compose CA A B D f i)
+isInitial     (C: precategory) (x: carrier C): U = (y: carrier C) -> isContr (hom C x y)
+isTerminal    (C: precategory) (y: carrier C): U = (x: carrier C) -> isContr (hom C x y)
+initial       (C: precategory): U = (x: carrier C) * isInitial  C x
+terminal      (C: precategory): U = (y: carrier C) * isTerminal C y
+initialProp   (C: precategory) (isC: isCategory C): isProp (initial  C) = undefined
+terminalProp  (C: precategory) (isC: isCategory C): isProp (terminal C) = undefined
+isCommutative (X: precategory)
+              (A B C D: carrier X)
+              (f: hom X A B) (g: hom X C D)
+              (h: hom X A C) (i: hom X B D): U
+            = Path (hom X A D) (compose X A C D h g)
+                               (compose X A B D f i)

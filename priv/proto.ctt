@@ -1,3 +1,11 @@
+{- Proto Module:
+   - Empty and Unit;
+   - Tuple and Or;
+   - Id, Const, Composition;
+   - Decideability, Discretness, Stability.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
+
 module proto where
 
 -- core algebraic datatypes

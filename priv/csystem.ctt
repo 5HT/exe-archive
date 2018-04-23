@@ -151,7 +151,7 @@ CSystem : U
 uc : U
    = (C : precategory)
    * (_ : isCategory C)
-   * (pt : terminalObject C)
+   * (pt : terminal C)
    * (V : carrier C) * (VT : carrier C) * (p : hom C VT V)
    * ((f : homTo C V) -> hasPullback C (V, f, VT, p))
 
@@ -166,11 +166,11 @@ ucEquivPath (A B : uc) (e : ucEquiv A B) : Path uc A B
   = let p : Path ((C:category)*catEquiv A.1 C.1) ((A.1, A.2.1), catPathEquiv A.1) ((B.1, B.2.1), e.1)
           = isContrProp ((C:category)*catEquiv A.1 C.1) (catEquivEqPath' (A.1, A.2.1)) ((A.1, A.2.1), catPathEquiv A.1) ((B.1, B.2.1), e.1)
         opaque p
-        pFinal : PathP (<i> terminalObject (p@i).1.1) A.2.2.1  B.2.2.1
-               = lemPathPProp (terminalObject A.1)
-                            (terminalObject B.1)
+        pFinal : PathP (<i> terminal (p@i).1.1) A.2.2.1  B.2.2.1
+               = lemPathPProp (terminal A.1)
+                            (terminal B.1)
                             (terminalProp A.1 A.2.1)
-                            (<i>terminalObject (p@i).1.1)
+                            (<i>terminal (p@i).1.1)
                             A.2.2.1 B.2.2.1
         opaque pFinal
         pV : PathP (<i> carrier (p@i).1.1) A.2.2.2.1 B.2.2.2.1

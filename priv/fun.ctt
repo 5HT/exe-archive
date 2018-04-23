@@ -127,10 +127,9 @@ cosliceCat (C D: precategory) (a: carrier C) (F: catfunctor D C): precategory
   in ((Ob, Hom), id, cmp, HomSet, L, R, C)
 
 -- Universal Arrow
-
 univArr (C D: precategory)
         (a: carrier C)
-        (F: catfunctor D C): U = initialObject (cosliceCat C D a F)
+        (F: catfunctor D C): U = initial (cosliceCat C D a F)
 
 -- uO : D
 -- η : hom(a, F(uO))

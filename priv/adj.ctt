@@ -10,13 +10,16 @@ import cat
 import fun
 import algebra
 
-isNaturalTrans (C D: precategory) (F G: catfunctor C D) (eta: (x: carrier C) -> hom D (F.1 x) (G.1 x)): U
+isNaturalTrans (C D: precategory)
+               (F G: catfunctor C D)
+               (eta: (x: carrier C) -> hom D (F.1 x) (G.1 x)): U
   = (x y: carrier C) (h: hom C x y) ->
     Path (hom D (F.1 x) (G.1 y))
          (compose D (F.1 x) (F.1 y) (G.1 y) (F.2.1 x y h) (eta y))
          (compose D (F.1 x) (G.1 x) (G.1 y) (eta x) (G.2.1 x y h))
 
-ntrans (C D: precategory) (F G: catfunctor C D): U
+ntrans (C D: precategory)
+       (F G: catfunctor C D): U
   = (eta: (x: carrier C) -> hom D (F.1 x) (G.1 x))
   * (isNaturalTrans C D F G eta)
 

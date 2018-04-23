@@ -1,29 +1,31 @@
 {- Category Theory:
-   - Structure Identity Principle
-   Copyright (c) Groupoid Infinity, 2014-2018
+   - Structure;
+   - Structure Identity Principle.
+   Copyright (c) Groupoid Infinity, 2014-2018.
 -}
 
 module sip where
-
 import cat
 
-structure (X : precategory) : U
+structure (X: precategory): U
   = (P: carrier X -> U)
   * (H: (x y: carrier X) (a: P x) (b: P y) (f: hom X x y) -> U)
-  * (propH: (x y: carrier X) (a: P x) (b: P y) (f: hom X x y) -> isProp (H x y a b f))
+  * (propH: (x y: carrier X) (a: P x) (b: P y) (f: hom X x y) ->
+    isProp (H x y a b f))
   * (Hid: (x: carrier X) (a: P x) -> H x x a a (path X x))
-  * ((x y z : carrier X) (a: P x) (b: P y) (c: P z) (f: hom X x y) (g: hom X y z) ->
-     H x y a b f -> H y z b c g -> H x z a c (compose X x y z f g))
+  * ((x y z : carrier X) (a: P x) (b: P y) (c: P z)
+     (f: hom X x y) (g: hom X y z) -> H x y a b f ->
+     H y z b c g -> H x z a c (compose X x y z f g))
 
-sP (X : precategory) (S : structure X) : carrier X -> U = S.1
-sH (X : precategory) (S : structure X) : (x y : carrier X) -> (a : sP X S x) -> (b : sP X S y) -> (f : hom X x y) -> U = S.2.1
-sHProp (X : precategory) (S : structure X) : (x y : carrier X) -> (a : sP X S x) -> (b : sP X S y) -> (f : hom X x y) -> isProp (sH X S x y a b f) = S.2.2.1
-sHPath (X : precategory) (S : structure X) : (x : carrier X) -> (a : sP X S x) -> sH X S x x a a (path X x) = S.2.2.2.1
-sHComp (X : precategory) (S : structure X):
-    (x y z: carrier X) ->
-    (a: sP X S x) -> (b: sP X S y) -> (c: sP X S z) ->
-    (f: hom X x y) -> (g: hom X y z) ->
-    sH X S x y a b f -> sH X S y z b c g -> sH X S x z a c (compose X x y z f g) = S.2.2.2.2
+sP     (X: precategory) (S: structure X): carrier X -> U = S.1
+sH     (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) -> (f: hom X x y) -> U = S.2.1
+sHProp (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) -> (f: hom X x y) -> isProp (sH X S x y a b f) = S.2.2.1
+sHPath (X: precategory) (S: structure X): (x: carrier X) -> (a: sP X S x) -> sH X S x x a a (path X x) = S.2.2.2.1
+sHComp (X: precategory) (S: structure X): (x y z: carrier X) ->
+                                          (a: sP X S x) -> (b: sP X S y) -> (c: sP X S z) ->
+                                          (f: hom X x y) -> (g: hom X y z) ->
+                                          sH X S x y a b f -> sH X S y z b c g ->
+                                          sH X S x z a c (compose X x y z f g) = S.2.2.2.2
 
 isStandardStructure (X: precategory) (S: structure X): U =
     (x: carrier X) ->
