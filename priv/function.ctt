@@ -4,30 +4,11 @@ import iso
 import functor
 
 flipfun (A B C: U) (f: A -> B -> C) (b: B) (a: A): C = f a b
-
 flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
   = isoPath AB BA from to toK fromK where
-  AB : U = A -> B -> C
-  BA : U = B -> A -> C
-  from: AB -> BA = flipfun A B C
-  to: BA -> AB = flipfun B A C
-  fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
-  toK: (f: BA) -> Path BA (from (to f)) f = refl BA
-
-churchPairT (A B: U): U = (R: U) -> (A -> B -> R) -> R
-
-churchPairIso (A B: U): Path U (churchPairT A B) (churchPairT B A)
-  = mapOnPath (U -> U) U foo bar baz quux where
-  foo (P : U -> U): U = (R: U) -> P R -> R
-  bar (X: U): U = A -> B -> X
-  baz (X: U): U = B -> A -> X
-  p (x: U): Path U (bar x) (baz x) = flipfunIso A B x
-  quux : Path (U -> U) bar baz = funExt U U bar baz (flipfunIso A B)
-  goal : Path U (foo bar) (foo baz) = mapOnPath (U -> U) U foo bar baz quux
-
-churchPair (A B: U) (a: A) (b: B) (R: U) (c: A -> B -> R): R = c a b
-
-churchFst (A B: U) (p: churchPairT A B): A = p A (\(a: A) (b: B) -> a)
-
-churchFirst (A B C: U) (f: A -> C) (p: churchPairT A B): churchPairT C B
-  = p (churchPairT C B) (\(a: A) (b: B) -> churchPair C B (f a) b)
+    AB:    U = A -> B -> C
+    BA:    U = B -> A -> C
+    from:  AB -> BA = flipfun A B C
+    to:    BA -> AB = flipfun B A C
+    fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
+    toK:   (f: BA) -> Path BA (from (to f)) f = refl BA

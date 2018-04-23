@@ -143,7 +143,8 @@ uH   (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: univArr C D a F)
 uH'  (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: univArr C D a F) (y: carrier (cosliceCat C D a F)) : hom D ua.1.1 y.1 = (ua.2 y).1.1
 uHP  (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: univArr C D a F) (y: carrier (cosliceCat C D a F)) :
      Path (hom C a (F.1 y.1)) y.2
-          (compose C a (F.1 ua.1.1) (F.1 y.1) (uEta C D F a ua) (F.2.1 ua.1.1 y.1 (uH' C D F a ua y))) = (ua.2 y).1.2
+          (compose C a (F.1 ua.1.1) (F.1 y.1) (uEta C D F a ua)
+                     (F.2.1 ua.1.1 y.1 (uH' C D F a ua y))) = (ua.2 y).1.2
 
 ffFunctor (A B: precategory) (F: catfunctor A B) : U
   = (a b: carrier A) -> isEquiv (hom A a b) (hom B (F.1 a) (F.1 b)) (F.2.1 a b)
@@ -228,7 +229,7 @@ catEquivIsIso (A B: precategory) (isCA: isCategory A) (isCB: isCategory B)
       in transport (<i>isContr ((a:carrier A) * invEquiv (carrier B) (F.1 a) b @ i))
         (transport (<i> isContr ((a:carrier A) * lemIsCategory3 B isCB (F.1 a) b@-i)) p))
 
-catIsoIsEquiv (A B : precategory) (F: catfunctor A B) (e: catIsIso A B F) : catIsEquiv A B F
+catIsoIsEquiv (A B: precategory) (F: catfunctor A B) (e: catIsIso A B F): catIsEquiv A B F
   = (e.1,\(b:carrier B)->((e.2 b).1.1, eqToIso B (F.1 (e.2 b).1.1) b (<i>(e.2 b).1.2@-i)))
 
 catIsEquivEqIso (A B: precategory) (isCA: isCategory A) (isCB: isCategory B) (F: catfunctor A B)
@@ -237,8 +238,8 @@ catIsEquivEqIso (A B: precategory) (isCA: isCategory A) (isCB: isCategory B) (F:
               (catPropIsEquiv A B isCA F) (catPropIsIso A B F)
               (catEquivIsIso A B isCA isCB F) (catIsoIsEquiv A B F)
 
-catIsoEqPath (A B : precategory) : Path U (catIso A B) (Path precategory A B) = undefined
-catEquivEqPath' (A : category) : isContr ((B : category) * catEquiv A.1 B.1) = undefined
+catIsoEqPath (A B: precategory) : Path U (catIso A B) (Path precategory A B) = undefined
+catEquivEqPath' (A: category) : isContr ((B : category) * catEquiv A.1 B.1) = undefined
 
 catEquivEqIso (A B: precategory) (isCA: isCategory A) (isCB: isCategory B)
   : Path U (catEquiv A B) (catIso A B)
