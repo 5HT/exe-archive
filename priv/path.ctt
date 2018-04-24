@@ -2,9 +2,9 @@ module path where
 
 import proto_path
 
-const (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
+isConst (A: U) (f: A -> A): U = (x y: A) -> Path A (f x) (f y)
 
-exConst (A: U): U = (f: A -> A) * const A f
+exConst (A: U): U = (f: A -> A) * isConst A f
 
 mapOnPath (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b)
 --  = cong A B f a b p
