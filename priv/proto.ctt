@@ -19,10 +19,17 @@ data tuple (A B: U) = pair (a: A)       (b: B)
 -- see HoTT 2.8 The unit type
 
 -- functions proto_tuple, proto_either eliminators
-case    (A B C: U)(b:A->C)(c:B->C):either A B->C = split{inl x->b(x);inr y->c(y)}
 fst       (A B: U): tuple A B -> A = split pair a b -> a
 snd       (A B: U): tuple A B -> B = split pair a b -> b
 and       (A B: U): U = (_:A) * B
+
+case (A B C: U) (b: A -> C) (c: B -> C): either A B -> C
+  = split { inl x -> b(x) ; inr y -> c(y) }
+
+eitherInd (A B: U) (C: either A B -> U)
+          (x: (a:A) -> C (inl a))
+          (y: (b:B) -> C (inr b)): (x: either A B) -> C x
+        = split { inl i -> x i ; inr j -> y j }
 
 -- functions proto_pi ?
 id          (A: U): U = A -> A

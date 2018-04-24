@@ -10,23 +10,22 @@ module pi where
 import prop
 import path
 
-Pi (A:U) (P:A->U) : U = (x:A) -> P x
-lambda (A : U) (B: A -> U) (a : A) (b: B a): A -> B a = \(x: A) -> b
-app (A : U) (B: A -> U) (a : A) (f: A -> B a): B a = f a
+Pi  (A: U) (B: A -> U): U = (x: A) -> B(x)
+lam (A: U) (B: A -> U) (a: A) (b: B a): A -> B a = \(x: A) -> b
+app (A: U) (B: A -> U) (a: A) (f: A -> B a): B a = f a
 
 setPi (A: U) (B: A -> U) (h: (x: A) -> isSet (B x)) (f g: Pi A B)
       (p q: Path (Pi A B) f g): Path (Path (Pi A B) f g) p q
-  = <i j> \(x : A) -> (h x (f x) (g x) (<i>(p@i)x) (<i>(q@i)x)) @ i @ j
+  = <i j> \(x: A) -> (h x (f x) (g x) (<i>(p@i)x) (<i>(q@i)x)) @ i @ j
 
 piExt  (A: U) (B: A -> U)
-       (f g: (x : A) -> B x)
-       (p : (x : A) -> Path (B x) (f x) (g x)) :
-       Path ((y : A) -> B y) f g = <i> \(a : A) -> (p a) @ i
+       (f g: (x:A) -> B x)
+       (p: (x:A) -> Path (B x) (f x) (g x)) :
+       Path ((y:A) -> B y) f g = <i> \(a: A) -> (p a) @ i
 
 funExt (A B: U) (f g: A -> B)
-       (p: (x : A) -> Path B (f x) (g x)):
-       Path (A -> B) f g = <i> \(a : A) -> p a @ i
+       (p: (x:A) -> Path B (f x) (g x)):
+       Path (A -> B) f g = <i> \(a: A) -> p a @ i
 
 funExtInv (A B: U) (f g: A -> B) (p : Path (A -> B) f g) (x: A): Path B (f x) (g x)
   = mapOnPath (A -> B) B ff f g p where ff (f: A -> B): B = f x
-

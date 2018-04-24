@@ -6,16 +6,19 @@
 -}
 
 module sigma where
-
 import set
 
-Sigma (A : U) (B : A -> U) : U = (x : A) * B x
-exists (A: U) (B: A -> U) (a : A) (b: B a): Sigma A B = (a,b)
-pr1  (A: U) (B: A -> U) (x: Sigma A B): A = x.1
-pr2  (A: U) (B: A -> U) (x: Sigma A B): B (pr1 A B x) = x.2
+Sigma  (A:U)(B:A->U): U = (x: A) * B x
+exists (A:U)(B:A->U)(a: A) (b: B a): Sigma A B = (a,b)
+pr1    (A:U)(B:A->U)(x: Sigma A B): A = x.1
+pr2    (A:U)(B:A->U)(x: Sigma A B): B (pr1 A B x) = x.2
+sigRec (A:U)(B:A->U)(C: U) (g: (x:A)->B(x)->C) (p: Sigma A B): C = g p.1 p.2
+sigInd (A:U)(B:A->U)(C: Sigma A B->U) (p: Sigma A B) (g:(a:A)(b:B(a))->C(a,b)): C p = g p.1 p.2
 
-sigInd (A: U) (B: A -> U) (C: Sigma A B -> U) (g: (a: A) (b: B a) -> C (a, b)) (p: Sigma A B): C p
-  = g p.1 p.2
+-- Axiom of Choice
+ac   (A B: U) (R: A -> B -> U):
+     (p: (x:A)->(y:B)*(R x y)) -> (f:A->B)*((x:A)->R(x)(f x))
+  = \(g: (x:A)->(y:B)*(R x y)) -> (\(i:A)->(g i).1,\(j:A)->(g j).2)
 
 sigma_model (A: U) : U
     = (_: (B: A -> U) (a: A) (b: B a) -> Path A (pr1 A B (exists A B a b)) a)
@@ -33,7 +36,7 @@ corSigProp (A:U) (B:A-> U) (pB : (x:A) -> isProp (B x)) (t u : Sigma A B) (p:Pat
  where P : Path U (B t.1) (B u.1) = <i>B (p@i)
        T0 : U = PathP P t.2 u.2
        T1 : U = Path (B u.1) (transport P t.2) u.2
-       rem : Path U T0 T1 = pathSig0 A B t u p -- funDepTr (B t.1) (B u.1) P t.2 u.2
+       rem : Path U T0 T1 = pathSig0 A B t u p
        v2 : B u.1 = transport P t.2
        rem1 : isProp T1 = propSet (B u.1) (pB u.1) v2 u.2
 
@@ -49,20 +52,4 @@ corSigSet (A:U) (B:A-> U) (sB : (x:A) -> isSet (B x)) (t u : Sigma A B) (p:Path 
 sigSecondPath (A: U) (P: A -> U) (t u: Sigma A P) (p: Path A t.1 u.1): U
   = Path (P u.1) (transport p' t.2) u.2 where
   p' : Path U (P t.1) (P u.1) = mapOnPath A U P t.1 u.1 p
-
-{-
-    Church encoded pure sigma ported from Om.
-
-sig (A:U)(P:A->U)(x:A): U                         = (e:U)->(i:A->P x->e)->e
-mk  (A:U)(P:A->U)(x:A)(y:P x)(e:U)(i:A->P x->e):e = i x y
-fst (A:U)(P:A->U)(x:A)(s:sig A P x):A             = s A     (\(z:A)(y:P x)->z)
-snd (A:U)(P:A->U)(x:A)(s:sig A P x):P x           = s (P x) (\(z:A)(y:P x)->y)
-
--- import list
--- P: nat -> U = (\(_:nat) -> list nat)
--- test: sig nat P n5 = mk nat P n5 nil
--- test_pr1: nat = fst nat P zero test
--- test_pr2: list nat = snd nat P zero test
-
--}
 
