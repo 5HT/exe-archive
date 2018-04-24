@@ -13,7 +13,7 @@ functorMaybeId (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a = split
 functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
   = funExt (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
 
--- dependent eliminator, or induction principle
+-- dependent eliminator, induction principle
 maybeDElim (A: U) (P : maybe A -> U) (n: P nothing) (j: (a: A) -> P (just a)): (a: maybe A) -> P a = split
   nothing -> n
   just x -> j x
@@ -33,7 +33,7 @@ functorMaybeComp (A B C: U) (f: B -> C) (g: A -> B): (x: maybe A) ->
       just x -> maybeRefl C (aa (just x))
   in goal
 
-functor_maybe: functor maybe = (maybeMap, functorMaybeId, functorMaybeComp, tt)
+functor_maybe: FUNCTOR = ((maybe,maybeMap),functorMaybeId,functorMaybeComp,tt)
 
 data Ordering = LT | EQ | GT
 

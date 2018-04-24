@@ -1,8 +1,8 @@
 {- Control Structures:
-   - Pure
+   - Pure;
    - Applicative;
    - Monad.
-   Copyright (c) 2018 Groupoid Infinity 2014-2018.
+   Copyright (c) Groupoid Infinity, 2014-2018.
 -}
 
 module control where

@@ -1,4 +1,4 @@
-{- Universal Algbera:
+{- Abstract Algbera:
    - Monoid and CMonoid;
    - Group and AbGroup;
    - Ring and AbRing.

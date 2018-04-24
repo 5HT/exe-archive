@@ -10,7 +10,7 @@ import hedberg
        -- Example: Non-trivial equality between Z and Z --
        ---------------------------------------------------
 
-Z : U = or nat nat
+Z : U = either nat nat
 
 {- Z represents:
 

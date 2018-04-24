@@ -11,27 +11,31 @@ module proto where
 -- core algebraic datatypes
 data Empty =
 data Unit = tt
-data or (A B: U) = inl (a: A) | inr (b: B)
-data tuple (A B: U) = pair (a: A) (b: B)
+data either (A B: U) = inl (a: A) | inr (b: B)
+data tuple (A B: U) = pair (a: A)       (b: B)
 
--- its eliminators
-case    (A B C: U)(b:A->C)(c:B->C):or A B->C = split{inl x->b(x);inr y->c(y)}
+-- functions proto_tuple, proto_either eliminators
+case    (A B C: U)(b:A->C)(c:B->C):either A B->C = split{inl x->b(x);inr y->c(y)}
 fst       (A B: U): tuple A B -> A = split pair a b -> a
 snd       (A B: U): tuple A B -> B = split pair a b -> b
+and       (A B: U): U = (_:A) * B
+
+-- functions proto_pi ?
 id          (A: U): U = A -> A
 idfun       (A: U) (a: A): A = a
 consttype (A B: U): U = A
-constfun  (A B: U) (b: B): A -> B = \(_:A) -> b
-apply     (A B: U) (f: A -> B) (x: A): B = f(x)
+lam         (A: U) (B: A -> U) (x: A) (b: B(x)): A -> B(x) = \(x: A) -> b --\ dependent
+app         (A: U) (B: A -> U) (x: A) (f: A -> B(x)): B(x) = f(x)         --/ version
+lambda    (A B: U) (b: B): A -> B = \(_:A) -> b --\ non-dependent
+apply     (A B: U) (f: A -> B) (x: A): B = f(x) --/ version
 funcomp (F G: U -> U) (t: U): U = F (G t)
-ot      (A B C: U): U = (B->C) -> (A->B) -> (A->C)
+ot      (A B C: U): U = (B -> C) -> (A -> B) -> (A -> C)
 o       (A B C: U) (f: B->C) (g: A->B): A -> C = \(x:A) -> f(g(x))
-and       (A B: U): U = (_:A) * B
 
 -- datatype properties: decideability, discretness, stability
 efq        (A: U): Empty -> A = split {}
 neg        (A: U): U = A -> Empty
 dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
 neg        (A: U): U = A -> Empty
-dec        (A: U): U = or A (neg A)
+dec        (A: U): U = either A (neg A)
 stable     (A: U): U = neg (neg A) -> A

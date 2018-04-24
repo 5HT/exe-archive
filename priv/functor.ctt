@@ -1,4 +1,4 @@
-{- Functor Instances:
+{- Control Structures. Functor Instances:
    - Identity;
    - Id;
    - Compose;
@@ -15,7 +15,8 @@ import control
 
 functor_id: FUNCTOR = ((\(A:U)->A,apply),(id,compose,tt)) where
   id: (A: U) -> (a: A) -> Path A a a = refl
-  compose (A B C: U) (f: B->C) (g: A->B) (x: A): Path C (f(g(x))) (f(g(x))) = refl C (o A B C f g x)
+  compose (A B C: U) (f: B->C) (g: A->B) (x: A):
+    Path C (f(g(x))) (f(g(x))) = refl C (o A B C f g x)
 
 functor_const (A: U): FUNCTOR = ((consttype A,fmap),(id,compose,tt)) where
   fmap (B C: U) (_: B -> C): A -> A = idfun A

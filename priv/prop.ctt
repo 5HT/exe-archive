@@ -47,12 +47,12 @@ propN0 : isProp Empty = \ (x y: Empty) -> efq (Path Empty x y) x
 
 propNeg (A:U) : isProp (neg A) = \ (f g:neg A) -> <i>\(x:A) -> (propN0 (f x) (g x))@i
 
-propOr (A B : U) (hA : isProp A) (hB : isProp B) (h : A -> neg B) : isProp (or A B) = split
-    inl a' -> split@((b : or A B) -> Path (or A B) (inl a') b) with
+propOr (A B : U) (hA : isProp A) (hB : isProp B) (h : A -> neg B) : isProp (either A B) = split
+    inl a' -> split@((b : either A B) -> Path (either A B) (inl a') b) with
         inl b' -> <i> inl (hA a' b' @ i)
-        inr b' -> efq (Path (or A B) (inl a') (inr b')) (h a' b')
-    inr a' -> split@((b : or A B) -> Path (or A B) (inr a') b) with
-        inl b' -> efq (Path (or A B) (inr a') (inl b')) (h b' a')
+        inr b' -> efq (Path (either A B) (inl a') (inr b')) (h a' b')
+    inr a' -> split@((b : either A B) -> Path (either A B) (inr a') b) with
+        inl b' -> efq (Path (either A B) (inr a') (inl b')) (h b' a')
         inr b' -> <i> inr (hB a' b' @ i)
 
 propDec (A : U) (h : isProp A) : isProp (dec A) =
