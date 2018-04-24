@@ -3,6 +3,9 @@
    - Rezk Completion.
    - Initial and Terminal Objects.
    Copyright (c) Groupoid Infinity, 2014-2018
+
+   HoTT 9.1 Categories and precategories
+   HoTT 9.9 The Rezk completion
 -}
 
 module cat where

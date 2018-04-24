@@ -2,6 +2,8 @@
    - Natural Transformations;
    - Adjunctions.
    Copyright (c) Groupoid Infinity, 2014-2018.
+
+   HoTT 9.3 Adjunctions
 -}
 
 module adj where
