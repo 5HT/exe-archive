@@ -1,4 +1,9 @@
--- Experimental implementation of quotient HIT (not finished)
+{- Quotient Type:
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   see HoTT 6.10 Quotients
+-}
+
 module quotient where
 
 import circle

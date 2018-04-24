@@ -8,11 +8,15 @@
 
 module proto where
 
--- core algebraic datatypes
 data Empty =
 data Unit = tt
 data either (A B: U) = inl (a: A) | inr (b: B)
 data tuple (A B: U) = pair (a: A)       (b: B)
+
+-- see HoTT 1.7 Coproduct types
+-- see HoTT 2.12 Coproducts
+-- see HoTT 2.6 Cartesian product types
+-- see HoTT 2.8 The unit type
 
 -- functions proto_tuple, proto_either eliminators
 case    (A B C: U)(b:A->C)(c:B->C):either A B->C = split{inl x->b(x);inr y->c(y)}
@@ -39,3 +43,5 @@ dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
 neg        (A: U): U = A -> Empty
 dec        (A: U): U = either A (neg A)
 stable     (A: U): U = neg (neg A) -> A
+
+-- see HoTT 3.4 Classical vs. intuitionistic logic

@@ -14,7 +14,6 @@ module recursion where
 
 import control
 import proto
-import list_theory
 
 -- Fixpoint Control
 
@@ -149,6 +148,3 @@ inductive (F: functor_) (A: U): ind F.1 A
     = (in_ F.1,out_ F.1,cata A F,futu A F,tt)
 coinductive (F: functor_) (A: U): coind F.1 A
     = (out_ F.1,in_ F.1,ana A F,histo A F,tt)
-
-ind_list   (T:U): ind   list T = inductive   (list,map) T
-coind_list (T:U): coind list T = coinductive (list,map) T

@@ -4,6 +4,7 @@ module nat_theory where
 
 import path
 import prop
+import pi
 import iso
 import nat
 import eq

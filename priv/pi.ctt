@@ -1,3 +1,10 @@
+{- Pi Type:
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   see HoTT 1.5 Product types
+   see HoTT 2.9 Pi-types and the function extensionality axiom
+-}
+
 module pi where
 
 import prop

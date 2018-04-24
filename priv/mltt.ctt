@@ -1,6 +1,11 @@
-module mltt where
+{- MLTT model:
+   - Pi;
+   - Sigma;
+   - Equ.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
 
-{- MLTT model (Pi,Sigma,Equ) in CTT -}
+module mltt where
 
 data Unit = tt
 

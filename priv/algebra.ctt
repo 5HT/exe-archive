@@ -3,6 +3,8 @@
    - Group and AbGroup;
    - Ring and AbRing.
    Copyright (c) Groupoid Infinity, 2014-1018.
+
+   see HoTT 6.11 Algebra
 -}
 
 module algebra where

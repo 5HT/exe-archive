@@ -1,6 +1,8 @@
-{- Homotopy Theory:
+{- HIT:
    - Circle HIT.
    Copyright (c) Groupoid Infinity, 2014-2018.
+
+   see HoTT 6.4 Circles and spheres
 -}
 
 module circle where
@@ -10,8 +12,8 @@ import iso
 import bool_theory
 
 data S1 = base
-        | loop <i> [ (i=0) -> base
-                   , (i=1) -> base]
+        | loop <i> [ (i=0) -> base ,
+                     (i=1) -> base ]
 
 loopS1 : U = Path S1 base base
 

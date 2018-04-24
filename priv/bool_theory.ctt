@@ -1,3 +1,9 @@
+{- Bool Theory:
+   - Bool Decidable.
+   - Theorems are in bool_theory module.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
+
 module bool_theory where
 
 import proto

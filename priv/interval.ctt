@@ -1,4 +1,8 @@
--- The interval as a HIT. Proof of function extensionality from it.
+{- Interval Type:
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   see HoTT 6.3 The interval
+-}
 
 module interval where
 

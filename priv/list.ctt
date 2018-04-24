@@ -1,6 +1,10 @@
-module list where
+{- Run-Time List Type:
+   - List;
+   - Polymorphic funtions.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
 
-{- Simple run-time list module -}
+module list where
 
 import eq
 import nat
@@ -47,7 +51,8 @@ zipWith (A B C: U) (f: A -> B -> C): list A -> list B -> list C = go where
     nil -> split@(list B->list C) with { nil -> nil ; cons y ys -> nil }
     cons x xs -> split@(list B->list C) with { nil->nil ; cons y ys -> cons (f x y) (go xs ys) }
 
-zip (A B: U): list A -> list B -> list (tuple A B) = zipWith A B (tuple A B) (\(x:A)(y:B) -> pair x y)
+zip (A B: U): list A -> list B -> list (tuple A B)
+  = zipWith A B (tuple A B) (\(x:A)(y:B) -> pair x y)
 
 foldr (A B: U) (f: A -> B -> B) (Z: B): list A -> B = split
   nil -> Z

@@ -1,3 +1,12 @@
+{- Run-Time Nat Type:
+   - Nat and Fin;
+   - Polymorphic funtions.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   see HoTT 1.9 The natural numbers
+   see HoTT 2.13 Natural numbers
+-}
+
 module nat where
 
 import maybe
@@ -5,13 +14,7 @@ import bool
 import proto
 import sigma
 
-{- Simple run-time nat Datatype -}
-
 data nat = zero | succ (n: nat)
-
-natElim (A: U) (n: A) (s: nat -> A) : nat -> A = split
-  zero -> n
-  succ a -> s a
 
 one   : nat = succ zero
 two   : nat = succ one
@@ -19,24 +22,20 @@ three : nat = succ two
 four  : nat = succ three
 five  : nat = succ four
 
--- Section 1.9 HoTT
-rec_nat (A:U) (c_0 : A) (c_s : nat -> A -> A) : (n:nat) -> A = split
-  zero  -> c_0
-  succ n -> c_s n (rec_nat A c_0 c_s n)
+natElim (A: U) (n: A) (s: nat -> A) : nat -> A
+  = split { zero -> n ; succ a -> s a }
 
--- Section 1.9 HoTT
-ind_nat (A:nat->U) (c_0:A zero) (c_s : (n:nat) -> A n -> A (succ n)) : (n:nat) -> A n = split
-  zero  -> c_0
-  succ n -> c_s n (ind_nat A c_0 c_s n)
+rec_nat (A:U) (c_0: A) (c_s: nat -> A -> A): (n:nat) -> A
+  = split { zero  -> c_0 ; succ n -> c_s n (rec_nat A c_0 c_s n) }
+
+ind_nat (A:nat->U) (c_0: A zero) (c_s: (n:nat) -> A n -> A (succ n)): (n:nat) -> A n
+  = split { zero  -> c_0 ; succ n -> c_s n (ind_nat A c_0 c_s n) }
 
 nat_eq: nat -> nat -> bool = split
   zero -> split@(nat -> bool) with { zero -> true; succ n -> false }
   succ m -> split@(nat -> bool) with { zero -> false; succ n -> nat_eq m n }
 
-pred: nat -> nat = split
-  zero -> zero
-  succ n -> n
-
+pred: nat -> nat = split { zero -> zero ; succ n -> n }
 add (m: nat): nat -> nat = split { zero -> m; succ n -> succ (add m n) }
 
 mult: nat -> nat -> nat

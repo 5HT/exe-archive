@@ -22,33 +22,5 @@ functorMaybeComp (A B C: U) (f: B -> C) (g: A -> B):
   = split { nothing -> maybeRefl C ((maybeMap A C (o A B C f g)) nothing)  ;
             just x  -> maybeRefl C ((maybeMap A C (o A B C f g)) (just x)) }
 
-functor_maybe: FUNCTOR = ((maybe,maybeMap),
-                          (functorMaybeId,functorMaybeComp,tt))
-
-data Ordering = LT | EQ | GT
-
-maybeCompare (A: U) (elemCompare : A -> A -> Ordering): maybe A -> maybe A -> Ordering = split
-  nothing -> split@ maybe A -> Ordering with
-    nothing -> EQ
-    just x -> LT
-  just x -> split@ maybe A -> Ordering with
-    nothing -> GT
-    just y -> elemCompare x y
-
-maybeCompareRefl
-  (A: U)
-  (elemCompare : A -> A -> Ordering)
-  (foo: (a: A) -> Path Ordering (elemCompare a a) EQ)
-  (x: maybe A)
-  : Path Ordering (maybeCompare A elemCompare x x) EQ
-  = undefined
-
-maybeCompareRespectsPath
-  (A: U)
-  (elemCompare: A -> A -> Ordering)
-  (elemCompareRespectsPath: (a b: A) -> Path A a b -> Path Ordering (elemCompare a b) EQ)
-  (a b: maybe A)
-  (foo: Path (maybe A) a b)
-  : Path Ordering (maybeCompare A elemCompare a b) EQ
-  = undefined
+functor_maybe: FUNCTOR = ((maybe,maybeMap),(functorMaybeId,functorMaybeComp,tt))
 

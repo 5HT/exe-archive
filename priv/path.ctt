@@ -1,3 +1,14 @@
+{- Path Type:
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   see HoTT 1.12 Identity types
+   see HoTT 1.12.1 Path induction
+   see HoTT 2.1 Types are higher groupoids
+   see HoTT 2.11 Identity type
+   see HoTT 3.11 Contractibility
+   see HoTT 6.2 Induction principles and dependent paths
+-}
+
 module path where
 
 import proto_path
