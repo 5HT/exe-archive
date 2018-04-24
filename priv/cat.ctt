@@ -39,8 +39,11 @@ hom     (C: precategory) (a b: carrier C): U = C.1.2 a b
 homSet  (C: precategory) (a b: carrier C): isSet (hom C a b) = C.2.2.2.1 a b
 compose (C: precategory) (x y z: carrier C) (f: hom C x y) (g: hom C y z): hom C x z = C.2.2.1 x y z f g
 path    (C: precategory) (x: carrier C): hom C x x = C.2.1 x
-pathL   (C: precategory) (x y: carrier C) (f : hom C x y): Path (hom C x y) (compose C x x y (path C x) f) f = C.2.2.2.2.1 x y f
-pathR   (C: precategory) (x y: carrier C) (f : hom C x y): Path (hom C x y) (compose C x y y f (path C y)) f = C.2.2.2.2.2.1 x y f
+
+pathL   (C: precategory) (x y: carrier C) (f: hom C x y):
+        Path (hom C x y) (compose C x x y (path C x) f) f = C.2.2.2.2.1 x y f
+pathR   (C: precategory) (x y: carrier C) (f: hom C x y):
+        Path (hom C x y) (compose C x y y f (path C y)) f = C.2.2.2.2.2.1 x y f
 pathC   (C: precategory) (x y z w: carrier C) (f: hom C x y) (g: hom C y z) (h: hom C z w):
         Path (hom C x w) (compose C x z w (compose C x y z f g) h)
                          (compose C x y w f (compose C y z w g h)) = C.2.2.2.2.2.2 x y z w f g h
@@ -71,3 +74,4 @@ isCommutative (X: precategory)
               (h: hom X A C) (i: hom X B D): U
             = Path (hom X A D) (compose X A C D h g)
                                (compose X A B D f i)
+

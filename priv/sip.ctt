@@ -20,9 +20,11 @@ structure (X: precategory): U
      H y z b c g -> H x z a c (compose X x y z f g))
 
 sP     (X: precategory) (S: structure X): carrier X -> U = S.1
-sH     (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) -> (f: hom X x y) -> U = S.2.1
-sHProp (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) -> (f: hom X x y) -> isProp (sH X S x y a b f) = S.2.2.1
 sHPath (X: precategory) (S: structure X): (x: carrier X) -> (a: sP X S x) -> sH X S x x a a (path X x) = S.2.2.2.1
+sH     (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) ->
+                                          (f: hom X x y) -> U = S.2.1
+sHProp (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) ->
+                                          (f: hom X x y) -> isProp (sH X S x y a b f) = S.2.2.1
 sHComp (X: precategory) (S: structure X): (x y z: carrier X) ->
                                           (a: sP X S x) -> (b: sP X S y) -> (c: sP X S z) ->
                                           (f: hom X x y) -> (g: hom X y z) ->
@@ -36,19 +38,23 @@ isStandardStructure (X: precategory) (S: structure X): U =
     sH X S x x b a (path X x) ->
     Path (sP X S x) a b
 
-lemPathPProp (A B : U) (AProp : isProp A) (p : Path U A B) : (x : A) -> (y : B) -> PathP p x y
-  = J U A (\(B : U) -> \(p : Path U A B) -> (x : A) -> (y : B) -> PathP p x y) AProp B p
+lemPathPProp (A B: U) (AProp: isProp A) (p: Path U A B):
+  (x: A) -> (y: B) -> PathP p x y
+  = J U A (\(B: U) -> \(p: Path U A B) -> (x: A) -> (y: B) -> PathP p x y) AProp B p
 
-lemPathPSet (A B : U) (ASet : isSet A) (p : Path U A B) : (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t
+lemPathPSet (A B: U) (ASet: isSet A) (p: Path U A B):
+  (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t
   = J U A (\(B : U) -> \(p : Path U A B) -> (x : A) (y : B) (s t : PathP p x y) -> Path (PathP p x y) s t) ASet B p
 
-lemIsCategory (C: precategory) (isC: isCategory C) (A B: carrier C) (e: iso C A B): Path ((B: carrier C) * iso C A B) (A, idIso C A) (B, e)
+lemIsCategory (C: precategory) (isC: isCategory C) (A B: carrier C) (e: iso C A B):
+  Path ((B: carrier C) * iso C A B) (A, idIso C A) (B, e)
   = <i> (isContrProp ((B : carrier C) * iso C A B) (isC A) (A, idIso C A) (B, e) @ i)
 
 isContrProp (A:U) (p: isContr A) (x y: A): Path A x y = composition A x p.1 y (<i> p.2 x @ -i) (p.2 y)
 
 isContrSig (A:U) (B:A-> U) (cA:isContr A) (cB: (x:A) -> isContr (B x)) : isContr (Sigma A B)
-  = ((cA.1, (cB cA.1).1),\(x:Sigma A B)->propSig A B (isContrProp A cA) (\(x:A)->isContrProp (B x) (cB x)) (cA.1, (cB cA.1).1) x)
+  = ((cA.1, (cB cA.1).1),\(x:Sigma A B) -> propSig A B (isContrProp A cA) (\(x:A) ->
+            isContrProp (B x) (cB x)) (cA.1, (cB cA.1).1) x)
 
 sipPrecategory (C: precategory) (S: structure C): precategory =
   ((Ob, Hom), (id, cmp, HomSet, idL, idR, idC')) where
@@ -74,7 +80,8 @@ sipPrecategory (C: precategory) (S: structure C): precategory =
                          (sHProp C S x.1 y.1 x.2 y.2 (cmp x y y f (id y)).1)
                          (<i>sH C S x.1 y.1 x.2 y.2 (pathR C x.1 y.1 f.1 @ i))
                          (cmp x y y f (id y)).2 f.2 @ i)
-    idC' (x y z w: Ob) (f: Hom x y) (g: Hom y z) (h: Hom z w): Path (Hom x w) (cmp x z w (cmp x y z f g) h) (cmp x y w f (cmp y z w g h))
+    idC' (x y z w: Ob) (f: Hom x y) (g: Hom y z) (h: Hom z w):
+      Path (Hom x w) (cmp x z w (cmp x y z f g) h) (cmp x y w f (cmp y z w g h))
       = <i> (pathC C x.1 y.1 z.1 w.1 f.1 g.1 h.1 @ i,
             lemPathPProp (sH C S x.1 w.1 x.2 w.2 (cmp x z w (cmp x y z f g) h).1)
                          (sH C S x.1 w.1 x.2 w.2 (cmp x y w f (cmp y z w g h)).1)
@@ -139,7 +146,8 @@ sip (X: precategory) (isC: isCategory X) (S: structure X) (isS: isStandardStruct
                       ,lemPathPSet (sH X S C.1.1 C.1.1 C.1.2 C.1.2 (compose X C.1.1 A.1 C.1.1 C.2.2.1.1 C.2.1.1))
                                  (sH X S C.1.1 C.1.1 C.1.2 C.1.2 (path X C.1.1))
                                  (propSet (sH X S C.1.1 C.1.1 C.1.2 C.1.2 (compose X C.1.1 A.1 C.1.1 C.2.2.1.1 C.2.1.1))
-                                          (sHProp X S C.1.1 C.1.1 C.1.2 C.1.2 (compose X C.1.1 A.1 C.1.1 C.2.2.1.1 C.2.1.1)))
+                                          (sHProp X S C.1.1 C.1.1 C.1.2 C.1.2
+                                          (compose X C.1.1 A.1 C.1.1 C.2.2.1.1 C.2.1.1)))
                                  (<j>sH X S C.1.1 C.1.1 C.1.2 C.1.2 (C.2.2.2.2 @ j).1)
                                  (sHComp X S C.1.1 A.1 C.1.1 C.1.2 A.2 C.1.2 C.2.2.1.1 C.2.1.1 C.2.2.1.2 C.2.1.2)
                                  (sHPath X S C.1.1 C.1.2)
@@ -156,9 +164,11 @@ sip (X: precategory) (isC: isCategory X) (S: structure X) (isS: isStandardStruct
                       let p : Path ((B1 : carrier X) * ( iso X A.1 B1)) (A.1, idIso X A.1) C
                             = lemIsCategory X isC A.1 C.1 C.2
                       in transport
-                        (<i> isContr ((B2 : sP X S (p@i).1) * (_ : sH X S A.1 (p@i).1 A.2 B2 (p@i).2.1) * sH X S (p@i).1 A.1 B2 A.2 (p@i).2.2.1))
+                        (<i> isContr ((B2 : sP X S (p@i).1) * (_ : sH X S A.1 (p@i).1 A.2 B2 (p@i).2.1)
+                                                            * sH X S (p@i).1 A.1 B2 A.2 (p@i).2.2.1))
                         ((A.2,sHPath X S A.1 A.2,sHPath X S A.1 A.2)
-                        ,\(Y : (B2 : sP X S A.1) * (_ : sH X S A.1 A.1 A.2 B2 (path X A.1)) * sH X S A.1 A.1 B2 A.2 (path X A.1)) ->
+                        ,\(Y : (B2 : sP X S A.1) * (_ : sH X S A.1 A.1 A.2 B2 (path X A.1))
+                                                 * sH X S A.1 A.1 B2 A.2 (path X A.1)) ->
                           <i> (isS A.1 A.2 Y.1 Y.2.1 Y.2.2 @ i
                               ,lemPathPProp (sH X S A.1 A.1 A.2 A.2 (path X A.1))
                                           (sH X S A.1 A.1 A.2 Y.1 (path X A.1))
@@ -171,3 +181,5 @@ sip (X: precategory) (isC: isCategory X) (S: structure X) (isS: isStandardStruct
                                           (<i>sH X S A.1 A.1 (isS A.1 A.2 Y.1 Y.2.1 Y.2.2 @ i) A.2 (path X A.1))
                                           (sHPath X S A.1 A.2) Y.2.2 @ i)))
     hole (A : carrier D) : isContr ((B : carrier D) * iso D A B) = transport (<i>isContr(eq1 A@-i)) (hole0 A)
+    
+    
