@@ -20,9 +20,10 @@ structure (X: precategory): U
      H y z b c g -> H x z a c (compose X x y z f g))
 
 sP     (X: precategory) (S: structure X): carrier X -> U = S.1
-sHPath (X: precategory) (S: structure X): (x: carrier X) -> (a: sP X S x) -> sH X S x x a a (path X x) = S.2.2.2.1
 sH     (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) ->
                                           (f: hom X x y) -> U = S.2.1
+sHPath (X: precategory) (S: structure X): (x: carrier X) -> (a: sP X S x) ->
+                                          sH X S x x a a (path X x) = S.2.2.2.1
 sHProp (X: precategory) (S: structure X): (x y: carrier X) -> (a: sP X S x) -> (b: sP X S y) ->
                                           (f: hom X x y) -> isProp (sH X S x y a b f) = S.2.2.1
 sHComp (X: precategory) (S: structure X): (x y z: carrier X) ->
