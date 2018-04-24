@@ -70,7 +70,7 @@ caseDNat (P:nat -> U) (a0 :P zero) (aS : (n:nat) -> P (succ n))
  succ n -> aS n
 
 znots (n : nat) : neg (Path nat zero (succ n)) =
- \ (h:Path nat zero (succ n)) -> subst nat (caseNat U nat Empty) zero (succ n) h zero
+ \ (h:Path nat zero (succ n)) -> subst nat (caseNat U nat empty) zero (succ n) h zero
 
 snotz (n : nat) : neg (Path nat (succ n) zero) =
  \ (h:Path nat (succ n) zero) -> znots n (inv nat (succ n) zero h)
@@ -88,11 +88,11 @@ eq_nat_ : eq nat = nat_eq
 
 mutual
   evenT : nat -> U = split
-    zero -> Unit
+    zero -> unit
     succ n -> oddT n
 
   oddT : nat -> U = split
-    zero -> Empty
+    zero -> empty
     succ n -> evenT n
 
 zeroIsEvenT : evenT zero = tt

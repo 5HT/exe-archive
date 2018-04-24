@@ -18,7 +18,7 @@ functor_id: FUNCTOR = ((\(A:U)->A,apply),(id,compose,tt)) where
   compose (A B C: U) (f: B->C) (g: A->B) (x: A):
     Path C (f(g(x))) (f(g(x))) = refl C (o A B C f g x)
 
-functor_const (A: U): FUNCTOR = ((consttype A,fmap),(id,compose,tt)) where
+functor_const (A: U): FUNCTOR = ((const A,fmap),(id,compose,tt)) where
   fmap (B C: U) (_: B -> C): A -> A = idfun A
   id (_ : U): (x : A) -> Path A x x = refl A
   compose (X B C: U) (f: B->C) (g: X->B): (x: A) -> Path A x x = refl A

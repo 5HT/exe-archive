@@ -39,7 +39,7 @@ setIsProp (A : U) : isProp (isSet A) =
  \(f g : isSet A) -> <i> \(a b :A) ->
    propIsProp (Path A a b) (f a b) (g a b) @ i
 
-setUnit : isSet Unit = propSet Unit propUnit
+setUnit : isSet unit = propSet unit propUnit
 
 inj0 (A B : U) (f : A -> B) (sA : isSet A) (sB : isSet B) : U
   = (a0 a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1

@@ -7,19 +7,14 @@
 -}
 
 module bool where
-
 import proto
-
-idfun      (A: U) (a: A): A = a
-constfun (A B: U) (b: B): A -> B = \(_:A) -> b
 
 data bool = false | true
 
 neg_: bool -> bool         = split { false -> true ; true -> false }
-or_:  bool -> bool -> bool = split { false -> idfun bool ; true -> constfun bool bool true }
-and_: bool -> bool -> bool = split { false -> constfun bool bool false ; true -> idfun bool }
+or_:  bool -> bool -> bool = split { false -> idfun bool ; true -> lambda bool bool true }
+and_: bool -> bool -> bool = split { false -> lambda bool bool false ; true -> idfun bool }
 
-bool_eq: bool -> bool -> bool = constfun bool (bool -> bool) neg_
-bool_ind (A:bool->U) (f:A false) (t: A true): (n:bool) -> A n = split { false  -> f ; true -> t }
-bool_rec (A: U) (f t: A): bool -> A = split { false -> f ; true -> t }
-
+boolEq: bool -> bool -> bool = lambda bool (bool -> bool) neg_
+boolRec (A: U) (f t: A): bool -> A = split { false -> f ; true -> t }
+boolInd (A:bool->U) (f:A false) (t: A true): (n:bool) -> A n = split { false  -> f ; true -> t }

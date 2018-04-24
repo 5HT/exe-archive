@@ -62,14 +62,14 @@ foldl (A B: U) (f: B -> A -> B) (Z: B): list A -> B = split
   nil -> Z
   cons x xs -> foldl A B f (f Z x) xs
 
-switch (A: U) (a b: Unit -> list A) : bool -> list A = split
+switch (A: U) (a b: unit -> list A) : bool -> list A = split
   false -> b tt
   true -> a tt
 
 filter (A: U) (p: A -> bool) : list A -> list A = split
   nil -> nil
-  cons x xs -> switch A (\(_:Unit) -> cons x (filter A p xs))
-                        (\(_:Unit) -> filter A p xs) (p x)
+  cons x xs -> switch A (\(_:unit) -> cons x (filter A p xs))
+                        (\(_:unit) -> filter A p xs) (p x)
 
 uncons (A: U): list A -> maybe ((a: A) * (list A)) = split
   nil -> nothing

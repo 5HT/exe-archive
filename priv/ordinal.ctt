@@ -31,7 +31,7 @@ G2 : ord2 -> nat -> ord = split
 and (A B : U) : U = (_:A) * B
 
 O2 (n:nat) : ord2 -> U = split 
- zero -> Unit
+ zero -> unit
  succ z -> O2 n z
  lim f -> (p:nat) -> O2 n (f p)
  lim2 f -> (x:ord) -> and (O2 n (f x)) (Path ord (G2 (f x) n) (G2 (f (inj0 (G1 x n))) n))

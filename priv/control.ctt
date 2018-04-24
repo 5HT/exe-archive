@@ -80,7 +80,7 @@ isFunctor (F: functor_): U
     * (compose: (A B C: U) (f: B -> C) (g: A -> B) (x: F.1 A) ->
       Path (F.1 C) (F.2 A C (o A B C f g) x)
        ((o (F.1 A) (F.1 B) (F.1 C)
-           (F.2 B C f) (F.2 A B g)) x)) * Unit
+           (F.2 B C f) (F.2 A B g)) x)) * unit
 
 -- ap(pure(id),x) = id(x)
 -- ap(pure(f),pure(x)) = pure(f(x))
@@ -99,7 +99,7 @@ isApplicative (F: applicative_): U
     * (fmap_pure: U)
     * (xchg: (A B:U)(x:A)(u:F.1(A->B))(f:A->B) ->
        Path (F.1 B) (ap F A B u ((pure F) A x))
-                    (ap F (A->B) B (pure F ((A->B)->B) (\(f:A->B)->f(x))) u)) * Unit
+                    (ap F (A->B) B (pure F ((A->B)->B) (\(f:A->B)->f(x))) u)) * unit
 
 isMonad (F: monad_): U
     = (left_id:  (A B:U)(f:A->F.1 B)(x:A) ->
@@ -108,7 +108,7 @@ isMonad (F: monad_): U
                  Path (F.1 A) (bind F A A m (mpure F A)) m)
     * (assoc: (A B C: U) (f: A -> F.1 B) (g: B -> F.1 C) (m: F.1 A) ->
        Path (F.1 C) (bind F B C (bind F A B m f) g)
-                    (bind F A C m (\(x: A) -> bind F B C (f x) g))) * Unit
+                    (bind F A C m (\(x: A) -> bind F B C (f x) g))) * unit
 
 FUNCTOR:     U = (f: functor_)
                * isFunctor f

@@ -7,7 +7,7 @@
 
 module mltt where
 
-data Unit = tt
+data unit = tt
 
 Pi (A:U)(P:A->U):U=(x:A)->P(x)
 lambda (A : U) (B: A -> U) (a : A) (b: B a): A -> B a = \(x: A) -> b
@@ -64,7 +64,7 @@ MLTT (A: U): U
   * (Id_Comp: (x y:A)(C: D A)(p: Equ A x y)(b: C x x (reflect A x))
               (X: Equ U (C x x (reflect A x)) (C x y p)) ->
               HeteroEqu (C x x (reflect A x)) (C x y p) b (J A x C b y p) X)
-  * Unit
+  * unit
 
 instance (A: U): MLTT A
     = (Pi A, lambda A, app A, comp1 A, comp2 A,

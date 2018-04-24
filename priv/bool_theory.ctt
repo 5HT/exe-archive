@@ -13,10 +13,10 @@ import hedberg
 import univ
 
 falseNeqTrue : neg (Path bool false true) =
-  \(h : Path bool false true) -> subst bool (bool_rec U bool Empty) false true h false
+  \(h : Path bool false true) -> subst bool (boolRec U bool empty) false true h false
 
 trueNeqFalse : neg (Path bool true false) =
-  \(h : Path bool true false) -> subst bool (bool_rec U Empty bool) true false h true
+  \(h : Path bool true false) -> subst bool (boolRec U empty bool) true false h true
 
 boolDec : (b1 b2 : bool) -> dec (Path bool b1 b2) = split
  false -> rem

@@ -32,8 +32,8 @@ quoteq' (A: U) (R: A -> A -> U) (a b: A) (r: R a b)
   : Path (quot A R) (inj a) (inj b) = <i> quoteq {quot A R} a b r @ i
 
 -- Test to define circle as a quotient of unit
-RS1 (a b: Unit): U = Unit
-s1quot : U = quot Unit RS1
+RS1 (a b: unit): U = unit
+s1quot : U = quot unit RS1
 
 f1: s1quot -> S1 = split
   inj _ -> base
@@ -43,7 +43,7 @@ f2: S1 -> s1quot = split
   base -> inj tt
   loop @ i -> quoteq{s1quot} tt tt tt @ i
 
-rem: (a: Unit) -> Path s1quot (inj tt) (inj a) = split
+rem: (a: unit) -> Path s1quot (inj tt) (inj a) = split
    tt -> <i> inj tt
 
 identsetquot (A: U) (R: A -> A -> U) (a b: A) (r: R a b)

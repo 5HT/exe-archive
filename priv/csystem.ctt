@@ -214,10 +214,10 @@ ucToC0 (C : uc) : CSystem = hole
     p : hom C.1 VT V = C.2.2.2.2.2.1
     mutual
       ob : (n : nat) -> U = split
-        zero -> Unit
+        zero -> unit
         succ n -> (A : ob n) * hom C.1 (int n A) V
       int : (n : nat) -> ob n -> carrier C.1 = split
-        zero -> \(_:Unit) -> C.2.2.1.1
+        zero -> \(_:unit) -> C.2.2.1.1
         succ n -> \(X : ob (succ n)) -> (pb n X).1.1
       F (n : nat) (X : ob (succ n)) : homTo C.1 V = (int n X.1, X.2)
       cs (n : nat) (X : ob (succ n)) : cospan C.1 = (V, F n X, VT, p)
@@ -246,7 +246,7 @@ ucToC0 (C : uc) : CSystem = hole
     ft0 (n : nat) (x : ob (succ n)) : ob n = x.1
     ft (x : obD) : obD = mkFt ob ft0 x.1 x.2
     p0 : (n : nat) -> (x : ob n) -> homD (n, x) (ft (n, x)) = split
-      zero  -> \(A:Unit) -> DPath (zero, A)
+      zero  -> \(A:unit) -> DPath (zero, A)
       succ n -> \(X:ob (succ n)) -> (pb n X).1.2.1
     pD (x y : obD) (p : Path obD (ft x) y) : homD x y = transport (<i>homD x (p@i)) (p0 x.1 x.2)
 

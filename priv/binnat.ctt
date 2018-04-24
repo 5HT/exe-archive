@@ -50,7 +50,7 @@ sucPossucc : (p : pos) -> Path nat (PosToN (sucPos p)) (succ (PosToN p)) = split
 zeronPosToN (p : pos) : neg (Path nat zero (PosToN p)) =
   posInd (\(p : pos) -> neg (Path nat zero (PosToN p))) (\(prf : Path nat zero one) -> znots zero prf) hS p
    where
-   hS (p : pos) (_ : neg (Path nat zero (PosToN p))) (prf : Path nat zero (PosToN (sucPos p))) : Empty =
+   hS (p : pos) (_ : neg (Path nat zero (PosToN p))) (prf : Path nat zero (PosToN (sucPos p))) : empty =
     znots (PosToN p) (<i> comp (<j> nat) (prf @ i) [ (i=0) -> <_> zero, (i = 1) -> sucPossucc p ])
 
 -- Inverse of PosToN:

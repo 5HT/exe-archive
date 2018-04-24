@@ -12,8 +12,8 @@ import path
 
 discrete (A: U): U = (a b: A) -> dec (Path A a b)
 
-propUnit : isProp Unit = split
- tt -> split@((x:Unit) -> Path Unit tt x) with
+propUnit : isProp unit = split
+ tt -> split@((x:unit) -> Path unit tt x) with
   tt -> <i> tt
 
 -- Exists(A,B) = ||Sigma(A,B)||
@@ -50,7 +50,7 @@ propPi3 (A: U) (B: A -> A -> A -> U) (h: (x y z: A) -> isProp (B x y z)): isProp
 
 ---------
 
-propN0 : isProp Empty = \ (x y: Empty) -> efq (Path Empty x y) x
+propN0 : isProp empty = \ (x y: empty) -> efq (Path empty x y) x
 
 propNeg (A:U) : isProp (neg A) = \ (f g:neg A) -> <i>\(x:A) -> (propN0 (f x) (g x))@i
 

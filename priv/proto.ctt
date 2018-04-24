@@ -1,6 +1,6 @@
 {- Proto Module:
    - Empty and Unit;
-   - Tuple and Or;
+   - Tuple and Either;
    - Id, Const, Composition;
    - Decideability, Discretness, Stability.
    Copyright (c) Groupoid Infinity, 2014-2018.
@@ -8,35 +8,36 @@
 
 module proto where
 
-data Empty =
-data Unit = tt
-data either (A B: U) = inl (a: A) | inr (b: B)
+data empty =
+data unit = tt
 data tuple (A B: U) = pair (a: A)       (b: B)
+data either (A B: U) = inl (a: A) | inr (b: B)
 
--- see HoTT 1.7 Coproduct types
--- see HoTT 2.12 Coproducts
--- see HoTT 2.6 Cartesian product types
--- see HoTT 2.8 The unit type
-
--- functions proto_tuple, proto_either eliminators
 fst       (A B: U): tuple A B -> A = split pair a b -> a
 snd       (A B: U): tuple A B -> B = split pair a b -> b
 and       (A B: U): U = (_:A) * B
-
-eitherRec (A B C: U) (b: A -> C) (c: B -> C)
-        : either A B -> C
-        = split { inl x -> b(x) ; inr y -> c(y) }
-
+emptyRec  (C: U): empty -> C = split {}
+emptyInd  (C: empty->U): (z:empty) -> C z = split {}
+unitRec   (C: U) (x: C): unit -> C = split tt -> x
+unitInd   (C: unit -> U) (x: C tt): (z:unit) -> C z = split tt -> x
+tupleRec  (A B C: U) (c: (x:A) (y:B) -> C): (x: tuple A B) -> C = split pair a b -> c a b
+tupleInd  (A B:U)(C:tuple A B->U)(c:(x:A)(y:B)->C(pair x y)):(x:tuple A B)->C x=split pair a b -> c a b
+eitherRec (A B C: U) (b: A -> C) (c: B -> C): either A B -> C = split { inl x -> b(x) ; inr y -> c(y) }
 eitherInd (A B: U) (C: either A B -> U)
           (x: (a: A) -> C (inl a))
           (y: (b: B) -> C (inr b))
         : (x: either A B) -> C x
         = split { inl i -> x i ; inr j -> y j }
 
+-- see HoTT 1.7 Coproduct types
+-- see HoTT 2.12 Coproducts
+-- see HoTT 2.6 Cartesian product types
+-- see HoTT 2.8 The unit type
+
 -- functions proto_pi ?
 id          (A: U): U = A -> A
 idfun       (A: U) (a: A): A = a
-consttype (A B: U): U = A
+const     (A B: U): U = A
 lam         (A: U) (B: A -> U) (x: A) (b: B(x)): A -> B(x) = \(x: A) -> b --\ dependent
 app         (A: U) (B: A -> U) (x: A) (f: A -> B(x)): B(x) = f(x)         --/ version
 lambda    (A B: U) (b: B): A -> B = \(_:A) -> b --\ non-dependent
@@ -46,10 +47,10 @@ ot      (A B C: U): U = (B -> C) -> (A -> B) -> (A -> C)
 o       (A B C: U) (f: B->C) (g: A->B): A -> C = \(x:A) -> f(g(x))
 
 -- datatype properties: decideability, discretness, stability
-efq        (A: U): Empty -> A = split {}
-neg        (A: U): U = A -> Empty
+efq        (A: U): empty -> A = split {}
+neg        (A: U): U = A -> empty
 dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
-neg        (A: U): U = A -> Empty
+neg        (A: U): U = A -> empty
 dec        (A: U): U = either A (neg A)
 stable     (A: U): U = neg (neg A) -> A
 

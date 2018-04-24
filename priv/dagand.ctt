@@ -25,21 +25,21 @@ Imply (I: U) (P Q: Pow I): U = (i: I) -> P i -> Q i
 -- Interpret Inductive Type
 ii (X: U): Type -> U = split
     ivar -> X
-    ione -> Unit
+    ione -> unit
     isigma S T -> (s: S) *  ii X (T s)
     ipi S T -> (s: S) -> ii X (T s)
 
 -- Canonical Lifting
 ilift (X: U) (P: Pow X) : (D: Type) (xs: ii X D) -> U = split
     ivar -> \(xs: ii X ivar) -> P xs
-    ione -> \(xs: ii X ione) -> Unit
+    ione -> \(xs: ii X ione) -> unit
     isigma S T -> \(xs: ii X (isigma S T)) -> ilift X P (T xs.1) xs.2
     ipi S T -> \(xs: ii X (ipi S T)) -> (s: S) -> ilift X P (T s) (xs s)
 
 -- Interpret Inductive Family
 i (I: U) (X: Pow I): Family I -> U = split
     var x -> X x
-    one -> Unit
+    one -> unit
     sum n T -> (k: Fin n) * i I X (T k)
     sigma S T -> (s: S) * i I X (T s)
     pi S T -> (s: S) -> i I X (T s)
@@ -47,7 +47,7 @@ i (I: U) (X: Pow I): Family I -> U = split
 -- Canonical Lifting
 lift (I: U) (X: Pow I) (P: (j: I) -> X j -> U): (D: Family I) -> (xs: i I X D) -> U = split
     var x -> \(xs: i I X (var x)) -> (P x) xs
-    one -> \(xs: i I X one) -> Unit
+    one -> \(xs: i I X one) -> unit
     sum n T -> \(xs: i I X (sum n T)) -> lift I X P (T xs.1) xs.2
     sigma S T -> \(xs: i I X (sigma S T)) -> lift I X P (T xs.1) xs.2
     pi S T -> \(xs: i I X (pi S T)) -> (s: S) -> lift I X P (T s) (xs s)
