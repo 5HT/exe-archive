@@ -83,8 +83,8 @@ natDec : (n m:nat) -> dec (Path nat n m) = split
 
 natSet : isSet nat = hedberg nat natDec
 
-eq_nat  : eq_ = (nat, nat_eq)
-eq_nat_ : eq nat = nat_eq
+eq_nat  : eq_ = (nat, natEq)
+eq_nat_ : eq nat = natEq
 
 mutual
   evenT : nat -> U = split
@@ -122,10 +122,8 @@ mutual
     succ n' -> \(m : nat) (pn : oddT n')     (pm : oddT m) -> oddPlusOddIsEven n' m pn pm
 
 -- examples 1.9.1 and 1.9.2
-double_via_rec_nat : nat -> nat =
-  rec_nat nat zero (\(_:nat) (y:nat) -> succ (succ y))
-add_via_rec_nat : nat -> nat -> nat =
-  rec_nat (nat->nat) (\(x:nat)->x) (\(_:nat) (add_:nat->nat) (m:nat) -> succ(add_ m))
+double_via_rec_nat : nat -> nat = natRec nat zero (\(_:nat) (y:nat) -> succ (succ y))
+add_via_rec_nat : nat -> nat -> nat = natRec (nat->nat) (\(x:nat)->x) (\(_:nat) (add_:nat->nat) (m:nat) -> succ(add_ m))
 
 -- exercise 1.9: Define the type family Fin : N → U mentioned at the end of §1.3, and the dependent
 -- function fmax : ∏(n:N) Fin(n + 1) mentioned in §1.4.
@@ -138,10 +136,10 @@ fmax: (n:nat) -> Fin (succ n) = split { zero -> fz zero ; succ n -> fs (succ n) 
 --   ack(succ(m), 0) ≡ ack(m, 1),
 --   ack(succ(m),succ(n)) ≡ ack(m, ack(succ(m), n)).
 ack : nat -> nat -> nat =
-  rec_nat (nat->nat)
+  natRec (nat->nat)
           (\(n:nat) -> succ n)
           (\(m:nat) (_:nat->nat) (n:nat) ->
-            rec_nat nat (ack m one) (\(n':nat) (_:nat) -> ack m (ack (succ m) n')) n
+            natRec nat (ack m one) (\(n':nat) (_:nat) -> ack m (ack (succ m) n')) n
           )
 
 

@@ -25,29 +25,28 @@ five  : nat = succ four
 natElim (A: U) (n: A) (s: nat -> A) : nat -> A
   = split { zero -> n ; succ a -> s a }
 
-rec_nat (A:U) (c_0: A) (c_s: nat -> A -> A): (n:nat) -> A
-  = split { zero  -> c_0 ; succ n -> c_s n (rec_nat A c_0 c_s n) }
+natRec (A:U) (c_0: A) (c_s: nat -> A -> A): (n:nat) -> A
+  = split { zero  -> c_0 ; succ n -> c_s n (natRec A c_0 c_s n) }
 
-ind_nat (A:nat->U) (c_0: A zero) (c_s: (n:nat) -> A n -> A (succ n)): (n:nat) -> A n
-  = split { zero  -> c_0 ; succ n -> c_s n (ind_nat A c_0 c_s n) }
+natInd (A:nat->U) (c_0: A zero) (c_s: (n:nat) -> A n -> A (succ n)): (n:nat) -> A n
+  = split { zero  -> c_0 ; succ n -> c_s n (natInd A c_0 c_s n) }
 
-nat_eq: nat -> nat -> bool = split
+natEq: nat -> nat -> bool = split
   zero -> split@(nat -> bool) with { zero -> true; succ n -> false }
-  succ m -> split@(nat -> bool) with { zero -> false; succ n -> nat_eq m n }
+  succ m -> split@(nat -> bool) with { zero -> false; succ n -> natEq m n }
 
 pred: nat -> nat = split { zero -> zero ; succ n -> n }
 add (m: nat): nat -> nat = split { zero -> m; succ n -> succ (add m n) }
 
 mult: nat -> nat -> nat
-  = rec_nat (nat->nat) (\(_:nat) -> zero)
+  = natRec (nat->nat) (\(_:nat) -> zero)
             (\(_:nat) (mult_:nat->nat) (m:nat) -> add m (mult_ m))
 
 exponent : nat -> nat -> nat =
   \(x:nat) (power:nat) ->
-     (rec_nat (nat->nat) (\(_:nat) -> one)
+     (natRec (nat->nat) (\(_:nat) -> one)
      (\(_:nat) (exponent_:nat->nat) (m:nat) -> mult m (exponent_ m)))
      power x
-
 
 n0  : nat = zero
 n1  : nat = succ n0
