@@ -24,11 +24,13 @@ five  : nat = succ four
 
 natCase (C:U) (a b: C): nat -> C
   = split { zero -> a ; succ n -> b }
+
 natRec (C:U) (z: C) (s: nat->C->C): (n:nat) -> C
   = split { zero -> z ; succ n -> s n (natRec C z s n) }
 
 natElim (C:nat->U) (z: C zero) (s: (n:nat)->C(succ n)): (n:nat) -> C(n)
   = split { zero -> z ; succ n -> s n }
+
 natInd (C:nat->U) (z: C zero) (s: (n:nat)->C(n)->C(succ n)): (n:nat) -> C(n)
   = split { zero -> z ; succ n -> s n (natInd C z s n) }
 
