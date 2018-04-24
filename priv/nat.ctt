@@ -22,14 +22,15 @@ three : nat = succ two
 four  : nat = succ three
 five  : nat = succ four
 
-natElim (A: U) (n: A) (s: nat -> A) : nat -> A
-  = split { zero -> n ; succ a -> s a }
+natCase (C:U) (a b: C): nat -> C
+  = split { zero -> a ; succ n -> b }
+natRec (C:U) (z: C) (s: nat->C->C): (n:nat) -> C
+  = split { zero -> z ; succ n -> s n (natRec C z s n) }
 
-natRec (A:U) (c_0: A) (c_s: nat -> A -> A): (n:nat) -> A
-  = split { zero  -> c_0 ; succ n -> c_s n (natRec A c_0 c_s n) }
-
-natInd (A:nat->U) (c_0: A zero) (c_s: (n:nat) -> A n -> A (succ n)): (n:nat) -> A n
-  = split { zero  -> c_0 ; succ n -> c_s n (natInd A c_0 c_s n) }
+natElim (C:nat->U) (z: C zero) (s: (n:nat)->C(succ n)): (n:nat) -> C(n)
+  = split { zero -> z ; succ n -> s n }
+natInd (C:nat->U) (z: C zero) (s: (n:nat)->C(n)->C(succ n)): (n:nat) -> C(n)
+  = split { zero -> z ; succ n -> s n (natInd C z s n) }
 
 natEq: nat -> nat -> bool = split
   zero -> split@(nat -> bool) with { zero -> true; succ n -> false }
