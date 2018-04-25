@@ -65,7 +65,7 @@ propOr (A B : U) (hA : isProp A) (hB : isProp B) (h : A -> neg B) : isProp (eith
 propDec (A : U) (h : isProp A) : isProp (dec A) =
   propOr A (neg A) h (propNeg A) (\(x : A) (h : neg A) -> h x)
 
-propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (and A B) =
+propAnd (A B : U) (pA : isProp A) (pB : isProp B) : isProp (prod A B) =
   propSig A (\(_ : A) -> B) pA (\(_ : A) -> pB)
 
 ---------

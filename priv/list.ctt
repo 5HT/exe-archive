@@ -85,5 +85,5 @@ list_eq (A: eq_): list A.1 -> list A.1 -> bool = split
     cons b bs -> false
   cons x xs -> split@(list A.1 -> bool) with
     nil -> false
-    cons a as -> or_ (A.2 a x) (list_eq A xs as)
+    cons a as -> or (A.2 a x) (list_eq A xs as)
 

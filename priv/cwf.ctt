@@ -117,10 +117,10 @@ shift (t: Exp) (i: nat): Exp = sub (seq i) t
 
 isCo: Ctx -> bool = split
   nil -> true
-  cons x xs -> and_ (isCo xs) (isTy xs x)
+  cons x xs -> and (isCo xs) (isTy xs x)
 
 isU (c:Ctx)(a b:Exp): Exp -> bool = split
-  Star  i   -> (and_ (isTm c (Star i) a) (isTm (cons a c) (Star i) b))
+  Star  i   -> (and (isTm c (Star i) a) (isTm (cons a c) (Star i) b))
   Var   i   -> false
   Pi    a b -> false
   Lam     x -> false
@@ -136,7 +136,7 @@ isPi (c:Ctx)(e:Exp): Exp -> bool = split
 isTy (c:Ctx): Ty -> bool = split
   Star  i   -> true
   Var   i   -> isTm c (Star zero) (Var i)
-  Pi    a b -> and_ (isTy c a) (isTy (cons a c) b)
+  Pi    a b -> and (isTy c a) (isTy (cons a c) b)
   Lam     x -> isTm c (Star zero) (Lam x)
   App   a b -> isTm c (Star zero) (App a b)
 

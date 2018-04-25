@@ -38,48 +38,48 @@ data cofree (F:U->U) (A:U)  = CoFree  (_: fix (nu F A))
 unfree      (F:U->U) (A:U): free   F A -> fix (mu F A) = split Free   a -> a
 uncofree    (F:U->U) (A:U): cofree F A -> fix (nu F A) = split CoFree a -> a
 
-cata (A: U) (F: functor_) (alg: F.1 A -> A) (f: fix F.1): A
+cata (A: U) (F: functor) (alg: F.1 A -> A) (f: fix F.1): A
    = alg (F.2 (fix F.1) A (cata A F alg) (out_ F.1 f))
 
-ana  (A: U) (F: functor_) (coalg: A -> F.1 A) (a: A): fix F.1
+ana  (A: U) (F: functor) (coalg: A -> F.1 A) (a: A): fix F.1
    = Fix (F.2 A (fix F.1) (ana A F coalg) (coalg a))
 
-para (A: U) (F: functor_) (alg: F.1 (tuple (fix F.1) A)->A) (f: fix F.1): A
+para (A: U) (F: functor) (alg: F.1 (tuple (fix F.1) A)->A) (f: fix F.1): A
    = alg (F.2 (fix F.1) (tuple (fix F.1) A)
               (\(m: fix F.1) -> pair m (para A F alg m)) (out_ F.1 f))
 
-hylo (A B: U) (F: functor_) (alg: F.1 B -> B) (coalg: A-> F.1 A) (a: A): B
+hylo (A B: U) (F: functor) (alg: F.1 B -> B) (coalg: A-> F.1 A) (a: A): B
    = alg (F.2 A B (hylo A B F alg coalg) (coalg a))
 
-zygo (A B: U) (F: functor_) (g: F.1 A -> A)
+zygo (A B: U) (F: functor) (g: F.1 A -> A)
      (alg: F.1 (tuple A B) -> B) (f: fix F.1): B
   = snd A B (cata (tuple A B) F
         (\(x: F.1 (tuple A B)) -> pair (g (F.2 (tuple A B) A
              (\(y: tuple A B) -> fst A B y) x)) (alg x)) f)
 
-prepro (A: U) (F: functor_) (nt: F.1(fix F.1) -> F.1(fix F.1))
+prepro (A: U) (F: functor) (nt: F.1(fix F.1) -> F.1(fix F.1))
        (alg: F.1 A -> A) (f: fix F.1): A
   = alg (F.2 (fix F.1) A (\(x: fix F.1) ->
         prepro A F nt alg (cata (fix F.1) F (\(y: F.1(fix F.1))
     -> Fix (nt y)) x)) (out_ F.1 f))
 
-postpro (A: U) (F: functor_) (nt : F.1(fix F.1) -> F.1(fix F.1))
+postpro (A: U) (F: functor) (nt : F.1(fix F.1) -> F.1(fix F.1))
         (coalg: A -> F.1 A) (a: A): fix F.1
   = Fix (F.2 A (fix F.1) (\(x: A) -> ana (fix F.1) F (\(y: fix F.1)
     -> nt (out_ F.1 y)) (postpro A F nt coalg x)) (coalg a))
 
-apo (A: U) (F: functor_)
-    (coalg: A -> F.1(either (fix F.1) A)) (a: A): fix F.1
+apo (A: U) (F: functor)
+    (coalg: A -> F.1 (either (fix F.1) A)) (a: A): fix F.1
   = Fix (F.2 (either (fix F.1) A) (fix F.1) (\(x: either (fix F.1) A)
     -> eitherRec (fix F.1) A (fix F.1) (idfun (fix F.1)) (apo A F coalg) x) (coalg a))
 
-gapo (A B: U) (F: functor_)
+gapo (A B: U) (F: functor)
      (coalg: A -> F.1 A) (coalg2: B -> F.1(either A B)) (b: B): fix F.1
   = Fix ((F.2 (either A B) (fix F.1) (\(x: either A B)
     -> eitherRec A B (fix F.1) (\(y: A) -> ana A F coalg y) (\(z: B)
     -> gapo A B F coalg coalg2 z) x) (coalg2 b)))
 
-futu (A: U) (F: functor_)
+futu (A: U) (F: functor)
      (f: A -> F.1 (free F.1 A)) (a: A): fix F.1
   = Fix (F.2 (free F.1 A) (fix F.1) (\(z: free F.1 A) -> w z) (f a)) where
   w: free F.1 A -> fix F.1 = split
@@ -91,7 +91,7 @@ futu (A: U) (F: functor_)
   unpack_fix: fix (mu F.1 A) -> fix F.1 = split
     Fix x -> unpack_free x
 
-histo (A:U) (F: functor_)
+histo (A:U) (F: functor)
       (f: F.1 (cofree F.1 A) -> A) (z: fix F.1): A
   = extract A ((cata (cofree F.1 A) F (\(x: F.1 (cofree F.1 A)) ->
     CoFree (Fix (CoBind (f x) ((F.2 (cofree F.1 A)
@@ -103,7 +103,7 @@ histo (A:U) (F: functor_)
   unpack_cofree: nu F.1 A (fix (nu F.1 A)) -> A = split
     CoBind a -> a
 
-chrono (A B: U) (F: functor_)
+chrono (A B: U) (F: functor)
        (f: F.1 (cofree F.1 B) -> B)
        (g: A -> F.1 (free F.1 A))
        (a: A): B = histo B F f (futu A F g a)
@@ -116,13 +116,13 @@ mcata (T: U) (F: U -> U)
     = phi (\(x: fix F) -> mcata T F phi x) (out_ F t)
 
 
-meta  (A B: U) (F: functor_)
+meta  (A B: U) (F: functor)
       (f: A -> F.1 A) (e: B -> A)
       (g: F.1 B -> B) (t: fix F.1): fix F.1
     = ana A F f (e (cata B F g t))
 
 
-mutu (A B: U) (F: functor_)
+mutu (A B: U) (F: functor)
      (f: F.1 (tuple A B) -> B)
      (g: F.1 (tuple B A) -> A)
      (t: fix F.1): A
@@ -144,7 +144,7 @@ coind (F: U -> U) (A: U): U
     * (cofree_: (F (cofree F A) -> A) -> fix F -> A)
     * unit
 
-inductive (F: functor_) (A: U): ind F.1 A
+inductive (F: functor) (A: U): ind F.1 A
     = (in_ F.1,out_ F.1,cata A F,futu A F,tt)
-coinductive (F: functor_) (A: U): coind F.1 A
+coinductive (F: functor) (A: U): coind F.1 A
     = (out_ F.1,in_ F.1,ana A F,histo A F,tt)

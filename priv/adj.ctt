@@ -63,8 +63,8 @@ areAdjoint (C D: precategory)
     h1 (x: carrier D) : hom C (F.1 x) (F.1 x) = compose C (F.1 x) (F.1 (G.1 (F.1 x))) (F.1 x)
           ((ntransR D D (idFunctor D) (compFunctor D C D F G) unit C F).1 x)
           ((ntransL C C (compFunctor C D C G F) (idFunctor C) counit D F).1 x)
-  in and ((x: carrier C) -> Path (hom D (G.1 x) (G.1 x)) (path D (G.1 x)) (h0 x))
-         ((x: carrier D) -> Path (hom C (F.1 x) (F.1 x)) (path C (F.1 x)) (h1 x))
+  in prod ((x: carrier C) -> Path (hom D (G.1 x) (G.1 x)) (path D (G.1 x)) (h0 x))
+          ((x: carrier D) -> Path (hom C (F.1 x) (F.1 x)) (path C (F.1 x)) (h1 x))
 
 adjoint (C D: precategory) (F: catfunctor D C) (G: catfunctor C D) : U
   = (unit: ntrans D D (idFunctor D) (compFunctor D C D F G))

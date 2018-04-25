@@ -15,7 +15,7 @@ data either (A B: U) = inl (a: A) | inr (b: B)
 
 fst       (A B: U): tuple A B -> A = split pair a b -> a
 snd       (A B: U): tuple A B -> B = split pair a b -> b
-and       (A B: U): U = (_:A) * B
+prod      (A B: U): U = (_:A) * B
 emptyRec  (C: U): empty -> C = split {}
 emptyInd  (C: empty->U): (z:empty) -> C z = split {}
 unitRec   (C: U) (x: C): unit -> C = split tt -> x

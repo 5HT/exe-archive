@@ -73,13 +73,13 @@ setbool : isSet bool = split
       ---------------------------------------------------------
 
 -- negBool is involutive:
-negBoolK : (b : bool) -> Path bool (neg_ (neg_ b)) b = split
+negBoolK : (b : bool) -> Path bool (negation (negation b)) b = split
   false -> <i> false
   true  -> <i> true
 
 -- negBool is hence and equivalence:
 negBoolEquiv : equiv bool bool =
-  (neg_,isoToEquiv bool bool neg_ neg_ negBoolK negBoolK)
+  (negation,isoToEquiv bool bool negation negation negBoolK negBoolK)
 
 -- This defines a non-trivial equality between bool and bool:
 negBoolEq : Path U bool bool =
@@ -114,7 +114,7 @@ boolToF2K : (b : bool) -> Path bool (f2ToBool (boolToF2 b)) b = split
 boolEqF2 : Path U bool F2 =
  isoPath bool F2 boolToF2 f2ToBool f2ToBoolK boolToF2K
 
-negF2 : F2 -> F2 = subst U (\(X : U) -> (X -> X)) bool F2 boolEqF2 neg_
+negF2 : F2 -> F2 = subst U (\(X : U) -> (X -> X)) bool F2 boolEqF2 negation
 
 -- lemTest (A : U) : (B : U) (p : Path U A B) (a : A) -> PathP p a (transport p a) =
 --   J U A (\(B : U) (p : Path U A B) -> (a : A) -> PathP p a (transport p a)) (refl A)
@@ -164,12 +164,12 @@ q : Path U F2 F2 = <i> p @ (i /\ - i)
 
 
 -- A small test of univalence using boolean negation
-isEquivNegBool : isEquiv bool bool neg_ =
- isoToEquiv bool bool neg_ neg_ negBoolK negBoolK
+isEquivNegBool : isEquiv bool bool negation =
+ isoToEquiv bool bool negation negation negBoolK negBoolK
 
 eqBool : Path U bool bool =
  trans (equiv bool bool) (Path U bool bool)
-       (<i> corrUniv bool bool @ -i) (neg_,isEquivNegBool)
+       (<i> corrUniv bool bool @ -i) (negation,isEquivNegBool)
 
 testf : bool = trans bool bool eqBool true
 testt : bool = trans bool bool eqBool false
