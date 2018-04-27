@@ -32,23 +32,3 @@ hedbergS (A:U) (h : (a x:A) -> stable (Path A a x)) : isSet A =
 hedberg (A : U) (h : discrete A) : isSet A =
  \(a b : A) -> hedbergStable A a b (\(b : A) -> decStable (Path A a b) (h a b))
 
--- Alternative version:
-
--- hedbergLemma (A: U) (f : (a b : A) -> Path A a b -> Path A a b) (a :A) :
---   (b : A) (p : Path A a b) ->
---             Path (Path A a b) (compPath A a a b (f a a (refl A a)) p) (f a b p) =
---   J A a (\ (b:A) (p:Path A a b) -> Path (Path A a b) (compPath A a a b (f a a (refl A a)) p) (f a b p))
---     (refl (Path A a a) (f a a (refl A a)))
-
--- hedberg (A : U) (h : discrete A) : set A = \(a b : A) (p q : Path A a b) ->
---    let rem1 (x y : A) : exConst (Path A x y) = decConst (Path A x y) (h x y)
---        f (x y : A) : Path A x y -> Path A x y = (rem1 x y).1
---        fIsConst (x y : A) : isConst (Path A x y) (f x y) = (rem1 x y).2
---        r : Path A a a = f a a (refl A a)
---        rem2 : Path (Path A a b) (compPath A a a b r p) (f a b p) = hedbergLemma A f a b p
---        rem3 : Path (Path A a b) (compPath A a a b r q) (f a b q) = hedbergLemma A f a b q
---        rem4 : Path (Path A a b) (f a b p) (f a b q) = fIsConst a b p q
---        rem5 : Path (Path A a b) (compPath A a a b r p) (compPath A a a b r q) =
---          compDown (Path A a b) (compPath A a a b r p) (f a b p) (compPath A a a b r q)
---                   (f a b q) rem2 rem3 rem4
---   in lemSimpl A a a b r p q rem5
