@@ -2,11 +2,9 @@
    - Definition of C-systems and universe categories.
    - Construction of a C-system from a universe category by Rafaël Bocquet.
    - C-system defined by a universe category (Vladimir Voevodsky 2015)
-   - https://arxiv.org/pdf/1409.7925.pdf
--}
+   - https://arxiv.org/pdf/1409.7925.pdf -}
 
 module csystem where
-
 import sigma
 import equiv
 import nat_theory

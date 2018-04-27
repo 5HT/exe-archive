@@ -1,7 +1,6 @@
 {- List Theorems:
    - Functor and Inductive instances
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module list_theory where
 

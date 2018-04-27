@@ -1,8 +1,7 @@
 {- Truncations:
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 6.9 Truncations
--}
+   see HoTT 6.9 Truncations -}
 
 module trunc where
 import path

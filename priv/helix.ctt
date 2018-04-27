@@ -1,6 +1,5 @@
 -- The loop space of the circle is equal to Z
 module helix where
-
 import circle
 import pi
 

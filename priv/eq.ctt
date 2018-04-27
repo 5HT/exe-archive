@@ -1,5 +1,4 @@
 module eq where
-
 import bool
 
 -- sigma typeclass encoding

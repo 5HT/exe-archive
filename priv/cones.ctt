@@ -1,8 +1,7 @@
 {- Category Theory:
    - Cones;
    - Pullbacks.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module cones where
 import sip

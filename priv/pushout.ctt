@@ -1,8 +1,7 @@
 {- Pushout:
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see 6.8 Pushouts
--}
+   see 6.8 Pushouts -}
 
 module pushout where
 

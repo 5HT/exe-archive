@@ -2,11 +2,9 @@
    - Pure;
    - Applicative;
    - Monad.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module control where
-
 import proto
 import proto_path
 

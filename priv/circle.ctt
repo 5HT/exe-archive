@@ -2,11 +2,9 @@
    - Circle HIT.
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 6.4 Circles and spheres
--}
+   see HoTT 6.4 Circles and spheres -}
 
 module circle where
-
 import int
 import iso
 import bool_theory

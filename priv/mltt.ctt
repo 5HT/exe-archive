@@ -1,7 +1,6 @@
 {- MLTT model:
    - Empty, Unit, Pi, Sigma, Equ, W.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module mltt where
 

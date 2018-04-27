@@ -1,6 +1,5 @@
 {- Retract Type:
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module retract where
 

@@ -1,7 +1,6 @@
 -- The integers as nat + nat with proof that succ is an iso giving a
 -- non-trivial path from Z to Z
 module int where
-
 import nat_theory
 import discor
 import hedberg

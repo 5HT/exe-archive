@@ -2,8 +2,7 @@
    - Fibers;
    - Contractability of Fibers and Singletons;
    - Equivalence.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module proto_equiv where
 

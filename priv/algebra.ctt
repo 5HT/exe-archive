@@ -4,22 +4,13 @@
    - Ring and AbRing.
    Copyright (c) Groupoid Infinity, 2014-1018.
 
-   see HoTT 6.11 Algebra
--}
+   see HoTT 6.11 Algebra -}
 
 module algebra where
-
--- TOC:
--- 1. Properties
--- 2. Structures
--- 3. Accessors
--- 4. Theorems
-
 import iso_pi
 import iso_sigma
 
 -- Associativity
-
 isAssociative (M : U) (op : M -> M -> M) : U
   = (a b c : M) -> Path M (op a (op b c)) (op (op a b) c)
 
@@ -33,7 +24,6 @@ propisAssociative (M : U) (sM : isSet M) (op : M -> M -> M)
   in propPi3 M B h
 
 -- Has identity element
-
 hasLeftIdentity (M : U) (op : M -> M -> M) (id : M) : U
   = (x : M) -> Path M (op id x) x
 

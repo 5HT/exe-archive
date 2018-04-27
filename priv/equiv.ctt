@@ -1,10 +1,8 @@
 {- Equivalence:
-   - Theorems.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   - Theorems, Gluening.
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module equiv where
-
 import proto_equiv
 
 equivLemma (A B: U)

@@ -1,6 +1,5 @@
 -- either A B is discrete if A and B are
 module discor where
-
 import proto
 import prop
 

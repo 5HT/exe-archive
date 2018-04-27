@@ -3,8 +3,7 @@
    - Congruence and Respect;
    - Contractability of Singletons;
    - Substitution, Transport, J.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module proto_path where
 

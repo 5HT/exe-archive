@@ -1,11 +1,9 @@
 {- Interval Type:
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 6.3 The interval
--}
+   see HoTT 6.3 The interval -}
 
 module interval where
-
 import equiv
 import iso
 import prop

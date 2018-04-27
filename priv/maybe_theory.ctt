@@ -13,7 +13,7 @@ functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe
 
 -- an alternative proof of functorMaybeId using maybeDElim
 functorMaybeId2 (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a
-  = maybeDElim A P (maybeRefl A nothing) (\(c:A) -> maybeRefl A (just c)) where
+  = maybeInd A P (maybeRefl A nothing) (\(c:A) -> maybeRefl A (just c)) where
     P (x: maybe A): U = Path (maybe A) (maybeId A x) x
 
 functorMaybeComp (A B C: U) (f: B -> C) (g: A -> B):

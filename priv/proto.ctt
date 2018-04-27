@@ -3,8 +3,7 @@
    - Tuple and Either;
    - Id, Const, Composition;
    - Decideability, Discretness, Stability.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module proto where
 

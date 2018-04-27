@@ -3,11 +3,9 @@
    - Id;
    - Compose;
    - Higher Order Compose.
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module functor where
-
 import proto
 import path
 import pi
@@ -31,6 +29,7 @@ functor_fun (T: U): FUNCTOR = ((\(B:U)->T->B,fmap),(id,compose,tt)) where
                  (\(y: T) -> f (g (x y)))
    = refl (T->C) (\(y: T) -> f (g (x y)))
 
+-- TODO: normalize
 functor_comptype (f g: FUNCTOR): FUNCTOR = ((funcomp F G,fmap),(id,compose,tt)) where
   F: U -> U = f.1.1
   G: U -> U = g.1.1

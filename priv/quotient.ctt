@@ -1,8 +1,7 @@
 {- Quotient Type:
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 6.10 Quotients
--}
+   see HoTT 6.10 Quotients -}
 
 module quotient where
 

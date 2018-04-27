@@ -1,6 +1,5 @@
 -- This file proves that the collection of all sets is a groupoid
 module collection where
-
 import equiv
 import univ
 import prop

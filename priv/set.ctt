@@ -2,8 +2,7 @@
    - Set Theorems;
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 3.1 Sets and n-types
--}
+   see HoTT 3.1 Sets and n-types -}
 
 module set where
 

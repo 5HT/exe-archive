@@ -3,8 +3,7 @@
    - Structure Identity Principle.
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   HoTT 9.8 The structure identity principle.
--}
+   HoTT 9.8 The structure identity principle. -}
 
 module sip where
 import cat

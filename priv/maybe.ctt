@@ -1,6 +1,5 @@
 {- Run-time Maybe Type:
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module maybe where
 import proto

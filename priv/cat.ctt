@@ -5,11 +5,9 @@
    Copyright (c) Groupoid Infinity, 2014-2018
 
    see HoTT 9.1 Categories and precategories
-   see HoTT 9.9 The Rezk completion
--}
+   see HoTT 9.9 The Rezk completion -}
 
 module cat where
-
 import path
 import iso_sigma
 

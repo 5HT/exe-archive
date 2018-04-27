@@ -2,8 +2,7 @@
    Copyright (c) Groupoid Infinity, 2014-2018.
 
    see HoTT 2.7 Sigma-types
-   see HoTT 1.6 Dependent pair types (Sigma-types)
--}
+   see HoTT 1.6 Dependent pair types (Sigma-types) -}
 
 module sigma where
 import set
