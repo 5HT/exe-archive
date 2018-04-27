@@ -1,10 +1,11 @@
 {- MLTT model:
-   - Pi, Sigma, Equ, W.
+   - Empty, Unit, Pi, Sigma, Equ, W.
    Copyright (c) Groupoid Infinity, 2014-2018.
 -}
 
 module mltt where
 
+data empty =
 data unit = tt
 
 Pi (A:U)(P:A->U):U=(x:A)->P(x)
@@ -80,9 +81,20 @@ sup_injective2 (A:U)(B:A->U)(x:A)(f:B(x)->W A B)
 whead (A:U)(B:A->U): W A B -> A                            = split sup x f -> x
 wtail (A:U)(B:A->U): (x:W A B) -> B (whead A B x) -> W A B = split sup x f -> f
 
-Wind (A:U) (B:A->U)
-     (P:W A B -> U) (alg: (a:A) (f:B(a)->W A B) (hf:(b:B(a))->P (f b)) -> P (sup a f))
+Wrec (A:U) (B:A->U) (P: U)
+     (alg: (a:A) -> (B(a)->W A B) -> ((b:B(a)) -> P) -> P)
+   : W A B -> P = split sup x g -> alg x g (\(h:B(x)) -> Wrec A B P alg (g h))
+
+Wind (A:U) (B:A->U) (P:W A B -> U)
+     (alg: (a:A) (f:B(a)->W A B) -> ((b:B(a))->P (f b)) -> P (sup a f))
    : (w: W A B) -> P w = split sup x g -> alg x g (\(b:B(x)) -> Wind A B P alg (g b))
 
-Wrec (A P:U) (B:A->U) (alg: (a:A) (f:B(a)->W A B) (h:(b:B(a)) -> P) -> P)
-   : W A B -> P = split sup x g -> alg x g (\(h:B(x)) -> Wrec A P B alg (g h))
+WFT (A:U) (B:A->U): U = (x:A) * (B(x) -> WFT A B)
+
+WFTrec (A:U) (B:A->U) (P:U)
+       (alg: (a:A) -> (B(a)->WFT A B) -> ((b:B(a))->P) -> P)
+     : (w: WFT A B) -> P = \(w:WFT A B) -> alg w.1 w.2 (\(b:B(w.1)) -> WFTrec A B P alg (w.2 b))
+
+WFTind (A:U) (B:A->U) (P:WFT A B -> U)
+       (alg: (a:A) (f:B(a)->WFT A B) -> ((b:B(a))->P (f b)) -> P (a,f))
+     : (w: WFT A B) -> P w = \(w:WFT A B) -> alg w.1 w.2 (\(b:B(w.1)) -> WFTind A B P alg (w.2 b))
