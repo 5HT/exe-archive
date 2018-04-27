@@ -80,7 +80,9 @@ sup_injective2 (A:U)(B:A->U)(x:A)(f:B(x)->W A B)
 whead (A:U)(B:A->U): W A B -> A                            = split sup x f -> x
 wtail (A:U)(B:A->U): (x:W A B) -> B (whead A B x) -> W A B = split sup x f -> f
 
-induction (A:U) (B:A->U) (P:W A B -> U)
-          (alg: (a:A) (f:B(a)->W A B) (hf:(b:B(a))->P (f b)) -> P (sup a f))
-        : (w: W A B) -> P w
-        = split sup x g -> alg x g (\(b:B(x)) -> induction A B P alg (g b))
+Wind (A:U) (B:A->U)
+     (P:W A B -> U) (alg: (a:A) (f:B(a)->W A B) (hf:(b:B(a))->P (f b)) -> P (sup a f))
+   : (w: W A B) -> P w = split sup x g -> alg x g (\(b:B(x)) -> Wind A B P alg (g b))
+
+Wrec (A P:U) (B:A->U) (alg: (a:A) (f:B(a)->W A B) (h:(b:B(a)) -> P) -> P)
+   : W A B -> P = split sup x g -> alg x g (\(h:B(x)) -> Wrec A P B alg (g h))
