@@ -8,14 +8,27 @@
 
 module proto where
 
-data empty =
-data unit = tt
-data tuple (A B: U) = pair (a: A)       (b: B)
+-- basic types
+data empty           =
+data unit            = tt
+data tuple  (A B: U) = pair (a: A)      (b: B)
 data either (A B: U) = inl (a: A) | inr (b: B)
+data exists (A: U) (B: A -> U) = sigma (a: A) (b: B(a))
 
-fst       (A B: U): tuple A B -> A = split pair a b -> a
-snd       (A B: U): tuple A B -> B = split pair a b -> b
-prod      (A B: U): U = (_:A) * B
+fst  (A B: U): tuple A B -> A = split pair a b -> a
+snd  (A B: U): tuple A B -> B = split pair a b -> b
+pr1  (A: U) (B: A -> U): exists A B -> A = split sigma a b -> a
+pr2  (A: U) (B: A -> U): (x:exists A B) -> B(pr1 A B x) = split sigma a b -> b
+prod (A B: U): U = (_:A) * B
+
+{- Type Former Elims   Desc
+   ----------- ------- ----------------------------
+   prod        .1  .2  non-dependent sigma
+   Sigma       pi1 pi2 dependent sigma
+   tuple       fst snd non-dependent inductive type
+   exists      pr1 pr2 dependent inductive type     -}
+
+-- recursors and induction
 emptyRec  (C: U): empty -> C = split {}
 emptyInd  (C: empty->U): (z:empty) -> C z = split {}
 unitRec   (C: U) (x: C): unit -> C = split tt -> x

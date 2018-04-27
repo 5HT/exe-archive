@@ -9,9 +9,9 @@ module sigma where
 import set
 
 Sigma  (A:U)(B:A->U): U = (x:A) * B(x)
-exists (A:U)(B:A->U)(a: A) (b: B a): Sigma A B = (a,b)
-pr1    (A:U)(B:A->U)(x: Sigma A B): A = x.1
-pr2    (A:U)(B:A->U)(x: Sigma A B): B (pr1 A B x) = x.2
+sigmaIntro (A:U)(B:A->U)(a: A) (b: B a): Sigma A B = (a,b)
+pi1    (A:U)(B:A->U)(x: Sigma A B): A = x.1
+pi2    (A:U)(B:A->U)(x: Sigma A B): B (pi1 A B x) = x.2
 sigRec (A:U)(B:A->U)(C: U) (g:(x:A)->B(x)->C) (p: Sigma A B): C = g p.1 p.2
 sigInd (A:U)(B:A->U)(C: Sigma A B->U) (p: Sigma A B) (g:(a:A)(b:B(a))->C(a,b)): C p = g p.1 p.2
 
