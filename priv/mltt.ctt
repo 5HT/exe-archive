@@ -1,7 +1,5 @@
 {- MLTT model:
-   - Pi;
-   - Sigma;
-   - Equ.
+   - Pi, Sigma, Equ, W.
    Copyright (c) Groupoid Infinity, 2014-2018.
 -}
 
@@ -36,7 +34,6 @@ J         (A: U) (x: A) (C: D A) (d: C x x (reflect A x))
                                                  (contr A x y p) d where
                      T (z: singl A x): U = C x (z.1) (z.2)
 
-
 comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a))) (f a) = reflect (B a) (f a) -- beta
 comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (\(x:A) -> f x)                 = reflect (A -> B a) f -- eta
 comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b))                            = reflect A          a
@@ -63,11 +60,27 @@ MLTT (A: U): U
   * (Id_Elim: (x: A) (C: D A) (d: C x x (Id_Intro x)) (y: A) (p: Equ A x y) -> C x y p)
   * (Id_Comp: (x y:A)(C: D A)(p: Equ A x y)(b: C x x (reflect A x))
               (X: Equ U (C x x (reflect A x)) (C x y p)) ->
-              HeteroEqu (C x x (reflect A x)) (C x y p) b (J A x C b y p) X)
-  * unit
+              HeteroEqu (C x x (reflect A x)) (C x y p) b (J A x C b y p) X) * unit
 
 instance (A: U): MLTT A
     = (Pi A, lambda A, app A, comp1 A, comp2 A,
        Sigma A, pair A, pr1 A, pr2 A, comp3 A, comp4 A, comp5 A,
-       Equ A, reflect A, J A, comp6 A,
-       tt)
+       Equ A, reflect A, J A, comp6 A, tt)
+
+data W (A:U) (B:A->U) = sup (x:A) (f:B(x) -> W A B)
+
+sup_injective1 (A:U)(B:A->U)(x:A)(f:B(x)->W A B)
+             : (y:A)(g:B(y)->W A B) -> Path (W A B) (sup x f) (sup y g) -> Path A x y
+             = undefined
+
+sup_injective2 (A:U)(B:A->U)(x:A)(f:B(x)->W A B)
+             : (g:B(x)->W A B) -> Path (W A B) (sup x f) (sup x g) -> Path (B(x)->W A B) f g
+             = undefined
+
+whead (A:U)(B:A->U): W A B -> A                            = split sup x f -> x
+wtail (A:U)(B:A->U): (x:W A B) -> B (whead A B x) -> W A B = split sup x f -> f
+
+induction (A:U) (B:A->U) (P:W A B -> U)
+          (alg: (a:A) (f:B(a)->W A B) (hf:(b:B(a))->P (f b)) -> P (sup a f))
+        : (w: W A B) -> P w
+        = split sup x g -> alg x g (\(b:B(x)) -> induction A B P alg (g b))
