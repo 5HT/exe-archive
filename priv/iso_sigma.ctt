@@ -66,3 +66,11 @@ lemSigProp (A:U) (B:A-> U) (pB : (x:A) -> isProp (B x)) (t u : Sigma A B) : Path
    rem1 : Path U ((p:T) * C p) T = lem6 T C rem
    rem2 : Path U (Path (Sigma A B) t u) ((p:T) * C p) = pathSig A B t u
 
+flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
+  = isoPath AB BA from to toK fromK where
+    AB:    U = A -> B -> C
+    BA:    U = B -> A -> C
+    from:  AB -> BA = flip A B C
+    to:    BA -> AB = flip B A C
+    fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
+    toK:   (f: BA) -> Path BA (from (to f)) f = refl BA

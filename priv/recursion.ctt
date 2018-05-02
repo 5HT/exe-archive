@@ -135,7 +135,5 @@ coind (F: U -> U) (A: U): U
     * (free_: (A -> F (free F A)) -> A -> fix F)
     * unit
 
-inductive (F: functor) (A: U): ind F.1 A
-    = (in_ F.1,out_ F.1,cata A F,histo A F,tt)
-coinductive (F: functor) (A: U): coind F.1 A
-    = (out_ F.1,in_ F.1,ana A F,futu A F,tt)
+inductive   (F: functor) (A: U): ind F.1 A = (in_ F.1,out_ F.1,cata A F,histo A F,tt)
+coinductive (F: functor) (A: U): coind F.1 A = (out_ F.1,in_ F.1,ana A F,futu A F,tt)

@@ -5,7 +5,6 @@
    see HoTT 3.3 Mere propositions. -}
 
 module prop where
-
 import proto
 import path
 
@@ -25,19 +24,20 @@ propUnit : isProp unit = split tt -> split@((x:unit) -> Path unit tt x) with { t
 -- Exists(A,B) = ||Sigma(A,B)||
 
 lemPropF (A : U) (P : A -> U) (pP : (x : A) -> isProp (P x)) (a0 a1 :A)
-         (p : Path A a0 a1) (b0 : P a0) (b1 : P a1) : PathP (<i>P (p@i)) b0 b1 =
- <i> pP (p@i) (comp (<j>P (p@i/\j)) b0 [(i=0) -> <_>b0])
-              (comp (<j>P (p@i\/-j)) b1 [(i=1) -> <_>b1]) @ i
+         (p : Path A a0 a1) (b0 : P a0) (b1 : P a1)
+       : PathP (<i>P (p@i)) b0 b1
+       = <i> pP (p@i) (comp (<j>P (p@i/\j)) b0 [(i=0) -> <_>b0])
+                      (comp (<j>P (p@i\/-j)) b1 [(i=1) -> <_>b1]) @ i
 
 lemSig (A : U) (B : A -> U) (pB : (x : A) -> isProp (B x))
-       (u v : (x:A) * B x) (p : Path A u.1 v.1) :
-       Path ((x:A) * B x) u v =
-  <i> (p@i,(lemPropF A B pB u.1 v.1 p u.2 v.2)@i)
+       (u v : (x:A) * B x) (p : Path A u.1 v.1)
+     : Path ((x:A) * B x) u v
+     = <i> (p@i,(lemPropF A B pB u.1 v.1 p u.2 v.2)@i)
 
 propSig (A : U) (B : A -> U) (pA : isProp A)
-        (pB : (x : A) -> isProp (B x)) (t u : (x:A) * B x) :
-        Path ((x:A) * B x) t u =
-  lemSig A B pB t u (pA t.1 u.1)
+        (pB : (x : A) -> isProp (B x)) (t u : (x:A) * B x)
+      : Path ((x:A) * B x) t u
+      = lemSig A B pB t u (pA t.1 u.1)
 
 -- Forall(A,B) = ||Pi(A,B)||
 
@@ -93,3 +93,27 @@ stableConst (A : U) (sA: stable A) : exConst A =
 
 injective (A B : U) (f : A -> B) : U =
   (a0 a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1
+
+----------------------
+isContrProp (A : U) (h : isContr A) : isProp A =
+  \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
+
+lemProp (A : U) (h : A -> isProp A) : isProp A = \(a : A) -> h a a
+
+propSet (A : U) (h : isProp A) : isSet A =
+ \(a b : A) (p q : Path A a b) ->
+   <j i> comp (<_> A) a [ (i=0) -> h a a
+                        , (i=1) -> h a b
+                        , (j=0) -> h a (p @ i)
+                        , (j=1) -> h a (q @ i)]
+
+propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem where
+  rem (t : isContr A) : isProp (isContr A) = propSig A T pA pB where
+  T (x : A) : U = (y : A) -> Path A x y
+  pA (x y : A) : Path A x y = composition A x t.1 y (<i> t.2 x @ -i) (t.2 y)
+  pB (x : A) : isProp (T x) = propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
+
+propIsProp (A : U) : isProp (isProp A) =
+  \(f g : isProp A) -> <i> \(a b : A) ->
+    propSet A f a b (f a b) (g a b) @ i
+

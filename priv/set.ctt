@@ -5,34 +5,11 @@
    see HoTT 3.1 Sets and n-types -}
 
 module set where
-
 import proto
 import path
 import prop
 
 -- Contractible is a Prop
-
-propSet (A : U) (h : isProp A) : isSet A =
- \(a b : A) (p q : Path A a b) ->
-   <j i> comp (<_> A) a [ (i=0) -> h a a
-                        , (i=1) -> h a b
-                        , (j=0) -> h a (p @ i)
-                        , (j=1) -> h a (q @ i)]
-
-lemProp (A : U) (h : A -> isProp A) : isProp A = \(a : A) -> h a a
-
-isContrProp (A : U) (h : isContr A) : isProp A =
-  \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
-
-propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem where
-  rem (t : isContr A) : isProp (isContr A) = propSig A T pA pB where
-  T (x : A) : U = (y : A) -> Path A x y
-  pA (x y : A) : Path A x y = composition A x t.1 y (<i> t.2 x @ -i) (t.2 y)
-  pB (x : A) : isProp (T x) = propPi A (\ (y : A) -> Path A x y) (propSet A pA x)
-
-propIsProp (A : U) : isProp (isProp A) =
-  \(f g : isProp A) -> <i> \(a b : A) ->
-    propSet A f a b (f a b) (g a b) @ i
 
 setIsProp (A : U) : isProp (isSet A) =
  \(f g : isSet A) -> <i> \(a b :A) ->

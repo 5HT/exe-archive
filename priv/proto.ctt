@@ -56,4 +56,5 @@ lambda    (A B: U) (b: B): A -> B = \(_:A) -> b --\ non-dependent
 apply     (A B: U) (f: A -> B) (x: A): B = f(x) --/ version
 funcomp (F G: U -> U) (t: U): U = F (G t)
 ot      (A B C: U): U = (B -> C) -> (A -> B) -> (A -> C)
-o       (A B C: U) (f: B->C) (g: A->B): A -> C = \(x:A) -> f(g(x))
+o       (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f(g(x))
+flip    (A B C: U) (f: A -> B -> C) (b: B) (a: A): C = f a b

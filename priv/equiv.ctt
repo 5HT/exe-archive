@@ -5,9 +5,8 @@
 module equiv where
 import proto_equiv
 
-equivLemma (A B: U)
-  : (v w: equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
-  = lemSig (A -> B) (isEquiv A B) (propIsEquiv A B)
+equivLemma (A B: U): (v w: equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
+  = lemSig (A -> B) (isEquiv A B) (propIsEquivDirect A B)
 
 equivPath (T A: U) (f: T -> A) (p: isEquiv T A f): Path U T A =
   <i> Glue A [ (i=0) -> (T,f,p), (i=1) -> (A,idfun A, idIsEquiv A)]
@@ -46,3 +45,4 @@ idToPath (A B : U) (w : equiv A B)
   : Path (equiv A B) (pathToEquiv A B (equivToPath A B w)) w
   = equivLemma A B (pathToEquiv A B (equivToPath A B w)) w
       (<i>transPathFun A B w@-i)
+

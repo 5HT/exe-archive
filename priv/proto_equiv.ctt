@@ -5,8 +5,8 @@
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module proto_equiv where
-
-import set
+import path
+import prop
 
 fiber (A B: U) (f: A -> B) (y: B): U = (x: A) * Path B y (f x)
 isSingleton (X:U): U = (c:X) * ((x:X) -> Path X c x)
@@ -17,6 +17,27 @@ propIsEquiv (A B: U) (f: A -> B): isProp (isEquiv A B f) =
   \(u0 u1:isEquiv A B f) -> <i> \ (y:B) ->
   propIsContr (fiber A B f y) (u0 y) (u1 y) @ i
 
+propIsEquivDirect (A B : U) (f : A -> B) : isProp (isEquiv A B f) =
+  \(p q : isEquiv A B f) ->
+  <i> \(y : B) ->
+    let p0 : A = (p y).1.1
+        p1 : Path B y (f p0) = (p y).1.2
+        p2 : (w1 : fiber A B f y) -> Path (fiber A B f y) (p0,p1) w1 =
+         (p y).2
+        q0 : A = (q y).1.1
+        q1 : Path B y (f q0) = (q y).1.2
+        q2 : (w1 : fiber A B f y) -> Path (fiber A B f y) (q0,q1) w1 =
+         (q y).2
+    in (p2 (q0,q1) @ i,
+       \(w : fiber A B f y) ->
+          let sq : PathP (<j> Path (fiber A B f y) (p2 (q0,q1) @ j) w) (p2 w) (q2 w) = 
+                     <i j> comp (<_> fiber A B f y) (p2 w @ i \/ j)
+                                 [ (i = 0) -> <k> p2 w @ j
+                                 , (i = 1) -> <k> q2 w @ j \/ -k
+                                 , (j = 0) -> <k> p2 (q2 w @ -k) @ i
+                                 , (j = 1) -> <k> w ]
+          in sq @ i)
+
 idIsEquiv (A : U) : isEquiv A A (idfun A) =
   \(a: A) -> ((a, refl A a),\(z: fiber A A (idfun A) a) ->
   contr A a z.1 z.2)
@@ -26,3 +47,4 @@ lemSinglContr (A:U) (a:A) : isContr ((x:A) * Path A a x) =
 
 idEquiv (A:U): equiv A A = (\ (x:A) -> x, lemSinglContr A)
 
+transEquiv (A B: U) (p: Path U A B): equiv A B = subst U (equiv A) A B p (idEquiv A)
