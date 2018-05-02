@@ -4,6 +4,8 @@
 
 module equiv where
 import proto_equiv
+import sigma
+import retract
 
 equivLemma (A B: U): (v w: equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
   = lemSig (A -> B) (isEquiv A B) (propIsEquivDirect A B)
@@ -46,3 +48,45 @@ idToPath (A B : U) (w : equiv A B)
   = equivLemma A B (pathToEquiv A B (equivToPath A B w)) w
       (<i>transPathFun A B w@-i)
 
+isEquivContr (A B:U) (cA:isContr A) (cB:isContr B) (f:A->B) : isEquiv A B f
+  = \(y:B) -> sigIsContr A (\ (x:A) -> Path B y (f x)) cA (\ (x:A) -> isPathContr B cB y (f x))
+
+--------------------------
+funFib1 (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0) (u:fiber (B x0) (C x0) (f x0) z0)
+      : fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x0,z0)
+      = ((x0,u.1),<i>(x0,u.2@i))
+
+funFib2 (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0)
+        (w : fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x0,z0))
+      : fiber (B x0) (C x0) (f x0) z0
+      = (b0,s) where
+  x : A = w.1.1
+  b : B x = w.1.2
+  p : Path A x0 x = <i>(w.2@i).1
+  q : PathP (<i>C (p@i)) z0 (f x b) = <i>(w.2@i).2
+  b0 : B x0 = comp (<i>B (p@-i)) b []
+  r : PathP (<i>B (p@-i)) b b0 = <i>comp (<j>B (p@-j\/-i)) b [(i=0) -> <k>b]
+  s : Path (C x0) z0 (f x0 b0) = <i>comp (<j>C (p@(i/\-j))) (q@i) [(i=0) -> <k>z0,(i=1) -> <k>f (p@-k) (r@k)]
+
+compFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0) (u:fiber (B x0) (C x0) (f x0) z0)
+         : fiber (B x0) (C x0) (f x0) z0
+         = funFib2 A B C f x0 z0 (funFib1 A B C f x0 z0 u)
+
+retFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0) (u:fiber (B x0) (C x0) (f x0) z0)
+        : Path (fiber (B x0) (C x0) (f x0) z0) (funFib2 A B C f x0 z0 (funFib1 A B C f x0 z0 u)) u
+        = <l> (comp (<i> B x0) u.1 [(l=1) -> <j>u.1],
+          <i> comp (<j> C x0) (u.2 @ i) [ (l=1) -> <j> u.2 @ i,
+                                          (i=0) -> <j> z0,
+                                          (i=1) -> <j> f x0 (comp (<k> B x0) u.1 [ (j=0) -> <k> u.1,
+                                                                                   (l=1) -> <k>u.1 ]) ])
+
+equivFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x)
+            (cB : isContr (Sigma A B)) (cC : isContr (Sigma A C)) (x:A)
+          : isEquiv (B x) (C x) (f x)
+          = \ (z:C x) -> retIsContr (fiber (B x) (C x) (f x) z)
+                                    (fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x,z))
+                                    (funFib1 A B C f x z)
+                                    (funFib2 A B C f x z)
+                                    (retFunFib A B C f x z)
+                                    (isEquivContr (Sigma A B) (Sigma A C) cB cC (totalFun A B C f) (x,z))
+------------------

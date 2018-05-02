@@ -16,3 +16,12 @@ compDown (A: U) (a a' b b': A)
          (p: Path A a a') (q: Path A b b')
        : Path A a' b' -> Path A a b
        = compUp A a' a b' b (inv A a a' p) (inv A b b' q)
+
+retIsContr (A B: U) (f: A -> B) (g: B -> A)
+           (h: retract A B f g) (v: isContr B)
+         : isContr A
+         = (g b,p) where
+ b : B = v.1
+ q : (y:B) -> Path B b y = v.2
+ p (x:A) : Path A (g b) x
+   = <i> comp (<_> A) (g (q (f x) @ i)) [(i=0) -> <j>g b,(i=1) -> h x]
