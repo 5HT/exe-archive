@@ -14,7 +14,7 @@ import control
 functor_id: FUNCTOR = ((\(A:U)->A,apply),(id,compose,tt)) where
   id: (A: U) -> (a: A) -> Path A a a = refl
   compose (A B C: U) (f: B->C) (g: A->B) (x: A):
-    Path C (f(g(x))) (f(g(x))) = refl C (o A B C f g x)
+     Path C (f(g(x))) (f(g(x))) = refl C (o A B C f g x)
 
 functor_const (A: U): FUNCTOR = ((const A,fmap),(id,compose,tt)) where
   fmap (B C: U) (_: B -> C): A -> A = idfun A
@@ -29,7 +29,6 @@ functor_fun (T: U): FUNCTOR = ((\(B:U)->T->B,fmap),(id,compose,tt)) where
                  (\(y: T) -> f (g (x y)))
    = refl (T->C) (\(y: T) -> f (g (x y)))
 
--- TODO: normalize
 functor_comptype (f g: FUNCTOR): FUNCTOR = ((funcomp F G,fmap),(id,compose,tt)) where
   F: U -> U = f.1.1
   G: U -> U = g.1.1
@@ -37,12 +36,10 @@ functor_comptype (f g: FUNCTOR): FUNCTOR = ((funcomp F G,fmap),(id,compose,tt)) 
   functorIdFunExt (x: FUNCTOR) (A: U): Path (x.1.1 A -> x.1.1 A) (x.1.2 A A (idfun A)) (idfun (x.1.1 A))
     = funExt (x.1.1 A) (x.1.1 A) (x.1.2 A A (idfun A)) (idfun (x.1.1 A)) (x.2.1 A)
   functorComposeFunExt (x: FUNCTOR) (A B C: U) (fx: B -> C) (gy: A -> B):
-    Path (x.1.1 A -> x.1.1 C)
-         (x.1.2 A C (o A B C fx gy))
-         (o (x.1.1 A) (x.1.1 B) (x.1.1 C) (x.1.2 B C fx) (x.1.2 A B gy))
+    Path (x.1.1 A -> x.1.1 C) (x.1.2 A C (o A B C fx gy))
+                              (o (x.1.1 A) (x.1.1 B) (x.1.1 C) (x.1.2 B C fx) (x.1.2 A B gy))
     = funExt (x.1.1 A) (x.1.1 C) (x.1.2 A C (o A B C fx gy))
-             ((o (x.1.1 A) (x.1.1 B) (x.1.1 C) (x.1.2 B C fx) (x.1.2 A B gy)))
-             (x.2.2.1 A B C fx gy)
+             ((o (x.1.1 A) (x.1.1 B) (x.1.1 C) (x.1.2 B C fx) (x.1.2 A B gy))) (x.2.2.1 A B C fx gy)
   lemma1 (A B: U) (g: A -> B) (x y: A) (z: B) (pxy: Path A x y) (pgyz: Path B (g y) z): Path B (g x) z
        = substInv A (\(X: A) -> Path B (g X) z) x y pxy pgyz
   fmapF: (A B: U) -> (A -> B) -> F A -> F B = f.1.2
@@ -54,10 +51,9 @@ functor_comptype (f g: FUNCTOR): FUNCTOR = ((funcomp F G,fmap),(id,compose,tt)) 
     = lemma1 (G A -> G A) (F (G A)) lemma1g (fmapG A A (idfun A)) (idfun (G A)) x (functorIdFunExt g A) (idF (G A) x)
     where lemma1g (y: G A -> G A): F (G A) = fmapF (G A) (G A) y x
   compose (A B C: U) (ff: B -> C) (gg: A -> B) (x: T A):
-    Path (F (G C))
-      (fmapF (G A) (G C) (fmapG A C ((\(y : A) -> ff (gg y)))) x)
-      (fmapF (G B) (G C) (fmapG B C ff) (fmapF (G A) (G B) (fmapG A B gg) x))
-    = goal where
+    Path (F (G C)) (fmapF (G A) (G C) (fmapG A C ((\(y : A) -> ff (gg y)))) x)
+                   (fmapF (G B) (G C) (fmapG B C ff) (fmapF (G A) (G B) (fmapG A B gg) x))
+    = substInv (G A -> G C) P AAA BBB compGinst compFinst where
        fff : G B -> G C = fmapG B C ff
        ggg : G A -> G B = fmapG A B gg
        AAA:  G A -> G C = fmapG A C (o A B C ff gg)
@@ -67,4 +63,3 @@ functor_comptype (f g: FUNCTOR): FUNCTOR = ((funcomp F G,fmap),(id,compose,tt)) 
          (fmapF (G B) (G C) fff (fmapF (G A) (G B) ggg x))
        compFinst: P BBB = f.2.2.1 (G A) (G B) (G C) fff ggg x
        compGinst : Path (G A -> G C) AAA BBB = functorComposeFunExt g A B C ff gg
-       goal : P AAA = substInv (G A -> G C) P AAA BBB compGinst compFinst

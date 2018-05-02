@@ -57,13 +57,3 @@ apply     (A B: U) (f: A -> B) (x: A): B = f(x) --/ version
 funcomp (F G: U -> U) (t: U): U = F (G t)
 ot      (A B C: U): U = (B -> C) -> (A -> B) -> (A -> C)
 o       (A B C: U) (f: B->C) (g: A->B): A -> C = \(x:A) -> f(g(x))
-
--- datatype properties: decideability, discretness, stability
-efq        (A: U): empty -> A = split {}
-neg        (A: U): U = A -> empty
-dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
-neg        (A: U): U = A -> empty
-dec        (A: U): U = either A (neg A)
-stable     (A: U): U = neg (neg A) -> A
-
--- see HoTT 3.4 Classical vs. intuitionistic logic

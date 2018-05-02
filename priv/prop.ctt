@@ -9,11 +9,18 @@ module prop where
 import proto
 import path
 
-discrete (A: U): U = (a b: A) -> dec (Path A a b)
+-- datatype properties: decideability, discretness, stability
+efq        (A: U): empty -> A = split {}
+neg        (A: U): U = A -> empty
+dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
+neg        (A: U): U = A -> empty
+dec        (A: U): U = either A (neg A)
+stable     (A: U): U = neg (neg A) -> A
+discrete   (A: U): U = (a b: A) -> dec (Path A a b)
 
-propUnit : isProp unit = split
- tt -> split@((x:unit) -> Path unit tt x) with
-  tt -> <i> tt
+-- see HoTT 3.4 Classical vs. intuitionistic logic
+
+propUnit : isProp unit = split tt -> split@((x:unit) -> Path unit tt x) with { tt -> <i> tt }
 
 -- Exists(A,B) = ||Sigma(A,B)||
 
