@@ -70,6 +70,14 @@ elemPathP (A B: U) (p: Path U A B) (a: A): (p': Path U A B) * (b: B) * PathP p' 
   = comp (<i> P (p @ i)) (refl U A, a, refl A a) [] where
   P (X: U): U = (p: Path U A X) * (x: X) * PathP p a x
 
+isContrSingl (A:U) (a:A): isContr (singl A a)
+  = ((a,refl A a),\ (z:singl A a) -> contr A a z.1 z.2)
+
+singl' (A: U) (a: A): U = (x:A) * Path A x a
+contr' (A: U) (a b: A) (p: Path A a b): Path (singl' A b) (b,refl A b) (a,p) = <i> (p @ -i,<j> p @ -i\/j)
+isContrSingl' (A:U) (a:A): isContr (singl' A a)
+  = ((a,refl A a),\ (z:singl' A a) -> contr' A z.1 a z.2)
+
 isContrPath (A: U): isContr ((B: U) * Path U A B) = (ctr,ctrpath) where
   ctr: (B: U) * Path U A B = (A,<_> A)
   ctrpath (q: (B: U) * Path U A B): Path ((B: U) * Path U A B) ctr q = <i> (q.2 @ i,<j> q.2 @ i/\j)

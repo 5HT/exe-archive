@@ -21,8 +21,8 @@ pathToEquiv (A B: U) (p: Path U A B): equiv A B
   = subst U (equiv A) A B p (idEquiv A)
 
 equivToPath (A B: U) (p: equiv A B): Path U A B
-  = <i> Glue B [(i=1) -> (B,subst U (equiv B) B B (<k>B) (idEquiv B)),
-                (i=0) -> (A,p) ]
+  = <i> Glue B [(i=0) -> (A,p),
+                (i=1) -> (B,subst U (equiv B) B B (<k>B) (idEquiv B))]
 
 eqToEq (A B : U) (p : Path U A B)
   : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p

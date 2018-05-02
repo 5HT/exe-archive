@@ -9,9 +9,8 @@ module proto_path where
 
 -- Path type and its eliminators
 Path     (A: U) (a b: A): U = PathP (<i> A) a b
-singl    (A: U) (a: A): U = (x: A) * Path A a x
-
 refl     (A: U) (a: A): Path A a a = <i> a
+singl    (A: U) (a: A): U = (x: A) * Path A a x
 sym      (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
 inv      (A: U) (a b: A) (p: Path A a b): Path A b a = <i> p @ -i
 eta      (A: U) (a: A): singl A a = (a,refl A a)
@@ -22,16 +21,17 @@ trans  (A B: U) (p: Path U A B) (a : A): B = comp p a [] -- transport p a
 subst    (A: U) (P: A->U) (a b: A) (p: Path A a b) (e: P a): P b = transport (cong A U P a b p) e
 
 -- Path induction from HoTT
-J (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
-  (d : C a (refl A a)) (x : A) (p : Path A a x) : C x p
--- = comp  (<i> C (p @ i) (<j> p @ i /\ j)) d [] -- normal form
-   = subst (singl A a) T (eta A a) (x, p) (contr A a x p) d
+J   (A: U) (a: A)
+    (C: (x : A) -> Path A a x -> U)
+    (d: C a (refl A a)) (x: A) (p: Path A a x): C x p
+--  = comp  (<i> C (p @ i) (<j> p @ i /\ j)) d [] -- normal form
+    = subst (singl A a) T (eta A a) (x, p) (contr A a x p) d
            where T (z : singl A a) : U = C (z.1) (z.2)
 
 -- composition operation
 composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
-    = subst A (Path A a) b c q p
---  = comp (<i> Path A a (q @ i)) p []
+    = comp (<i> Path A a (q @ i)) p []
+--  = subst A (Path A a) b c q p
 --  = <i> comp (<j>A) (p @ i) [(i=0) -> <j> a, (i=1) -> q ]
 
 -- Kan filling operation

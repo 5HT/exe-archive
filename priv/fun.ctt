@@ -225,7 +225,7 @@ lemIsCategory (C : precategory) (isC : isCategory C) (A B : carrier C) (e : iso 
   = <i> (isContrProp ((B : carrier C) * iso C A B) (isC A) (A, idIso C A) (B, e) @ i)
 
 lemIsCategory2 (C : precategory) (isC : isCategory C) (A B : carrier C) : isEquiv (Path (carrier C) A B) (iso C A B) (eqToIso C A B)
-  = equivFunFib (carrier C) (Path (carrier C) A) (iso C A) (eqToIso C A) (lemSinglContr (carrier C) A) (isC A) B
+  = equivFunFib (carrier C) (Path (carrier C) A) (iso C A) (eqToIso C A) (isContrSingl (carrier C) A) (isC A) B
 
 lemIsCategory3 (C : precategory) (isC : isCategory C) (A B : carrier C) : Path U (Path (carrier C) A B) (iso C A B)
   = equivPath (Path (carrier C) A B) (iso C A B) (eqToIso C A B) (lemIsCategory2 C isC A B)
