@@ -4,28 +4,21 @@
    see HoTT 6.10 Quotients -}
 
 module quotient where
-
 import circle
 
 -- Quotient A by R
 data quot (A: U) (R: A -> A -> U)
    = inj (a: A)
-   | quoteq  (a b: A) (r: R a b)
-        <i> [(i=0) -> inj a,
-             (i=1) -> inj b ]
+   | quoteq (a b: A) (r: R a b)
+      <i> [ (i=0) -> inj a,
+            (i=1) -> inj b ]
 
 -- Set quotient of A by R
 data setquot (A: U) (R: A -> A -> U)
    = quotient (a: A)
    | identification (a b: A) (r: R a b)
-               <i> [(i=0) -> quotient a,
+              <i> [ (i=0) -> quotient a,
                     (i=1) -> quotient b ]
-   | setTruncation  (a b: setquot A R)
-                    (p q: Path (setquot A R) a b)
-             <i j> [(i=0) -> p @ j,
-                    (i=1) -> q @ j,
-                    (j=0) -> a,
-                    (j=1) -> b ]
 
 quoteq' (A: U) (R: A -> A -> U) (a b: A) (r: R a b)
   : Path (quot A R) (inj a) (inj b) = <i> quoteq {quot A R} a b r @ i
@@ -47,7 +40,3 @@ rem: (a: unit) -> Path s1quot (inj tt) (inj a) = split
 
 identsetquot (A: U) (R: A -> A -> U) (a b: A) (r: R a b)
   : Path (setquot A R) (quotient a) (quotient b) = <i> identification {setquot A R} a b r @ i
-
-setsetquot (A: U) (R: A -> A -> U): isSet (setquot A R) =
-   \(a b: setquot A R) (p q: Path (setquot A R) a b) ->
-     <i j> setTruncation {setquot A R} a b p q @ i @ j

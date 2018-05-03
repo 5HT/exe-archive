@@ -9,17 +9,16 @@ import equiv
 import set
 
 --         u
---    a0 -----> a1
+--    a ------> b
 --    |         |
--- r0 |         | r1
+--  p |         | q
 --    |         |
 --    V         V
---    b0 -----> b1
+--    c ------> d
 --         v
 
-Square (A: U) (a0 a1 b0 b1: A) (u: Path A a0 a1) (v: Path A b0 b1)
-       (r0: Path A a0 b0) (r1: Path A a1 b1): U
-     = PathP (<i> (PathP (<j> A) (u @ i) (v @ i))) r0 r1
+Square (A: U)(a b c d: A)(u: Path A a b)(v: Path A c d)(p: Path A a c)(q: Path A b d): U
+  = PathP (<i> (PathP (<j> A) (u @ i) (v @ i))) p q
 
 constSquare (A: U) (a: A) (p: Path A a a): Square A a a a a p p p p
   = <i j> comp (<_> A) a [ (i = 0) -> <k> p @ j \/ - k,
@@ -39,8 +38,7 @@ iso: U
   * (B: U)
   * isIso A B
 
--- The iso to equiv
-lemIso (A B : U) (f : A -> B) (g : B -> A) (s: section A B f g) (t: retract A B f g)
+lemIso (A B: U) (f: A -> B) (g: B -> A) (s: section A B f g) (t: retract A B f g)
        (y: B) (x0 x1: A) (p0: Path B y (f x0)) (p1: Path B y (f x1))
      : Path (fiber A B f y) (x0,p0) (x1,p1) = <i> (p @ i,sq1 @ i) where
   rem0: Path A (g y) x0 = <i> comp (<k> A) (g (p0 @ i)) [ (i = 1) -> t x0, (i = 0) -> <k> g y ]
@@ -77,14 +75,13 @@ equivProp (A B: U) (a: isProp A) (b: isProp B) (f: A -> B) (g: B -> A): equiv A 
 
 -- pi version of isoPath
 isoPath (A B: U) (f: A -> B) (g: B -> A)
-        (s: section A B f g) (t: retract A B f g): Path U A B =
-    <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t),
+        (s: section A B f g) (t: retract A B f g): Path U A B
+  = <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t),
                  (i = 1) -> (B,idfun B,idIsEquiv B) ]
 
 -- sigma version of isoPath
-isoToPath (i: iso): Path U i.1 i.2.1 =
-    <l> Glue i.2.1 [ (l = 0) -> (i.1,i.2.2.1,isoToEquiv i.1 i.2.1 i.2.2.1 i.2.2.2.1 i.2.2.2.2.1 i.2.2.2.2.2.1),
-                     (l = 1) -> (i.2.1,idfun i.2.1,idIsEquiv i.2.1) ]
+isoToPath (i: iso): Path U i.1 i.2.1
+  = isoPath i.1 i.2.1 i.2.2.1 i.2.2.2.1 i.2.2.2.2.1 i.2.2.2.2.2.1
 
 -- A proof that two propositions with maps between them can be identified with each other
 propPath (A B: U) (f: A -> B) (g: B -> A) (pa: isProp A) (pb: isProp B): Path U A B
@@ -92,7 +89,7 @@ propPath (A B: U) (f: A -> B) (g: B -> A) (pa: isProp A) (pb: isProp B): Path U 
 
 -- A proof that the two definitions of injectivity can be identified with each other
 injPath (A B: U) (f: A -> B) (sA: isSet A) (sB: isSet B)
-      : Path U (inj0 A B f sA sB) (inj1 A B f sA sB)
-      = propPath (inj0 A B f sA sB) (inj1 A B f sA sB)
-                 (inj01 A B f sA sB) (inj10 A B f sA sB)
-                 (prop_inj0 A B f sA sB) (prop_inj1 A B f sA sB)
+  : Path U (inj0 A B f sA sB) (inj1 A B f sA sB)
+  = propPath (inj0 A B f sA sB) (inj1 A B f sA sB)
+             (inj01 A B f sA sB) (inj10 A B f sA sB)
+             (prop_inj0 A B f sA sB) (prop_inj1 A B f sA sB)

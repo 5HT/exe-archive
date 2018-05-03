@@ -14,15 +14,19 @@ equivPath (T A: U) (f: T -> A) (p: isEquiv T A f): Path U T A =
   <i> Glue A [ (i=0) -> (T,f,p), (i=1) -> (A,idfun A, idIsEquiv A)]
 
 invEq (A B:U)(w:equiv A B)(y:B): A = (w.2 y).1.1
-retEq (A B:U)(w:equiv A B)(y:B): Path B (w.1 (invEq A B w y)) y = <i> (w.2 y).1.2@-i
-secEq (A B:U)(w:equiv A B)(x:A): Path A (invEq A B w (w.1 x)) x = <i> ((w.2(w.1 x)).2(x,<j>w.1 x)@i).1
+
+retEq (A B:U)(w:equiv A B)(y:B): Path B (w.1 (invEq A B w y)) y
+  = <i> (w.2 y).1.2@-i
+
+secEq (A B:U)(w:equiv A B)(x:A): Path A (invEq A B w (w.1 x)) x
+  = <i> ((w.2(w.1 x)).2(x,<j>w.1 x)@i).1
 
 pathToEquiv (A B: U) (p: Path U A B): equiv A B
   = subst U (equiv A) A B p (idEquiv A)
 
 equivToPath (A B: U) (p: equiv A B): Path U A B
   = <i> Glue B [(i=0) -> (A,p),
-                (i=1) -> (B,subst U (equiv B) B B (<k>B) (idEquiv B))]
+                (i=1) -> (B,pathToEquiv B B (<_>B))]
 
 eqToEq (A B : U) (p : Path U A B)
   : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p
@@ -43,21 +47,21 @@ transPathFun (A B : U) (w : equiv A B)
     in comp (<j> B) (comp (<j> B) (comp (<j> B) (comp (<j> B) (w.1 u)
             [(i=0)->q]) [(i=0)-><k>b]) [(i=0)-><k>b]) [(i=0)-><k>b]
 
-idToPath (A B : U) (w : equiv A B)
+idToPath (A B: U) (w: equiv A B)
   : Path (equiv A B) (pathToEquiv A B (equivToPath A B w)) w
   = equivLemma A B (pathToEquiv A B (equivToPath A B w)) w
       (<i>transPathFun A B w@-i)
 
-isEquivContr (A B:U) (cA:isContr A) (cB:isContr B) (f:A->B) : isEquiv A B f
-  = \(y:B) -> sigIsContr A (\ (x:A) -> Path B y (f x)) cA (\ (x:A) -> isPathContr B cB y (f x))
+isEquivContr (A B:U) (a: isContr A) (b:isContr B) (f:A->B) : isEquiv A B f
+  = \(y:B) -> sigIsContr A (\ (x:A) -> Path B y (f x)) a (\ (x:A) -> isPathContr B b y (f x))
 
---------------------------
-funFib1 (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0) (u:fiber (B x0) (C x0) (f x0) z0)
+funFib1 (A:U) (B C: A -> U) (f: (x:A) -> B x -> C x) (x0:A) (z0:C x0)
+        (u: fiber (B x0) (C x0) (f x0) z0)
       : fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x0,z0)
       = ((x0,u.1),<i>(x0,u.2@i))
 
-funFib2 (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0)
-        (w : fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x0,z0))
+funFib2 (A:U) (B C: A -> U) (f: (x:A) -> B x -> C x) (x0:A) (z0:C x0)
+        (w: fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x0,z0))
       : fiber (B x0) (C x0) (f x0) z0
       = (b0,s) where
   x : A = w.1.1
@@ -66,19 +70,22 @@ funFib2 (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0)
   q : PathP (<i>C (p@i)) z0 (f x b) = <i>(w.2@i).2
   b0 : B x0 = comp (<i>B (p@-i)) b []
   r : PathP (<i>B (p@-i)) b b0 = <i>comp (<j>B (p@-j\/-i)) b [(i=0) -> <k>b]
-  s : Path (C x0) z0 (f x0 b0) = <i>comp (<j>C (p@(i/\-j))) (q@i) [(i=0) -> <k>z0,(i=1) -> <k>f (p@-k) (r@k)]
+  s : Path (C x0) z0 (f x0 b0) = <i>comp (<j>C (p@(i/\-j))) (q@i) [(i=0) -> <k>z0,
+                                                                   (i=1) -> <k>f (p@-k) (r@k)]
 
-compFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0) (u:fiber (B x0) (C x0) (f x0) z0)
-         : fiber (B x0) (C x0) (f x0) z0
-         = funFib2 A B C f x0 z0 (funFib1 A B C f x0 z0 u)
+compFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0)
+           (u: fiber (B x0) (C x0) (f x0) z0)
+  : fiber (B x0) (C x0) (f x0) z0
+  = funFib2 A B C f x0 z0 (funFib1 A B C f x0 z0 u)
 
-retFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0) (u:fiber (B x0) (C x0) (f x0) z0)
-        : Path (fiber (B x0) (C x0) (f x0) z0) (funFib2 A B C f x0 z0 (funFib1 A B C f x0 z0 u)) u
-        = <l> (comp (<i> B x0) u.1 [(l=1) -> <j>u.1],
-          <i> comp (<j> C x0) (u.2 @ i) [ (l=1) -> <j> u.2 @ i,
-                                          (i=0) -> <j> z0,
-                                          (i=1) -> <j> f x0 (comp (<k> B x0) u.1 [ (j=0) -> <k> u.1,
-                                                                                   (l=1) -> <k>u.1 ]) ])
+retFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0)
+          (u: fiber (B x0) (C x0) (f x0) z0)
+  : Path (fiber (B x0) (C x0) (f x0) z0) (funFib2 A B C f x0 z0 (funFib1 A B C f x0 z0 u)) u
+  = <l> (comp (<i> B x0) u.1 [(l=1) -> <j>u.1],
+    <i> comp (<j> C x0) (u.2 @ i) [(l=1) -> <j> u.2 @ i,
+                                   (i=0) -> <j> z0,
+                                   (i=1) -> <j> f x0 (comp (<k> B x0) u.1 [(j=0) -> <k> u.1,
+                                                                           (l=1) -> <k>u.1 ])])
 
 equivFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x)
             (cB : isContr (Sigma A B)) (cC : isContr (Sigma A C)) (x:A)
@@ -88,5 +95,6 @@ equivFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x)
                                     (funFib1 A B C f x z)
                                     (funFib2 A B C f x z)
                                     (retFunFib A B C f x z)
-                                    (isEquivContr (Sigma A B) (Sigma A C) cB cC (totalFun A B C f) (x,z))
-------------------
+                                    (isEquivContr (Sigma A B) (Sigma A C) cB cC
+                                                  (totalFun A B C f) (x,z))
+
