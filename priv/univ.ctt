@@ -5,15 +5,39 @@ import sigma
 import path
 import iso
 
-{- Univalence theorems:
+{- Univalence theorems are isomorphic at any level of equality:
 
-   (A ~ B) => (A = B)              -- equivToPath
-   (A = B) => (A ~ B)              -- pathToEquiv
-   (A = B) => (B ~ A)              -- pathToEquiv'
-   (A ~ B) ~ ((A = B) <=> (A ~ B)) -- univalence', (slow)
-   (B ~ A) ~ ((B = A) <=> (B ~ A)) -- univalence,  (fast)
-   (A = B) = (A ~ B)               -- pathEqEquiv
-   (A = B) ~ (A ~ B)               -- pathEquivEquiv -}
+          univalence (B: U): isContr ((A: U) * equiv B A) = undefined
+
+   1. Path (A = B)  - path
+   2. Equiv (A ~ B) - sigma, fibrant
+   3. Iso (A ≡ B)   - adjoints
+
+   Path: built-in
+
+   Equiv:
+
+   isContr (A: U): U = (x: A) * ((y: A) -> Path A x y)
+   fiber (A B: U) (f: A -> B) (y: B): U = (x: A) * Path B y (f x)
+   isEquiv (A B: U) (f: A -> B): U = (y: B) -> isContr (fiber A B f y)
+
+   Iso:
+
+   isIso (A B: U): U
+     = (f: A -> B)
+     * (g: B -> A)
+     * (s: section A B f g)
+     * (t: retract A B f g)
+     * unit
+
+   Iso(Equiv,Path)                   -- equivToPath, pathToEquiv
+   Equiv(swap(Equiv),Iso(Equ,Equiv)) -- univalence', (slow)
+   Equiv(Equiv,Iso(Path,Equiv))      -- univalence,  (fast)
+   Path(Path,Equiv)                  -- pathEqEquiv
+   Equiv(Path,Equiv)                 -- pathEquivEquiv
+   ...
+-}
+
 
 -- This is Corollary 10 of the cubical type theory paper
 -- (the proof of theorem 9 is inlined) (due to Fabian Ruch).
