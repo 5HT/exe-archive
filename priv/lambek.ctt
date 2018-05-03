@@ -43,7 +43,7 @@ listHom (A: U) (x1 x2: listOb A): U
 isHomotopyInitialList (A: U) (I: listOb A): U = (C: listOb A) -> isContr(listHom A I C)
 
 {- Impredicative Encoding of Inductive Types in HoTT:
-   [1]. https://github.com/sspeight93/Papers/blob/master/impredicative-encodings-of-inductive-types-in-homotopy-type-theory.pdf
+   [1]. https://github.com/sspeight93/Papers/
    [2]. https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-types-in-hott/
 -}
 
