@@ -1,3 +1,6 @@
+{- Stream Theory:
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
+
 module stream_theory where
 import stream
 import iso

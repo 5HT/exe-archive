@@ -7,6 +7,9 @@ module lambek where
 import proto
 import path
 import nat
+import set
+import iso_sigma
+import iso_pi
 
 {- Definition 5.4.1. A Nat-algebra
    Definition 5.4.2. Nat Homomorphism -}
@@ -39,4 +42,37 @@ listHom (A: U) (x1 x2: listOb A): U
 
 isHomotopyInitialList (A: U) (I: listOb A): U = (C: listOb A) -> isContr(listHom A I C)
 
-ImpredicativeW (A: U) (B: A->U): U = (R: U) -> ((a: A) -> (B(a) -> R)) -> R
+{- Impredicative Encoding of Inductive Types in HoTT:
+   [1]. https://github.com/sspeight93/Papers/blob/master/impredicative-encodings-of-inductive-types-in-homotopy-type-theory.pdf
+   [2]. https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-types-in-hott/
+-}
+
+upPath (X Y: U) (f: X -> Y) (al : X -> X): X -> Y = o X X Y f al
+downPath (X Y: U) (f: X -> Y) (be: Y -> Y): X -> Y = o X Y Y be f
+naturality (X Y: U) (al: X -> X) (be: Y -> Y) (f: X -> Y): U
+  = Path (X -> Y) (upPath X Y f al) (downPath X Y f be)
+
+unitEnc' : U = (X: U) -> isSet X -> X -> X
+isUnitEnc (one: unitEnc'): U = (X Y: U)
+  -> (x: isSet X)
+  -> (y: isSet Y)
+  -> (f: X -> Y)
+  -> naturality X Y (one X x) (one Y y) f
+
+unitEnc: U = (x: unitEnc') * isUnitEnc x
+unitEncStar: unitEnc = (\(X:U)(_:isSet X)->idfun X,\(X Y: U)(_:isSet X)(_:isSet Y)->refl(X->Y))
+unitEncRec  (C: U) (s: isSet C) (c: C): unitEnc -> C = \(z: unitEnc) -> z.1 C s c
+unitEncBeta (C: U) (s: isSet C) (c: C): Path C (unitEncRec C s c unitEncStar) c = refl C c
+unitEncOnlyStar (z: unitEnc): Path unitEnc unitEncStar z = undefined
+unitEncInd (P: unitEnc -> U) (a: unitEnc): P unitEncStar -> P a = subst unitEnc P unitEncStar a (unitEncOnlyStar a)
+unitEncCondition (n: unitEnc'): isProp (isUnitEnc n)
+  = \ (f g: isUnitEnc n)
+  -> <h> \ (x y: U)
+  -> \ (x1: (a b: x) -> (c d: PathP (<h> x) a b) -> PathP (<h> PathP (<h> x) a b) c d)
+  -> \ (x2: (a b: y) -> (c d: PathP (<h> y) a b) -> PathP (<h> PathP (<h> y) a b) c d)
+  -> \ (x3: x -> y)
+  -> <i> \ (x4: x)
+  -> x2 (x3 (n x x1 x4))
+        (n y x2 (x3 x4))
+        (<j> f x y x1 x2 x3 @ j x4)
+        (<j> g x y x1 x2 x3 @ j x4) @ h @ i

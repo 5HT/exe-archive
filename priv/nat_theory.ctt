@@ -1,6 +1,5 @@
-module nat_theory where
-
-{- Basic run-time nat module -}
+{- Nat Theory:
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 import path
 import prop

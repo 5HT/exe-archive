@@ -1,3 +1,7 @@
+{- Univalence:
+   - univ.
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
+
 module univ where
 import retract
 import equiv
@@ -7,11 +11,11 @@ import iso
 
 {- Univalence theorems are isomorphic at any level of equality:
 
-          univalence (B: U): isContr ((A: U) * equiv B A) = undefined
+   univalence (B: U): isContr ((A: U) * equiv B A) = undefined
 
    1. Path (A = B)  - path
    2. Equiv (A ~ B) - sigma, fibrant
-   3. Iso (A ≡ B)   - adjoints
+   3. Iso (A == B)   - adjoints
 
    Path: built-in
 
@@ -31,12 +35,10 @@ import iso
      * unit
 
    Iso(Equiv,Path)                   -- equivToPath, pathToEquiv
-   Equiv(swap(Equiv),Iso(Equ,Equiv)) -- univalence', (slow)
+   Equiv(swap(Equiv),Iso(Equ,Equiv)) -- univalence, (slow)
    Equiv(Equiv,Iso(Path,Equiv))      -- univalence,  (fast)
    Path(Path,Equiv)                  -- pathEqEquiv
-   Equiv(Path,Equiv)                 -- pathEquivEquiv
-   ...
--}
+   Equiv(Path,Equiv)                 -- pathEquivEquiv -}
 
 
 -- This is Corollary 10 of the cubical type theory paper

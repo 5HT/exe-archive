@@ -1,23 +1,12 @@
--- This file defines binary natural numbers are prove that they are
--- isomorphic to unary natural numbers and by univalence we get a path
--- in the universe between these two types.
---
--- We then define a "doubling structure" with an operation for
--- computing 2*x and prove that the doubling structure for binary
--- numbers is isomorphic to the one for unary. This is then used to
--- transport a proof that 2^20 * 1024 = 2^5 * 2^15 * 1024 from binary
--- to unary numbers. This computation is instant for binary numbers
--- but impossible for unary, hence this illustrates how univalence can
--- be used to do program and data refinements.
---
+{- Binary Encoding of Nat numbers:
+   - Pos, BinN, Double.
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
+
 module binnat where
 import univ
 import nat_theory
 
--- Positive binary numbers like in Coq
-data pos = pos1
-         | x0 (p : pos) 
-         | x1 (p : pos)
+data pos = pos1 | x0 (p: pos) | x1 (p: pos)
 
 sucPos : pos -> pos = split
   pos1 -> x0 pos1
@@ -224,3 +213,15 @@ propDoubleImpl : propDouble DoubleBinN -> propDouble DoubleN =
 goal : propDouble DoubleN = propDoubleImpl propBin
 
 transparent_all
+
+-- This file defines binary natural numbers are prove that they are
+-- isomorphic to unary natural numbers and by univalence we get a path
+-- in the universe between these two types.
+--
+-- We then define a "doubling structure" with an operation for
+-- computing 2*x and prove that the doubling structure for binary
+-- numbers is isomorphic to the one for unary. This is then used to
+-- transport a proof that 2^20 * 1024 = 2^5 * 2^15 * 1024 from binary
+-- to unary numbers. This computation is instant for binary numbers
+-- but impossible for unary, hence this illustrates how univalence can
+-- be used to do program and data refinements.

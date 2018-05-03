@@ -1,3 +1,7 @@
+{- Set Theory:
+   - Stability and Discretness leads to Set
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
+
 module hedberg where
 import proto
 import path
@@ -18,6 +22,9 @@ hedbergStable (A: U) (a b: A) (h: (x: A) -> stable (Path A a x))
    f      (x: A): Path A a x -> Path A a x   = (rem1 x).1
    fConst (x: A): isConst (Path A a x) (f x) = (rem1 x).2
 
-hedbergS (A:U) (h: (a x:A) -> stable (Path A a x)): isSet A = \ (a b: A) -> hedbergStable A a b (h a)
-hedberg  (A:U) (h: discrete A): isSet A = \ (a b: A) -> hedbergStable A a b (\(b : A) -> decStable (Path A a b) (h a b))
+hedbergS (A:U) (h: (a x:A) -> stable (Path A a x)): isSet A
+  = \ (a b: A) -> hedbergStable A a b (h a)
+
+hedberg  (A:U) (h: discrete A): isSet A
+  = \ (a b: A) -> hedbergStable A a b (\(b : A) -> decStable (Path A a b) (h a b))
 
