@@ -3,7 +3,7 @@ import proto
 import path
 
 {- Impredicative Encoding of Inductive Types in HoTT:
-   [1]. https://github.com/sspeight93/Papers/blob/master/impredicative-encodings-of-inductive-types-in-homotopy-type-theory.pdf
+   [1]. https://github.com/sspeight93/Papers/
    [2]. https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-types-in-hott/
    [3]. https://www.newton.ac.uk/files/seminar/20170711090010001-1009680.pdf
 -}
@@ -35,4 +35,14 @@ unitEncCondition (n: unitEnc'): isProp (isUnitEnc n)
        (<j> f x y X Y F @ j R) (<j> g x y X Y F @ j R) @ h @ i
 
 endoEnc' : U = (X: U) -> isSet X -> (X -> X) -> X -> X
-isEndoEnc (one: endoEnc'): U = undefined
+isEndoEnc (one: endoEnc'): U
+   = (X Y: U)
+  -> (x: isSet X)
+  -> (y: isSet Y)
+  -> (f: X -> Y)
+  -> (c: X -> X)
+  -> (d: Y -> Y)
+  -> naturality X Y (one X x c) (one Y y d) f
+
+endoEnc: U = (x: endoEnc') * isEndoEnc x
+endoEncZero: endoEnc = ()
