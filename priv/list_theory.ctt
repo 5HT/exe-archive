@@ -40,7 +40,7 @@ eq_list_nat:      eq_          = (list nat,        list_eq eq_nat)
 eq_list_list_nat: eq_          = (list (list nat), list_eq eq_list_nat)
 pure_list:        pure         = (list,\(A:U)(x:A)->cons x nil)
 functor_list:     functor      = (list,map)
-functor_laws:     FUNCTOR      = ((list,map),(list_id,list_compose,tt))
+functor_laws:     FUNCTOR      = (functor_list,list_id,list_compose,tt)
 ind_list   (T:U): ind   list T = inductive   (list,map) T
 coind_list (T:U): coind list T = coinductive (list,map) T
 
