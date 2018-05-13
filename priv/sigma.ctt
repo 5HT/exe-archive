@@ -21,15 +21,30 @@ ac   (A B: U) (R: A -> B -> U):
 
 -- Dependent Function
 Family (I: U): U = I -> U
--- Total Fibrations
+-- Trivial Fibration
+Fibration (I: U): U = (X: U) -> X -> I
+-- Total Space of Fibrations or Fibred Space
 total (I: U) (X: Family I): U = Sigma I X
 fibration (I: U) (X: Family I): total I X -> I = \ (x: total I X) -> x.1
 inverseImage (X Y: U) (f: X -> Y) (y: Y): U = (x: X) -> Path Y (f x) y
 family    (X Y: U) (f: X -> Y) (i: Y): U = inverseImage X Y f i
--- Family of Total Fibrations equals Dependent Function
+
+-- Family of Total Fibrations is Dependent Function
 FamFibIsDependent (I: U) (X: Family I) (i: I)
-                : Path U (family (total I X) I (fibration I X) i) (X i)
-                = undefined
+  : Path U (family (total I X) I (fibration I X) i) (X i) = undefined
+
+-- Total Family is Domain
+TotalFam (I X: U) (p: X -> I)
+  : Path U (total I (family X I p)) X = undefined
+
+-- Fibrational Family is a point in Codomain
+FibFam (I X: U) (p: X -> I) (x: X)
+  : Path I (p x)
+           (fibration I (family X I p) (comp (<i> (TotalFam I X p) @ -i) x [])) = undefined
+
+-- Family is Fibration
+FamEqFib (I: U)
+  : Path U (Family I) (Fibration I) = undefined
 
 totalFun (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (w:Sigma A B)
        : Sigma A C = (w.1,f (w.1) (w.2))
