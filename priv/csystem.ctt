@@ -142,16 +142,16 @@ CSystem : U
   * (c0 : isC0System ob hom isC)
   * isCSystem (ob, hom, isC, c0)
 
---
 -- Definition of a universe category
---
-
 uc : U
    = (C : precategory)
    * (_ : isCategory C)
    * (pt : terminal C)
    * (V : carrier C) * (VT : carrier C) * (p : hom C VT V)
    * ((f : homTo C V) -> hasPullback C (V, f, VT, p))
+
+ucToC0 (C : uc) : CSystem = ...
+
 
 -- An equivalence of universe categories is an equivalence of categories compatible with the "p" morphism
 ucEquiv (A B : uc) : U
