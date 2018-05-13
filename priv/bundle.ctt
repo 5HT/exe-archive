@@ -17,11 +17,11 @@ import iso
 -- prerequisite from equiv.ctt
 fiber (A B: U) (f: A -> B) (y: B): U = (x: A) * Path B y (f x)
 
-Family    (B: U): U = B -> U           -- Dependent Function Space
-Fibration (B: U): U = (X: U) -> X -> B -- Fibration
+Family    (B: U): U = B -> U          -- Dependent Function Space
+Fibration (B: U): U = (X: U) * X -> B -- Fibration
 
 -- Total Space of Fibrations or Fibred Space
-total (B: U) (X: Family B): U = Sigma B X -- total space
+total   (B: U) (X: Family B): U = Sigma B X -- total space
 trivial (B: U) (X: Family B): total B X -> B = \ (x: total B X) -> x.1 -- proj_1
 homeo (E B: U) (X: Family B) (f: E -> B) (y: B): fiber E B f y -> total B X = undefined
 
