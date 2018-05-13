@@ -53,7 +53,7 @@ idToPath (A B: U) (w: equiv A B)
       (<i>transPathFun A B w@-i)
 
 isEquivContr (A B:U) (a: isContr A) (b:isContr B) (f:A->B) : isEquiv A B f
-  = \(y:B) -> sigIsContr A (\ (x:A) -> Path B y (f x)) a (\ (x:A) -> isPathContr B b y (f x))
+  = \(y:B) -> sigmaIsContr A (\ (x:A) -> Path B y (f x)) a (\ (x:A) -> isPathContr B b y (f x))
 
 funFib1 (A:U) (B C: A -> U) (f: (x:A) -> B x -> C x) (x0:A) (z0:C x0)
         (u: fiber (B x0) (C x0) (f x0) z0)

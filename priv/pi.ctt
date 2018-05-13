@@ -17,13 +17,24 @@ setPi  (A: U) (B: A -> U) (h: (x: A) -> isSet (B x)) (f g: Pi A B)
        (p q: Path (Pi A B) f g): Path (Path (Pi A B) f g) p q
      = <i j> \(x: A) -> (h x (f x) (g x) (<i>(p@i)x) (<i>(q@i)x)) @ i @ j
 
-piExt  (A: U) (B: A -> U) (f g: (x:A) -> B x)
-       (p: (x:A) -> Path (B x) (f x) (g x)) :
-       Path ((y:A) -> B y) f g = <i> \(a: A) -> (p a) @ i
-
 funExt (A B: U) (f g: A -> B)
        (p: (x:A) -> Path B (f x) (g x)):
        Path (A -> B) f g = <i> \(a: A) -> p a @ i
 
 funExtInv (A B: U) (f g: A -> B) (p: Path (A -> B) f g) (x: A): Path B (f x) (g x)
      = mapOnPath (A -> B) B (\(h: A -> B) -> apply A B h x) f g p
+
+piExt  (A: U) (B: A -> U) (f g: (x:A) -> B x)
+       (p: (x:A) -> Path (B x) (f x) (g x)) :
+       Path ((y:A) -> B y) f g = <i> \(a: A) -> (p a) @ i
+
+piIsContr (A: U) (B: A -> U) (u: isContr A)
+          (q: (x: A) -> isContr (B x))
+        : isContr (Pi A B)
+        = (g,r) where
+ a : A = u.1
+ p : (x:A) -> Path A a x = u.2
+ g (x:A) : B x = (q x).1
+ h (x:A) : (y:B x) -> Path (B x) (g x) y = (q x).2
+ r (z:Pi A B): Path (Pi A B) g z = piExt A B g z (\(x:A) -> h x (z x))
+

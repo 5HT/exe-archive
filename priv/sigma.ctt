@@ -22,9 +22,9 @@ ac   (A B: U) (R: A -> B -> U):
 totalFun (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (w:Sigma A B)
        : Sigma A C = (w.1,f (w.1) (w.2))
 
-sigIsContr (A: U) (B: A -> U) (u: isContr A)
+sigmaIsContr (A: U) (B: A -> U) (u: isContr A)
            (q: (x: A) -> isContr (B x))
-         : isContr ((x:A) * B x)
+         : isContr (Sigma A B)
          = ((a,g a),r) where
  a : A = u.1
  p : (x:A) -> Path A a x = u.2
