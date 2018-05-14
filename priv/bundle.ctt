@@ -5,20 +5,23 @@
 module bundle where
 import iso
 
--- E = B * F -- total space
--- U = neighborhood (B)
--- f: E -> B
--- f-inv = F: B -> E -- fiber
+-- E = total space
+-- U = neighborhood in base B
+-- f:      E -> B      -- fiber
+-- f-inv:  B -> E      -- section
 -- Bundle: F -> E -> B
+-- E = B * F -- total space of trivial fiber bundle
 
+--         homeo
+--           |
 -- f-inv (U) -> U * F
 --        |   /
---     f  |  /  proj_1
+--    f --|  /-- proj_1
 --        V /
 --        U
 
 -- prerequisite from equiv.ctt
-fiber (A B: U) (f: A -> B) (y: B): U = (x: A) * Path B y (f x)
+fiber (B E: U) (f: B -> E) (y: E): U = (x: B) * Path E y (f x)
 
 Family    (B: U): U = B -> U            -- Dependent Function Space
 Fibration (B: U): U = (X: U) * (X -> B) -- Fibration
@@ -27,6 +30,8 @@ Fibration (B: U): U = (X: U) * (X -> B) -- Fibration
 total   (B: U) (X: Family B): U = Sigma B X -- total space
 trivial (B: U) (X: Family B): total B X -> B = \ (x: total B X) -> x.1 -- proj_1
 homeo (E B: U) (X: Family B) (f: E -> B) (y: B): fiber E B f y -> total B X = undefined
+
+-- trivial o homeo = f
 
 -- (1) Family of Total Fibrations is Dependent Function
 FamFibIsDependent (B: U) (X: Family B) (i: B)
