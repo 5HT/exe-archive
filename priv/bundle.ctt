@@ -5,13 +5,16 @@
 module bundle where
 import iso
 
--- E = total space
--- U = neighborhood in base B
--- f:      E -> B      -- fiber
--- f-inv:  B -> E      -- section
--- Bundle: F -> E -> B
--- E = B * F -- total space of trivial fiber bundle
+-- F -> E -> B    -- fiber bundle
+-- E              -- total space
+-- B              -- base space
+-- F = B -> U     -- fiber space, ex. Vector Space, Total Space, Dependent Product
+-- f:      E -> B -- fiber, projection map
+-- f-inv:  B -> E -- section map
+-- Ex. E = B * F  -- total space of trivial fiber bundle
 
+-- U = neighborhood in base B
+--
 --         homeo
 --           |
 -- f-inv (U) -> U * F
@@ -21,15 +24,17 @@ import iso
 --        U
 
 -- prerequisite from equiv.ctt
-fiber (B E: U) (f: B -> E) (y: E): U = (x: B) * Path E y (f x)
+fiber (E B: U) (f: E -> B) (y: B): U = (x: E) * Path B y (f x)
 
-Family    (B: U): U = B -> U            -- Dependent Function Space
-Fibration (B: U): U = (X: U) * (X -> B) -- Fibration
+-- Fiber Space
+Family    (B: U): U = B -> U
+-- Fibration
+Fibration (B: U): U = (X: U) * (X -> B)
 
 -- Total Space of Fibrations or Fibred Space
-total   (B: U) (X: Family B): U = Sigma B X -- total space
-trivial (B: U) (X: Family B): total B X -> B = \ (x: total B X) -> x.1 -- proj_1
-homeo (E B: U) (X: Family B) (f: E -> B) (y: B): fiber E B f y -> total B X = undefined
+total   (B: U) (F: Family B): U = Sigma B F -- total space
+trivial (B: U) (F: Family B): total B F -> B = \ (x: total B F) -> x.1 -- proj_1
+homeo (B E: U) (F: Family B) (f: E -> B) (y: B): fiber E B f y -> total B F = undefined
 
 -- trivial o homeo = f
 
