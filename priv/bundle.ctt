@@ -5,14 +5,13 @@
 module bundle where
 import iso
 
--- I = B
--- F (x: B) = pi^{-1} x -- fiber
 -- E = B * F -- total space
 -- U = neighborhood (B)
 -- f: E -> B
--- f-inv: B -> E
+-- f-inv = F: B -> E -- fiber
+-- Bundle: F -> E -> B
 
--- f-inv (U) -> U * X
+-- f-inv (U) -> U * F
 --        |   /
 --     f  |  /  proj_1
 --        V /
@@ -30,19 +29,19 @@ trivial (B: U) (X: Family B): total B X -> B = \ (x: total B X) -> x.1 -- proj_1
 homeo (E B: U) (X: Family B) (f: E -> B) (y: B): fiber E B f y -> total B X = undefined
 
 -- (1) Family of Total Fibrations is Dependent Function
-FamFibIsDependent (I: U) (X: Family I) (i: I)
-  : Path U (fiber (total I X) I (trivial I X) i) (X i) = undefined
+FamFibIsDependent (B: U) (X: Family B) (i: B)
+  : Path U (fiber (total B X) B (trivial B X) i) (X i) = undefined
 
 -- (2) Total Family is Domain
 TotalFam (B X: U) (p: X -> B)
   : Path U (total B (fiber X B p)) X = undefined
 
 -- (3) Fibrational Family is a point in Codomain
-FibFam (I X: U) (p: X -> I) (x: X)
-  : Path I (p x)
-           (trivial I (fiber X I p) (comp (<i> (TotalFam I X p) @ -i) x [])) = undefined
+FibFam (B X: U) (p: X -> B) (x: X)
+  : Path B (p x)
+           (trivial B (fiber X B p) (comp (<i> (TotalFam B X p) @ -i) x [])) = undefined
 
 -- (4) Family is Fibration
-FamEqFib (I: U)
-  : Path U (Family I) (Fibration I) = undefined
+FamEqFib (B: U)
+  : Path U (Family B) (Fibration B) = undefined
 
