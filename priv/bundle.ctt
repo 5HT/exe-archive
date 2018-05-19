@@ -10,24 +10,25 @@ import iso
 -- F              -- fiber, ex. Vector Space, Total Space, Dependent Product
 -- E              -- total topological space
 -- B              -- base space
--- f:      E -> B -- fiber map, surjective projection map
--- f-inv:  B -> E -- section map
+-- p:      E -> B -- fiber map, surjective projection map
+-- p-inv:  B -> E -- section map
 -- Ex. E = B * F  -- total space of trivial fiber bundle
 
 -- U = neighborhood in base B
+-- fibers locally behave like a products, but could be twisted
 --
 --           h
 --           |
--- f-inv (U) -> U * F
+-- p-inv (U) -> U * F
 --        |   /
---    f --|  /-- proj_1
+--    p --|  /-- proj_1
 --        V /
 --        U
 --
 -- proj_1 o homeo = f
 
 -- prerequisite from equiv.ctt
-fiber (E B: U) (f: E -> B) (y: B): U = (x: E) * Path B y (f x)
+fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B y (p x)
 
 -- Fiber
 Family    (B: U): U = B -> U
@@ -37,20 +38,20 @@ Fibration (B: U): U = (X: U) * (X -> B)
 -- Total Space of Fibrations or Fibred Space
 total   (B: U) (F: Family B): U = Sigma B F -- total space
 trivial (B: U) (F: Family B): total B F -> B = \ (x: total B F) -> x.1 -- proj_1
-homeo (B E: U) (F: Family B) (f: E -> B) (y: B): fiber E B f y -> total B F = undefined
+homeo (B E: U) (F: Family B) (p: E -> B) (y: B): fiber E B p y -> total B F = undefined
 
 -- (1) Family of Total Fibrations is Dependent Function
-FamFibIsDependent (B: U) (X: Family B) (i: B)
-  : Path U (fiber (total B X) B (trivial B X) i) (X i) = undefined
+FamFibIsDependent (B: U) (F: Family B) (y: B)
+  : Path U (fiber (total B F) B (trivial B F) y) (F y) = undefined
 
 -- (2) Total Family is Domain
-TotalFam (B X: U) (p: X -> B)
-  : Path U (total B (fiber X B p)) X = undefined
+TotalFam (B E: U) (p: E -> B)
+  : Path U (total B (fiber E B p)) E = undefined
 
 -- (3) Fibrational Family is a point in Codomain
-FibFam (B X: U) (p: X -> B) (x: X)
+FibFam (B E: U) (p: E -> B) (x: E)
   : Path B (p x)
-           (trivial B (fiber X B p) (comp (<i> (TotalFam B X p) @ -i) x [])) = undefined
+           (trivial B (fiber E B p) (comp (<i> (TotalFam B E p) @ -i) x [])) = undefined
 
 -- (4) Family is Fibration
 FamEqFib (B: U)

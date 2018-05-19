@@ -9,12 +9,19 @@ import nat
 -- by @coquand
 
 data ord = zero | succ (n:ord) | lim (f : nat -> ord)
-
 data ord2 = zero | succ (n:ord2) | lim (f : nat -> ord2) | lim2 (f : ord -> ord2)
 
 inj0 : nat -> ord = split
  zero -> zero
  succ n -> succ (inj0 n)
+
+inj12 : ord -> ord2 = split
+ zero -> zero
+ succ z -> succ (inj12 z)
+ lim f -> lim (\ (n:nat) -> inj12 (f n))
+
+omega : ord = lim inj0
+omega1 : ord2 = lim2 inj12
 
 G1 : ord -> nat -> nat = split
  zero -> \ (x:nat) -> zero
@@ -35,10 +42,6 @@ O2 (n:nat) : ord2 -> U = split
  lim f -> (p:nat) -> O2 n (f p)
  lim2 f -> (x:ord) -> and (O2 n (f x)) (Path ord (G2 (f x) n) (G2 (f (inj0 (G1 x n))) n))
 
-inj12 : ord -> ord2 = split
- zero -> zero
- succ z -> succ (inj12 z)
- lim f -> lim (\ (n:nat) -> inj12 (f n))
 
 H1 : ord -> nat -> nat = split 
  zero -> \ (x:nat) -> x
@@ -64,9 +67,6 @@ collapsing (n:nat) :
 
 -- an application
 
-omega : ord = lim inj0
-
-omega1 : ord2 = lim2 inj12
 
 lemOmega1 (n:nat) : O2 n omega1 = \ (x:ord) -> (rem x,rem1 x)
  where rem : (x:ord) -> O2 n (inj12 x) = split
