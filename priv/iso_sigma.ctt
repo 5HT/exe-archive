@@ -26,15 +26,20 @@ setSig (A:U) (B: A-> U) (sA: isSet A) (sB : (x:A) -> isSet (B x)): isSet (Sigma 
     rem2 : isProp ((p:T) * C p) = propSig T C rem1 rem
     rem3 : Path U (Path (Sigma A B) t u) ((p:T) * C p) = pathSig A B t u
 
-pathSigHoTT (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * Path (P u.1) (transport (<i>P (p @ i)) t.2) u.2): Path (Sigma A P) t u
-  = pathSig2 A P t u (pp.1, transport foo pp.2) where
-  p: Path A t.1 u.1 = pp.1
-  P' : Path U (P t.1) (P u.1) = <i>P (p@i)
-  T0 : U = PathP P' t.2 u.2
-  T1 : U = Path (P u.1) (transport P' t.2) u.2
-  foo : Path U T1 T0 = sym U T0 T1 (pathSig0 A P t u p)
-  pathSig2 (A:U) (P : A -> U) (t u : Sigma A P) (pp: (p : Path A t.1 u.1) * PathP (<i> P (p @ i)) t.2 u.2): Path (Sigma A P) t u
-    = comp (<i> pathSig A P t u @ -i) pp []
+pathSig2 (A:U) (P: A -> U) (t u: Sigma A P)
+         (p: Path A t.1 u.1)
+         (s: PathP (<i> P (p @ i)) t.2 u.2)
+       : Path (Sigma A P) t u
+       = comp (<i> pathSig A P t u @ -i) (p,s) []
+
+pathSigHoTT (A: U) (P: A -> U) (t u: Sigma A P) (p: Path A t.1 u.1)
+            (s: Path (P u.1) (transport (<i> P (p @ i)) t.2) u.2)
+          : Path (Sigma A P) t u
+          = pathSig2 A P t u p (transport f s) where
+  P': Path U (P t.1) (P u.1) = <i>P (p@i)
+  T0: U = PathP P' t.2 u.2
+  T1: U = Path (P u.1) (transport P' t.2) u.2
+  f: Path U T1 T0 = sym U T0 T1 (pathSig0 A P t u p)
 
 lemContr (A:U) (pA:isProp A) (a:A) : isContr A = (a,rem)
  where rem (y:A) : Path A a y = pA a y

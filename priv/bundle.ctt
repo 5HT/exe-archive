@@ -7,7 +7,7 @@ import iso
 
 -- F -> E -> B    -- fiber bundle
 -- h: F -> E      -- homeomorphism
--- F              -- fiber, ex. Vector Space, Total Space, Dependent Product
+-- F              -- fiber, ex. Vector Space, Total Space, Dependent Product, Pi
 -- E              -- total topological space
 -- B              -- base space
 -- p:      E -> B -- fiber map, surjective projection map
@@ -29,6 +29,12 @@ import iso
 
 -- prerequisite from equiv.ctt
 fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B y (p x)
+isContr (A: U): U = (x: A) * ((y: A) -> Path A x y)
+isEquiv (A B: U) (f: A -> B): U = (y: B) -> isContr (fiber A B f y)
+equiv (A B: U): U = (f: A -> B) * isEquiv A B f
+equivPath (T A: U) (f: T -> A) (p: isEquiv T A f): Path U T A
+  = <i> Glue A [ (i=0) -> (T,f,p), (i=1) -> (A,idfun A, idIsEquiv A)]
+invEq (A B:U)(w:equiv A B)(y:B): A = (w.2 y).1.1
 
 -- Fiber
 Family    (B: U): U = B -> U
@@ -40,9 +46,33 @@ total   (B: U) (F: Family B): U = Sigma B F -- total space
 trivial (B: U) (F: Family B): total B F -> B = \ (x: total B F) -> x.1 -- proj_1
 homeo (B E: U) (F: Family B) (p: E -> B) (y: B): fiber E B p y -> total B F = undefined
 
+-- isEquiv (A B: U) (f: A -> B): U = (y: B) -> isContr (fiber A B f y)
+-- equivPath (T A: U) (f: T -> A) (p: isEquiv T A f): Path U T A =
+
+encode (B: U) (F: B -> U) (y: B) : fiber (total B F) B (trivial B F) y -> F y
+  = \ (x: fiber (total B F) B (trivial B F) y) -> subst B F x.1.1 y (<i>x.2@-i) x.1.2
+
+decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
+  = \ (x: F y) -> ((y,x),refl B y)
+
+--  E: U = total B F
+--  T: U = fiber E B (trivial B F) y
+--  1: U = (z: E) * Path B z.1 y
+--  2: U = (z: B) * (k: F z) * Path B z y
+--  3: U = (x y: B) * (_: Path B x y) * (F y)
+--  4: U = (_: isContr B) * (F y)
+--  5: U = F y
+
 -- (1) Family of Total Fibrations is Dependent Function
-FamFibIsDependent (B: U) (F: Family B) (y: B)
-  : Path U (fiber (total B F) B (trivial B F) y) (F y) = undefined
+FamFibIsDependent (B: U) (F: B -> U) (y: B)
+  : Path U (fiber (total B F) B (trivial B F) y) (F y)
+  = isoPath T A f g s t where
+    T: U = fiber (total B F) B (trivial B F) y
+    A: U = F y
+    f: T -> A = encode B F y
+    g: A -> T = decode B F y
+    s (x: A): Path A (f (g x)) x = undefined -- refl A x
+    t (x: T): Path T (g (f x)) x = undefined -- refl T x
 
 -- (2) Total Family is Domain
 TotalFam (B E: U) (p: E -> B)
