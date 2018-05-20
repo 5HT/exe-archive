@@ -1,8 +1,11 @@
 module iso_sigma where
 
+import path
 import set
 import sigma
 import iso
+import univ
+import pi
 
 -- used in grothedieck.ctt and below
 pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
@@ -79,3 +82,6 @@ flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
     to:    BA -> AB = flip B A C
     fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
     toK:   (f: BA) -> Path BA (from (to f)) f = refl BA
+
+
+

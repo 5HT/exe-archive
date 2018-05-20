@@ -9,7 +9,7 @@ import proto
 import path
 
 -- datatype properties: decideability, discretness, stability
-efq        (A: U): empty -> A = split {}
+efq        (A: U): empty -> A = emptyRec A
 neg        (A: U): U = A -> empty
 dneg  (A:U) (a:A): neg (neg A) = \(h: neg A) -> h a
 neg        (A: U): U = A -> empty

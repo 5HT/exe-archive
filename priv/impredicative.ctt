@@ -30,13 +30,15 @@ import path
       Arbitrary (A:U) type = (X: U) -> isSet X -> (A -> X) -> X
 -}
 
-upPath     (X Y:U)(f:X->Y)(a:X->X): X -> Y = o X X Y f a
-downPath   (X Y:U)(f:X->Y)(b:Y->Y): X -> Y = o X Y Y b f
-naturality (X Y:U)(f:X->Y)(a:X->X)(b:Y->Y): U = Path (X->Y)(upPath X Y f a)(downPath X Y f b)
-
+-- (1) Signature
 unitEnc': U = (X: U) -> isSet X -> X -> X
-isUnitEnc (one: unitEnc'): U = (X Y:U)(x:isSet X)(y:isSet Y)(f:X->Y)->naturality X Y f (one X x)(one Y y)
 
+-- (2) Property
+isUnitEnc (one: unitEnc'): U
+  = (X Y:U)(x:isSet X)(y:isSet Y)(f:X->Y)->naturality X Y f (one X x)(one Y y) where
+  naturality (X Y:U)(f:X->Y)(a:X->X)(b:Y->Y): U = Path (X->Y)(o X X Y f a)(o X Y Y b f)
+
+-- (3) Former/Intro/Elim/Beta/Eta
 unitEnc: U = (x: unitEnc') * isUnitEnc x
 unitEncStar: unitEnc = (\(X:U)(_:isSet X)->idfun X,\(X Y: U)(_:isSet X)(_:isSet Y)->refl(X->Y))
 unitEncRec  (C: U) (s: isSet C) (c: C): unitEnc -> C = \(z: unitEnc) -> z.1 C s c

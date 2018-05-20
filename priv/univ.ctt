@@ -89,22 +89,6 @@ f1 (A: U) (p: (B: U) * equiv A B): singl U A
 
 f2 (A: U) (p: singl U A): ((B: U) * equiv A B)
   = (p.1,transEquiv A p.1 p.2)
-
-uaretsig (A: U): retract ((B: U) * equiv A B) (singl U A) (f1 A) (f2 A)
-  = \(p: (B: U) * equiv A B) -> <i> (p.1,uaret A p.1 p.2 @ i)
-
-univalenceAlt' (B: U) : isContr ((A: U) * equiv B A)
-  = retIsContr ((A:U) * equiv B A) (singl U B) (f1 B) (f2 B) (uaretsig B) (isContrPath B)
-
-thmUniv' (t: (A X: U) -> Path U A X -> equiv A X) (A: U)
-       : (X: U) -> isEquiv (Path U A X) (equiv A X) (t A X)
-       = equivFunFib U (\(X: U) -> Path U A X) (\(X: U) -> equiv A X)
-                       (t A) (isContrSingl U A) (univalenceAlt' A)
-
-univalence' (A X: U): isEquiv (Path U A X) (equiv A X) (transEquiv A X)
-  = thmUniv' transEquiv A X
-
------------------
 corrUniv (A B: U) : Path U (Path U A B) (equiv A B)
   = equivPath (Path U A B) (equiv A B) (transEquiv' B A) (univalence B A)
 
@@ -135,3 +119,21 @@ elimIsIso (A : U) (Q : (B : U) -> (A -> B) -> (B -> A) -> U)
          (d : Q A (idfun A) (idfun A)) (B : U) (f : A -> B) (g : B -> A)
          (sg : section A B f g) (rg : retract A B f g) : Q B f g =
   elimIso A (\(B : U) (f : B -> A) (g : A -> B) -> Q B g f) d B g f rg sg
+
+------------------------------------------
+{-
+uaretsig (A: U): retract ((B: U) * equiv A B) (singl U A) (f1 A) (f2 A)
+  = \(p: (B: U) * equiv A B) -> <i> (p.1,uaret A p.1 p.2 @ i)
+
+univalenceAlt' (B: U) : isContr ((A: U) * equiv B A)
+  = retIsContr ((A:U) * equiv B A) (singl U B) (f1 B) (f2 B) (uaretsig B) (isContrPath B)
+
+thmUniv' (t: (A X: U) -> Path U A X -> equiv A X) (A: U)
+       : (X: U) -> isEquiv (Path U A X) (equiv A X) (t A X)
+       = equivFunFib U (\(X: U) -> Path U A X) (\(X: U) -> equiv A X)
+                       (t A) (isContrSingl U A) (univalenceAlt' A)
+
+univalence' (A X: U): isEquiv (Path U A X) (equiv A X) (transEquiv A X)
+  = thmUniv' transEquiv A X
+-}
+-----------------

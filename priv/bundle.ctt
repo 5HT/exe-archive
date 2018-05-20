@@ -1,19 +1,23 @@
 {- Topology. Fiber Bundle:
    - Family, Fibrations and their Equality.
-   Copyright (c) Groupoid Infinity, 2014-2018. -}
+
+   https://groupoid.space/mltt/types/bundle/index.html
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
 
 module bundle where
 import iso
 import nat
 
--- F -> E -> B    -- fiber bundle
--- h: F -> E      -- homeomorphism
+-- F -> E -> B    -- fiber bundle (F,E,p,B)
 -- F              -- fiber, ex. Vector Space, Total Space, Dependent Product, Pi
 -- E              -- total topological space
 -- B              -- base space
+-- h: F -> E      -- homeomorphism
 -- p:      E -> B -- fiber map, surjective projection map
 -- p-inv:  B -> E -- section map
--- Ex. E = B * F  -- total space of trivial fiber bundle
+-- Ex. E = B *  F -- total space of trivial fiber bundle
+-- pr_1:   E -> B -- cartesian projection
 
 -- U = neighborhood in base B
 -- fibers locally behave like a products, but could be twisted
@@ -22,11 +26,11 @@ import nat
 --           |
 -- p-inv (U) -> U * F
 --        |   /
---    p --|  /-- proj_1
+--    p --|  /-- pr_1
 --        V /
 --        U
 --
--- proj_1 o homeo = f
+-- pr_1 o h = p
 
 -- prerequisite from equiv.ctt
 fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B y (p x)
@@ -47,19 +51,24 @@ encode (B: U) (F: B -> U) (y: B) : fiber (total B F) B (trivial B F) y -> F y
 decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
   = \ (x: F y) -> ((y,x),refl B y)
 
---  E: U = total B F
---  T: U = fiber E B (trivial B F) y
---  1: U = (z: E) * Path B z.1 y
---  2: U = (z: B) * (k: F z) * Path B z y
---  3: U = (x y: B) * (_: Path B x y) * (F y)
---  4: U = (_: isContr B) * (F y)
---  5: U = F y
 
+-- Theorem (1) Trivial Fiber Bundle (F,B*F,pr1,B) equals Dependent Family F:B->U
+
+-- Proof:
+--
+--  F y = fiber (total B F) B (trivial B F) y
+--      = (z: E) * Path B z.1 y
+--      = (z: B) * (k: F z) * Path B z y
+--      = (x y: B) * (_: Path B x y) * (F y)
+--      = (_: isContr B) * (F y)
+--      = F y
+
+-- Proof check
 x: Fin zero = (encode nat Fin zero) ((decode nat Fin zero) fzero)
 y: fiber (total nat Fin) nat (trivial nat Fin) zero
    = (decode nat Fin zero) ((encode nat Fin zero) ((zero,fzero),refl nat zero))
 
--- (1) Family of Total Fibrations is Dependent Function
+-- Cubical Syntax
 FamFibIsDependent (B: U) (F: B -> U) (y: B)
   : Path U (fiber (total B F) B (trivial B F) y) (F y)
   = isoPath T A f g s t where
@@ -82,4 +91,3 @@ FibFam (B E: U) (p: E -> B) (x: E)
 -- (4) Family is Fibration
 FamEqFib (B: U)
   : Path U (Family B) (Fibration B) = undefined
-
