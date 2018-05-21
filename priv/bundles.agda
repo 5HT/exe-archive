@@ -1,5 +1,17 @@
 
--- @felixwellen
+-- (с) @felixwellen
+
+-- TOC:
+
+-- Etale Maps
+-- Manifold
+-- Surjections
+-- Image
+-- Unit
+-- Automorphism
+-- G-sets (Covering Spaces)
+-- Abstract 𝔸
+-- Shape (fundamental infinity-Groupoid)
 
 -- Etale Maps
 
@@ -34,6 +46,12 @@
   f $ét x = (f ét→) x
 
 -- Manifold
+
+  record homogeneous-structure-on_ (A : 𝒰₀) : 𝒰₀ where
+    field
+      e : A
+      ψ : (x : A) → (A ≃ A)
+      is-translation-to : (x : A) → ((ψ x) $≃ e) ≈ x
 
   record _-manifold {V′ : 𝒰₀} (V : homogeneous-structure-on V′) : 𝒰₁ where
     field
@@ -144,7 +162,6 @@
   e-BAut : (A : 𝒰₀) → BAut A
   e-BAut A = (A , ∣ (∗ , refl) ∣ )
 
-
 -- G-sets (Covering Spaces)
 
   record groups-over-structure-group-of_ {V : 𝒰₀}
@@ -162,5 +179,28 @@
     (M′ : V -manifold) where
     G-structures : U₁
     G-structures = ∑ (λ (φ : M → BG) → Bφ ∘ φ ⇒ χ)
+
+-- Abstract homogeneous structure
+
+  postulate
+    𝔸 : 𝒰₀
+    𝔸′ : homogeneous-structure-on 𝔸
+    𝔸-nullfies-discrete-types :
+      ∀ (A :{♭} 𝒰₀)
+      → A is-crisply-discrete ≃ const {𝔸} {A} is-an-equivalence
+
+  origin-of-𝔸 : 𝔸
+  origin-of-𝔸 =
+    let
+      open homogeneous-structure-on_ 𝔸′
+    in e
+
+-- Shape (fundamental infinity Grpoupoid)
+
+  private
+    data #ʃ (A : 𝒰₀) : 𝒰₀ where
+      #σ : A → #ʃ A
+      #κ  : (𝔸 → #ʃ A) → #ʃ A
+      #κ′ : (𝔸 → #ʃ A) → #ʃ A
 
 
