@@ -19,6 +19,11 @@ open import Agda.Primitive using (Level; lzero; lsuc; _⊔_) public
 --      G-sets (Covering Spaces)
 --      Fiber Bundle (4 definitions)
 
+-- $ brew install agda
+-- $ agda bundle.agda
+-- Checking bundle (bundle.agda).
+-- Finished bundle.
+
 -- Prelude
 
 U : (i : Level) → Set (lsuc i)
@@ -332,8 +337,8 @@ the-induced-map-from-the-image-of f to-the-codomain (b , x) = b
 
 ι-im₁ = the-induced-map-from-the-image-of_to-the-codomain
 
-_is-an-étale-map : ∀ {X Y : 𝒰₀} (f : X → Y) → 𝒰₀
-f is-an-étale-map =
+_is-an-étale-map : ∀ {X Y : 𝒰₀} (f : X → Y) → 𝒰₀
+f is-an-étale-map =
     the-square-with-right (apply-ℑ-to-map f)
       bottom ℑ-unit
       top ℑ-unit
@@ -341,17 +346,17 @@ f is-an-étale-map =
       commuting-by (naturality-of-ℑ-unit f)
      is-a-pullback-square
 
-_─ét→_ : (A B : 𝒰₀) → 𝒰₀
-A ─ét→ B = ∑ (λ (f : A → B) → f is-an-étale-map)
+_─ét→_ : (A B : 𝒰₀) → 𝒰₀
+A ─ét→ B = ∑ (λ (f : A → B) → f is-an-étale-map)
 
-underlying-map-of : ∀ {A B : 𝒰₀} → (A ─ét→ B) → (A → B)
+underlying-map-of : ∀ {A B : 𝒰₀} → (A ─ét→ B) → (A → B)
 underlying-map-of (f , _) = f
 
-_ét→ : ∀ {A B : 𝒰₀} → (A ─ét→ B) → (A → B)
-f ét→ = underlying-map-of f
+_ét→ : ∀ {A B : 𝒰₀} → (A ─ét→ B) → (A → B)
+f ét→ = underlying-map-of f
 
-_$ét_ : ∀ {A B : 𝒰₀} → (A ─ét→ B) → A → B
-f $ét x = (f ét→) x
+_$ét_ : ∀ {A B : 𝒰₀} → (A ─ét→ B) → A → B
+f $ét x = (f ét→) x
 
 -- Automorphism
 
@@ -432,9 +437,9 @@ record _-manifold {V′ : 𝒰₀} (V : homogeneous-structure-on V′) : 𝒰₁
     field
       M : 𝒰₀
       W : 𝒰₀
-      w : W ─ét→ M
-      w-covers : (w ét→) is-surjective
-      v : W ─ét→ V′
+      w : W ─ét→ M
+      w-covers : (w ét→) is-surjective
+      v : W ─ét→ V′
 
 -- G-sets (Covering Spaces)
 
@@ -447,7 +452,7 @@ record groups-over-structure-group-of_ {V : 𝒰₀}
       path-between-units : Bφ(Be) ≈ e-BAut (formal-disk-of structure-on-V)
 
 module G-structures-on-V-manifolds
-    {V′ : 𝒰₀} -- (w : U ─ét→ M) (v : U ─ét→ V′)
+    {V′ : 𝒰₀} -- (w : U ─ét→ M) (v : U ─ét→ V′)
     (V : homogeneous-structure-on V′)
     (reduction : groups-over-structure-group-of V)
     (M′ : V -manifold) where
