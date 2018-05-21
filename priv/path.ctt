@@ -19,6 +19,11 @@ mapOnPath (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b)
 --  = cong A B f a b p
     = <i> f (p @ i)
 
+pullback (A B C:U) (f: A -> C) (g: B -> C): U
+    = (a: A)
+    * (b: B)
+    * (   Path A (f a) (f b))
+
 --subst (A: U) (P: A -> U) (a b: A) (p: Path A a b) (e: P a): P b
 --    = comp (<i> P (p @ i)) e [] -- normal form
 --  = trans (P a) (P b) (mapOnPath A U P a b p) e
