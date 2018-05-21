@@ -1,0 +1,25 @@
+{- The Modality of Shape Infinitesimal
+   Copyright (c) Groupoid Infinity, 2014-2018.
+-}
+
+module infinitesimal where
+import path
+import equiv
+
+-- \Im modality, represents infinitesimal shape constructions
+
+Im : U -> U = undefined
+ImUnit (A: U) : A -> Im A = undefined
+isCoreduced (A:U): U = isEquiv A (Im A) (ImUnit A)
+ImCoreduced (A:U): isCoreduced (Im A) = undefined
+ImRecursion (A B: U) (c: isCoreduced B) (f: A -> B) : Im A -> B = undefined
+
+ImInduction (A:U)(B:Im A->U)(x: (a: Im A)->isCoreduced(B a))
+            (y:(a: A)->B(ImUnit A a)):(a:Im A)->B a = undefined
+
+ImComputeRecursion (A B: U) (c: isCoreduced B) (f: A->B) (a:A)
+                 : Path B ((ImRecursion A B c f) (ImUnit A a)) (f a) = undefined
+
+ImComputeInduction (A:U)(B:Im A->U) (c:(a:Im A)->isCoreduced(B a)) (f:(a:A)->B(ImUnit A a))(a:A)
+                 : Path (B (ImUnit A a)) (f a) ((ImInduction A B c f) (ImUnit A a)) = undefined
+
