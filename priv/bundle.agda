@@ -3,7 +3,7 @@
 module bundle where
 open import Agda.Primitive using (Level; lzero; lsuc; _⊔_) public
 
--- (с) @felixwellen
+-- (с) @felixwellen http://www.math.kit.edu/iag3/~wellen/media/diss.pdf
 -- single page by @5HT
 
 -- TOC: Prelude
@@ -60,6 +60,11 @@ record ∑ {i j} {A : 𝒰 i} (P : A → 𝒰 j) : 𝒰 (i ⊔ j) where
 _×_ : ∀ {i j} → (A : 𝒰 i) → (B : 𝒰 j) → 𝒰 (i ⊔ j)
 A × B = ∑ (λ (a : A) → B)
 
+π₁ : ∀ {i} {A : 𝒰 i} {B : 𝒰 i} → A × B → A
+π₁ (a , b) = a
+
+π₂ : ∀ {i} {A : 𝒰 i} {B : 𝒰 i} → A × B → B
+π₂ (a , b) = b
 
 id : ∀ {i} {A : 𝒰 i} → A → A
 id a = a
@@ -120,13 +125,12 @@ data #∥_∥ {i} (A : U i) : U i where
      #∣_∣ : A → #∥ A ∥
 
 record fiber-of {i j} {X : U i} {Y : U j} (f : X → Y) (y₀ : Y) : U (i ⊔ j) where
-    constructor _is-in-the-fiber-by_ 
+    constructor _is-in-the-fiber-by_
     field
       x : X
       γ : f(x) ≈ y₀
 
-fiber-of_at_ : ∀ {i} {j} {X : U i} {Y : U j}
-                 → (f : X → Y) → (y₀ : Y) → U (i ⊔ j)
+fiber-of_at_ : ∀ {i} {j} {X : U i} {Y : U j} → (f : X → Y) → (y₀ : Y) → U (i ⊔ j)
 fiber-of f at y₀ = fiber-of f y₀
 
 ∥_∥ : ∀ {i} (A : U i) → U i
@@ -186,14 +190,10 @@ record _↠_ {i} {j} (A : U i) (B : U j) : U (i ⊔ j) where
       morphism : A → B
       proof-that-it-is-surjective : morphism is-surjective
 
-underlying-map-of-the-surjection :
-    ∀ {i} {j} {A : U i} {B : U j}
-    → (f : A ↠ B) → (A → B)
-underlying-map-of-the-surjection
-    (morphism is-surjective-by proof-that-it-is-surjective) = morphism
+underlying-map-of-the-surjection : ∀ {i} {j} {A : U i} {B : U j} → (f : A ↠ B) → (A → B)
+underlying-map-of-the-surjection (morphism is-surjective-by proof-that-it-is-surjective) = morphism
 
-_$↠_ : ∀ {A B : 𝒰₀}
-    → (f : A ↠ B) → A → B
+_$↠_ : ∀ {A B : 𝒰₀} → (f : A ↠ B) → A → B
 f $↠ a = (underlying-map-of-the-surjection f) a
 
 -- Pullback
@@ -292,7 +292,10 @@ A is-coreduced = ℑ-unit {_} {A} is-an-equivalence
 ℑ-unit-at A = ℑ-unit {_} {A}
 
 postulate
-    ℑ-is-coreduced : ∀ {i} → (A : 𝒰 i) → (ℑ A) is-coreduced
+    ℑ-is-coreduced :
+      ∀ {i}
+      → (A : 𝒰 i)
+      → (ℑ A) is-coreduced
     ℑ-induction :
       ∀ {i} {A : 𝒰₀} {B : ℑ A → 𝒰 i}
       → (∀ (a : ℑ A) → B(a) is-coreduced)
@@ -488,12 +491,6 @@ pullback-square-with-right f bottom g top z₁ left z₂ = pullback-square f g z
 
 _is-a-product-with-projections_and_ : ∀ {A B : 𝒰₀} (Z : 𝒰₀) (z₁ : Z → A) (z₂ : Z → B) → 𝒰₀
 Z is-a-product-with-projections z₁ and z₂ = pullback-square-with-right (λ a → ∗) bottom (λ b → ∗) top z₁ left z₂
-
-π₁ : ∀ {i} {A : 𝒰 i} {B : 𝒰 i} → A × B → A
-π₁ (a , b) = a
-
-π₂ : ∀ {i} {A : 𝒰 i} {B : 𝒰 i} → A × B → B
-π₂ (a , b) = b
 
 -- Definition (3)
 record _is-a‴_-fiber-bundle‴ {E B : 𝒰₀} (φ : E → B) (F : 𝒰₀) : 𝒰₁ where
