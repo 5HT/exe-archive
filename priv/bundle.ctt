@@ -92,6 +92,3 @@ FibFam (B E: U) (p: E -> B) (x: E)
 FamEqFib (B: U)
   : Path U (Family B) (Fibration B) = undefined
 
-    data Sh (A: U): sigma (_:A) | kap1 (_: 
-      #κ  : (𝔸 → #ʃ A) → #ʃ A
-      #κ′ : (𝔸 → #ʃ A) → #ʃ A

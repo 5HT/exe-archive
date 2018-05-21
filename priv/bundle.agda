@@ -3,15 +3,28 @@
 
 -- TOC:
 
+-- Path Types
 -- Etale Maps
+-- Abstract homogeneous structure
+-- Shape (fundamental infinity-Groupoid)
 -- Manifold
 -- Surjections
 -- Image
 -- Unit
 -- Automorphism
 -- G-sets (Covering Spaces)
--- Abstract 𝔸
--- Shape (fundamental infinity-Groupoid)
+
+-- Path types
+
+  infixl 60 _$≃_
+  _$≃_ : ∀ {i} {j} {A : U i} {B : 𝒰 j} → (f : A ≃ B) → A → B
+  (f is-an-equivalence-because _) $≃ a = f a
+
+  record _≃_  {i j} (A : U i) (B : U j) : U (i ⊔ j) where
+    constructor _is-an-equivalence-because_
+    field
+      the-equivalence : A → B
+      proof-of-invertibility : the-equivalence is-an-equivalence
 
 -- Etale Maps
 
@@ -45,13 +58,36 @@
     → (A ─ét→ B) → A → B
   f $ét x = (f ét→) x
 
--- Manifold
+-- Abstract homogeneous structure
+
+  postulate
+    𝔸 : 𝒰₀
+    𝔸′ : homogeneous-structure-on 𝔸
+    𝔸-nullfies-discrete-types :
+      ∀ (A :{♭} 𝒰₀)
+      → A is-crisply-discrete ≃ const {𝔸} {A} is-an-equivalence
+
+  origin-of-𝔸 : 𝔸
+  origin-of-𝔸 =
+    let
+      open homogeneous-structure-on_ 𝔸′
+    in e
 
   record homogeneous-structure-on_ (A : 𝒰₀) : 𝒰₀ where
     field
       e : A
       ψ : (x : A) → (A ≃ A)
       is-translation-to : (x : A) → ((ψ x) $≃ e) ≈ x
+
+-- Shape (fundamental infinity Grpoupoid)
+
+  private
+    data #ʃ (A : 𝒰₀) : 𝒰₀ where
+      #σ : A → #ʃ A
+      #κ  : (𝔸 → #ʃ A) → #ʃ A
+      #κ′ : (𝔸 → #ʃ A) → #ʃ A
+
+-- Manifold
 
   record _-manifold {V′ : 𝒰₀} (V : homogeneous-structure-on V′) : 𝒰₁ where
     field
@@ -100,6 +136,14 @@
     → (f : B′ → B) → (φ : E → B) → 𝒰₀
   f * φ = upper-left-vertex-of (complete-to-pullback-square φ f)
 
+  upper-left-vertex-of :
+    ∀ {Z A B C : 𝒰₀}
+      {f : A → C}  {g : B → C}
+      {z₁ : Z → A} {z₂ : Z → B}
+    → pullback-square f g z₁ z₂
+    → 𝒰₀
+  upper-left-vertex-of {Z} {_} {_} {_} {_} {_} {_} {_} _ = Z
+
   complete-to-pullback-square :
     ∀ {A B C : 𝒰₀} (f : A → C) (g : B → C)
     → pullback-square f g (p₁-of-pullback f g) (p₂-of-pullback f g)
@@ -111,14 +155,6 @@
         step2 = λ {(a and b are-in-the-same-fiber-by γ) → refl}
     in the-square-commuting-by p-homotopy and-inducing-an-equivalence-by
       (has-left-inverse id by step1 and-right-inverse id by step2)
-
-  upper-left-vertex-of :
-    ∀ {Z A B C : 𝒰₀}
-      {f : A → C}  {g : B → C}
-      {z₁ : Z → A} {z₂ : Z → B}
-    → pullback-square f g z₁ z₂
-    → 𝒰₀
-  upper-left-vertex-of {Z} {_} {_} {_} {_} {_} {_} {_} _ = Z
 
   record pullback-square {i} {Z A B C : U i} (f : A → C)  (g : B → C)
                                       (z₁ : Z → A) (z₂ : Z → B)  : U i where
@@ -179,28 +215,4 @@
     (M′ : V -manifold) where
     G-structures : U₁
     G-structures = ∑ (λ (φ : M → BG) → Bφ ∘ φ ⇒ χ)
-
--- Abstract homogeneous structure
-
-  postulate
-    𝔸 : 𝒰₀
-    𝔸′ : homogeneous-structure-on 𝔸
-    𝔸-nullfies-discrete-types :
-      ∀ (A :{♭} 𝒰₀)
-      → A is-crisply-discrete ≃ const {𝔸} {A} is-an-equivalence
-
-  origin-of-𝔸 : 𝔸
-  origin-of-𝔸 =
-    let
-      open homogeneous-structure-on_ 𝔸′
-    in e
-
--- Shape (fundamental infinity Grpoupoid)
-
-  private
-    data #ʃ (A : 𝒰₀) : 𝒰₀ where
-      #σ : A → #ʃ A
-      #κ  : (𝔸 → #ʃ A) → #ʃ A
-      #κ′ : (𝔸 → #ʃ A) → #ʃ A
-
 
