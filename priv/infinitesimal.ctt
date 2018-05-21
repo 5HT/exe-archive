@@ -1,5 +1,8 @@
-{- The Modality of Shape Infinitesimal
+{- The modality of shape infinitesimal in cohesive infinity topos.
+   - \Im modality type.
    Copyright (c) Groupoid Infinity, 2014-2018.
+
+   HoTT 7.7 Modalities
 -}
 
 module infinitesimal where
