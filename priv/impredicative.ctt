@@ -34,11 +34,10 @@ import path
 unitEnc': U = (X: U) -> isSet X -> X -> X
 
 -- (2) Property
-isUnitEnc (one: unitEnc'): U
-  = (X Y:U)(x:isSet X)(y:isSet Y)(f:X->Y)->naturality X Y f (one X x)(one Y y) where
-  naturality (X Y:U)(f:X->Y)(a:X->X)(b:Y->Y): U = Path (X->Y)(o X X Y f a)(o X Y Y b f)
+naturality (X Y:U)(f:X->Y)(a:X->X)(b:Y->Y): U = Path (X->Y)(o X X Y f a)(o X Y Y b f)
+isUnitEnc (one: unitEnc'): U = (X Y:U)(x:isSet X)(y:isSet Y)(f:X->Y)->naturality X Y f (one X x)(one Y y)
 
--- (3) Former/Intro/Elim/Beta/Eta
+-- (3) Former/Intro/Elim/Beta/Eta Full-pack
 unitEnc: U = (x: unitEnc') * isUnitEnc x
 unitEncStar: unitEnc = (\(X:U)(_:isSet X)->idfun X,\(X Y: U)(_:isSet X)(_:isSet Y)->refl(X->Y))
 unitEncRec  (C: U) (s: isSet C) (c: C): unitEnc -> C = \(z: unitEnc) -> z.1 C s c

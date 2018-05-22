@@ -3,6 +3,7 @@
    Copyright (c) Groupoid Infinity, 2014-2018.
 
    HoTT 7.7 Modalities
+   EGA4 4.1 Etale maps
 -}
 
 module infinitesimal where

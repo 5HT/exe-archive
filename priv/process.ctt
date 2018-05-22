@@ -6,12 +6,14 @@ module process where
 import proto
 import list
 
+storage: U -> U = list
+
 -- Type Former
 process : U
-        = (protocol state: U)
-        * (current: prod protocol state)
-        * (act: id (prod protocol state))
-        * (   list (prod protocol state))
+        = (protocol state: U)             -- Process Signature
+        * (current: prod protocol state)  -- In-Memory State
+        * (act: id (prod protocol state)) -- Monoidal Action
+        * (storage (prod protocol state)) -- In-Storage Signed Chain
 
 -- Intruduction Rule
 spawn (protocol state: U) (init: prod protocol state)
@@ -22,14 +24,18 @@ spawn (protocol state: U) (init: prod protocol state)
 protocol  (p: process): U = p.1
 context   (p: process): U = p.2.1
 signature (p: process): U = prod p.1 p.2.1
-current   (p: process):       signature p  = p.2.2.1
-action    (p: process):   id (signature p) = p.2.2.2.1
-trace     (p: process): list (signature p) = p.2.2.2.2
+current   (p: process):          signature p  = p.2.2.1
+action    (p: process):      id (signature p) = p.2.2.2.1
+trace     (p: process): storage (signature p) = p.2.2.2.2
+
+-- Isomorphic Signatures
+
+-- P x S -> S      -- semigroup
+-- P x S -> P x S  -- monoid
 
 -- Eliminator
 execute (p: process) (message: protocol p) : process
-      = let tick: signature p = current p
-            step: signature p = (action p) (message,tick.2)
+      = let step: signature p = (action p) (message, (current p).2)
          in (protocol p, context p, step, action p, cons step (trace p))
 
 -- > run simple ping
