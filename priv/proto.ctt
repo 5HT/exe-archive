@@ -17,7 +17,7 @@ data exists (A: U) (B: A -> U) = sigma (a: A) (b: B(a))
 fst  (A B: U): tuple A B -> A = split pair a b -> a
 snd  (A B: U): tuple A B -> B = split pair a b -> b
 pr1  (A: U) (B: A -> U): exists A B -> A = split sigma a b -> a
-pr2  (A: U) (B: A -> U): (x:exists A B) -> B(pr1 A B x) = split sigma a b -> b
+pr2  (A: U) (B: A -> U): (x:exists A B) -> B (pr1 A B x) = split sigma a b -> b
 prod (A B: U): U = (_:A) * B
 
 {- Type Former Elims   Desc

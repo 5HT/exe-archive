@@ -11,8 +11,7 @@ import cat
 structure (X: precategory): U
   = (P: carrier X -> U)
   * (H: (x y: carrier X) (a: P x) (b: P y) (f: hom X x y) -> U)
-  * (propH: (x y: carrier X) (a: P x) (b: P y) (f: hom X x y) ->
-    isProp (H x y a b f))
+  * (propH: (x y: carrier X) (a: P x) (b: P y) (f: hom X x y) -> isProp (H x y a b f))
   * (Hid: (x: carrier X) (a: P x) -> H x x a a (path X x))
   * ((x y z : carrier X) (a: P x) (b: P y) (c: P z)
      (f: hom X x y) (g: hom X y z) -> H x y a b f ->
@@ -181,5 +180,5 @@ sip (X: precategory) (isC: isCategory X) (S: structure X) (isS: isStandardStruct
                                           (<i>sH X S A.1 A.1 (isS A.1 A.2 Y.1 Y.2.1 Y.2.2 @ i) A.2 (path X A.1))
                                           (sHPath X S A.1 A.2) Y.2.2 @ i)))
     hole (A : carrier D) : isContr ((B : carrier D) * iso D A B) = transport (<i>isContr(eq1 A@-i)) (hole0 A)
-    
-    
+
+

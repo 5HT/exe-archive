@@ -6,3 +6,4 @@ eq_: U = (type: U) * (type -> type -> bool)
 
 -- parametric functor typeclass encoding
 eq (type: U): U = type -> type -> bool
+
