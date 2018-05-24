@@ -84,7 +84,7 @@ lem2 (B: U) (F: B -> U) (y: B) (x: F y)
 
 lem3 (B: U) (F: B -> U) (y: B) (x: fiber (total B F) B (trivial B F) y)
    : Path (fiber (total B F) B (trivial B F) y) ((y,encode B F y x),refl B y) x
-   = undefined
+   = undefined -- <j> ((x.1.1,encode B F (refl B x.1.1 @ j) x),x.2)
 
 -- Cubical Syntax
 FamFibIsDependent (B: U) (F: B -> U) (y: B)
