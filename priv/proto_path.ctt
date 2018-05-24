@@ -17,8 +17,8 @@ eta      (A: U) (a: A): singl A a = (a,refl A a)
 contr    (A: U) (a b: A) (p: Path A a b): Path (singl A a) (eta A a) (b,p) = <i> (p @ i,<j> p @ i/\j)
 cong   (A B: U) (f: A->B) (a b: A) (p: Path A a b): Path B (f a) (f b) = <i> f (p @ i)
 respect  (A: U) (a x:A) (B:A->U) (f: A->B a) (b: B a) (p: Path A a x): Path (B a) (f a) (f x) = <i> f (p @ i)
-trans  (A B: U) (p: Path U A B) (a : A): B = comp p a [] -- transport p a
-subst    (A: U) (P: A->U) (a b: A) (p: Path A a b) (e: P a): P b = transport (cong A U P a b p) e
+trans  (A B: U) (p: Path U A B) (a : A): B = comp p a []
+subst    (A: U) (P: A->U) (a b: A) (p: Path A a b) (e: P a): P b = comp (<i> P (p @ i)) e []
 coerce (A B: U) (p: Path U A B): A -> B = \ (x: A) -> trans A B p x
 
 -- Path induction from HoTT

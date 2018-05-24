@@ -3,6 +3,7 @@
 module bundle where
 open import Agda.Primitive using (Level; lzero; lsuc; _⊔_) public
 
+-- best introduction to modern constructive algebraic topology
 -- (с) @felixwellen http://www.math.kit.edu/iag3/~wellen/media/diss.pdf
 -- single page by @5HT
 
@@ -258,6 +259,11 @@ record is-a-pullback-square {i} {Z A B C : U i}
     field
       proof : (induced-map-to-pullback {_} {_} {_} {_} {_} {f} {g}  z₁ z₂ γ) is-an-equivalence
 
+the-square-with-right_bottom_top_left_commuting-by_is-a-pullback-square :
+    ∀ {Z A B C : 𝒰₀} (f : A → C)  (g : B → C) (z₁ : Z → A) (z₂ : Z → B) → (γ : f ∘ z₁ ⇒ g ∘ z₂) → 𝒰₀
+the-square-with-right f bottom g top z₁ left z₂ commuting-by γ is-a-pullback-square =
+    is-a-pullback-square f g z₁ z₂ γ
+
 -- Image
 
 the-image-of_contains : ∀ {i j} {A : U i} {B : U j} → (f : A → B) → (B → U (i ⊔ j))
@@ -281,10 +287,6 @@ f * φ = upper-left-vertex-of (complete-to-pullback-square φ f)
   -- ↓      ↓
   -- Y --→ ℑ Y
 
-the-square-with-right_bottom_top_left_commuting-by_is-a-pullback-square :
-    ∀ {Z A B C : 𝒰₀} (f : A → C)  (g : B → C) (z₁ : Z → A) (z₂ : Z → B) → (γ : f ∘ z₁ ⇒ g ∘ z₂) → 𝒰₀
-the-square-with-right f bottom g top z₁ left z₂ commuting-by γ is-a-pullback-square =
-    is-a-pullback-square f g z₁ z₂ γ
 
 postulate
     ℑ : ∀ {i} → 𝒰 i → 𝒰 i

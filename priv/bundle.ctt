@@ -9,19 +9,22 @@ module bundle where
 import iso
 import nat
 
--- F -> E -> B    -- fiber bundle (F,E,p,B)
--- F              -- fiber, ex. Vector Space, Total Space, Dependent Product, Pi
+-- F_B  -> E -> B -- fiber bundle (F_B,E,p,B),
+-- F: B -> U      -- fiber, ex. Vector Space, Total Space, Dependent Product, Pi
 -- E              -- total topological space
 -- B              -- base space
 -- h: F -> E      -- homeomorphism
--- p:      E -> B -- fiber map, surjective projection map
--- p-inv:  B -> E -- section map
--- Ex. E = B *  F -- total space of trivial fiber bundle
--- pr_1:   E -> B -- cartesian projection
+-- p:      E -> B -- surjective projection map
+-- p^-1:   B -> E -- fiber (y: B) = (x: E) * p (x) = y, inverse image
+-- E=(y:B)*p^-1 y -- total space
+-- p^-1 iso F     -- fiber is iso F_B
+-- T. E = B * F_B -- fiber bundle called trivial if total space is a cartesian product
+-- pr_1:  E ->  B -- cartesian projection
 
+-- NOTE: there is twisted hidden structure in p
 -- U = neighborhood in base B
 -- fibers locally behave like a products, but could be twisted
---
+
 --           h
 --           |
 -- p-inv (U) -> U * F
@@ -33,7 +36,7 @@ import nat
 -- pr_1 o h = p
 
 -- prerequisite from equiv.ctt
-fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B y (p x)
+fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B (p x) y
 
 -- Fiber
 Family    (B: U): U = B -> U
@@ -46,11 +49,12 @@ trivial (B: U) (F: Family B): total B F -> B = \ (x: total B F) -> x.1 -- proj_1
 homeo (B E: U) (F: Family B) (p: E -> B) (y: B): fiber E B p y -> total B F = undefined
 
 encode (B: U) (F: B -> U) (y: B) : fiber (total B F) B (trivial B F) y -> F y
-  = \ (x: fiber (total B F) B (trivial B F) y) -> subst B F x.1.1 y (<i>x.2@-i) x.1.2
+  = \ (x: fiber (total B F) B (trivial B F) y) -> subst B F x.1.1 y x.2 x.1.2
 
 decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
   = \ (x: F y) -> ((y,x),refl B y)
 
+-- <j> ((y,comp (<i> F ((refl B y) @ i/\j)) x) x),refl B y)
 
 -- Theorem (1) Trivial Fiber Bundle (F,B*F,pr1,B) equals Dependent Family F:B->U
 
@@ -64,9 +68,23 @@ decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
 --      = F y
 
 -- Proof check
-x: Fin zero = (encode nat Fin zero) ((decode nat Fin zero) fzero)
-y: fiber (total nat Fin) nat (trivial nat Fin) zero
+_: Fin zero = (encode nat Fin zero) ((decode nat Fin zero) fzero)
+_: fiber (total nat Fin) nat (trivial nat Fin) zero
    = (decode nat Fin zero) ((encode nat Fin zero) ((zero,fzero),refl nat zero))
+
+lem1 (B:U) (F: B -> U) (y: B) (x: F y)
+       : PathP (<i>U) (PathP (<i>F ((refl B y)@i)) x x)
+                (Path (F y) (transport (<i>F((refl B y)@i)) x) x)
+       = <j> PathP (<i>F ((refl B y)@j\/i))
+                   (comp (<i>F ((refl B y)@j/\i)) x [(j=0)-><_>x]) x
+
+lem2 (B: U) (F: B -> U) (y: B) (x: F y)
+   : Path (F y) (comp (<i>F (refl B y @ i)) x []) x
+   = <j> comp (<i>F ((refl B y) @ j/\i)) x [(j=1) -> <k>x]
+
+lem3 (B: U) (F: B -> U) (y: B) (x: fiber (total B F) B (trivial B F) y)
+   : Path (fiber (total B F) B (trivial B F) y) ((y,encode B F y x),refl B y) x
+   = undefined
 
 -- Cubical Syntax
 FamFibIsDependent (B: U) (F: B -> U) (y: B)
@@ -76,8 +94,8 @@ FamFibIsDependent (B: U) (F: B -> U) (y: B)
     A: U = F y
     f: T -> A = encode B F y
     g: A -> T = decode B F y
-    s (x: A): Path A (f (g x)) x = undefined --refl A x
-    t (x: T): Path T (g (f x)) x = undefined --refl T x
+    s (x: A): Path A (f (g x)) x = lem2 B F y x
+    t (x: T): Path T (g (f x)) x = lem3 B F y x
 
 -- (2) Total Family is Domain
 TotalFam (B E: U) (p: E -> B)

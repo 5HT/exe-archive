@@ -33,7 +33,9 @@ trace     (p: process): storage (signature p) = p.2.2.2.2
 -- P x S -> S      -- semigroup
 -- P x S -> P x S  -- monoid
 
--- Eliminator
+-- Eliminators
+send    (p: process) (message: protocol p) : unit = undefined
+receive (p: process) : protocol p = undefined
 execute (p: process) (message: protocol p) : process
       = let step: signature p = (action p) (message, (current p).2)
          in (protocol p, context p, step, action p, cons step (trace p))
