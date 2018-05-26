@@ -1,13 +1,12 @@
-{- Pushout:
+{- Homotopical Pushout
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see 6.8 Pushouts -}
+   see HoTT 6.8 Pushouts -}
 
 module pushout where
 
 -- Homotopy Colimits
 
--- Paragraph 6.8
 data pushout (A B C: U) (f: C -> A) (g: C -> B)
     = inl (_: A)
     | inr (_: B)

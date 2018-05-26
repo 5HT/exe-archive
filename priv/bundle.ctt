@@ -84,10 +84,10 @@ lem2 (B: U) (F: B -> U) (y: B) (x: F y)
 
 lem3 (B: U) (F: B -> U) (y: B) (x: fiber (total B F) B (trivial B F) y)
    : Path (fiber (total B F) B (trivial B F) y) ((y,encode B F y x),refl B y) x
-   = undefined -- <j> ((x.1.1,encode B F (refl B x.1.1 @ j) x),x.2)
+   = undefined
 
 -- Cubical Syntax
-FamFibIsDependent (B: U) (F: B -> U) (y: B)
+FiberPi (B: U) (F: B -> U) (y: B)
   : Path U (fiber (total B F) B (trivial B F) y) (F y)
   = isoPath T A f g s t where
     T: U = fiber (total B F) B (trivial B F) y
@@ -102,11 +102,11 @@ TotalFam (B E: U) (p: E -> B)
   : Path U (total B (fiber E B p)) E = undefined
 
 -- (3) Fibrational Family is a point in Codomain
-FibFam (B E: U) (p: E -> B) (x: E)
+FiberFamily (B E: U) (p: E -> B) (x: E)
   : Path B (p x)
            (trivial B (fiber E B p) (comp (<i> (TotalFam B E p) @ -i) x [])) = undefined
 
 -- (4) Family is Fibration
-FamEqFib (B: U)
+FamilyFibration (B: U)
   : Path U (Family B) (Fibration B) = undefined
 

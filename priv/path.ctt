@@ -24,6 +24,10 @@ pullback (A B C:U) (f: A -> C) (g: B -> C): U
     * (b: B)
     * (   Path C (f a) (g b))
 
+p_1 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> A = \(x: pullback A B C f g) -> x.1
+p_2 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> B = \(x: pullback A B C f g) -> x.2.1
+p_3 (A B C: U) (f: A -> C) (g: B -> C): (x: pullback A B C f g) -> Path C (f x.1) (g x.2.1) = \(x: pullback A B C f g) -> x.2.2
+
 --subst (A: U) (P: A -> U) (a b: A) (p: Path A a b) (e: P a): P b
 --    = comp (<i> P (p @ i)) e [] -- normal form
 --  = trans (P a) (P b) (mapOnPath A U P a b p) e
