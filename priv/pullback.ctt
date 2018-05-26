@@ -23,18 +23,12 @@ pullbackSq (Z A B C: U) (f: A -> C) (g: B -> C) (z1: Z -> A) (z2: Z -> B): U
          = (h: (z:Z) -> Path C ((o Z A C f z1) z) (((o Z B C g z2)) z))
          * isEquiv Z (pullback A B C f g) (induced Z A B C f g z1 z2 h)
 
-fiber (A B: U) (f: A -> B) (y: B): U = (x: A) * Path B y (f x)
-isContr   (A: U): U = (x: A) * ((y: A) -> Path A x y)
-isEquiv (A B: U) (f: A -> B): U = (y: B) -> isContr (fiber A B f y)
-isEquiv (A B: U) (f: A -> B): U = (y: B) -> (x1: fiber A B f y)
-                                          * (x2: fiber A B f y) -> Path (fiber A B f y) x1 x2
-
 completePullback (A B C: U) (f: A -> C) (g: B -> C)
     : pullbackSq (pullback A B C f g) A B C f g (p_1 A B C f g) (p_2 A B C f g)
     = (\(z:Z) -> p_3 A B C f g z,P) where
     Z: U = pullback A B C f g
     p: Path U Z Z = <i>Z
-    s (z: Z): Z = comp (<i> p @ -i) z []
+    s (z: Z): Z = comp p z []
     z1: Z -> A = (p_1 A B C f g)
     z2: Z -> B = (p_2 A B C f g)
     z3: U = (z:Z) -> Path C ((o Z A C f z1) z) (((o Z B C g z2)) z)
