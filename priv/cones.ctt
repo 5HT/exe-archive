@@ -7,14 +7,8 @@ module cones where
 import sip
 import set
 
-homTo (C: precategory) (X: carrier C): U
-  = (Y: carrier C)
-  *     hom C Y X
-
-cospan (C: precategory): U
-  = (X: carrier C)
-  * (_: homTo C X)
-  *     homTo C X
+homTo (C: precategory) (X: carrier C): U = (Y: carrier C) * hom C Y X
+cospan (C: precategory): U = (X: carrier C) * (_: homTo C X) * homTo C X
 
 hasCospanCone (C: precategory) (D: cospan C) (W: carrier C): U
   = (f: hom C W D.2.1.1)
@@ -113,9 +107,15 @@ isCategoryCospanCone (C: precategory) (D: cospan C) (isC: isCategory C) : isCate
                             (<i>pathL C x D.2.2.1 a.2.1 @-i) d.2 @ i) D.2.2.2))
                          a.2.2 b.2.2 @ i)
 
-
 hasPullbackProp (C: precategory) (isC: isCategory C) (D: cospan C): isProp (hasPullback C D)
   = terminalProp (cospanConePrecategory C D) (isCategoryCospanCone C D isC)
+
+--       f      g
+--    A ---> B ---> C
+--  j |    k |    l |
+--    v      v      v
+--    D ---> E ---> F
+--        h      i
 
 pullbackPasting
     (CA: precategory)

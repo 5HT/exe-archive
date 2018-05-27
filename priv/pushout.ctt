@@ -1,4 +1,4 @@
-{- Homotopical Pushout
+{- Homotopy Pushout:
    Copyright (c) Groupoid Infinity, 2014-2018.
 
    see HoTT 6.8 Pushouts -}
@@ -6,9 +6,9 @@
 module pushout where
 
 -- Homotopy Colimits
-
 data pushout (A B C: U) (f: C -> A) (g: C -> B)
-    = inl (_: A)
-    | inr (_: B)
-    | glue_ (c: C) <i> [ (i = 0) -> inl (f c),
-                         (i = 1) -> inr (g c) ]
+     = po1 (_: A)
+     | po2 (_: B)
+     | po3 (c: C) <i> [ (i=0) -> poa (f c),
+                        (i=1) -> pob (g c) ]
+

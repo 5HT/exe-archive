@@ -6,8 +6,7 @@ import path
 import pullback
 import infinitesimal
 
--- Étale Map:
---       w
+--        w
 --    A ----> Im A
 --  f |       | x
 --    V       V

@@ -1,16 +1,25 @@
-{- Pure Pullback:
-   Copyright (c) Groupoid Infinity, 2014-2018 -}
+{- Homotopy Pullback:
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   see HoTT 2.15 -}
 
 module pullback where
 import proto
 import path
 import equiv
 
+--       z2
+--    Z ----> B
+-- z1 |       | g
+--    V       V
+--    A ----> C
+--        f
+
 pullback (A B C:U) (f: A -> C) (g: B -> C): U = (a: A) * (b: B) * Path C (f a) (g b)
 
-p_1 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> A = \(x: pullback A B C f g) -> x.1
-p_2 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> B = \(x: pullback A B C f g) -> x.2.1
-p_3 (A B C: U) (f: A -> C) (g: B -> C): (x: pullback A B C f g) -> Path C (f x.1) (g x.2.1)
+pb1 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> A = \(x: pullback A B C f g) -> x.1
+pb2 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> B = \(x: pullback A B C f g) -> x.2.1
+pb3 (A B C: U) (f: A -> C) (g: B -> C): (x: pullback A B C f g) -> Path C (f x.1) (g x.2.1)
   = \(x: pullback A B C f g) -> x.2.2
 
 induced (Z A B C: U) (f: A -> C) (g: B -> C)
@@ -27,9 +36,10 @@ isPullbackSq (Z A B C: U) (f: A -> C) (g: B -> C) (z1: Z -> A) (z2: Z -> B)
              (h: (z:Z) -> Path C ((o Z A C f z1) z) (((o Z B C g z2)) z)): U
            = isEquiv Z (pullback A B C f g) (induced Z A B C f g z1 z2 h)
 
+-- Exercise 2.11. Prove that the pullback P :≡ A x_C B defined in (2.15.11) is the corner of a pullback square.
 completePullback (A B C: U) (f: A -> C) (g: B -> C)
-    : pullbackSq (pullback A B C f g) A B C f g (p_1 A B C f g) (p_2 A B C f g)
-    = (\(z:Z) -> p_3 A B C f g z,P) where
+    : pullbackSq (pullback A B C f g) A B C f g (pb1 A B C f g) (pb2 A B C f g)
+    = (\(z:Z) -> pb3 A B C f g z,P) where
     Z: U = pullback A B C f g
     p: Path U Z Z = <i>Z
     s (z: Z): Z = comp p z []
@@ -37,12 +47,12 @@ completePullback (A B C: U) (f: A -> C) (g: B -> C)
     z2: Z -> B = (p_2 A B C f g)
     z3: U = (z:Z) -> Path C ((o Z A C f z1) z) (((o Z B C g z2)) z)
     I: Z -> Z = induced Z A B C f g z1 z2 (\(z:Z) -> p_3 A B C f g z)
-    lem1 (z:Z): PathP p z z = <i>z
+    lem1 (z:Z): PathP p z z = <i> z
     lem2 (z:Z): PathP p (s z) z =   <i> comp p z     [(i=1) -> <j> z]
     x1 (z:Z): fiber Z Z I z = (s z, <i> comp p (s z) [(i=0) -> lem2 z, (i=1) -> lem1 (s z)])
     lem3 (z:Z): PathP p z (s z) =   <i> comp p (s z) [(i=0) -> lem2 z, (i=1) -> lem1 (s z)]
     lem4 (y:Z): PathP (<i>Path (p@i) (lem2 y@i) ((lem1(s y))@i)) (<j>s y) (lem3 y)
-       = <j i> fill p (s y) [(i=0)->lem2 y,       (i=1)->lem1 (s y)]@j
+       = <j i> fill p (s y) [(i=0)->lem2 y, (i=1)->lem1 (s y)]@j
     lem5 (y x: Z) (q: Path Z y x): Path Z (s y) x =   <i> comp p (q@i) [(i=0)-><j>lem2 y@-j, (i=1)->lem1 x]
     lem6 (y x: Z) (q: Path Z y x): PathP (<i>Path (p@i) (lem2 y@i) (lem1 x@i)) (lem5 y x q) q
        = <j i> fill p (q@i) [(i=0) -> <k>lem2 y@-k, (i=1) -> <k>lem1 x@-k] @ -j
