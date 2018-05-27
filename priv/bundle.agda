@@ -327,13 +327,18 @@ the-induced-map-from-the-image-of f to-the-codomain (b , x) = b
 
 ι-im₁ = the-induced-map-from-the-image-of_to-the-codomain
 
+-- the-square-with-right_bottom_top_left_commuting-by_is-a-pullback-square :
+--    ∀ {Z A B C : 𝒰₀} (f : A → C)  (g : B → C) (z₁ : Z → A) (z₂ : Z → B) → (γ : f ∘ z₁ ⇒ g ∘ z₂) → 𝒰₀
+-- the-square-with-right f bottom g top z₁ left z₂ commuting-by γ is-a-pullback-square =
+--    is-a-pullback-square f g z₁ z₂ γ
+
 _is-an-étale-map : ∀ {X Y : 𝒰₀} (f : X → Y) → 𝒰₀
 f is-an-étale-map =
-    the-square-with-right (apply-ℑ-to-map f)
-      bottom ℑ-unit
-      top ℑ-unit
-      left f
-      commuting-by (naturality-of-ℑ-unit f)
+    the-square-with-right (apply-ℑ-to-map f) -- f
+      bottom ℑ-unit -- g
+      top ℑ-unit -- z1
+      left f -- z2
+      commuting-by (naturality-of-ℑ-unit f) -- gamma
      is-a-pullback-square
 
 _─ét→_ : (A B : 𝒰₀) → 𝒰₀

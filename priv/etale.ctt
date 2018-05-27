@@ -1,0 +1,16 @@
+module etale where
+import pullback
+import infinitesimal
+
+isÉtaleMap (A B: U) (f: A -> B): U
+  = isPullbackSq K L M N x y w f h where
+  K:U = A
+  L:U = Im A
+  M:U = B
+  N:U = Im B
+  x: L -> N = ImApp A B f
+  y: M -> N = ImUnit B
+  w: K -> L = ImUnit A
+  T: U = (a:A) -> Path N ((o K L N x w) a) ((o K M N y f) a)
+  h: T = undefined -- ImNaturality A B f
+
