@@ -3,6 +3,7 @@
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module category where
+import proto
 import cat
 import fun
 import adj
@@ -20,58 +21,74 @@ import algebra
 
 -- The general notion of k-morphisms
 
--- functor 1-hom (C D: cat): U = undefined
--- ntrans  2-hom (C D: cat) (F G: 1-hom C D): U = undefined
---         3-hom (C D: cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U = undefined
+-- equiv   0-hom: U = undefined
+-- functor 1-hom (C D: 1-cat): U = undefined
+-- ntrans  2-hom (C D: 1-cat) (F G: 1-hom C D): U = undefined
+--         3-hom (C D: 1-cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U = undefined
 
 -- 1-Category of Sets
-Set: precategory = ((SET,Hom),id,c,HomSet,L,R,CA) where
-    Hom (A B: SET): U = A.1 -> B.1
-    id (A: SET): Hom A A = idfun A.1
-    c (A B C: SET) (f: Hom A B) (g: Hom B C): Hom A C = o A.1 B.1 C.1 g f
-    HomSet (A B: SET): isSet (Hom A B) = setFun A.1 B.1 B.2
-    L (A B: SET) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A B) f
-    R (A B: SET) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A B) f
-    CA (A B C D: SET) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+Set: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+    Ob: U = SET
+    Hom (A B: Ob): U = A.1 -> B.1
+    id (A: Ob): Hom A A = idfun A.1
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = o A.1 B.1 C.1 g f
+    HomSet (A B: Ob): isSet (Hom A B) = setFun A.1 B.1 B.2
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A B) f
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A B) f
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
      : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
      = refl (Hom A D) (c A B D f (c B C D g h))
 
 -- 2-Category with 1-hom morphisms (functors)
-Cat: precategory = ((Ob,Hom),id,c,HomSet,L,R,CA) where
+Cat: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = precategory
-    Hom (A B: precategory): U = catfunctor A B
-    id (A: precategory): catfunctor A A = idFunctor A
-    c (A B C: precategory) (f: Hom A B) (g: Hom B C): Hom A C = compFunctor A B C f g
-    HomSet (A B: precategory): isSet (Hom A B) = undefined
-    L (A B: precategory) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
-    R (A B: precategory) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
-    CA (A B C D: precategory) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+    Hom (A B: Ob): U = catfunctor A B
+    id (A: Ob): catfunctor A A = idFunctor A
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = compFunctor A B C f g
+    HomSet (A B: Ob): isSet (Hom A B) = undefined
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
 
 -- 2-Category of Functors F: X -> Y with 2-hom morphisms (natural transformations)
-Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,CA) where
+Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = catfunctor X Y
-    Hom (A B: catfunctor X Y): U = ntrans X Y A B
-    id (A: catfunctor X Y): ntrans X Y A A = undefined
-    c (A B C: catfunctor X Y) (f: Hom A B) (g: Hom B C): Hom A C = undefined
-    HomSet (A B: catfunctor X Y): isSet (Hom A B) = undefined
-    L (A B: catfunctor X Y) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
-    R (A B: catfunctor X Y) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
-    CA (A B C D: catfunctor X Y) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+    Hom (A B: Ob): U = ntrans X Y A B
+    id (A: Ob): ntrans X Y A A = undefined
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = undefined
+    HomSet (A B: Ob): isSet (Hom A B) = undefined
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
 
 -- Category of Abelian Groups
-Ab: precategory = ((abgroup,abgrouphom),id,c,HomSet,L,R,CA) where
-    Hom (A B: abgroup): U = abgrouphom A B
-    id (A: abgroup): Hom A A = idmonoidhom (A.1, A.2.1.1)
-    c (A B C: abgroup) (f: Hom A B) (g: Hom B C): Hom A C
+Ab: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+    Ob: U = abgroup
+    Hom (A B: Ob): U = abgrouphom A B
+    id (A: Ob): Hom A A = idmonoidhom (A.1, A.2.1.1)
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C
       = monoidhomcomp (A.1, A.2.1.1) (B.1, B.2.1.1) (C.1, C.2.1.1) f g
-    HomSet (A B: abgroup): isSet (Hom A B) = setmonoidhom (A.1,A.2.1.1) (B.1,B.2.1.1)
-    L (A B: abgroup) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f
+    HomSet (A B: Ob): isSet (Hom A B) = setmonoidhom (A.1,A.2.1.1) (B.1,B.2.1.1)
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f
       = lemma_idmonoidhom0 (A.1, A.2.1.1) (B.1, B.2.1.1) f
-    R (A B: abgroup) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f
       = lemma_idmonoidhom1 (A.1, A.2.1.1) (B.1, B.2.1.1) f
-    CA (A B C D: abgroup) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
        = lemma_monoidcomp0(A.1,A.2.1.1)(B.1,B.2.1.1)(C.1,C.2.1.1)(D.1,D.2.1.1)f g h
 
+Product (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+    x:  U = carrier X
+    y:  U = carrier Y
+    Ob: U = prod x y
+    Hom (A B: Ob): U = prod (id x) (id y)
+    id (A: Ob): Hom A A = (idfun x, idfun y)
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = (o x x x f.1 g.1, o y y y f.2 g.2)
+    HomSet (A B: Ob): isSet (Hom A B) = undefined
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A B) f
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A B) f
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+       = refl (Hom A D) (c A C D (c A B C f g) h)
