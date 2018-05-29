@@ -1,0 +1,31 @@
+module category where
+import path
+import cat
+import algebra
+
+-- Category of Sets
+Set: precategory = ((SET,Hom),id,c,HomSet,L,R,C) where
+    Hom    (A B: SET): U = A.1 -> B.1
+    id       (A: SET): Hom A A = idfun A.1
+    c    (A B C: SET) (f: Hom A B) (g: Hom B C): Hom A C = o A.1 B.1 C.1 g f
+    HomSet (A B: SET): isSet (Hom A B) = setFun A.1 B.1 B.2
+    L      (A B: SET) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A B) f
+    R      (A B: SET) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A B) f
+    C  (A B C D: SET) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+     : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+     = refl (Hom A D) (c A B D f (c B C D g h))
+
+-- Category of Abelian Groups
+Ab: precategory = ((abgroup,abgrouphom),id,c,HomSet,L,R,C) where
+    Hom    (A B: abgroup): U = abgrouphom A B
+    id       (A: abgroup): Hom A A = idmonoidhom (A.1, A.2.1.1)
+    c    (A B C: abgroup) (f: Hom A B) (g: Hom B C): Hom A C
+         = monoidhomcomp (A.1, A.2.1.1) (B.1, B.2.1.1) (C.1, C.2.1.1) f g
+    HomSet (A B: abgroup): isSet (Hom A B) = setmonoidhom (A.1,A.2.1.1) (B.1,B.2.1.1)
+    L      (A B: abgroup) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f
+         = lemma_idmonoidhom0 (A.1, A.2.1.1) (B.1, B.2.1.1) f
+    R      (A B: abgroup) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f
+         = lemma_idmonoidhom1 (A.1, A.2.1.1) (B.1, B.2.1.1) f
+    C  (A B C D: abgroup) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+     : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+     = lemma_monoidcomp0(A.1,A.2.1.1)(B.1,B.2.1.1)(C.1,C.2.1.1)(D.1,D.2.1.1)f g h

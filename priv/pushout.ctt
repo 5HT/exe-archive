@@ -5,10 +5,10 @@
 
 module pushout where
 
--- Homotopy Colimits
+-- Homotopy Colimit
 data pushout (A B C: U) (f: C -> A) (g: C -> B)
      = po1 (_: A)
      | po2 (_: B)
-     | po3 (c: C) <i> [ (i=0) -> poa (f c),
-                        (i=1) -> pob (g c) ]
+     | po3 (c: C) <i> [ (i=0) -> po1 (f c),
+                        (i=1) -> po2 (g c) ]
 

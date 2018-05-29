@@ -15,6 +15,7 @@ import equiv
 --    A ----> C
 --        f
 
+-- Homotopy Limit
 pullback (A B C:U) (f: A -> C) (g: B -> C): U = (a: A) * (b: B) * Path C (f a) (g b)
 
 pb1 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> A = \(x: pullback A B C f g) -> x.1

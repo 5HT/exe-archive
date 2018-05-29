@@ -8,8 +8,13 @@ module set where
 import proto
 import path
 import prop
+import pi
 
 -- Contractible is a Prop
+
+setFun (A B : U) (sB: isSet B)
+     : isSet (A -> B)
+     = setPi A (\(x: A) -> B) (\(x: A) -> sB)
 
 setIsProp (A : U) : isProp (isSet A) =
  \(f g : isSet A) -> <i> \(a b :A) ->
