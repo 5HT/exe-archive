@@ -1,4 +1,4 @@
-{- Category Theory:
+{- Category Theory: 2,3-morphisms
    - Natural Transformations;
    - Adjunctions.
    Copyright (c) Groupoid Infinity, 2014-2018.
@@ -46,7 +46,14 @@ ntransR (C D: precategory) (F G: catfunctor C D) (f: ntrans C D F G) (E: precate
         [ (i = 0) -> H.2.2.2 (F.1 x) (F.1 y) (G.1 y) (F.2.1 x y h) (f.1 y),
           (i = 1) -> H.2.2.2 (F.1 x) (G.1 x) (G.1 y) (f.1 x) (G.2.1 x y h) ]
 
+hom3 (C D: precategory)
+     (F: catfunctor C D)
+     (G: catfunctor C D)
+     (left: ntrans C D F G)
+     (right: ntrans C D F G): U = undefined
+
 -- Adjointness Property
+-- NOTE: Adjunction is a special case of signature class of 3-morphisms
 areAdjoint (C D: precategory)
            (F: catfunctor D C)
            (G: catfunctor C D)
