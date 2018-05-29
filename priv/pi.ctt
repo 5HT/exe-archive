@@ -13,10 +13,15 @@ Pi  (A: U) (B: A -> U): U = (x: A) -> B(x)
 lam (A: U) (B: A -> U) (a: A) (b: B a): A -> B a = \(x: A) -> b
 app (A: U) (B: A -> U) (a: A) (f: A -> B a): B a = f a
 
+
 setPi  (A: U) (B: A -> U) (h: (x: A) -> isSet (B x)) (f g: Pi A B)
        (p q: Path (Pi A B) f g)
      : Path (Path (Pi A B) f g) p q
      = <i j> \(x: A) -> (h x (f x) (g x) (<i>(p@i)x) (<i>(q@i)x)) @ i @ j
+
+setFun (A B : U) (sB: isSet B)
+     : isSet (A -> B)
+     = setPi A (\(x: A) -> B) (\(x: A) -> sB)
 
 funExt (A B: U) (f g: A -> B)
        (p: (x:A) -> Path B (f x) (g x))

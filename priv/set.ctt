@@ -12,10 +12,6 @@ import pi
 
 -- Contractible is a Prop
 
-setFun (A B : U) (sB: isSet B)
-     : isSet (A -> B)
-     = setPi A (\(x: A) -> B) (\(x: A) -> sB)
-
 setIsProp (A : U) : isProp (isSet A) =
  \(f g : isSet A) -> <i> \(a b :A) ->
    propIsProp (Path A a b) (f a b) (g a b) @ i
