@@ -1,4 +1,3 @@
-
 {- Category Theory:
    - Examples: Set, Cat, Func, Ab.
    Copyright (c) Groupoid Infinity, 2014-2018. -}
@@ -22,17 +21,17 @@ import algebra
 
 -- Enrichment
 
---   (0-cat = set)
--- ↪ (1-cat = 0-cat − cat = set − cat)
--- ↪ (2-cat = 1-cat − cat = (set − cat) − cat)
--- ↪ (3-cat = 2-cat − cat = ((set − cat) − cat) − cat)
+--   (0-cat = Hom(A,B)         = A = B)
+-- ↪ (1-cat = Hom(0-cat,0-cat) = set -> 0-cat)
+-- ↪ (2-cat = Hom(1-cat,1-cat) = (set -> 0-cat) -> 1-cat)
+-- ↪ (3-cat = Hom(2-cat,2-cat) = ((set -> 0-cat) -> 1-cat) -> 2-cat)
 
 -- The general notion of k-morphisms
 
--- equiv   0-hom: U = undefined
--- functor 1-hom (C D: 1-cat): U = undefined
--- ntrans  2-hom (C D: 1-cat) (F G: 1-hom C D): U = undefined
---         3-hom (C D: 1-cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U = undefined
+-- equiv        0-hom: U = undefined
+-- functor      1-hom (C D: 1-cat): U = undefined
+-- ntrans       2-hom (C D: 1-cat) (F G: 1-hom C D): U = undefined
+-- modification 3-hom (C D: 1-cat) (F G: 1-hom C D) (I J: 2-hom C D F G): U = undefined
 
 -- 1-Category of Sets
 Set: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
@@ -102,8 +101,6 @@ Product (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
        = refl (Hom A D) (c A C D (c A B C f g) h)
 
-Bicategory (X Y: precategory): precategory = Product Cat (Func X Y)
-
 -- 3-Category with modifications between natural transformations as 3-hom morphisms
 modification (C D: precategory) (F G: catfunctor C D) (I J: ntrans C D F G): U = undefined
 Hom3Cat (X Y: precategory) (F G: catfunctor X Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
@@ -116,3 +113,7 @@ Hom3Cat (X Y: precategory) (F G: catfunctor X Y): precategory = ((Ob,Hom),id,c,H
     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
+
+Bicategory (X Y: precategory): precategory = Product Cat (Func X Y)
+Tricategory (X Y: precategory) (F G: catfunctor X Y): precategory = Product (Bicategory X Y) (Hom3Cat X Y F G)
+
