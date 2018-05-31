@@ -5,6 +5,8 @@
 module impredicative where
 import proto
 import path
+import iso_pi
+import iso_sigma
 
 {-
    Church Encoding Nat:
@@ -55,3 +57,4 @@ unitEncCondition (n: unitEnc'): isProp (isUnitEnc n)
    [2]. https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-types-in-hott/
    [3]. https://www.newton.ac.uk/files/seminar/20170711090010001-1009680.pdf
 -}
+
