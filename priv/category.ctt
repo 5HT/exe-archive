@@ -10,7 +10,7 @@ import fun
 import adj
 import algebra
 
--- The general notion of (∞,n)-categories
+-- The general notion of (∞,1)-categories
 
 -- 0-cat   -- 0-ob are elements, 0-hom is equivalence relation, setoid -- sets
 -- 1-cat   -- 1-ob are spaces or 0-cat, 1-hom are maps
