@@ -14,11 +14,11 @@ import algebra
 
 -- 0-cat   -- 0-ob are elements, 0-hom is equivalence relation, setoid -- sets
 -- 1-cat   -- 1-ob are spaces or 0-cat, 1-hom are maps
--- 2-cat-A -- 2-ob are 1-cat, 1-hom are functors  \ bounded
--- 2-cat-B -- 2-ob are 1-cat, 2-hom are ntrans    / definition
+-- 2-cat-A -- 2-ob are 1-cat, 1-hom are functors/maps        \ bounded
+-- 2-cat-B -- 2-ob are 1-cat, 2-hom are ntrans/mapsOnMaps    / definition
 -- 3-cat-A -- 2-ob are (2-cat-A,2-cat-B), 1-hom are functors of product categories \
 -- 3-cat-B -- 2-ob are (2-cat-A,2-cat-B), 2-hom are ntrans of product categories    ) morphisms
--- 3-cat-C -- 3-ob are (2-cat-A,2-cat-B), 3-hom                                    /
+-- 3-cat-C -- 3-ob are (2-cat-A,2-cat-B), 3-hom are modifications                  /
 
 -- Enrichment
 
@@ -133,15 +133,47 @@ bifunctor (C D E: precategory): U = catfunctor (Product C D) E
 op (L A R B: precategory) (F: catfunctor L A) (G: catfunctor R B)
  : catfunctor (Product L R) (Product A B) = undefined
 
-Cat2 : U
+Bicategory : U
      = (Ob: U)
      * (Hom: (A B: Ob)  -> precategory)
      * (id: (A: Ob)     -> catfunctor unitCat  (Hom A A))
      * (c:  (A B C: Ob) -> catfunctor (Product (Hom B C) (Hom A B)) (Hom A C))
-     * (c2: (A B C: Ob) (L R: precategory) -> catfunctor L (Hom B C)
-                                           -> catfunctor R (Hom A B)
-                                           -> catfunctor (Product L R) (Hom A C))
+     * (c2: (A B C: Ob) (L R: precategory)
+                        -> catfunctor L (Hom B C)
+                        -> catfunctor R (Hom A B)
+                        -> catfunctor (Product L R) (Hom A C)) * unit
+
+Cat2 : U
+     = (Ob: U)
+     * (Hom: (A B: Ob) -> U)
+     * (Hom2: (A B: Ob) -> (C F: Hom A B) -> U)
+     * (id: (A: Ob) -> Hom A A)
+     * (id2: (A: Ob) -> (B: Hom A A) -> Hom2 A A B B)
+     * (c:  (A B C: Ob) (f: Hom A B) (g: Hom B C) -> Hom A C)
+     * (c2: (A B: Ob) (X Y Z: Hom A B)
+            (f: Hom2 A B X Y) (g: Hom2 A B Y Z) -> Hom2 A B X Z)
      * unit
+
+Cat2Impl1 : Cat2
+        = ( {- Ob -}   Cat.1.1,
+            {- Hom -}  \ (X Y: Cat.1.1) -> (Func X Y).1.1,
+            {- Hom2 -} \ (X Y: Cat.1.1) -> (Func X Y).1.2,
+            {- id -}   Cat.2.1,
+            {- id2 -}  \ (A: Cat.1.1)   -> (Func A A).2.1,
+            {- c -}    Cat.2.2.1,
+            {- c2 -}   \ (X Y: Cat.1.1) -> (Func X Y).2.2.1,
+            tt )
+
+Functions (X Y: U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+     Ob: U = X -> Y
+     Hom (A B: Ob): U = id (X -> Y)
+     id (A: Ob): Hom A A = idfun (X -> Y)
+     c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = idfun (X -> Y)
+     HomSet (A B: Ob): isSet (Hom A B) = setFun Ob Ob (setFun X Y Z)
+     L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined
+     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined
+     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
 
 reduce (AC BC AB: precategory)
        (H: bifunctor BC AB AC)
