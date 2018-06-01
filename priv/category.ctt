@@ -150,19 +150,18 @@ Cat2 : U
      * (id: (A: Ob) -> Hom A A)
      * (id2: (A: Ob) -> (B: Hom A A) -> Hom2 A A B B)
      * (c:  (A B C: Ob) (f: Hom A B) (g: Hom B C) -> Hom A C)
-     * (c2: (A B: Ob) (X Y Z: Hom A B)
-            (f: Hom2 A B X Y) (g: Hom2 A B Y Z) -> Hom2 A B X Z)
-     * unit
+     * (c2: (A B: Ob) (X Y Z: Hom A B) (f: Hom2 A B X Y) (g: Hom2 A B Y Z) -> Hom2 A B X Z)
+     * unit --- ...
 
 Cat2Impl1 : Cat2
-        = ( {- Ob -}   Cat.1.1,
-            {- Hom -}  \ (X Y: Cat.1.1) -> (Func X Y).1.1,
+        = ( {- Ob   -} Cat.1.1,
+            {- Hom  -} \ (X Y: Cat.1.1) -> (Func X Y).1.1,
             {- Hom2 -} \ (X Y: Cat.1.1) -> (Func X Y).1.2,
-            {- id -}   Cat.2.1,
-            {- id2 -}  \ (A: Cat.1.1)   -> (Func A A).2.1,
-            {- c -}    Cat.2.2.1,
-            {- c2 -}   \ (X Y: Cat.1.1) -> (Func X Y).2.2.1,
-            tt )
+            {- id   -} Cat.2.1,
+            {- id2  -} \ (A: Cat.1.1)   -> (Func A A).2.1,
+            {- c    -} Cat.2.2.1,
+            {- c2   -} \ (X Y: Cat.1.1) -> (Func X Y).2.2.1,
+            tt ) -- ...
 
 Functions (X Y: U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
      Ob: U = X -> Y
