@@ -17,6 +17,7 @@ isNaturalTrans (C D: precategory)
          (compose D (F.1 x) (F.1 y) (G.1 y) (F.2.1 x y h) (eta y))
          (compose D (F.1 x) (G.1 x) (G.1 y) (eta x) (G.2.1 x y h))
 
+-- Awodey CT 7.6. Natural transformation
 -- Natural Transformation
 ntrans (C D: precategory) (F G: catfunctor C D): U
      = (eta: (x: carrier C) -> hom D (F.1 x) (G.1 x))
