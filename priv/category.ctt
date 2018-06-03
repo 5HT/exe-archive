@@ -119,17 +119,6 @@ Hom3Cat (X Y: precategory) (F G: catfunctor X Y): precategory = ((Ob,Hom),id,c,H
 Bicategory (X Y: precategory): precategory = Product Cat (Func X Y)
 Tricategory (X Y: precategory) (F G: catfunctor X Y): precategory = Product (Bicategory X Y) (Hom3Cat X Y F G)
 
-unitCat: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
-    Ob: U = unit
-    Hom (A B: Ob): U = unit
-    id (A: Ob): Hom A A = tt
-    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = tt
-    HomSet (A B: Ob): isSet (Hom A B) = setUnit
-    L (A B: Ob): (f: unit) -> Path unit (c A A B (id A) f) f = split tt -> <i> tt
-    R (A B: Ob): (f: unit) -> Path unit (c A B B f (id B)) f = split tt -> <i> tt
-    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = refl unit tt
-
 bifunctor (C D E: precategory): U = catfunctor (Product C D) E
 op (L A R B: precategory) (F: catfunctor L A) (G: catfunctor R B)
  : catfunctor (Product L R) (Product A B) = undefined

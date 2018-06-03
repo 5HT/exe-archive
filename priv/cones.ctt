@@ -24,15 +24,22 @@ isCospanConeHom (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) (h: hom C
   = (_ : Path (hom C E1.1 D.2.1.1) (compose C E1.1 E2.1 D.2.1.1 h E2.2.1)   E1.2.1)
   * (    Path (hom C E1.1 D.2.2.1) (compose C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
 
+cospanConeHom (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) : U
+  = (h: hom C E1.1 E2.1)
+  * isCospanConeHom C D E1 E2 h
+
+isPullback (C: precategory) (D: cospan C) (E: cospanCone C D): U
+  = (h: cospanCone C D) -> isContr (cospanConeHom C D h E)
+
+hasPullback (C: precategory) (D: cospan C): U
+  = (E: cospanCone C D)
+  * isPullback C D E
+
 isCospanConeHomProp (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) (h: hom C E1.1 E2.1): isProp (isCospanConeHom C D E1 E2 h)
   = propAnd (Path (hom C E1.1 D.2.1.1) (compose C E1.1 E2.1 D.2.1.1 h E2.2.1)   E1.2.1)
             (Path (hom C E1.1 D.2.2.1) (compose C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
                (homSet C E1.1 D.2.1.1  (compose C E1.1 E2.1 D.2.1.1 h E2.2.1)   E1.2.1)
                (homSet C E1.1 D.2.2.1  (compose C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
-
-cospanConeHom (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) : U
-  = (h: hom C E1.1 E2.1)
-  * isCospanConeHom C D E1 E2 h
 
 cospanConePath (C: precategory) (D: cospan C) (E: cospanCone C D): cospanConeHom C D E E
   = (path C E.1, pathL C E.1 D.2.1.1 E.2.1, pathL C E.1 D.2.2.1 E.2.2.1)
@@ -63,16 +70,10 @@ cospanConeComp (C : precategory) (D : cospan C) (X Y Z : cospanCone C D)
             (<i> compose C X.1 Y.1 D.2.2.1 F.1 (G.2.2 @ i))
             F.2.2))
 
-isPullback (C: precategory) (D: cospan C) (E: cospanCone C D): U
-  = (h: cospanCone C D) -> isContr (cospanConeHom C D h E)
 
 isPullbackProp (C : precategory) (D : cospan C) (E : cospanCone C D) : isProp (isPullback C D E)
   = propPi (cospanCone C D) (\(h : cospanCone C D) -> isContr (cospanConeHom C D h E))
     (\(h : cospanCone C D) -> propIsContr (cospanConeHom C D h E))
-
-hasPullback (C: precategory) (D: cospan C): U
-  = (E: cospanCone C D)
-  * isPullback C D E
 
 cospanConeStructure (C : precategory) (D : cospan C) : structure C
   = (hasCospanCone C D

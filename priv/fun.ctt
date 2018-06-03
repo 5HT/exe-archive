@@ -31,7 +31,6 @@ idFunctor (A: precategory): catfunctor A A
      \(x: carrier A) -> <_> path A x,
      \(x y z: carrier A) (f: hom A x y) (g: hom A y z) -> <_> compose A x y z f g)
 
-
 compFunctor (A B C: precategory) (F: catfunctor A B) (G: catfunctor B C): catfunctor A C
   = (\(x: carrier A) -> G.1 (F.1 x),
      \(x y: carrier A) (h: hom A x y) -> G.2.1 (F.1 x) (F.1 y) (F.2.1 x y h),
