@@ -138,6 +138,12 @@ cosliceCat (C D: precategory) (a: carrier C) (F: catfunctor D C): precategory
     Q (x y z w: Ob) (f: Hom x y) (g: Hom y z) (h: Hom z w): Path (Hom x w) (cmp x z w (cmp x y z f g) h) (cmp x y w f (cmp y z w g h))
        = homId x w (cmp x z w (cmp x y z f g) h) (cmp x y w f (cmp y z w g h)) (pathC D x.1 y.1 z.1 w.1 f.1 g.1 h.1)
 
+sliceCat (C D: precategory)
+         (a: carrier (opCat C))
+         (F: catfunctor D (opCat C))
+       : precategory
+       = cosliceCat (opCat C) D a F
+
 -- Universal Arrow
 univArr (C D: precategory)
         (a: carrier C)
