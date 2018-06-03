@@ -12,6 +12,18 @@ import proto
 
 data list (A: U) = nil | cons (a: A) (as: list A)
 
+listCase (A C:U) (a b: C): list A -> C
+  = split { nil -> a ; cons x xs -> b }
+
+listRec (A C:U) (z: C) (s: A->list A->C->C): (n:list A) -> C
+  = split { nil -> z ; cons x xs -> s x xs (listRec A C z s xs) }
+
+listElim (A: U) (C:list A->U) (z: C nil) (s: (x:A)(xs:list A)->C(cons x xs)): (n:list A) -> C(n)
+  = split { nil -> z ; cons x xs -> s x xs }
+
+listInd (A: U) (C:list A->U) (z: C nil) (s: (x:A)(xs:list A)->C(xs)->C(cons x xs)): (n:list A) -> C(n)
+  = split { nil -> z ; cons x xs -> s x xs (listInd A C z s xs) }
+
 null (A: U): list A -> bool = split
   nil -> true
   cons x xs -> false
