@@ -91,7 +91,7 @@ functorId (A B : precategory) (f g : catfunctor A B)
   in <i> ((p0 @ i).1.1, (p0 @ i).1.2, (p0 @ i).2.1, (p0 @ i).2.2)
 
 cosliceCat (C D: precategory) (a: carrier C) (F: catfunctor D C): precategory
-  = let
+  = ((Ob, Hom),id,cmp,HomSet,L,R,Q) where
     Ob: U = (y: carrier D) * hom C a (F.1 y)
     Hom (x y: Ob) : U = (h: hom D x.1 y.1) * Path (hom C a (F.1 y.1)) y.2 (compose C a (F.1 x.1) (F.1 y.1) x.2 (F.2.1 x.1 y.1 h))
     id (x: Ob) : Hom x x
@@ -135,9 +135,8 @@ cosliceCat (C D: precategory) (a: carrier C) (F: catfunctor D C): precategory
       in lemSig A P pP h0 h1 p
     L (x y: Ob) (f : Hom x y) : Path (Hom x y) (cmp x x y (id x) f) f = homId x y (cmp x x y (id x) f) f (pathL D x.1 y.1 f.1)
     R (x y: Ob) (f : Hom x y) : Path (Hom x y) (cmp x y y f (id y)) f = homId x y (cmp x y y f (id y)) f (pathR D x.1 y.1 f.1)
-    C (x y z w: Ob) (f: Hom x y) (g: Hom y z) (h: Hom z w): Path (Hom x w) (cmp x z w (cmp x y z f g) h) (cmp x y w f (cmp y z w g h))
+    Q (x y z w: Ob) (f: Hom x y) (g: Hom y z) (h: Hom z w): Path (Hom x w) (cmp x z w (cmp x y z f g) h) (cmp x y w f (cmp y z w g h))
        = homId x w (cmp x z w (cmp x y z f g) h) (cmp x y w f (cmp y z w g h)) (pathC D x.1 y.1 z.1 w.1 f.1 g.1 h.1)
-  in ((Ob, Hom), id, cmp, HomSet, L, R, C)
 
 -- Universal Arrow
 univArr (C D: precategory)
