@@ -1,5 +1,7 @@
-{- Category Theory: 2,3-morphisms
+{- Category Theory:
    - Natural Transformations;
+   - Kan Extensions;
+   - Limits;
    - Adjunctions.
    Copyright (c) Groupoid Infinity, 2014-2018.
 
@@ -51,10 +53,8 @@ cone (J C: precategory) (D: catfunctor J C): U
 -- universality of Kan Extension
 universality (A B C: precategory)
              (K: catfunctor A B) (G: catfunctor A C)
-             (s t: extension A B C K G) : U = undefined
-
--- ExtUniv : Extension K G → Set _
--- ExtUniv (extension S (nt α _)) = Σ (S ⇒ F) λ { (nt β _) → (∀ X → ε X ∘ β (apply K X) ≡ α X) }
+             (s t: extension A B C K G) : U
+           = undefined
 
 -- Right Kan Extension
 ran   (A B C: precategory) (K: catfunctor A B) (G: catfunctor A C) : U
@@ -64,6 +64,9 @@ ran   (A B C: precategory) (K: catfunctor A B) (G: catfunctor A C) : U
 -- Limit
 limit (J C: precategory) (D: catfunctor J C): U
     = ran J unitCat C (unitFunc J) D
+
+-- ExtUniv : Extension K G → Set _
+-- ExtUniv (extension S (nt α _)) = Σ (S ⇒ F) λ { (nt β _) → (∀ X → ε X ∘ β (apply K X) ≡ α X) }
 
 ntransL (C D: precategory) (F G: catfunctor C D) (f: ntrans C D F G) (B: precategory) (H: catfunctor B C)
       : ntrans B D (compFunctor B C D H F) (compFunctor B C D H G)
