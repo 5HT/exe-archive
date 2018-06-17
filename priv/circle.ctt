@@ -14,8 +14,13 @@ data S1 = base
                      (i=1) -> base ]
 
 loopS1 : U = Path S1 base base
+compS1 : loopS1 -> loopS1 -> loopS1 = composition S1 base base base
 
+-- All of these should be equal to "posZ (suc zero)":
 loop1 : loopS1 = <i> loop{S1} @ i
+loop2 : loopS1 = compS1 loop1 loop1
+loop3 : loopS1 = composition S1 base base base loop1 loop1
+loop4 : loopS1 = compS1 loop2 loop1
 
 invLoop : loopS1 = inv S1 base base loop1
 
@@ -31,12 +36,7 @@ winding (p : loopS1) : Z = trans Z Z rem zeroZ
   where
     rem : Path U Z Z = <i> helix (p @ i)
 
-compS1 : loopS1 -> loopS1 -> loopS1 = composition S1 base base base
 
--- All of these should be equal to "posZ (suc zero)":
-loop2 : loopS1 = compS1 loop1 loop1
-loop2' : loopS1 = composition S1 base base base loop1 loop1
---loop2'' : loopS1 = composition' S1 base base loop1 base loop1
 
 -- More examples:
 loopZ1  : Z = winding loop1
@@ -48,6 +48,14 @@ loopZ0  : Z = winding (compS1 loop1 invLoop)
 mLoop : (x : S1) -> Path S1 x x = split
   base -> loop1
   loop @ i -> constSquare S1 base loop1 @ i
+
+rot : S1 -> S1 -> S1 = split
+  base -> (\ (y : S1) -> y)
+  loop @ i -> (\ (y : S1) -> mLoop y @ i)
+
+rot_unit_r : (a : S1) -> Path S1 (rot a base) a = split
+   base -> <_> base
+   loop@x -> <_> loop{S1}@x
 
 mult (x : S1) : S1 -> S1 = split
   base -> x

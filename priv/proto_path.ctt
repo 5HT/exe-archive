@@ -29,6 +29,9 @@ J   (A: U) (a: A)
     = subst (singl A a) T (eta A a) (x, p) (contr A a x p) d
            where T (z : singl A a) : U = C (z.1) (z.2)
 
+composeUniv (A B C: U) (p: Path U A B) (q: Path U B C): Path U A C
+    = comp (<i> Path U A (q @ i)) p []
+
 -- composition operation
 composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
     = comp (<i> Path A a (q @ i)) p []

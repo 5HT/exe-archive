@@ -17,6 +17,7 @@ compDown (A: U) (a a' b b': A)
        : Path A a' b' -> Path A a b
        = compUp A a' a b' b (inv A a a' p) (inv A b b' q)
 
+-- if contraction space is conractible then image space is contractible too
 retIsContr (A B: U) (f: A -> B) (g: B -> A)
            (h: retract A B f g) (v: isContr B)
          : isContr A

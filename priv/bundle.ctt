@@ -7,7 +7,6 @@
 
 module bundle where
 import iso
-import nat
 
 -- F_B  -> E -> B -- fiber bundle (F_B,E,p,B),
 -- F: B -> U      -- fiber, ex. Vector Space, Total Space, Dependent Product, Pi
@@ -54,11 +53,9 @@ encode (B: U) (F: B -> U) (y: B) : fiber (total B F) B (trivial B F) y -> F y
 decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
   = \ (x: F y) -> ((y,x),refl B y)
 
--- <j> ((y,comp (<i> F ((refl B y) @ i/\j)) x) x),refl B y)
-
 -- Theorem (1) Trivial Fiber Bundle (F,B*F,pr1,B) equals Dependent Family F:B->U
 
--- Proof:
+-- Agda Style Proof:
 --
 --  F y = fiber (total B F) B (trivial B F) y
 --      = (z: E) * Path B z.1 y
@@ -66,17 +63,6 @@ decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
 --      = (x y: B) * (_: Path B x y) * (F y)
 --      = (_: isContr B) * (F y)
 --      = F y
-
--- Proof check
-_: Fin zero = (encode nat Fin zero) ((decode nat Fin zero) fzero)
-_: fiber (total nat Fin) nat (trivial nat Fin) zero
-   = (decode nat Fin zero) ((encode nat Fin zero) ((zero,fzero),refl nat zero))
-
-lem1 (B:U) (F: B -> U) (y: B) (x: F y)
-       : PathP (<i>U) (PathP (<i>F ((refl B y)@i)) x x)
-                (Path (F y) (transport (<i>F((refl B y)@i)) x) x)
-       = <j> PathP (<i>F ((refl B y)@j\/i))
-                   (comp (<i>F ((refl B y)@j/\i)) x [(j=0)-><_>x]) x
 
 lem2 (B: U) (F: B -> U) (y: B) (x: F y)
    : Path (F y) (comp (<i>F (refl B y @ i)) x []) x
@@ -97,7 +83,7 @@ FiberPi (B: U) (F: B -> U) (y: B)
     s (x: A): Path A (f (g x)) x = lem2 B F y x
     t (x: T): Path T (g (f x)) x = lem3 B F y x
 
--- (2) Total Family is Domain
+-- (2) The Sum of Fibers is Total Space
 TotalFam (B E: U) (p: E -> B)
   : Path U (total B (fiber E B p)) E = undefined
 
@@ -110,3 +96,9 @@ FiberFamily (B E: U) (p: E -> B) (x: E)
 FamilyFibration (B: U)
   : Path U (Family B) (Fibration B) = undefined
 
+-- not used here
+lem1 (B:U) (F: B -> U) (y: B) (x: F y)
+       : PathP (<i>U) (PathP (<i>F ((refl B y)@i)) x x)
+                (Path (F y) (transport (<i>F((refl B y)@i)) x) x)
+       = <j> PathP (<i>F ((refl B y)@j\/i))
+                   (comp (<i>F ((refl B y)@j/\i)) x [(j=0)-><_>x]) x
