@@ -9,6 +9,8 @@ import iso
 import prop
 import set
 
+-- I = (X:U) -> isGroupoid X -> (x y: X) -> Path X x y -> X
+
 data I = i0
        | i1
        | seg <i> [(i=0) -> i0,
@@ -19,11 +21,14 @@ data P (A B: U) = p0 (_:A)
                 | pseg (x:A) (y:B) <i> [(i=0) -> p0 x,
                                         (i=1) -> p1 y]
 
+pathToHtpy (A: U) (x y: A) (p: Path A x y): I -> A
+   = split { i0 -> x; i1 -> y; seg @ i -> p @ i }
+
 -- H_{f,g:X→Y}: X × [0,1] → Y,  f(x)=g(x)
 homotopy  (X Y: U)
    (f g: X -> Y)
    (p: (x: X) -> Path Y (f x) (g x))
-   (x: X): I -> Y = split { i0 -> f(x); i1 -> g(x); seg @ i -> p(x) @ i }
+   (x: X): I -> Y = pathToHtpy Y (f x) (g x) (p x)
 
 -- Proof of funext from the interval
 fext (A B: U) (f g: A -> B) (p: (x: A) -> Path B (f x) (g x)): Path (A -> B) f g

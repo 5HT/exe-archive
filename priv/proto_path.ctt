@@ -37,7 +37,11 @@ J_comp     (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
       = subst_comp (singl A a) T (a, refl A a) d where
         T (z : singl A a) : U = C (z.1) (z.2)
 
---sym (A: U) (a b: A) (p: Path A a b): Path A b a = J A a (\(x:A) -> refl A a x) (
+symJ (A: U) (a b: A) (p: Path A a b): Path A b a
+  = J A a T (refl A a) b p where T (x: A) (_: Path A a x): U = Path A x a
+
+transJ (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
+  = undefined
 
 composeUniv (A B C: U) (p: Path U A B) (q: Path U B C): Path U A C
     = comp (<i> Path U A (q @ i)) p []

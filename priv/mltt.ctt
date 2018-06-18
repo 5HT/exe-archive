@@ -29,7 +29,7 @@ contr     (A: U) (a b: A) (p: Equ A a b): Equ (singl A a) (eta A a) (b,p) = <i> 
 subst     (A: U) (P: A->U) (a b: A) (p: Equ A a b) (e: P a): P b = transport (cong A U P a b p) e
 trans   (A B: U) (p: Path U A B) (a : A): B = comp p a []
 
--- HoTT Definition. J.
+-- Diagonal Version of J
 J         (A: U) (x: A) (C: D A) (d: C x x (reflect A x))
           (y: A) (p: Equ A x y): C x y p = subst (singl A x) T (eta A x) (y, p)
                                                  (contr A x y p) d where
