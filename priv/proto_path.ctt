@@ -29,6 +29,16 @@ J   (A: U) (a: A)
     = subst (singl A a) T (eta A a) (x, p) (contr A a x p) d
            where T (z : singl A a) : U = C (z.1) (z.2)
 
+-- Computational Rules
+trans_comp (A : U) (a : A) : Path A a (trans A A (<_> A) a) = fill (<_> A) a []
+subst_comp (A : U) (P : A -> U) (a : A) (e : P a): Path (P a) e (subst A P a a (refl A a) e) = trans_comp (P a) e
+J_comp     (A : U) (a : A) (C : (x : A) -> Path A a x -> U)
+        (d : C a (refl A a)) : Path (C a (refl A a)) d (J A a C d a (refl A a))
+      = subst_comp (singl A a) T (a, refl A a) d where
+        T (z : singl A a) : U = C (z.1) (z.2)
+
+--sym (A: U) (a b: A) (p: Path A a b): Path A b a = J A a (\(x:A) -> refl A a x) (
+
 composeUniv (A B C: U) (p: Path U A B) (q: Path U B C): Path U A C
     = comp (<i> Path U A (q @ i)) p []
 
