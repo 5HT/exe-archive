@@ -133,8 +133,7 @@ compPath (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c =
   <i> hcomp A (p @ i) [ (i = 1) -> q, (i=0) -> <j> a ]
 
 propPi (A : U) (B : A -> U) (h : (x : A) -> isProp (B x))
-       (f0 f1 : (x : A) -> B x) : Path ((x : A) -> B x) f0 f1
-  = <i> \ (x:A) -> (h x (f0 x) (f1 x)) @ i
+       (f0 f1 : (x : A) -> B x) : Path ((x : A) -> B x) f0 f1 = <i> \ (x:A) -> (h x (f0 x) (f1 x)) @ i
 
 idPi (A:U) (B:A->U) (f g : Pi A B) : Path U (Path (Pi A B) f g) ((x:A) -> Path (B x) (f x) (g x)) =
  isoPath  (Path (Pi A B) f g) ((x:A) -> Path (B x) (f x) (g x)) F G S T
@@ -145,15 +144,10 @@ idPi (A:U) (B:A->U) (f g : Pi A B) : Path U (Path (Pi A B) f g) ((x:A) -> Path (
        S (p:T1) : Path T1 (F (G p)) p = refl T1 p
        T (p:T0) : Path T0 (G (F p)) p = refl T0 p
 
-
-setPi (A:U) (B:A -> U) (h:(x:A) -> isSet (B x)) (f g: Pi A B) : isProp (Path (Pi A B) f g) =
- rem
- where
+setPi (A:U) (B:A -> U) (h:(x:A) -> isSet (B x)) (f g: Pi A B) : isProp (Path (Pi A B) f g) = rem where
   T : U = (x:A) -> Path (B x) (f x) (g x)
   rem1 : isProp T = \ (p q : T) -> <i> \ (x:A) -> h x (f x) (g x) (p x) (q x)@i
-
-  rem : isProp (Path (Pi A B) f g) =
-    subst U isProp T (Path (Pi A B) f g) (<i>idPi A B f g@-i) rem1
+  rem : isProp (Path (Pi A B) f g) = subst U isProp T (Path (Pi A B) f g) (<i>idPi A B f g@-i) rem1
 
 propSet (A : U) (h : isProp A) : isSet A =
  \(a b : A) (p q : Path A a b) ->
@@ -162,8 +156,7 @@ propSet (A : U) (h : isProp A) : isSet A =
                        , (j=0) -> h a (p @ i)
                        , (j=1) -> h a (q @ i)]
 
-lemProp (A : U) (h : A -> isProp A) : isProp A =
-  \(a : A) -> h a a
+lemProp (A : U) (h : A -> isProp A) : isProp A = \(a : A) -> h a a
 
 propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem
   where
@@ -186,15 +179,13 @@ ua (A B : U) (e : equiv A B) : Path U A B =
   <i> Glue B [ (i = 0) -> (A,e)
              , (i = 1) -> (B,idEquiv B) ]
 
+rot: (x : S1) -> Path S1 x x = split
+  base -> loop1
+  loop @ i -> constSquare S1 base loop1 @ i
+
 mu : S1 -> equiv S1 S1 = split
   base -> idEquiv S1
-  loop @ i ->
-    let f : (x : S1) -> Path S1 x x = split
-          base -> loop1
-          loop @ i -> constSquare S1 base loop1 @ i
-        goal : Path (equiv S1 S1) (idEquiv S1) (idEquiv S1) =
-          equivPath S1 S1 (idEquiv S1) (idEquiv S1) (<j> \(x : S1) -> f x @ j)
-    in goal @ i
+  loop @ i -> equivPath S1 S1 (idEquiv S1) (idEquiv S1) (<j> \(x : S1) -> rot x @ j) @ i
 
 H : S2 -> U = split
   north -> S1
