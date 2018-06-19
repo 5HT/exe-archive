@@ -1,24 +1,32 @@
-{- MLTT model:
-   - Empty, Unit, Pi, Sigma, Equ, W.
+{- MLTT Reality Check:
+   - Empty, Pi, Sigma, Equ, W.
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module mltt where
 
-data empty =
-data unit = tt
-
+-- Pi built-in type (axioms)
 Pi (A:U)(P:A->U):U=(x:A)->P(x)
 lambda (A : U) (B: A -> U) (a : A) (b: B a): A -> B a = \(x: A) -> b
 app (A : U) (B: A -> U) (a : A) (f: A -> B a): B a = f a
 
+-- Sigma built-in type (optional)
 Sigma (A : U) (B : A -> U) : U = (x : A) * B x
 pair (A : U) (B: A -> U) (a : A) (b: B a): Sigma A B = (a,b)
 pr1 (A: U) (B: A -> U) (x: Sigma A B): A = x.1
 pr2 (A: U) (B: A -> U) (x: Sigma A B): B (pr1 A B x) = x.2
 
+-- W-Types (Well Founded Trees)
+W (A:U) (B:A->U): U = (x:A) * (B(x) -> W A B)
+Wrec (A:U) (B:A->U) (P:U) (alg: (a:A) -> (B(a)->W A B) -> ((b:B(a))->P) -> P)
+   : (w: W A B) -> P = \(w:W A B) -> alg w.1 w.2 (\(b:B(w.1)) -> Wrec A B P alg (w.2 b))
+Wind (A:U) (B:A->U) (P:W A B -> U) (alg: (a:A) (f:B(a)->W A B) -> ((b:B(a))->P (f b)) -> P (a,f))
+   : (w: W A B) -> P w = \(w:W A B) -> alg w.1 w.2 (\(b:B(w.1)) -> Wind A B P alg (w.2 b))
+
+-- Heterogeneous built-in type (Path formation axioms)
 Path (A: U) (a b: A): U = PathP (<i>A) a b
 HeteroEqu (A B: U) (a: A) (b: B) (P: Path U A B) : U = PathP P a b
 
+-- Equality Type, mostly built-in (trans, subst, refl, cong, contr axioms)
 Equ       (A: U) (x y: A): U = HeteroEqu A A x y (<i>A)
 reflect   (A: U) (a: A): Equ A a a = <i> a
 D         (A: U) : U = (x y: A) -> Equ A x y -> U
@@ -29,24 +37,27 @@ contr     (A: U) (a b: A) (p: Equ A a b): Equ (singl A a) (eta A a) (b,p) = <i> 
 subst     (A: U) (P: A->U) (a b: A) (p: Equ A a b) (e: P a): P b = transport (cong A U P a b p) e
 trans   (A B: U) (p: Path U A B) (a : A): B = comp p a []
 
--- Diagonal Version of J
+-- Theorems:
+-- 1) Diagonal Version of J
 J         (A: U) (x: A) (C: D A) (d: C x x (reflect A x))
           (y: A) (p: Equ A x y): C x y p = subst (singl A x) T (eta A x) (y, p)
                                                  (contr A x y p) d where
                      T (z: singl A x): U = C x (z.1) (z.2)
 
+-- 2) Computational Rules
 trans_comp (A : U) (a : A) : Path A a (trans A A (<_> A) a) = fill (<_> A) a []
 subst_comp (A : U) (P : A -> U) (a : A) (e : P a): Path (P a) e (subst A P a a (reflect A a) e) = trans_comp (P a) e
 
-comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a))) (f a) = reflect (B a) (f a) -- beta
-comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (\(x:A) -> f x)                 = reflect (A -> B a) f -- eta
-comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b))                            = reflect A          a
-comp4 (A:U)(B:A->U)(a:A)(b: B a): Equ (B a) b (pr2 A B (a,b))                        = reflect (B a)      b
+comp1 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (B a) (app A B a (lambda A B a (f a))) (f a) = reflect (B a) (f a)   -- beta
+comp2 (A:U)(B:A->U)(a:A)(f:A->B a): Equ (A -> B a) f (\(x:A) -> f x)                 = reflect (A -> B a)  f -- eta
+comp3 (A:U)(B:A->U)(a:A)(b: B a): Equ A a (pr1 A B (a,b))                            = reflect A           a
+comp4 (A:U)(B:A->U)(a:A)(b: B a): Equ (B a) b (pr2 A B (a,b))                        = reflect (B a)       b
 comp5 (A:U)(B:A->U)(p: Sigma A B): Equ (Sigma A B) p (pr1 A B p,pr2 A B p)           = reflect (Sigma A B) p
-comp7 (A:U)(a:A)(C: D A) (d: C a a (reflect A a))
+comp6 (A:U)(a:A)(C: D A) (d: C a a (reflect A a))
     : Path (C a a (reflect A a)) d (J A a C d a (reflect A a))
     = subst_comp (singl A a) T (eta A a) d where T (z: singl A a) : U = C a (z.1) (z.2)
 
+-- 3a) MLTT Model
 MLTT (A: U): U
   = (Pi_Former:    (A -> U) -> U)
   * (Pi_Intro:     (B: A -> U) (a: A) -> B a -> (A -> B a))
@@ -64,40 +75,12 @@ MLTT (A: U): U
   * (Id_Intro:     (a: A) -> Equ A a a)
   * (Id_Elim: (x: A) (C: D A) (d: C x x (Id_Intro x)) (y: A) (p: Equ A x y) -> C x y p)
   * (Id_Comp: (a:A)(C: D A) (d: C a a (Id_Intro a))
-           -> Path (C a a (Id_Intro a)) d (Id_Elim a C d a (Id_Intro a))) * unit
+           -> Path (C a a (Id_Intro a)) d (Id_Elim a C d a (Id_Intro a)))
+  * U
 
+-- 3b) MLTT Instantiation
 instance (A: U): MLTT A
     = (Pi A, lambda A, app A, comp1 A, comp2 A,
        Sigma A, pair A, pr1 A, pr2 A, comp3 A, comp4 A, comp5 A,
-       Equ A, reflect A, J A, comp7 A, tt)
+       Equ A, reflect A, J A, comp6 A, A)
 
-data W (A:U) (B:A->U) = sup (x:A) (f:B(x) -> W A B)
-
-sup_injective1 (A:U)(B:A->U)(x:A)(f:B(x)->W A B)
-             : (y:A)(g:B(y)->W A B) -> Path (W A B) (sup x f) (sup y g) -> Path A x y
-             = undefined
-
-sup_injective2 (A:U)(B:A->U)(x:A)(f:B(x)->W A B)
-             : (g:B(x)->W A B) -> Path (W A B) (sup x f) (sup x g) -> Path (B(x)->W A B) f g
-             = undefined
-
-whead (A:U)(B:A->U): W A B -> A                            = split sup x f -> x
-wtail (A:U)(B:A->U): (x:W A B) -> B (whead A B x) -> W A B = split sup x f -> f
-
-Wrec (A:U) (B:A->U) (P: U)
-     (alg: (a:A) -> (B(a)->W A B) -> ((b:B(a)) -> P) -> P)
-   : W A B -> P = split sup x g -> alg x g (\(h:B(x)) -> Wrec A B P alg (g h))
-
-Wind (A:U) (B:A->U) (P:W A B -> U)
-     (alg: (a:A) (f:B(a)->W A B) -> ((b:B(a))->P (f b)) -> P (sup a f))
-   : (w: W A B) -> P w = split sup x g -> alg x g (\(b:B(x)) -> Wind A B P alg (g b))
-
-WFT (A:U) (B:A->U): U = (x:A) * (B(x) -> WFT A B)
-
-WFTrec (A:U) (B:A->U) (P:U)
-       (alg: (a:A) -> (B(a)->WFT A B) -> ((b:B(a))->P) -> P)
-     : (w: WFT A B) -> P = \(w:WFT A B) -> alg w.1 w.2 (\(b:B(w.1)) -> WFTrec A B P alg (w.2 b))
-
-WFTind (A:U) (B:A->U) (P:WFT A B -> U)
-       (alg: (a:A) (f:B(a)->WFT A B) -> ((b:B(a))->P (f b)) -> P (a,f))
-     : (w: WFT A B) -> P w = \(w:WFT A B) -> alg w.1 w.2 (\(b:B(w.1)) -> WFTind A B P alg (w.2 b))

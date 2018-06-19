@@ -47,7 +47,7 @@ loopZ0  : Z = winding (compS1 loop1 invLoop)
 
 mLoop : (x : S1) -> Path S1 x x = split
   base -> loop1
-  loop @ i -> constSquare S1 base loop1 @ i
+  loop @ i -> (constSquare S1 base loop1) @ i
 
 rot : S1 -> S1 -> S1 = split
   base -> (\ (y : S1) -> y)
@@ -73,7 +73,7 @@ triv : loopS1 = <i> base
 
 -- A nice example of a homotopy on the circle. The path going halfway
 -- around the circle and then back is contractible:
-hmtpy : Path loopS1 (<i> base) (<i> loop{S1} @ (i /\ -i)) =
+circ_hmtpy : Path loopS1 (<i> base) (<i> loop{S1} @ (i /\ -i)) =
   <j i> loop{S1} @ j /\ i /\ -i
 
 circleelim (X : U) (x : X) (p : Path X x x) : S1 -> X = split

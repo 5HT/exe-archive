@@ -1,71 +1,25 @@
 module hopf where
 import iso
 import circle
-import helix
 import suspension
-
 S2 : U = susp S1
 S3 : U = susp S2
 
-{-
-invS : S1 -> S1 = split
- base -> base
- loop @ i -> loop1 @ -i
+fextToHE  (A B : U) (f g : A -> B) (p : Path (A -> B) f g) (e1 : isEquiv A B f) (e2 : isEquiv A B g)
+        : PathP (<x> isEquiv A B (p @ x)) e1 e2
+        = J (A -> B) f (\ (g : A -> B)
+          (p: Path (A->B) f g)->(e1: isEquiv A B f)(e2: isEquiv A B g)->PathP (<x>isEquiv A B (p@x)) e1 e2)
+          (\(e1: isEquiv A B f) (e2: isEquiv A B f) -> propIsEquiv A B f e1 e2) g p e1 e2
 
-lemInv  (A:U) (a b:A) (p: Id A a b)
-      : Id (Id A a a) (compId A a b a p (<i> p @ -i)) (refId A a)
-      = transport (<i>Id (Id A a a) (compId A a (p@i) a (<j>p@i/\j) (<j>p@i/\-j)) (refId A a))
-                 (refId (Id A a a) (refId A a))
+rotLoop : PathP (<i>isEquiv S1 S1 (rot (loop1@i))) (idIsEquiv S1) (idIsEquiv S1)
+        = <x>fextToHE S1 S1 (idfun S1) (idfun S1) (<i>rot (loop{S1}@i)) (idIsEquiv S1) (idIsEquiv S1) @ x
 
-lemInv1 (A:U) (a b:A) (p:Id A a b)
-      : Id (Id A b b) (compId A b a b (<i>p@-i) p) (refl A b)
-      = transport (<i>Id (Id A b b) (compId A b (p@-i) b (<j>p@-i\/-j) (<j>p@-i\/j)) (refId A b))
-                  (refId (Id A b b) (refId A b))
--}
+rotIsEquiv: (a: S1) -> isEquiv S1 S1 (rot a) = split { base -> idIsEquiv S1; loop@x -> rotLoop@x }
+rotpath (x: S1): Path U S1 S1 = equivPath S1 S1 (rot x) (rotIsEquiv x)
 
---corrInv  (x y: S1) : Path S1 (mult x (mult (invS1 x) y)) y = undefined
---corrInv1 (x y: S1) : Path S1 (mult (invS1 x) (mult x y)) y = undefined
+-- Hopf fibration
+H : S2 -> U = split { north -> S1; south -> S1; merid a @ x -> rotpath a@x }
 
-{-
-corrInv (x y : S1) : Path S1 (mult x (mult (invS x) y)) y =
-  composition S1 (mult x (mult (invS x) y)) (mult (mult x (invS x)) y) y rem1 rem where
-  rem1 : Path S1 (mult x (mult (invS x) y)) (mult (mult x (invS x)) y) = multAssoc x (invS x) y
-  rem : Path S1 (mult (mult x (invS x)) y) y = composition S1 (mult (mult x (invS x)) y) (mult base y) y (<i>mult (lemInv x @i) y) (idL y)
+-- total space of H
+TH : U = (c : S2) * H c
 
-corrInv1 (x y : S1) : Path S1 (mult (invS x) (mult x y)) y =
-  composition S1 (mult (invS x) (mult x y)) (mult (mult (invS x) x) y) y rem1 rem where
-  rem1 : Path S1 (mult (invS x) (mult x y)) (mult (mult (invS x) x) y) = multAssoc (invS x) x y
-  rem : Path S1 (mult (mult (invS x) x) y) y = composition S1 (mult (mult (invS x) x) y) (mult base y) y (<i>mult (lemInv1 x@i) y) (idL y)
--}
-
-eqS1 (x: S1) : Path U S1 S1 = undefined -- isoPath S1 S1 (mult x) (mult (invS1 x)) (corrInv x) (corrInv1 x)
-
-funExt1 (C B : U) (F : C -> U) (a :C) : (b : C) (p : Path C a b)
-          (f : F a -> B) (g : F b -> B)
-	    (h : (x : F a) -> Path B (f x) (g (subst C F a b p x)))
-          -> PathS C (\ (z:C) -> F z -> B) a b p f g = undefined
-{-
-  J C a (\ (b:C) (p:Path C a b) -> (f : F a -> B) (g : F b -> B)
-             (h : (x : F a) -> Path B (f x) (g (subst C F a b p x)))
-               -> PathS C (\ (z:C) -> F z -> B) a b p f g) rem
- where rem (f g : F a -> B) (h : (x : F a) -> Path B (f x) (g x)) : Path (F a -> B) f g =
-         <i>\(x:F a) -> h x @ i
--}
-
-hopf: S2 -> U = split
-   north -> S1
-   south -> S1
-   merid x @ i -> eqS1 x @ i
-
-t : (x : S2) -> hopf x -> join S1 S1 = undefined
-{-
-split
-      north   -> \ (a:S1) -> inl a
-      south   -> \ (a:S1) -> inr a
-      merid x @ i -> funExt1 S2 (join S1 S1) hopf north south
-                             (<j>merid{S2} x@j)
-                             (\ (y:S1) -> inl y)
-                             (\ (y:S1) -> inr y)
-                             (\ (y:S1) -> <j> pushC {join S1 S1} y (mult x y)@j) @ i
--}
-totalHopfToJoin (xy:(x : S2) * hopf x) : join S1 S1 = t xy.1 xy.2

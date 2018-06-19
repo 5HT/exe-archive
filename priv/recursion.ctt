@@ -137,3 +137,16 @@ coind (F: U -> U) (A: U): U
 
 inductive   (F: functor) (A: U): ind F.1 A = (in_ F.1,out_ F.1,cata A F,histo A F,tt)
 coinductive (F: functor) (A: U): coind F.1 A = (out_ F.1,in_ F.1,ana A F,futu A F,tt)
+
+data W (A:U) (B:A->U) = sup (x:A) (f:B(x) -> W A B)
+
+whead (A:U)(B:A->U): W A B -> A                            = split sup x f -> x
+wtail (A:U)(B:A->U): (x:W A B) -> B (whead A B x) -> W A B = split sup x f -> f
+
+Wrec (A:U) (B:A->U) (P: U)
+     (alg: (a:A) -> (B(a)->W A B) -> ((b:B(a)) -> P) -> P)
+   : W A B -> P = split sup x g -> alg x g (\(h:B(x)) -> Wrec A B P alg (g h))
+
+Wind (A:U) (B:A->U) (P:W A B -> U)
+     (alg: (a:A) (f:B(a)->W A B) -> ((b:B(a))->P (f b)) -> P (sup a f))
+   : (w: W A B) -> P w = split sup x g -> alg x g (\(b:B(x)) -> Wind A B P alg (g b))
