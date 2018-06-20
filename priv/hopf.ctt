@@ -183,6 +183,8 @@ rot: (x : S1) -> Path S1 x x = split
   base -> loop1
   loop @ i -> constSquare S1 base loop1 @ i
 
+opaque propIsEquiv
+
 mu : S1 -> equiv S1 S1 = split
   base -> idEquiv S1
   loop @ i -> equivPath S1 S1 (idEquiv S1) (idEquiv S1) (<j> \(x : S1) -> rot x @ j) @ i

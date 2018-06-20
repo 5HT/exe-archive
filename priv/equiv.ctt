@@ -57,11 +57,11 @@ isEquivContr (A B:U) (a: isContr A) (b:isContr B) (f:A->B) : isEquiv A B f
 
 funFib1 (A:U) (B C: A -> U) (f: (x:A) -> B x -> C x) (x0:A) (z0:C x0)
         (u: fiber (B x0) (C x0) (f x0) z0)
-      : fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x0,z0)
+      : fiber (Sigma A B) (Sigma A C) (total A B C f) (x0,z0)
       = ((x0,u.1),<i>(x0,u.2@i))
 
 funFib2 (A:U) (B C: A -> U) (f: (x:A) -> B x -> C x) (x0:A) (z0:C x0)
-        (w: fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x0,z0))
+        (w: fiber (Sigma A B) (Sigma A C) (total A B C f) (x0,z0))
       : fiber (B x0) (C x0) (f x0) z0
       = (b0,s) where
   x : A = w.1.1
@@ -91,10 +91,10 @@ equivFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x)
             (cB : isContr (Sigma A B)) (cC : isContr (Sigma A C)) (x:A)
           : isEquiv (B x) (C x) (f x)
           = \ (z:C x) -> retIsContr (fiber (B x) (C x) (f x) z)
-                                    (fiber (Sigma A B) (Sigma A C) (totalFun A B C f) (x,z))
+                                    (fiber (Sigma A B) (Sigma A C) (total A B C f) (x,z))
                                     (funFib1 A B C f x z)
                                     (funFib2 A B C f x z)
                                     (retFunFib A B C f x z)
                                     (isEquivContr (Sigma A B) (Sigma A C) cB cC
-                                                  (totalFun A B C f) (x,z))
+                                                  (total A B C f) (x,z))
 

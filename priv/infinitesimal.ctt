@@ -4,6 +4,7 @@
 
    HoTT 7.7 Modalities
    EGA4 4.1 Etale maps
+   https://ncatlab.org/schreiber/show/thesis+Wellen
 -}
 
 module infinitesimal where
