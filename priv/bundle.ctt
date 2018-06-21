@@ -36,6 +36,7 @@ import iso
 
 -- prerequisite from equiv.ctt
 fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B (p x) y
+bundle: U = (E B: U) * (y: B) * (p: E -> B) * fiber E B p y
 
 -- Fiber
 Family    (B: U): U = B -> U
