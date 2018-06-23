@@ -1,0 +1,12 @@
+module topos where
+import cat
+
+subobjectClassifier (C: precategory): U
+  = (omega: carrier C)
+  * (xi: (V X: carrier C) -> hom C V X -> hom C X omega)
+  * terminal C
+
+Topos (cat: precategory): U
+  = (rezk: isCategory cat)
+  * (cartesianClosed: isCCC cat)
+  * subobjectClassifier cat
