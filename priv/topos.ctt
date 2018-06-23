@@ -1,11 +1,10 @@
 module topos where
 import cat
 
-mono (P: precategory) (A B: carrier P) (f: hom P A B): U
-  = (C: carrier P)
-  * (g1 g2: hom P C A)
-  * (_: Path (hom P C B) (compose P C A B g1 f) (compose P C A B g2 f))
-  * (   Path (hom P C A) g1 g2)
+mono (P: precategory) (A B C: carrier P) (f: hom P A B): U
+  = (g1 g2: hom P C A) ->
+    Path (hom P C B) (compose P C A B g1 f) (compose P C A B g2 f) ->
+    Path (hom P C A) g1 g2
 
 subobjectClassifier (C: precategory): U
   = (omega: carrier C)
