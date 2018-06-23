@@ -62,12 +62,14 @@ initial       (C: precategory): U = (x: carrier C) * isInitial  C x
 terminal      (C: precategory): U = (y: carrier C) * isTerminal C y
 initialProp   (C: precategory) (isC: isCategory C): isProp (initial  C) = undefined
 terminalProp  (C: precategory) (isC: isCategory C): isProp (terminal C) = undefined
+isCCC         (C: precategory): U = undefined
 isCommutative (X: precategory)
               (A B C D: carrier X)
               (f: hom X A B) (g: hom X C D)
               (h: hom X A C) (i: hom X B D): U
             = Path (hom X A D) (compose X A C D h g)
                                (compose X A B D f i)
+
 
 opCat (P: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
   Ob: U = carrier P
