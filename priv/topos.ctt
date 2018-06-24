@@ -1,3 +1,7 @@
+{- Topos Theory:
+   - subobjectClassifier, Topos.
+   Copyright (c) Groupoid Infinity, 2014-2018 -}
+
 module topos where
 import cat
 import cones
