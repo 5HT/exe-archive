@@ -1,15 +1,23 @@
 module topos where
 import cat
+import cones
+import pullback
 
-mono (P: precategory) (A B C: carrier P) (f: hom P A B): U
-  = (g1 g2: hom P C A) ->
-    Path (hom P C B) (compose P C A B g1 f) (compose P C A B g2 f) ->
-    Path (hom P C A) g1 g2
+mono (P: precategory) (B C: carrier P) (f: hom P B C): U
+  = (A: carrier P) (g1 g2: hom P A B)
+ -> Path (hom P A C) (compose P A B C g1 f) (compose P A B C g2 f)
+ -> Path (hom P A B) g1 g2
 
 subobjectClassifier (C: precategory): U
   = (omega: carrier C)
-  * (xi: (V X: carrier C) -> hom C V X -> hom C X omega)
-  * terminal C
+  * (xi: (V X: carrier C) (j: hom C V X) -> hom C X omega)
+  * (end: terminal C)
+  * (topOmega: hom C end.1 omega)
+  * (square: (V X: carrier C) (j: hom C V X) -> mono C V X j
+         -> hasPullback C (omega,(end.1,topOmega),(X,xi V X j)))
+  * (unique: (V X: carrier C) (j: hom C V X) (k: hom C X omega) -> mono C V X j
+         -> hasPullback C (omega,(end.1,topOmega),(X,k)) -> Path (hom C X omega) (xi V X j) k)
+  * unit
 
 Topos (cat: precategory): U
   = (rezk: isCategory cat)

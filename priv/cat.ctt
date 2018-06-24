@@ -56,10 +56,10 @@ idIso (C: precategory) (A: carrier C): iso C A A
 -- HoTT Definition 9.1.6. Category.
 isCategory    (C: precategory): U = (A: carrier C) -> isContr ((B: carrier C) * iso C A B)
 category: U = (C: precategory) * isCategory C
-isInitial     (C: precategory) (x: carrier C): U = (y: carrier C) -> isContr (hom C x y)
-isTerminal    (C: precategory) (y: carrier C): U = (x: carrier C) -> isContr (hom C x y)
-initial       (C: precategory): U = (x: carrier C) * isInitial  C x
-terminal      (C: precategory): U = (y: carrier C) * isTerminal C y
+isInitial     (C: precategory) (bot: carrier C): U = (x: carrier C) -> isContr (hom C bot x)
+isTerminal    (C: precategory) (top: carrier C): U = (x: carrier C) -> isContr (hom C x top)
+initial       (C: precategory): U = (bot: carrier C) * isInitial  C bot
+terminal      (C: precategory): U = (top: carrier C) * isTerminal C top
 initialProp   (C: precategory) (isC: isCategory C): isProp (initial  C) = undefined
 terminalProp  (C: precategory) (isC: isCategory C): isProp (terminal C) = undefined
 isCCC         (C: precategory): U = undefined
