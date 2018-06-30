@@ -87,9 +87,3 @@ isoToPath (i: iso): Path U i.1 i.2.1
 propPath (A B: U) (f: A -> B) (g: B -> A) (pa: isProp A) (pb: isProp B): Path U A B
   = isoToPath (A,B,f,g,(\ (b: B) -> pb (f (g b)) b),(\ (a: A) -> pa (g (f a)) a),tt)
 
--- A proof that the two definitions of injectivity can be identified with each other
-injPath (A B: U) (f: A -> B) (sA: isSet A) (sB: isSet B)
-  : Path U (inj0 A B f sA sB) (inj1 A B f sA sB)
-  = propPath (inj0 A B f sA sB) (inj1 A B f sA sB)
-             (inj01 A B f sA sB) (inj10 A B f sA sB)
-             (prop_inj0 A B f sA sB) (prop_inj1 A B f sA sB)

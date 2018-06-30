@@ -1,5 +1,6 @@
 module swaptrans where
 import algebra
+import bishop
 
 AscCom: U
   = (A: U)
@@ -186,3 +187,57 @@ swptrans (A : AscCom) (k l : A.1) (a b c : prod A.1 A.1)
         [ (i = 0) -> <j> op (op k a.2) (p1 @ -j)
         , (i = 1) -> swp9 A k a.2 c.1 (op l b.2) ]
   in <i> comp (<_> A.1) (p3 @ i) [ (i = 0) -> p2, (i = 1) -> p4 ]
+
+-- commuative monoids and groups
+op  (m: cmonoid): m.1.1 -> m.1.1 -> m.1.1 = opCMonoid m
+op3 (m: cmonoid): m.1.1 -> m.1.1 -> m.1.1 -> m.1.1 = \ (a b c : m.1.1) -> op m a (op m b c)
+asc (m: cmonoid): isAssociative m.1.1 (op m) = isAssocCMonoid m
+id  (m: cmonoid): m.1.1 = idCMonoid m
+hid (m: cmonoid): hasIdentity m.1.1 (op m) (id m) = hasIdCMonoid m
+cm  (m: cmonoid): isCommutative m.1.1 (op m) = isCommCMonoid m
+ac  (m: cmonoid): AscCom = (m.1.1, op m, asc m, cm m)
+gac (g: abgroup): AscCom = (g.1.1, opCGroup g, isAssocCGroup g, isCommCGroup g)
+
+-- Direct product of a cancellative monoid with appropriate operators and properties
+pair (m: cmonoid): U = prod m.1.1 m.1.1
+pset (m: cmonoid): isSet (pair m) = setSig m.1.1 (\(_ : m.1.1) -> m.1.1) m.1.2 (\(_ : m.1.1) -> m.1.2)
+pop  (m: cmonoid) (x y : pair m) : pair m = (op m x.1 y.1, op m x.2 y.2)
+pid  (m: cmonoid): pair m = (id m, id m)
+phid (m: cmonoid): hasIdentity (pair m) (pop m) (pid m)
+  = (\(x: pair m) -> <i> ((hid m).1 x.1 @ i, (hid m).1 x.2 @ i),
+     \(x: pair m) -> <i> ((hid m).2 x.1 @ i, (hid m).2 x.2 @ i))
+pasc (m: cmonoid): isAssociative (pair m) (pop m)
+  = \ (x0 x1 x2: pair m) -> <i> (asc m x0.1 x1.1 x2.1 @ i, asc m x0.2 x1.2 x2.2 @ i)
+pcm  (m: cmonoid): isCommutative (pair m) (pop m)
+  = \ (x0 x1: pair m) -> <i> (cm m x0.1 x1.1 @ i, cm m x0.2 x1.2 @ i)
+
+---------------------------
+prel (m: cmonoid) (a b : pair m): PROP
+  = exists m.1.1 (\(t: m.1.1) -> Path m.1.1 (op3 m t a.1 b.2) (op3 m t b.1 a.2))
+
+prelisrefl (m : cmonoid) (a : pair m) : (prel m a a).1 -- exists m.1.1 T pT
+  = let
+    T (k: m.1.1) : U = Path m.1.1 (op3 m k a.1 a.2) (op3 m k a.1 a.2)
+    k: m.1.1 = id m
+  in existspr m.1.1 T k (<i> op m (id m) (op m a.1 a.2))
+
+prelissymm (m : cmonoid) (a b : pair m) (p0 : (prel m a b).1) : (prel m b a).1
+  = let
+    T0 (t : m.1.1) : U = Path m.1.1 (op3 m t a.1 b.2) (op3 m t b.1 a.2)
+    T1 (t : m.1.1) : U = Path m.1.1 (op3 m t b.1 a.2) (op3 m t a.1 b.2)
+    f (k : m.1.1) (p : T0 k) : (exists m.1.1 T1).1 = existspr m.1.1 T1 k (<i> p @ -i)
+    P : PROP = exists m.1.1 T1
+  in existsel m.1.1 T0 (exists m.1.1 T1) f p0
+
+prelistrans (m : cmonoid) (x y z : pair m) (p0 : (prel m x y).1) (p1 : (prel m y z).1)
+  : (prel m x z).1
+  = let
+    T0 (k : m.1.1) : U = Path m.1.1 (op3 m k x.1 y.2) (op3 m k y.1 x.2)
+    T1 (k : m.1.1) : U = Path m.1.1 (op3 m k y.1 z.2) (op3 m k z.1 y.2)
+    T2 (k : m.1.1) : U = Path m.1.1 (op3 m k x.1 z.2) (op3 m k z.1 x.2)
+    f (k : m.1.1) (p0 : T0 k) (l : m.1.1) (p1 : T1 l) : (exists m.1.1 T2).1
+      = existspr m.1.1 T2 (op m k (op m l y.2)) (swptrans (ac m) k l (x.1, x.2) (y.1, y.2) (z.1, z.2) p0 p1)
+  in existsel2 m.1.1 T0 m.1.1 T1 (exists m.1.1 T2) f p0 p1
+
+peqrel (m: cmonoid) : eqrel (pair m)
+  = (prel m, ((prelistrans m, prelisrefl m), prelissymm m))

@@ -26,3 +26,18 @@ iseqrelpair (A B: U) (R0: hrel A) (R1: hrel B) (E0: iseqrel A R0) (E1: iseqrel B
 
 eqrelpair (A B : U) (R0 : eqrel A) (R1 : eqrel B) : eqrel (prod A B)
   = (hrelpair A B R0.1 R1.1, iseqrelpair A B R0.1 R1.1 R0.2 R1.2)
+
+iseqclasspair (A B : U) (R0 : hrel A) (R1 : hrel B) (H0 : hsubtypes A)
+    (H1 : hsubtypes B) (E0 : iseqclass A R0 H0) (E1 : iseqclass B R1 H1)
+  : iseqclass (prod A B) (hrelpair A B R0 R1) (hsubtypespair A B H0 H1)
+  = let
+    H : hsubtypes (prod A B) = hsubtypespair A B H0 H1
+    a (P : PROP) (f : carrier (prod A B) H -> P.1) : P.1
+      = let
+        g (x0 : carrier A H0) : P.1 = let h (x1 : carrier B H1) : P.1 = f ((x0.1, x1.1), (x0.2, x1.2)) in E1.1.1 P h
+      in E0.1.1 P g
+    b (x0 x1 : prod A B) (r : (hrelpair A B R0 R1 x0 x1).1) (h0 : (H x0).1) : (H x1).1
+      = (E0.1.2 x0.1 x1.1 r.1 h0.1, E1.1.2 x0.2 x1.2 r.2 h0.2)
+    c (x0 x1 : prod A B) (h0 : (H x0).1) (h1 : (H x1).1) : (hrelpair A B R0 R1 x0 x1).1
+      = (E0.2 x0.1 x1.1 h0.1 h1.1, E1.2 x0.2 x1.2 h0.2 h1.2)
+  in ((a, b), c)
