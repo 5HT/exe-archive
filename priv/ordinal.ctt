@@ -1,6 +1,7 @@
 {- Ordinals:
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
+
 module ordinal where
 
 import nat
@@ -8,8 +9,21 @@ import nat
 -- from the JSL 89 paper of Stan Wainer
 -- by @coquand
 
-data ord = zero | succ (n:ord) | lim (f : nat -> ord)
-data ord2 = zero | succ (n:ord2) | lim (f : nat -> ord2) | lim2 (f : ord -> ord2)
+-- http://www.cse.chalmers.se/~coquand/ordinal.ps
+data ord  = zero
+          | succ (n:ord)
+          | lim  (f: nat -> ord)
+
+data ord2 = zero
+          | succ (n:ord2)
+          | lim  (f: nat -> ord2)
+          | lim2 (f: ord -> ord2)
+
+data ord3 = zero
+          | succ (n:ord2)
+          | lim  (f: nat -> ord2)
+          | lim2 (f: ord -> ord2)
+          | lim3 (f: ord2 -> ord3)
 
 inj0 : nat -> ord = split
  zero -> zero
