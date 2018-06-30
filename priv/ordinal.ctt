@@ -11,7 +11,7 @@ import nat
 
 -- http://www.cse.chalmers.se/~coquand/ordinal.ps
 data ord  = zero
-          | succ (n:ord)
+          | succ (n: ord)
           | lim  (f: nat -> ord)
 
 data ord2 = zero
@@ -20,9 +20,9 @@ data ord2 = zero
           | lim2 (f: ord -> ord2)
 
 data ord3 = zero
-          | succ (n:ord2)
-          | lim  (f: nat -> ord2)
-          | lim2 (f: ord -> ord2)
+          | succ (n:ord3)
+          | lim  (f: nat  -> ord3)
+          | lim2 (f: ord  -> ord3)
           | lim3 (f: ord2 -> ord3)
 
 inj0 : nat -> ord = split
