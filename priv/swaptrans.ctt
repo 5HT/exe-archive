@@ -1,6 +1,7 @@
 module swaptrans where
 import bishop
 import algebra
+import subtype
 
 AscCom: U
   = (A: U)

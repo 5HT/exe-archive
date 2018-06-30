@@ -92,15 +92,15 @@ qasc (m : cmonoid) : isAssociative (qgroup m) (qop m)
     ps (x0 x1 x2 : pair m) : tP (qpr m x0) (qpr m x1) (qpr m x2)
       = let
         p0 : Path (qgroup m) (qop m (qpr m x0) (qop m (qpr m x1) (qpr m x2)))
-                         (qpr m (pop m x0 (pop m x1 x2)))
+                             (qpr m (pop m x0 (pop m x1 x2)))
           = <i> comp (<_> qgroup m) (qop m (qpr m x0) (qopeq m x1 x2 @ i))
             [ (i = 0) -> <_> qop m (qpr m x0) (qop m (qpr m x1) (qpr m x2))
             , (i = 1) -> qopeq m x0 (pop m x1 x2) ]
         p1 : Path (qgroup m) (qpr m (pop m x0 (pop m x1 x2)))
-                         (qpr m (pop m (pop m x0 x1) x2))
+                             (qpr m (pop m (pop m x0 x1) x2))
           = <i> qpr m (pasc m x0 x1 x2 @ i)
         p2 : Path (qgroup m) (qop m (qop m (qpr m x0) (qpr m x1)) (qpr m x2))
-                         (qpr m (pop m (pop m x0 x1) x2))
+                             (qpr m (pop m (pop m x0 x1) x2))
           = <i> comp (<_> qgroup m) (qop m (qopeq m x0 x1 @ i) (qpr m x2))
             [ (i = 0) -> <_> qop m (qop m (qpr m x0) (qpr m x1)) (qpr m x2),
               (i = 1) -> qopeq m (pop m x0 x1) x2 ]

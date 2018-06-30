@@ -1,6 +1,6 @@
 module quot where
-import set
 import bishop
+import subtype
 import iso_sigma
 
 -- quotients
