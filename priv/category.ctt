@@ -4,10 +4,10 @@
 
 module category where
 import proto
-import set
 import cat
 import fun
 import adj
+import set
 import algebra
 
 -- The general notion of (∞,1)-categories

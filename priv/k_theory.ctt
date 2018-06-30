@@ -234,7 +234,9 @@ grothendieckhom (m: cmonoid): cmonabgrouphom m (grothendieck m) = (f, pop, pid) 
 Fforgetful: catfunctor Ab CMon = (f, Fmor, Fid, p) where
   f: abgroup -> cmonoid = forgetfulAb
   Fmor (x y: abgroup) (g: abgrouphom x y): (cmonoidhom (f x) (f y)) = g
-  Fid (x: abgroup): Path (cmonoidhom (f x) (f x)) (Fmor x x (idmonoidhom (x.1, x.2.1.1))) (idmonoidhom ((f x).1, (f x).2.1))
+  Fid (x: abgroup): Path (cmonoidhom (f x) (f x))
+                         (Fmor x x (idmonoidhom (x.1, x.2.1.1)))
+                         (idmonoidhom ((f x).1, (f x).2.1))
     = <_> idmonoidhom ((f x).1, (f x).2.1)
   p (x y z: abgroup) (g: abgrouphom x y) (h: abgrouphom y z)
     : Path (cmonoidhom (f x) (f z))
@@ -248,9 +250,15 @@ Fgrothendieck: catfunctor CMon Ab = (f, Fmor, Fid, p) where
   f: cmonoid -> abgroup = grothendieck
   Fmor (x y: cmonoid) (g: cmonoidhom x y): (abgrouphom (f x) (f y)) = undefined
   Fid (x: cmonoid)
-    : Path (abgrouphom (f x) (f x)) (Fmor x x (idmonoidhom (x.1, x.2.1))) (idmonoidhom ((f x).1, (f x).2.1.1)) = undefined
+    : Path (abgrouphom (f x) (f x))
+           (Fmor x x (idmonoidhom (x.1, x.2.1)))
+           (idmonoidhom ((f x).1, (f x).2.1.1)) = undefined
   p (x y z: cmonoid) (g: cmonoidhom x y) (h: cmonoidhom y z)
     : Path (abgrouphom (f x) (f z))
            (Fmor x z (monoidhomcomp (x.1, x.2.1) (y.1, y.2.1) (z.1, z.2.1) g h))
-           (monoidhomcomp ((f x).1, (f x).2.1.1) ((f y).1, (f y).2.1.1) ((f z).1, (f z).2.1.1) (Fmor x y g) (Fmor y z h)) = undefined
+           (monoidhomcomp ((f x).1, (f x).2.1.1)
+                          ((f y).1, (f y).2.1.1)
+                          ((f z).1, (f z).2.1.1)
+                          (Fmor x y g)
+                          (Fmor y z h)) = undefined
 
