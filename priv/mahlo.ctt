@@ -1,5 +1,6 @@
 module mahlo where
 -- http://www.cs.swan.ac.uk/~csetzer/articles/uppermahlo.ps
+-- http://www.cs.swan.ac.uk/~csetzer/slides/pcc/2013Toulouse/slidesPCCToulouse2013.pdf
 -- Mahlo Universes a la Setzer
 mutual
 data V
