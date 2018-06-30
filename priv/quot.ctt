@@ -1,7 +1,6 @@
 module quot where
 import bishop
 import subtype
-import iso_sigma
 
 -- quotients
 setquot (X: U) (R: hrel X): U = (A : hsubtypes X) * (iseqclass X R A)

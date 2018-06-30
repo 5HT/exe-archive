@@ -1,6 +1,9 @@
 module subtype where
 import path
 import pi
+import equiv
+import iso_sigma
+import univ
 
 -- Subtype
 hsubtypes  (X: U): U = X -> PROP
@@ -17,9 +20,10 @@ hProppair (X Y: PROP): PROP = (prod X.1 Y.1, propAnd X.1 Y.1 X.2 Y.2)
 hrelpair (A B: U) (R0 : hrel A) (R1 : hrel B) (x y: prod A B): PROP = hProppair (R0 x.1 y.1) (R1 x.2 y.2)
 hsubtypespair (A B: U) (H0: hsubtypes A) (H1: hsubtypes B) (x: prod A B): PROP = hProppair (H0 x.1) (H1 x.2)
 hinhuniv   (X: U) (P: PROP) (f: X -> P.1) (inhX: (ishinh X).1): P.1 = inhX P f
-existsel   (A: U) (B: A -> U) (P: PROP) (f: (x:A)->(B x)->P.1) (e: (exists A B).1): P.1
-   = hinhuniv ((x: A)*B x) P (\(z:(x:A)*(B x))->f z.1 z.2) e
+existsel (A:U)(B:A->U)(P:PROP)(f:(x:A)->(B x)->P.1)(e:(exists A B).1):P.1=hinhuniv((x:A)*B x)P(\(z:(x:A)*(B x))->f z.1 z.2)e
 carr       (X: U) (A: hsubtypes X) : U = (x : X) * (A x).1
+propidU    (X Y: U): Path U X Y -> isProp Y -> isProp X = substInv U isProp X Y
+propequiv  (X Y: U) (H: isProp Y) (f g : equiv X Y) : Path (equiv X Y) f g = equivLemma X Y f g (<i> \(x : X) -> H (f.1 x) (g.1 x) @ i)
 
 iseqclass (X : U) (R : hrel X) (A : hsubtypes X) : U =
   prod (prod (ishinh (carr X A)).1
@@ -52,7 +56,26 @@ existsel2 (A : U) (B : A -> U) (C : U) (D : C -> U)
           (\(c : C) -> propPi (D c) (\(_ : D c) -> P.1) (\(_ : D c) -> P.2))
   in existsel C D P (existsel A B (T0, pT0) f e0) e1
 
+-- require iso_sigma
+sethProp   (P P': PROP) : isProp (Path PROP P P')
+    = propidU (Path PROP P P') (equiv P.1 P'.1) rem (propequiv P.1 P'.1 P'.2)
+  where
+   rem1: Path U (Path PROP P P') (Path U P.1 P'.1) = lemSigProp U isProp propIsProp P P'
+   rem2: Path U (Path U P.1 P'.1) (equiv P.1 P'.1) = corrUniv P.1 P'.1
+   rem: Path U (Path PROP P P') (equiv P.1 P'.1) =
+     composition U (Path PROP P P') (Path U P.1 P'.1) (equiv P.1 P'.1) rem1 rem2
+
+subtypeEquality (A : U) (B : A -> U) (pB : (x : A) -> isProp (B x))
+                (s t : (x : A) * B x) : Path A s.1 t.1 -> Path (Sigma A B) s t =
+  trans (Path A s.1 t.1) (Path (Sigma A B) s t) rem
+    where
+    rem : Path U (Path A s.1 t.1) (Path (Sigma A B) s t) =
+      <i> lemSigProp A B pB s t @ -i
+
+sethsubtypes (X : U) : isSet (hsubtypes X) = setPi X (\(_ : X) -> PROP) (\(_ : X) -> sethProp)
+
 -- Subset
 subset (A: U) (_: isSet A): U = A -> PROP
 lem (A:U) (P:A->U) (pP:(x:A) -> isProp (P x)) (u v:(x:A) * P x) (p:Path A u.1 v.1) :
   Path ((x:A)*P x) u v = <i>(p@i,(lemPropF A P pP u.1 v.1 p u.2 v.2)@i)
+

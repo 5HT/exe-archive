@@ -1,9 +1,8 @@
 module iso_sigma where
 import path
+import pi
 import sigma
 import iso
-import univ
-import pi
 
 -- used in grothedieck.ctt and below
 pathSig (A:U) (B : A -> U) (t u : Sigma A B) :
@@ -90,22 +89,3 @@ flipfunIso (A B C: U): Path U (A -> B -> C) (B -> A -> C)
     to:    BA -> AB = flip B A C
     fromK: (f: AB) -> Path AB (to (from f)) f = refl AB
     toK:   (f: BA) -> Path BA (from (to f)) f = refl BA
-
-
-propidU    (X Y: U): Path U X Y -> isProp Y -> isProp X = substInv U isProp X Y
-propequiv  (X Y: U) (H: isProp Y) (f g : equiv X Y) : Path (equiv X Y) f g = equivLemma X Y f g (<i> \(x : X) -> H (f.1 x) (g.1 x) @ i)
-sethProp   (P P': PROP) : isProp (Path PROP P P')
-    = propidU (Path PROP P P') (equiv P.1 P'.1) rem (propequiv P.1 P'.1 P'.2)
-  where
-   rem1: Path U (Path PROP P P') (Path U P.1 P'.1) = lemSigProp U isProp propIsProp P P'
-   rem2: Path U (Path U P.1 P'.1) (equiv P.1 P'.1) = corrUniv P.1 P'.1
-   rem: Path U (Path PROP P P') (equiv P.1 P'.1) =
-     composition U (Path PROP P P') (Path U P.1 P'.1) (equiv P.1 P'.1) rem1 rem2
-sethsubtypes (X : U) : isSet (hsubtypes X) = setPi X (\(_ : X) -> PROP) (\(_ : X) -> sethProp)
-
-subtypeEquality (A : U) (B : A -> U) (pB : (x : A) -> isProp (B x))
-                (s t : (x : A) * B x) : Path A s.1 t.1 -> Path (Sigma A B) s t =
-  trans (Path A s.1 t.1) (Path (Sigma A B) s t) rem
-    where
-    rem : Path U (Path A s.1 t.1) (Path (Sigma A B) s t) =
-      <i> lemSigProp A B pB s t @ -i
