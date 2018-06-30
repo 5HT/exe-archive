@@ -19,8 +19,8 @@ isEquiv (A B : U) (f : A -> B) : U = (y : B) -> isContr (fiber A B f y)
 equiv (A B : U) : U = (f : A -> B) * isEquiv A B f
 isContrSingl (A:U) (a:A): isContr (singl A a) = ((a,refl A a),\ (z:singl A a) -> contr A a z.1 z.2)
 idEquiv (A:U): equiv A A = (\ (x:A) -> x, isContrSingl A)
-mapOnPath (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b) = <i> f (p@i)
-subst (A: U) (P: A -> U) (a b: A) (p: Path A a b) (e: P a): P b = transport (mapOnPath A U P a b p) e
+ap (A B: U) (f: A -> B) (a b: A) (p: Path A a b): Path B (f a) (f b) = <i> f (p@i)
+subst (A: U) (P: A -> U) (a b: A) (p: Path A a b) (e: P a): P b = transport (ap A U P a b p) e
 contrSingl (A: U) (a b: A) (p: Path A a b): Path ((x: A) * Path A a x) (a,<_>a) (b,p) = <i>(p@i,<j>p@i/\j)
 idIsEquiv (A : U) : isEquiv A A (idfun A) = \(a : A) -> ((a,<_>a),\(z : fiber A A (idfun A) a) -> contrSingl A a z.1 z.2)
 
