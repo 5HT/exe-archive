@@ -38,7 +38,7 @@ prop_inj (A B: U) (f: A -> B) (sA: isSet A) (sB: isSet B): isProp (inj A B f sA 
     Q: B -> U = \(b: B) -> isProp (P b)
     h: (b: B) -> isProp (Q b) = \(b: B) -> propIsProp (P b)
 
--- Inhabitance of PROP
+-- Prerequisites
 hsubtypes  (X: U): U = X -> PROP
 hrel       (X: U): U = X -> X -> PROP
 funresprel  (A B: U) (f: A->B) (R: hrel A): U = (a a': A) (r: (R a a').1) -> Path B (f a) (f a')

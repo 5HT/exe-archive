@@ -1,7 +1,5 @@
 module iso_sigma where
-
 import path
-import set
 import sigma
 import iso
 import univ

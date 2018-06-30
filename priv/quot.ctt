@@ -7,9 +7,7 @@ import iso_sigma
 setquot (X: U) (R: hrel X): U = (A : hsubtypes X) * (iseqclass X R A)
 
 setsetquot (X : U) (R : hrel X) : isSet (setquot X R) =
-  setSig (hsubtypes X) (\(A : hsubtypes X) -> iseqclass X R A)
-    sA sB
-    where
+  setSig (hsubtypes X) (\(A : hsubtypes X) -> iseqclass X R A) sA sB where
     sA : isSet (hsubtypes X) = sethsubtypes X
     sB (x : hsubtypes X) : isSet (iseqclass X R x) = propSet (iseqclass X R x) (propiseqclass X R x)
 
