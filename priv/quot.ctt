@@ -120,8 +120,9 @@ eqax0 (X: U) (R: hrel X) (A: hsubtypes X) (c: iseqclass X R A): (ishinh (carrier
 eqax1 (X: U) (R: hrel X) (A: hsubtypes X) (c: iseqclass X R A): (x1 x2: X)->(R x1 x2).1->(A x1).1->(A x2).1=c.1.2
 eqax2 (X: U) (R: hrel X) (A: hsubtypes X) (c: iseqclass X R A): (x1 x2: X)->(A x1).1->(A x2).1->(R x1 x2).1=c.2
 
-setquotl0 (X : U) (R : eqrel X) (c : setquot X R.1) (x : carrier X c.1) :
-  Path (setquot X R.1) (setquotpr X R x.1) c = subtypeEquality (hsubtypes X) (iseqclass X R.1) p (setquotpr X R x.1) c rem where
+setquotl0 (X : U) (R : eqrel X) (c : setquot X R.1) (x : carrier X c.1)
+  : Path (setquot X R.1) (setquotpr X R x.1) c
+  = subtypeEquality (hsubtypes X) (iseqclass X R.1) p (setquotpr X R x.1) c rem where
   p (A : hsubtypes X) : isProp (iseqclass X R.1 A) = propiseqclass X R.1 A
   rem : Path (hsubtypes X) (setquotpr X R x.1).1 c.1 = <i> \(x : X) -> (rem' x) @ i -- inlined use of funext
     where rem' (a : X) : Path PROP ((setquotpr X R x.1).1 a) (c.1 a) =
