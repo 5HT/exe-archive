@@ -59,21 +59,15 @@ prophasIdentity (M : U) (sM : isSet M) (op : M -> M -> M) (id : M)
 
 -- Commutativity
 
-isCommutative (M: U) (op : M -> M -> M): U = (x y: M) -> Path M (op x y) (op y x)
+isCommutative (M: U) (opx: M -> M -> M): U = (x y: M) -> Path M (opx x y) (opx y x)
 
-propisCommutative (M : U) (sM : isSet M) (op : M -> M -> M)
-  : isProp (isCommutative M op)
-  = let
-    B (x y : M) : U
-      = Path M (op x y) (op y x)
-    h (x y : M) : isProp (B x y)
-      = sM (op x y) (op y x)
-  in propPi2 M B h
+propisCommutative (M: U) (sM: isSet M) (opx: M -> M -> M): isProp (isCommutative M opx) = propPi2 M B h where
+  B (x y : M) : U = Path M (opx x y) (opx y x)
+  h (x y : M) : isProp (B x y) = sM (opx x y) (opx y x)
 
 -- Cancellativity
-
-isLeftCancellative (M : U) (op : M -> M -> M) : U
-  = (c x y : M) -> Path M (op c x) (op c y) -> Path M x y
+isLeftCancellative (M : U) (opx: M -> M -> M) : U
+  = (c x y : M) -> Path M (opx c x) (opx c y) -> Path M x y
 
 propisLeftCancellative (M : U) (sM : isSet M) (op : M -> M -> M)
   : isProp (isLeftCancellative M op)

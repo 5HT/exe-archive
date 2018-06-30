@@ -1,6 +1,6 @@
 module k_theory where
-import algebra
 import quot
+import category
 import swaptrans
 
 qgroup    (m: cmonoid): U = setquot (pair m) (prel m)
@@ -19,8 +19,8 @@ qinv'resprel (m : cmonoid) (x y : pair m) (r : (prel m x y).1)
       = Path m.1.1 (op3 m k x.2 y.1) (op3 m k y.2 x.1)
     f (k : m.1.1) (p : T0 k) : (exists m.1.1 T1).1
       = existspr m.1.1 T1 k (<i> comp (<_> m.1.1) (p @ -i)
-        [ (i = 0) -> <j> op m k (cm m y.1 x.2 @ j)
-        , (i = 1) -> <j> op m k (cm m x.1 y.2 @ j) ])
+        [ (i = 0) -> <j> opm m k (cm m y.1 x.2 @ j)
+        , (i = 1) -> <j> opm m k (cm m x.1 y.2 @ j) ])
   in iscompsetquotpr (pair m) (peqrel m) (x.2, x.1) (y.2, y.1)
        (existsel m.1.1 T0 (exists m.1.1 T1) f r)
 
@@ -36,15 +36,15 @@ qop'resprel (m : cmonoid) (x x' y y' : pair m) (p0 : (prel m x x').1)
     pT3 : isProp T3 = setqgroup m (qop' m x y) (qop' m x' y')
     f (k : m.1.1) (p0 : T0 k) (l : m.1.1) (p1 : T1 l) : T3
       = let
-        n : m.1.1 = op m k l
+        n : m.1.1 = opm m k l
         p : Path m.1.1 (op3 m n z0.1 z1.2) (op3 m n z1.1 z0.2)
-          = <i> comp (<_> m.1.1) (op m (p0 @ i) (p1 @ i))
-            [ (i = 0) -> <j> comp (<_> m.1.1) (swp8 (ac m) k (op m x.1 x'.2) l (op m y.1 y'.2) @ j)
-              [ (j = 0) -> <_> (op m (op3 m k x.1 x'.2) (op3 m l y.1 y'.2))
-              , (j = 1) -> <h> op m (op m k l) (swp8 (ac m) x.1 x'.2 y.1 y'.2 @ h) ]
-            , (i = 1) -> <j> comp (<_> m.1.1) (swp8 (ac m) k (op m x'.1 x.2) l (op m y'.1 y.2) @ j)
-              [ (j = 0) -> <_> (op m (op3 m k x'.1 x.2) (op3 m l y'.1 y.2))
-              , (j = 1) -> <h> op m (op m k l) (swp8 (ac m) x'.1 x.2 y'.1 y.2 @ h) ]]
+          = <i> comp (<_> m.1.1) (opm m (p0 @ i) (p1 @ i))
+            [ (i = 0) -> <j> comp (<_> m.1.1) (swp8 (ac m) k (opm m x.1 x'.2) l (opm m y.1 y'.2) @ j)
+              [ (j = 0) -> <_> (opm m (op3 m k x.1 x'.2) (op3 m l y.1 y'.2))
+              , (j = 1) -> <h> opm m (opm m k l) (swp8 (ac m) x.1 x'.2 y.1 y'.2 @ h) ]
+            , (i = 1) -> <j> comp (<_> m.1.1) (swp8 (ac m) k (opm m x'.1 x.2) l (opm m y'.1 y.2) @ j)
+              [ (j = 0) -> <_> (opm m (op3 m k x'.1 x.2) (op3 m l y'.1 y.2))
+              , (j = 1) -> <h> opm m (opm m k l) (swp8 (ac m) x'.1 x.2 y'.1 y.2 @ h) ]]
         e : (prel m z0 z1).1 = existspr m.1.1 T2 n p
       in iscompsetquotpr (pair m) (peqrel m) z0 z1 e
   in existsel2 m.1.1 T0 m.1.1 T1 (T3, pT3) f p0 p1
@@ -102,11 +102,11 @@ qasc (m : cmonoid) : isAssociative (qgroup m) (qop m)
         p2 : Path (qgroup m) (qop m (qop m (qpr m x0) (qpr m x1)) (qpr m x2))
                          (qpr m (pop m (pop m x0 x1) x2))
           = <i> comp (<_> qgroup m) (qop m (qopeq m x0 x1 @ i) (qpr m x2))
-            [ (i = 0) -> <_> qop m (qop m (qpr m x0) (qpr m x1)) (qpr m x2)
-            , (i = 1) -> qopeq m (pop m x0 x1) x2 ]
+            [ (i = 0) -> <_> qop m (qop m (qpr m x0) (qpr m x1)) (qpr m x2),
+              (i = 1) -> qopeq m (pop m x0 x1) x2 ]
       in <i> comp (<_> qgroup m) (p1 @ i)
-        [ (i = 0) -> <j> p0 @ -j
-        , (i = 1) -> <j> p2 @ -j ]
+        [ (i = 0) -> <j> p0 @ -j,
+          (i = 1) -> <j> p2 @ -j ]
     pP (x0 x1 x2 : qgroup m) : isProp (tP x0 x1 x2)
       = setqgroup m (qop m x0 (qop m x1 x2)) (qop m (qop m x0 x1) x2)
     P (x0 x1 x2 : qgroup m) : PROP
@@ -149,20 +149,20 @@ qhli (m : cmonoid) : hasLeftInverse (qgroup m) (qop m) (qid m) (qinv m)
     ps (x : pair m) : tP (qpr m x)
       = let
         T (k : m.1.1) : U
-          = Path m.1.1 (op m k (op m (op m x.2 x.1) (id m)))
-                     (op m k (op m (id m) (op m x.1 x.2)))
+          = Path m.1.1 (opm m k (opm m (opm m x.2 x.1) (idm m)))
+                     (opm m k (opm m (idm m) (opm m x.1 x.2)))
         p0 : Path (qgroup m) (qop m (qinv m (qpr m x)) (qpr m x)) (qop' m (x.2, x.1) x)
           = <i> comp (<_> qgroup m) (qop m (qinveq m x @ i) (qpr m x)) 
             [ (i = 0) -> <_> qop m (qinv m (qpr m x)) (qpr m x)
             , (i = 1) -> qopeq m (x.2, x.1) x ]
-        p1 : Path m.1.1 (op m (id m) (op m (op m x.2 x.1) (id m)))
-                      (op m (id m) (op m (id m) (op m x.1 x.2)))
-          = <i> op m (id m) (comp (<j> m.1.1) (cm m (op m x.2 x.1) (id m) @ i)
-              [ (i = 0) -> <j> (op m (op m x.2 x.1) (id m))
-              , (i = 1) -> <j> op m (id m) (cm m x.2 x.1 @ j) ])
+        p1 : Path m.1.1 (opm m (idm m) (opm m (opm m x.2 x.1) (idm m)))
+                      (opm m (idm m) (opm m (idm m) (opm m x.1 x.2)))
+          = <i> opm m (idm m) (comp (<j> m.1.1) (cm m (opm m x.2 x.1) (idm m) @ i)
+              [ (i = 0) -> <j> (opm m (opm m x.2 x.1) (idm m))
+              , (i = 1) -> <j> opm m (idm m) (cm m x.2 x.1 @ j) ])
         p2 : Path (qgroup m) (qop' m (x.2, x.1) x) (qid m)
           = iscompsetquotpr (pair m) (peqrel m) (pop m (x.2, x.1) x) (pid m)
-              (existspr m.1.1 T (id m) p1)
+              (existspr m.1.1 T (idm m) p1)
       in <i> comp (<_> qgroup m) (p0 @ i)
         [ (i = 0) -> <_> p0 @ 0
         , (i = 1) -> p2 ]
@@ -178,44 +178,79 @@ qhri (m : cmonoid) : hasRightInverse (qgroup m) (qop m) (qid m) (qinv m)
     ps (x : pair m) : tP (qpr m x)
       = let
         T (k : m.1.1) : U
-          = Path m.1.1 (op m k (op m (op m x.1 x.2) (id m)))
-                     (op m k (op m (id m) (op m x.2 x.1)))
+          = Path m.1.1 (opm m k (opm m (opm m x.1 x.2) (idm m)))
+                       (opm m k (opm m (idm m) (opm m x.2 x.1)))
         p0 : Path (qgroup m) (qop m (qpr m x) (qinv m (qpr m x))) (qop' m x (x.2, x.1))
           = <i> comp (<_> qgroup m) (qop m (qpr m x) (qinveq m x @ i))
             [ (i = 0) -> <_> qop m (qpr m x) (qinv m (qpr m x))
             , (i = 1) -> qopeq m x (x.2, x.1) ]
-        p1 : Path m.1.1 (op m (id m) (op m (op m x.1 x.2) (id m)))
-                      (op m (id m) (op m (id m) (op m x.2 x.1)))
-          = <i> op m (id m) (comp (<j> m.1.1) (cm m (op m x.1 x.2) (id m) @ i)
-              [ (i = 0) -> <j> (op m (op m x.1 x.2) (id m))
-              , (i = 1) -> <j> op m (id m) (cm m x.1 x.2 @ j) ])
+        p1 : Path m.1.1 (opm m (idm m) (opm m (opm m x.1 x.2) (idm m)))
+                        (opm m (idm m) (opm m (idm m) (opm m x.2 x.1)))
+          = <i> opm m (idm m) (comp (<j> m.1.1) (cm m (opm m x.1 x.2) (idm m) @ i)
+              [ (i = 0) -> <j> (opm m (opm m x.1 x.2) (idm m))
+              , (i = 1) -> <j> opm m (idm m) (cm m x.1 x.2 @ j) ])
         p2 : Path (qgroup m) (qop' m x (x.2, x.1)) (qid m)
           = iscompsetquotpr (pair m) (peqrel m) (pop m x (x.2, x.1)) (pid m)
-              (existspr m.1.1 T (id m) p1)
+              (existspr m.1.1 T (idm m) p1)
       in <i> comp (<_> qgroup m) (p0 @ i)
         [ (i = 0) -> <_> p0 @ 0
         , (i = 1) -> p2 ]
-    pP (x : qgroup m) : isProp (tP x)
-      = setqgroup m (qop m x (qinv m x)) (qid m)
-    P (x : qgroup m) : PROP
-      = (tP x, pP x)
+    pP (x : qgroup m) : isProp (tP x) = setqgroup m (qop m x (qinv m x)) (qid m)
+    P (x : qgroup m) : PROP = (tP x, pP x)
   in setquotunivprop (pair m) (peqrel m) P ps q
 
 qc (m : cmonoid) : isCommutative (qgroup m) (qop m)
   = \ (q0 q1 : qgroup m) -> let
-    tP (x0 x1 : qgroup m) : U
-      = Path (qgroup m) (qop m x0 x1) (qop m x1 x0)
+    tP (x0 x1 : qgroup m) : U = Path (qgroup m) (qop m x0 x1) (qop m x1 x0)
     ps (x0 x1 : pair m) : tP (qpr m x0) (qpr m x1)
       = <i> comp (<_> qgroup m) (qpr m (pcm m x0 x1 @ i))
         [ (i = 0) -> <j> qopeq m x0 x1 @ -j
         , (i = 1) -> <j> qopeq m x1 x0 @ -j ]
-    pP (x0 x1 : qgroup m) : isProp (tP x0 x1)
-      = setqgroup m (qop m x0 x1) (qop m x1 x0)
-    P (x0 x1 : qgroup m) : PROP
-      = (tP x0 x1, pP x0 x1)
+    pP (x0 x1 : qgroup m) : isProp (tP x0 x1) = setqgroup m (qop m x0 x1) (qop m x1 x0)
+    P (x0 x1 : qgroup m) : PROP = (tP x0 x1, pP x0 x1)
   in setquotuniv2prop (pair m) (peqrel m) P ps q0 q1
 
+-- Erase Inversion
+forgetfulAb (g: abgroup): cmonoid = (g.1, g.2.1.1, g.2.2)
+
+-- Enrich Inversion
 grothendieck (m: cmonoid): abgroup
   = ((qgroup m, setqgroup m),
      (((qop m,qasc m,qid m,(qlid m,qrid m)),
        qinv m,(qhli m, qhri m)),qc m))
+
+-- The canonical homomorphism π: m → K₀(M)
+grothendieckhom (m: cmonoid): cmonabgrouphom m (grothendieck m) = (f, pop, pid) where
+  g: abgroup = grothendieck m
+  f (x: m.1.1): g.1.1 = qpr m (x, idm m)
+  pop: preservesOp m.1.1 g.1.1 (opm m) (g.2.1.1.1) f
+    = \ (a0 a1 : m.1.1) ->
+        <i> comp (<j> g.1.1) (qopeq m (a0, idm m) (a1, idm m) @ -i)
+            [ (i = 0) -> <j> qpr m (opm m a0 a1, (hid m).1 (idm m) @ j),
+              (i = 1) -> <j> (g.2.1.1.1 (f a0) (f a1)) ]
+  pid: preservesId m.1.1 g.1.1 (idm m) (g.2.1.1.2.2.1) f = <i> qpr m (idm m, idm m)
+
+-- Functor from Category of Abelian Groups to Category of Commutative Monoids
+Fforgetful: catfunctor Ab CMon = (f, Fmor, Fid, p) where
+  f: abgroup -> cmonoid = forgetfulAb
+  Fmor (x y: abgroup) (g: abgrouphom x y): (cmonoidhom (f x) (f y)) = g
+  Fid (x: abgroup): Path (cmonoidhom (f x) (f x)) (Fmor x x (idmonoidhom (x.1, x.2.1.1))) (idmonoidhom ((f x).1, (f x).2.1))
+    = <_> idmonoidhom ((f x).1, (f x).2.1)
+  p (x y z: abgroup) (g: abgrouphom x y) (h: abgrouphom y z)
+    : Path (cmonoidhom (f x) (f z))
+           (Fmor x z (monoidhomcomp (x.1, x.2.1.1) (y.1, y.2.1.1) (z.1, z.2.1.1) g h))
+           (monoidhomcomp ((f x).1, (f x).2.1) ((f y).1, (f y).2.1) ((f z).1, (f z).2.1) (Fmor x y g) (Fmor y z h))
+    = <_> Fmor x z (monoidhomcomp (x.1, x.2.1.1) (y.1, y.2.1.1) (z.1, z.2.1.1) g h)
+
+-- Functor from Category of Commutative Monoids to Category of Abelian Groups
+-- WARNING: NOT SO EASY
+Fgrothendieck: catfunctor CMon Ab = (f, Fmor, Fid, p) where
+  f: cmonoid -> abgroup = grothendieck
+  Fmor (x y: cmonoid) (g: cmonoidhom x y): (abgrouphom (f x) (f y)) = undefined
+  Fid (x: cmonoid)
+    : Path (abgrouphom (f x) (f x)) (Fmor x x (idmonoidhom (x.1, x.2.1))) (idmonoidhom ((f x).1, (f x).2.1.1)) = undefined
+  p (x y z: cmonoid) (g: cmonoidhom x y) (h: cmonoidhom y z)
+    : Path (abgrouphom (f x) (f z))
+           (Fmor x z (monoidhomcomp (x.1, x.2.1) (y.1, y.2.1) (z.1, z.2.1) g h))
+           (monoidhomcomp ((f x).1, (f x).2.1.1) ((f y).1, (f y).2.1.1) ((f z).1, (f z).2.1.1) (Fmor x y g) (Fmor y z h)) = undefined
+

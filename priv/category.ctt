@@ -72,6 +72,22 @@ Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
 
+-- Category of Commutative Monoids
+CMon: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+    Ob: U = cmonoid
+    Hom (A B: Ob): U = cmonoidhom A B
+    id (A: Ob): Hom A A = idmonoidhom (A.1,A.2.1)
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C
+      = monoidhomcomp (A.1, A.2.1) (B.1, B.2.1) (C.1, C.2.1) f g
+    HomSet (A B: Ob): isSet (Hom A B) = setmonoidhom (A.1, A.2.1) (B.1, B.2.1)
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f
+      = lemma_idmonoidhom0 (A.1, A.2.1) (B.1, B.2.1) f
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f
+      = lemma_idmonoidhom1 (A.1, A.2.1) (B.1, B.2.1) f
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+       = lemma_monoidcomp0 (A.1, A.2.1) (B.1, B.2.1) (C.1, C.2.1) (D.1, D.2.1) f g h
+
 -- Category of Abelian Groups
 Ab: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Ob: U = abgroup
@@ -120,7 +136,7 @@ Bicategory (X Y: precategory): precategory = Product Cat (Func X Y)
 Tricategory (X Y: precategory) (F G: catfunctor X Y): precategory = Product (Bicategory X Y) (Hom3Cat X Y F G)
 
 bifunctor (C D E: precategory): U = catfunctor (Product C D) E
-op (L A R B: precategory) (F: catfunctor L A) (G: catfunctor R B)
+opx (L A R B: precategory) (F: catfunctor L A) (G: catfunctor R B)
  : catfunctor (Product L R) (Product A B) = undefined
 
 Bicategory : U
@@ -169,7 +185,7 @@ reduce (AC BC AB: precategory)
        (L: precategory) (F: catfunctor L BC)
        (R: precategory) (G: catfunctor R AB)
      : bifunctor L R AC
-     = compFunctor (Product L R) (Product BC AB) AC (op L BC R AB F G) H
+     = compFunctor (Product L R) (Product BC AB) AC (opx L BC R AB F G) H
 
 c2impl (Ob: U) (Hom: (A B: Ob) -> precategory)
        (c: (A B C: Ob) -> bifunctor (Hom B C) (Hom A B) (Hom A C))

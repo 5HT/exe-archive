@@ -19,33 +19,33 @@ setquotpr (X : U) (R : eqrel X) (X0 : X) : setquot X R.1 = (A,((p1,p2),p3))
    sax : issymm X R.1 = eqrelsymm X R
    tax : istrans X R.1 = eqreltrans X R
    A : hsubtypes X = \(x : X) -> R.1 X0 x
-   p1 : (ishinh (carrier X A)).1 = hinhpr (carrier X A) (X0,rax X0)
+   p1 : (ishinh (carr X A)).1 = hinhpr (carr X A) (X0,rax X0)
    p2 (x1 x2 : X) (X1 : (R.1 x1 x2).1) (X2 : (A x1).1) : (A x2).1 = tax X0 x1 x2 X2 X1
    p3 (x1 x2 : X) (X1 : (A x1).1) (X2 : (A x2).1) : (R.1 x1 x2).1 = tax x1 X0 x2 (sax X0 x1 X1) X2
 
 -- If f respects R then all x belonging to the equivalence class C are mapped into the same unique image
 setquotmapcontr (A B : U) (sB : isSet B) (R : hrel A) (f : A -> B)
     (frr : funresprel A B f R) (C : setquot A R)
-  : isContr ((y : B) * ((x : carrier A C.1) -> Path B y (f x.1)))
+  : isContr ((y : B) * ((x : carr A C.1) -> Path B y (f x.1)))
   = let
-    T : U = (y : B) * ((x : carrier A C.1) -> Path B y (f x.1))
+    T : U = (y : B) * ((x : carr A C.1) -> Path B y (f x.1))
     pT (a b : T) : Path T a b
       = let
-        h (x : carrier A C.1) : Path B a.1 b.1 = <i> comp (<j> B) (a.2 x @ i)
+        h (x : carr A C.1) : Path B a.1 b.1 = <i> comp (<j> B) (a.2 x @ i)
           [ (i = 0) -> <j> a.1
           , (i = 1) -> <j> b.2 x @ -j ]
         p0 : Path B a.1 b.1
           = C.2.1.1 (Path B a.1 b.1, sB a.1 b.1) h
-        p1 : PathP (<i> (x : carrier A C.1) -> Path B (p0 @ i) (f x.1)) a.2 b.2
+        p1 : PathP (<i> (x : carr A C.1) -> Path B (p0 @ i) (f x.1)) a.2 b.2
           = let
             P (b : B) : U
-              = (x : carrier A C.1) -> Path B b (f x.1)
+              = (x : carr A C.1) -> Path B b (f x.1)
             pP (b : B) (s t : (P b)) : Path (P b) s t
-              = <i>  \ (x : carrier A C.1) -> (sB b (f x.1) (s x) (t x)) @ i
+              = <i>  \ (x : carr A C.1) -> (sB b (f x.1) (s x) (t x)) @ i
           in lemPropF B P pP a.1 b.1 p0 a.2 b.2
       in <i> (p0 @ i, p1 @ i)
-    h (x : carrier A C.1) : T
-      = (f x.1, \ (x' : carrier A C.1) -> frr x.1 x'.1 (C.2.2 x.1 x'.1 x.2 x'.2))
+    h (x : carr A C.1) : T
+      = (f x.1, \ (x' : carr A C.1) -> frr x.1 x'.1 (C.2.2 x.1 x'.1 x.2 x'.2))
     y : T
       = C.2.1.1 (T, pT) h
   in (y, pT y)
@@ -55,15 +55,14 @@ setquotmap (A B : U) (sB : isSet B) (R : hrel A) (f : A -> B)
   = (setquotmapcontr A B sB R f frr c).1.1
 
 setquotmapeq (A B : U) (sB : isSet B) (R : eqrel A) (f : A -> B)
-    (frr : funresprel A B f R.1) (x : A)
+    (frr: funresprel A B f R.1) (x : A)
   : Path B (setquotmap A B sB R.1 f frr (setquotpr A R x)) (f x)
-  = (setquotmapcontr A B sB R.1 f frr (setquotpr A R x)).1.2 (x, R.2.1.2 x)
+  =   (setquotmapcontr A B sB R.1 f frr (setquotpr A R x)).1.2 (x, R.2.1.2 x)
 
-setquotpair (A B : U) (R0 : hrel A) (R1 : hrel B) (q0 : setquot A R0)
-    (q1 : setquot B R1)
+setquotpair (A B: U) (R0: hrel A) (R1: hrel B) (q0: setquot A R0) (q1: setquot B R1)
   : setquot (prod A B) (hrelpair A B R0 R1)
-  = ( hsubtypespair A B q0.1 q1.1
-    , iseqclasspair A B R0 R1 q0.1 q1.1 q0.2 q1.2)
+  = (hsubtypespair A B q0.1 q1.1,
+     iseqclasspair A B R0 R1 q0.1 q1.1 q0.2 q1.2)
 
 setquotmap2 (A B C : U) (sC : isSet C) (R0 : hrel A) (R1 : hrel B)
     (f : A -> B -> C) (frr : funresprel2 A B C f R0 R1) (c0 : setquot A R0)
@@ -116,11 +115,11 @@ iscompsetquotpr (X : U) (R : eqrel X) (x x' : X) (a : (R.1 x x').1) :
       f (r0 : (R.1 x x0).1) : (R.1 x' x0).1 = eqreltrans X R x' x x0 (eqrelsymm X R x x' a) r0
       g (r0 : (R.1 x' x0).1) : (R.1 x x0).1 = eqreltrans X R x x' x0 a r0
 
-eqax0 (X: U) (R: hrel X) (A: hsubtypes X) (c: iseqclass X R A): (ishinh (carrier X A)).1 = c.1.1
+eqax0 (X: U) (R: hrel X) (A: hsubtypes X) (c: iseqclass X R A): (ishinh (carr X A)).1 = c.1.1
 eqax1 (X: U) (R: hrel X) (A: hsubtypes X) (c: iseqclass X R A): (x1 x2: X)->(R x1 x2).1->(A x1).1->(A x2).1=c.1.2
 eqax2 (X: U) (R: hrel X) (A: hsubtypes X) (c: iseqclass X R A): (x1 x2: X)->(A x1).1->(A x2).1->(R x1 x2).1=c.2
 
-setquotl0 (X : U) (R : eqrel X) (c : setquot X R.1) (x : carrier X c.1)
+setquotl0 (X : U) (R : eqrel X) (c : setquot X R.1) (x : carr X c.1)
   : Path (setquot X R.1) (setquotpr X R x.1) c
   = subtypeEquality (hsubtypes X) (iseqclass X R.1) p (setquotpr X R x.1) c rem where
   p (A : hsubtypes X) : isProp (iseqclass X R.1 A) = propiseqclass X R.1 A
@@ -132,12 +131,12 @@ setquotl0 (X : U) (R : eqrel X) (c : setquot X R.1) (x : carrier X c.1)
               r2l : (c.1 a).1 -> ((setquotpr X R x.1).1 a).1 = eqax2 X R.1 c.1 c.2 x.1 a x.2
 
 setquotunivprop (X : U) (R : eqrel X) (P : setquot X R.1 -> PROP)
-  (ps : (x : X) -> (P (setquotpr X R x)).1) (c : setquot X R.1) : (P c).1 = hinhuniv (carrier X c.1) (P c) f rem
+  (ps : (x : X) -> (P (setquotpr X R x)).1) (c : setquot X R.1) : (P c).1 = hinhuniv (carr X c.1) (P c) f rem
   where
-   f (x : carrier X c.1) : (P c).1 =
+   f (x : carr X c.1) : (P c).1 =
      let e : Path (setquot X R.1) (setquotpr X R x.1) c = setquotl0 X R c x
      in subst (setquot X R.1) (\(w : setquot X R.1) -> (P w).1) (setquotpr X R x.1) c e (ps x.1)
-   rem : (ishinh (carrier X c.1)).1 = eqax0 X R.1 c.1 c.2
+   rem : (ishinh (carr X c.1)).1 = eqax0 X R.1 c.1 c.2
 
 setquotuniv2prop (X : U) (R : eqrel X) (P : setquot X R.1 -> setquot X R.1 -> PROP)
   (ps : (x x' : X) -> (P (setquotpr X R x) (setquotpr X R x')).1) (c c' : setquot X R.1) : (P c c').1 =

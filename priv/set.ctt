@@ -55,34 +55,29 @@ hsubtypespair (A B: U) (H0: hsubtypes A) (H1: hsubtypes B) (x: prod A B): PROP =
 hinhuniv   (X: U) (P: PROP) (f: X -> P.1) (inhX: (ishinh X).1): P.1 = inhX P f
 existsel   (A: U) (B: A -> U) (P: PROP) (f: (x:A)->(B x)->P.1) (e: (exists A B).1): P.1
    = hinhuniv ((x: A)*B x) P (\(z:(x:A)*(B x))->f z.1 z.2) e
-carrier    (X: U) (A: hsubtypes X) : U = (x : X) * (A x).1
+carr       (X: U) (A: hsubtypes X) : U = (x : X) * (A x).1
 
 iseqclass (X : U) (R : hrel X) (A : hsubtypes X) : U =
-  prod (prod (ishinh (carrier X A)).1
+  prod (prod (ishinh (carr X A)).1
                    ((x1 x2 : X) -> (R x1 x2).1 -> (A x1).1 -> (A x2).1))
           ((x1 x2 : X) -> (A x1).1 -> (A x2).1 -> (R x1 x2).1)
 
 propiseqclass (X : U) (R : hrel X) (A : hsubtypes X) : isProp (iseqclass X R A) =
-  propAnd (prod (ishinh (carrier X A)).1
+  propAnd (prod (ishinh (carr X A)).1
                           ((x1 x2 : X) -> (R x1 x2).1 -> (A x1).1 -> (A x2).1))
                  ((x1 x2 : X) -> (A x1).1 -> (A x2).1 -> (R x1 x2).1)
-                 (propAnd (ishinh (carrier X A)).1
-                                 ((x1 x2 : X) -> (R x1 x2).1 -> (A x1).1 -> (A x2).1) p1 p2)
-                 p3
+                 (propAnd (ishinh (carr X A)).1
+                                 ((x1 x2 : X) -> (R x1 x2).1 -> (A x1).1 -> (A x2).1) p1 p2) p3
   where
-  p1 : isProp (ishinh (carrier X A)).1 = propishinh (carrier X A)
-
-  -- This proof is quite cool, but it looks ugly...
+  p1 : isProp (ishinh (carr X A)).1 = propishinh (carr X A)
   p2 (f g : (x1 x2 : X) -> (R x1 x2).1 -> (A x1).1 -> (A x2).1) :
    Path ((x1 x2 : X) -> (R x1 x2).1 -> (A x1).1 -> (A x2).1) f g =
     <i> \(x1 x2 : X) (h1 : (R x1 x2).1) (h2 : (A x1).1) ->
          (A x2).2 (f x1 x2 h1 h2) (g x1 x2 h1 h2) @ i
-
   p3 (f g : (x1 x2 : X) -> (A x1).1 -> (A x2).1 -> (R x1 x2).1) :
     Path ((x1 x2 : X) -> (A x1).1 -> (A x2).1 -> (R x1 x2).1) f g =
    <i> \(x1 x2 : X) (h1 : (A x1).1) (h2 : (A x2).1) ->
         (R x1 x2).2 (f x1 x2 h1 h2) (g x1 x2 h1 h2) @ i
-
 
 existsel2 (A : U) (B : A -> U) (C : U) (D : C -> U)
     (P: PROP) (f : (x : A) (_ : B x) (y : C) (_ : D y) -> P.1)
