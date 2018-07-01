@@ -143,30 +143,6 @@ sliceCat (C D: precategory)
        : precategory
        = cosliceCat (opCat C) D a F
 
--- Universal Mapping Property : a -> F
-initArr (C D: precategory)
-        (a: carrier C)
-        (F: catfunctor D C): U = initial (cosliceCat C D a F)
-
-termArr (C D: precategory)
-        (a: carrier (opCat C))
-        (F: catfunctor D (opCat C)): U = terminal (sliceCat C D a F)
-
--- uO : D
--- η : hom(a, F(uO))
--- H: ∃! hom((u0, η), y)
--- H': hom(u0, y)
--- HP: F(uH') ∘ η = yH
-
-uO   (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: initArr C D a F) : carrier D = ua.1.1
-uEta (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: initArr C D a F) : hom C a (F.1 (uO C D F a ua)) = ua.1.2
-uH   (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: initArr C D a F) (y: carrier (cosliceCat C D a F)) : isContr (hom (cosliceCat C D a F) ua.1 y) = ua.2 y
-uH'  (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: initArr C D a F) (y: carrier (cosliceCat C D a F)) : hom D ua.1.1 y.1 = (ua.2 y).1.1
-uHP  (C D: precategory) (F: catfunctor D C) (a: carrier C) (ua: initArr C D a F) (y: carrier (cosliceCat C D a F)) :
-     Path (hom C a (F.1 y.1)) y.2
-          (compose C a (F.1 ua.1.1) (F.1 y.1) (uEta C D F a ua)
-                     (F.2.1 ua.1.1 y.1 (uH' C D F a ua y))) = (ua.2 y).1.2
-
 ffFunctor (A B: precategory) (F: catfunctor A B) : U
   = (a b: carrier A) -> isEquiv (hom A a b) (hom B (F.1 a) (F.1 b)) (F.2.1 a b)
 
