@@ -3,7 +3,6 @@
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module category where
-import proto
 import cat
 import fun
 import adj

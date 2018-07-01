@@ -1,7 +1,7 @@
 module k_theory where
 import quot
-import category
 import swaptrans
+import category
 
 qgroup    (m: cmonoid): U = setquot (pair m) (prel m)
 setqgroup (m: cmonoid): isSet (qgroup m)     = setsetquot (pair m) (prel m)

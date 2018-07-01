@@ -63,7 +63,7 @@ terminal      (C: precategory): U = (top: carrier C) * isTerminal C top
 initialProp   (C: precategory) (isC: isCategory C): isProp (initial  C) = undefined
 terminalProp  (C: precategory) (isC: isCategory C): isProp (terminal C) = undefined
 isCCC         (C: precategory): U = undefined
-isCommutative (X: precategory)
+isComm        (X: precategory)
               (A B C D: carrier X)
               (f: hom X A B) (g: hom X C D)
               (h: hom X A C) (i: hom X B D): U

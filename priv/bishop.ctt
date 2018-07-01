@@ -1,7 +1,7 @@
 module bishop where
-import path
 import proto
 import subtype
+import path
 
 -- Propositional Equality By Errett Bishop
 hrel       (X: U): U = X -> X -> PROP
