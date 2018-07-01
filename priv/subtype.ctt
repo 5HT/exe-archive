@@ -65,12 +65,9 @@ sethProp   (P P': PROP) : isProp (Path PROP P P')
    rem: Path U (Path PROP P P') (equiv P.1 P'.1) =
      composition U (Path PROP P P') (Path U P.1 P'.1) (equiv P.1 P'.1) rem1 rem2
 
-subtypeEquality (A : U) (B : A -> U) (pB : (x : A) -> isProp (B x))
-                (s t : (x : A) * B x) : Path A s.1 t.1 -> Path (Sigma A B) s t =
-  trans (Path A s.1 t.1) (Path (Sigma A B) s t) rem
-    where
-    rem : Path U (Path A s.1 t.1) (Path (Sigma A B) s t) =
-      <i> lemSigProp A B pB s t @ -i
+subtypeEquality (A: U) (B: A -> U) (pB: (x : A) -> isProp (B x))
+                (s t: Sigma A B) : Path A s.1 t.1 -> Path (Sigma A B) s t =
+  trans (Path A s.1 t.1) (Path (Sigma A B) s t) (<i> lemSigProp A B pB s t @ -i)
 
 sethsubtypes (X : U) : isSet (hsubtypes X) = setPi X (\(_ : X) -> PROP) (\(_ : X) -> sethProp)
 
