@@ -1,3 +1,9 @@
+{- K-Theory:
+   - Grothendieck Group.
+   Copyright (c) Groupoid Infinity, 2014-208 -}
+
+-- Original Author: Linus Börjesson.
+
 module k_theory where
 import quot
 import swaptrans
@@ -549,7 +555,8 @@ grothendieck_induced_functor_eq
     f: catfunctor CMon Ab = grothendieck_induced_functor
     g: catfunctor CMon Ab = Fgrothendieck
     p0: Path (cmonoid -> abgroup) f.1 g.1 = <_> f.1
-    p1: PathP (<i> (x y : cmonoid) -> cmonoidhom x y -> abgrouphom ((p0 @ i) x) ((p0 @ i) y)) f.2.1 g.2.1 = <_> f.2.1
+    p1: PathP (<i> (x y: cmonoid) -> cmonoidhom x y -> abgrouphom ((p0 @ i) x) ((p0 @ i) y))
+              f.2.1 g.2.1 = <_> f.2.1
 
 opaque grothendieck_induced_functor_eq
 
