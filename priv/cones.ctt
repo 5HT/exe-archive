@@ -7,7 +7,8 @@ module cones where
 import sip
 import set
 
-homTo (C: precategory) (X: carrier C): U = (Y: carrier C) * hom C Y X
+-- A bit tricky, folded. Do we need more straightforward definition?
+homTo  (C: precategory) (X: carrier C): U   = (Y: carrier C) * hom C Y X
 cospan (C: precategory): U = (X: carrier C) * (_: homTo C X) * homTo C X
 
 hasCospanCone (C: precategory) (D: cospan C) (W: carrier C): U
