@@ -457,19 +457,18 @@ Fgrothendieck : catfunctor CMon Ab
            a2 d p
   in (f, Fmor, Fid, p)
 
--- A proof that the following diagram commutes:
---
---       π
---  M --------> K₀(M)
---   \           |
---    \          |
---     -------   | ∃!h
---        f   \  |
---             \ v
---               G
---
 
 -- there is a unique h such that f ≡ h ∘ π
+
+--     π
+--  M ----> K₀(M)
+--    \     |
+--     \    |
+--    f \   | ∃!h
+--       \  |
+--        \ v
+--          G
+
 grothendieckunivprop' (m : cmonoid) (a : abgroup) (f : cmonabgrouphom m a)
   : isContr( (g : abgrouphom (grothendieck m) a)
            * Path (cmonabgrouphom m a) f (monoidhomcomp (m.1, m.2.1) ((grothendieck m).1, (grothendieck m).2.1.1)
@@ -544,14 +543,13 @@ grothendieck_univarr (x: carrier CMon): univarr CMon Ab x Fforgetful
 grothendieck_induced_functor: catfunctor CMon Ab
   = lemma_univarr_induced_functor CMon Ab Fforgetful grothendieck_univarr
 
-
-grothendieck_induced_functor_eq : Path (catfunctor CMon Ab) grothendieck_induced_functor Fgrothendieck
-  = let
-    f : catfunctor CMon Ab = grothendieck_induced_functor
-    g : catfunctor CMon Ab = Fgrothendieck
-    p0 : Path (cmonoid -> abgroup) f.1 g.1 = <_> f.1
-    p1 : PathP (<i> (x y : cmonoid) -> cmonoidhom x y -> abgrouphom ((p0 @ i) x) ((p0 @ i) y)) f.2.1 g.2.1 = <_> f.2.1
-  in functorId CMon Ab f g (<i> (p0 @ i, p1 @ i))
+grothendieck_induced_functor_eq
+  : Path (catfunctor CMon Ab) grothendieck_induced_functor Fgrothendieck
+  = functorId CMon Ab f g (<i> (p0 @ i, p1 @ i)) where
+    f: catfunctor CMon Ab = grothendieck_induced_functor
+    g: catfunctor CMon Ab = Fgrothendieck
+    p0: Path (cmonoid -> abgroup) f.1 g.1 = <_> f.1
+    p1: PathP (<i> (x y : cmonoid) -> cmonoidhom x y -> abgrouphom ((p0 @ i) x) ((p0 @ i) y)) f.2.1 g.2.1 = <_> f.2.1
 
 opaque grothendieck_induced_functor_eq
 
