@@ -11,7 +11,6 @@
 module algebra where
 import pi
 import prop
-import iso_sigma
 
 isAssociative (M: U) (op: M -> M -> M): U
   = (a b c: M) -> Path M (op a (op b c)) (op (op a b) c)
