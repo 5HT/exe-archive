@@ -8,6 +8,16 @@ import fun
 import adj
 import set
 import algebra
+import iso_sigma
+
+setmonoidhom (a b: monoid)
+  : isSet (monoidhom a b)
+  = setSig (a.1.1 -> b.1.1) (ismonoidhom a b) setf setm where
+    setf : isSet (a.1.1 -> b.1.1)
+         = setPi a.1.1 (\ (_: a.1.1) -> b.1.1) (\ (_: a.1.1) -> b.1.2)
+    setm (f: a.1.1 -> b.1.1)
+         : isSet (ismonoidhom a b f)
+         = propSet (ismonoidhom a b f) (propismonoidhom a b f)
 
 -- The general notion of (∞,1)-categories
 

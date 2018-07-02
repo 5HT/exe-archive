@@ -316,15 +316,6 @@ monoidhom (a b: monoid): U
   = (f: a.1.1 -> b.1.1)
   * (ismonoidhom a b f)
 
-setmonoidhom (a b: monoid)
-  : isSet (monoidhom a b)
-  = setSig (a.1.1 -> b.1.1) (ismonoidhom a b) setf setm where
-    setf : isSet (a.1.1 -> b.1.1)
-         = setPi a.1.1 (\ (_: a.1.1) -> b.1.1) (\ (_: a.1.1) -> b.1.2)
-    setm (f: a.1.1 -> b.1.1)
-         : isSet (ismonoidhom a b f)
-         = propSet (ismonoidhom a b f) (propismonoidhom a b f)
-
 -- Homomorphisms between underlying monoids
 cmonoidhom  (a b: cmonoid): U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
 grouphom    (a b: group):   U = monoidhom (a.1, a.2.1)   (b.1, b.2.1)
