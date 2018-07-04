@@ -15,9 +15,15 @@ import iso_sigma
 
    Impredicative Encoding Unit:
 
-      Nat  = (X: U) -> isSet X -> (X -> X) -> X -> X
       Unit = (X: U) -> isSet X -> X -> X
       Unit_Encoding = (one: Unit)
+                    * ((X Y: U) (x: isSet X) (y:isSet Y) (f:X->Y)
+                           -> naturality X Y f (one X x) (one Y y))
+
+   Impredicative Encoding Nat:
+
+      Nat  = (X: U) -> isSet X -> (X -> X) -> (X -> X)
+      Nat_Encoding = (one: Nat)
                     * ((X Y: U) (x: isSet X) (y:isSet Y) (f:X->Y)
                            -> naturality X Y f (one X x) (one Y y))
 
@@ -57,4 +63,3 @@ unitEncCondition (n: unitEnc'): isProp (isUnitEnc n)
    [2]. https://homotopytypetheory.org/2017/10/11/impredicative-encodings-of-inductive-types-in-hott/
    [3]. https://www.newton.ac.uk/files/seminar/20170711090010001-1009680.pdf
 -}
-

@@ -57,6 +57,7 @@ decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
 -- Theorem (1) Trivial Fiber Bundle (F,B*F,pr1,B) equals Dependent Family F:B->U
 
 -- Agda Style Proof:
+-- https://paolocapriotti.com/blog/2013/02/20/families-and-fibrations/
 --
 --  F y = fiber (total B F) B (trivial B F) y
 --      = (z: E) * Path B z.1 y
