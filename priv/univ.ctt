@@ -40,7 +40,6 @@ import iso
    Path(Path,Equiv)                  -- pathEqEquiv
    Equiv(Path,Equiv)                 -- pathEquivEquiv -}
 
-
 -- This is Corollary 10 of the cubical type theory paper
 -- (the proof of theorem 9 is inlined) (due to Fabian Ruch).
 univalenceAlt (B: U): isContr ((A: U) * equiv A B)
@@ -71,7 +70,7 @@ thmUniv (t: (A X: U) -> Path U X A -> equiv X A) (A: U)
 univalence (A X: U) : isEquiv (Path U X A) (equiv X A) (transEquiv' A X)
   = thmUniv transEquiv' A X
 
-------------------------------------------------------------------------------------
+-- Univalence Intro
 ua (A B: U) (e: equiv A B): Path U A B
   = <i> Glue B [ (i = 0) -> (A,e), (i = 1) -> (B,idEquiv B) ]
 
