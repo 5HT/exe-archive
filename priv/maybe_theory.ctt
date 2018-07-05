@@ -9,7 +9,7 @@ functorMaybeId (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a
 
 -- maybeMap id == id
 functorMaybeIdFunExt (A: U): Path (maybe A -> maybe A) (maybeId A) (idfun (maybe A))
-  = funExt (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
+  = funext (maybe A) (maybe A) (maybeId A) (idfun (maybe A)) (functorMaybeId A)
 
 -- an alternative proof of functorMaybeId using maybeDElim
 functorMaybeId2 (A: U): (a: maybe A) -> Path (maybe A) (maybeId A a) a

@@ -54,7 +54,7 @@ idnat : nat -> nat = split
   zero -> zero
   succ n -> succ (idnat n)
 
-test : Path (nat -> nat) idnat (idfun nat) = piExt nat (\(_ : nat) -> nat) idnat (idfun nat) rem
+test : Path (nat -> nat) idnat (idfun nat) = piext nat (\(_ : nat) -> nat) idnat (idfun nat) rem
   where
   rem : (n : nat) -> Path nat (idnat n) n = split
     zero -> refl nat zero
