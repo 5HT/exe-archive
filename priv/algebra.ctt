@@ -204,6 +204,7 @@ abgroup: U = (X: SET) * isAbGroup X
 ring:    U = (X: SET) * isRing X
 abring:  U = (X: SET) * isAbRing X
 
+
 -- Accessors
 opMonoid       (m: monoid): m.1.1 -> m.1.1 -> m.1.1 = m.2.1
 isAssocMonoid  (m: monoid): isAssociative m.1.1 (opMonoid m) = m.2.2.1
