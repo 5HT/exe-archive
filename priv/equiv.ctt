@@ -27,34 +27,25 @@ univ_Formation (A B: U): U = equiv A B -> Path U A B
 
 -- Univalence Intro
 equivToPath (A B: U): univ_Formation A B
-  = \(p: equiv A B) ->
-    <i> Glue B [(i=0) -> (A,p),
-                (i=1) -> (B, subst U (equiv B) B B (<_>B) (idEquiv B)) ]
+  = \(p: equiv A B) -> <i> Glue B [(i=0) -> (A,p), (i=1) -> (B, subst U (equiv B) B B (<_>B) (idEquiv B)) ]
 
 -- Univalence Elim
-pathToEquiv (A B: U) (p: Path U A B): equiv A B
-  = subst U (equiv A) A B p (idEquiv A)
+pathToEquiv (A B: U) (p: Path U A B): equiv A B = subst U (equiv A) A B p (idEquiv A)
 
 -- Univalence Computation
-eqToEq (A B : U) (p : Path U A B)
-  : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p
-  = <j i> let e: equiv A B = pathToEquiv A B p
-              f: equiv B B = pathToEquiv B B (<k> B)
-              Ai: U = p@i
-              g: equiv Ai B = pathToEquiv Ai B (<k> p @ (i \/ k))
-          in Glue B [ (i=0) -> (A,e),
-                      (i=1) -> (B,f),
-                      (j=1) -> (p@i,g) ]
+eqToEq (A B : U) (p : Path U A B) : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p
+  = <j i> Glue B [ (i=0) -> (A,e), (i=1) -> (B,f), (j=1) -> (p@i,g) ] where
+    e: equiv A B = pathToEquiv A B p
+    f: equiv B B = pathToEquiv B B (<k> B)
+    g: equiv (p@i) B = pathToEquiv (p@i) B (<k> p @ (i \/ k))
 
 -- Univalence Uniqueness
-transPathFun (A B : U) (w : equiv A B)
-  : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1
-  = <i> \ (a:A) ->
-   let b : B = w.1 a
-       u : A = comp (<j>A) a []
-       q : Path B (w.1 u) b = <i>w.1 (comp (<j>A) a [(i=1) -> <j>a])
-    in comp (<j> B) (comp (<j> B) (comp (<j> B) (comp (<j> B) (w.1 u)
-            [(i=0)->q]) [(i=0)-><k>b]) [(i=0)-><k>b]) [(i=0)-><k>b]
+transPathFun (A B : U) (w : equiv A B) : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1
+  = <i> \ (a:A) -> comp (<j> B) (comp (<j> B) (comp (<j> B) (comp (<j> B) (w.1 u)
+                 [(i=0)->q]) [(i=0)-><k>b]) [(i=0)-><k>b]) [(i=0)-><k>b] where
+    b: B = w.1 a
+    u: A = comp (<j>A) a []
+    q: Path B (w.1 u) b = <i>w.1 (comp (<j>A) a [(i=1) -> <j>a])
 
 idToPath (A B: U) (w: equiv A B)
   : Path (equiv A B) (pathToEquiv A B (equivToPath A B w)) w

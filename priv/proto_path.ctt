@@ -58,3 +58,13 @@ composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
 -- Kan filling operation
 kan (A: U) (a b c d: A) (p: Path A a b) (q: Path A a c) (r: Path A b d): Path A c d
     = <i> comp (<j>A) (p @ i) [(i=0) -> q, (i=1) -> r ]
+
+kanOp (A: U) (a: A) (p: Path A a a) (b: A) (q: Path A a b)
+  : Path A b b
+  = kan A a a b b p q q
+
+kanOpRefl (A: U) (a b: A) (q: Path A a b)
+  : Path (Path A b b) (kanOp A a (<i> a) b q) (<_> b)
+  = <j i> comp (<_> A) (q @ j) [ (i = 0) -> <k> q @ j \/ k,
+                                 (i = 1) -> <k> q @ j \/ k,
+                                 (j = 1) -> <k> b ]

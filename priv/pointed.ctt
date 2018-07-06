@@ -1,0 +1,46 @@
+{- Pointed Types:
+   - Pointed;
+   - Loop Space;
+   - Their Maps.
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   HoTT 2.1 Types are higher groupoids
+   HoTT 8.4 Fiber sequences and the long exact sequence -}
+
+module pointed where
+import path
+
+-- Definition 2.1.7
+pointed: U = (A: U) * A
+point (A: pointed): A.1 = A.2
+
+-- Definition 2.1.8
+omega (A: pointed): pointed = (Path A.1 (point A) (point A), <_> point A)
+
+-- Definition 8.4.1
+pmap (A B: pointed): U = (f: A.1 -> B.1) * (Path B.1 (f (point A)) (point B))
+
+omegaMap (A B: pointed) (f: pmap A B)
+  : pmap (omega A) (omega B)
+  = (space,prf) where
+    space (p: (omega A).1)
+        : (omega B).1
+        = kanOp B.1 (f.1 (point A)) (<i>f.1 (p@i)) (point B) f.2
+    prf : Path (omega B).1 (space (point (omega A))) (point (omega B))
+        = kanOpRefl B.1 (f.1 (point A)) (point B) f.2
+
+omegaMapRefl (A: pointed) (B: U) (h: A.1 -> B) (p: (omega  A).1)
+           : (omega  (B, h (point A))).1
+           = <i> h (p @ i)
+
+-- Loop Spaces
+omega2 (A: pointed): pointed = omega  (omega A)
+omega3 (A: pointed): pointed = omega2 (omega A)
+
+omegaMap2 (A B: pointed) (f: pmap A B): pmap (omega2 A) (omega2 B) = omegaMap (omega  A) (omega  B) (omegaMap  A B f)
+omegaMap3 (A B: pointed) (f: pmap A B): pmap (omega3 A) (omega3 B) = omegaMap (omega2 A) (omega2 B) (omegaMap2 A B f)
+
+omegaMapRefl2 (A: pointed) (B: U) (h: A.1 -> B) (p: (omega2 A).1): (omega2 (B, h (point A))).1 = <i j>   h (p @ i @ j)
+omegaMapRefl3 (A: pointed) (B: U) (h: A.1 -> B) (p: (omega3 A).1): (omega3 (B, h (point A))).1 = <i j k> h (p @ i @ j @ k)
+
+-- TODO: fold into generic recursion
