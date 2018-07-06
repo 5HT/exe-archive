@@ -5,6 +5,7 @@
    Copyright (c) Groupoid Infinity, 2014-2018.
 
    HoTT 2.1 Types are higher groupoids
+   HoTT 8.2 Connectedness of suspensions
    HoTT 8.4 Fiber sequences and the long exact sequence -}
 
 module pointed where
@@ -43,4 +44,13 @@ omegaMap3 (A B: pointed) (f: pmap A B): pmap (omega3 A) (omega3 B) = omegaMap (o
 omegaMapRefl2 (A: pointed) (B: U) (h: A.1 -> B) (p: (omega2 A).1): (omega2 (B, h (point A))).1 = <i j>   h (p @ i @ j)
 omegaMapRefl3 (A: pointed) (B: U) (h: A.1 -> B) (p: (omega3 A).1): (omega3 (B, h (point A))).1 = <i j k> h (p @ i @ j @ k)
 
--- TODO: fold into generic recursion
+-- Definition 8.4.3. Fiber Sequence or Pointed Map Sequence
+data fiberSeq (X Y: pointed)
+   = fsnil (X: pointed)
+   | fscons (X Y Z: pointed) (_: pmap X Y) (_: fiberSeq Y Z)
+
+fiberNil (X: pointed): fiberSeq X X = fsnil X
+fiberCons (X Y Z: pointed) (h: pmap X Y) (t: fiberSeq Y Z): fiberSeq X Z = fscons X Y Z h t
+
+opaque fiberSeq
+

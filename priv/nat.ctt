@@ -78,9 +78,12 @@ data Fin (n: nat) = fzero | fsucc (_: Fin (pred n))
 fz (n: nat): Fin (succ n)          = fzero
 fs (n: nat): Fin n -> Fin (succ n) = \(x: Fin n) -> fsucc x
 
+opaque Fin
+
 fin11: Fin one   = fz zero
 fin21: Fin two   = fz one
 fin22: Fin two   = fs one fin11
 fin31: Fin three = fz two
 fin32: Fin three = fs two fin21
 fin33: Fin three = fs two fin22
+
