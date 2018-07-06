@@ -34,8 +34,7 @@ import iso
 --
 -- pr_1 o h = p
 
--- prerequisite from equiv.ctt
-fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B (p x) y
+fiber (A B: U) (p: A -> B) (y: B): U = (x: A) * Path B (p x) y
 bundle: U = (E B: U) * (y: B) * (p: E -> B) * fiber E B p y
 
 -- Fiber
