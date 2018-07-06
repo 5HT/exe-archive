@@ -1,4 +1,5 @@
 {- Type Sequences
+   - Chain Complex;
    - Fiber Sequence;
    - Pointed Map Sequence;
    - Group Sequence;
@@ -8,6 +9,7 @@
 module seq where
 import algebra
 import pointed
+import nat
 
 data Seq (A: U) (B: A -> A -> U) (X Y: A)
    = seqNil (_: A)
@@ -15,7 +17,7 @@ data Seq (A: U) (B: A -> A -> U) (X Y: A)
 
 -- Pointed Map Sequence
 pmSeq: pointed -> pointed -> U = Seq pointed pmap
-pmNil (X: pointed): Seq pointed pmap X X = seqNil X
+pmNil (X: pointed): pmSeq X X = seqNil X
 pmCons (X Y Z: pointed) (h: pmap X Y) (t: pmSeq Y Z): pmSeq X Z = seqCons X Y Z h t
 
 -- Group Homomorphism Sequence
@@ -27,5 +29,17 @@ homCons (X Y Z: group) (h: grouphom X Y) (t: homSeq Y Z): homSeq X Z = seqCons X
 abSeq: abgroup -> abgroup -> U = Seq abgroup abgrouphom
 abNil (X: abgroup): abSeq X X = seqNil X
 abCons (X Y Z: abgroup) (h: abgrouphom X Y) (t: abSeq Y Z): abSeq X Z = seqCons X Y Z h t
+
+ChainComplex: U
+  = (head: abgroup)
+  * (chain: nat -> abgroup)
+  * (augment: abgrouphom (chain zero) head)
+  * ((n: nat) -> abgrouphom (chain (succ n)) (chain n))
+
+CochainComplex: U
+  = (head: abgroup)
+  * (cochain: nat -> abgroup)
+  * (augment: abgrouphom head (cochain zero))
+  * ((n: nat) -> abgrouphom (cochain n) (cochain (succ n)))
 
 opaque Seq
