@@ -200,11 +200,6 @@ invEquiv (A:U) (a b:A) : Path U (Path A a b) (Path A b a)
              (isoToEquiv (Path A a b) (Path A b a) (inv A a b) (inv A b a)
                          (\(x:Path A b a) -> <_> x) (\(x:Path A a b) -> <_> x))
 
-equivFunFib (A:U) (B C: A -> U) (f: (x:A) -> B x -> C x)
-            (cB: isContr (Sigma A B))
-            (cC: isContr (Sigma A C))
-            (x:A): isEquiv (B x) (C x) (f x) = undefined
-
 eqToIso (C : precategory) (A B : carrier C) (p : Path (carrier C) A B) : iso C A B
   = J (carrier C) A (\(B : carrier C) -> \(p : Path (carrier C) A B) -> iso C A B) (idIso C A) B p
 
