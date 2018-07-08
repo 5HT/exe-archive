@@ -1,4 +1,4 @@
-module up where
+module ump where
 import cat
 import fun
 import adj
