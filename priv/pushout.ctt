@@ -7,12 +7,6 @@ module pushout where
 import proto
 import pullback
 
--- Homotopy Limit
-pullback (A B C:U) (f: A -> C) (g: B -> C): U
-  = (a: A)
-  * (b: B)
-  * Path C (f a) (g b)
-
 -- Homotopy Colimit
 data pushout (A B C: U) (f: C -> A) (g: C -> B)
      = po1 (_: A)
