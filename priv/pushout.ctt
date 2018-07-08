@@ -4,11 +4,47 @@
    see HoTT 6.8 Pushouts -}
 
 module pushout where
+import proto
+import pullback
+
+-- Homotopy Limit
+pullback (A B C:U) (f: A -> C) (g: B -> C): U
+  = (a: A)
+  * (b: B)
+  * Path C (f a) (g b)
 
 -- Homotopy Colimit
 data pushout (A B C: U) (f: C -> A) (g: C -> B)
      = po1 (_: A)
      | po2 (_: B)
-     | po3 (c: C) <i> [ (i=0) -> po1 (f c),
+     | po3 (c: C) <i> [ (i=0) -> po1 (f c) ,
                         (i=1) -> po2 (g c) ]
+
+cofiber (A B: U) (f: A -> B): U
+  = pushout  B unit A f (\(x: A) -> tt)
+
+fiber (A B: U) (f: A -> B) (y: B): U
+  = pullback A unit B f (\(x: unit) -> y)
+
+--   fiber_f(y) ----> A
+--            |       | f
+--            V       V
+--            1 ----> B
+--              \_.y
+
+fiberPullback (A B: U) (f: A -> B) (y: B)
+  : pullbackSq (pullback A unit B f (\(i: unit) -> y))
+               A unit B f (\(x: unit) -> y)
+               (pb1 A unit B f (\(x: unit) -> y))
+               (pb2 A unit B f (\(x: unit) -> y))
+  = completePullback A unit B f (\(x: unit) -> y)
+
+--      f
+--  A ----> B
+--  |       | po2
+--  V       V
+--  1 ----> cofiber_f
+--     po1
+
+-- TODO: cofiberPullback
 
