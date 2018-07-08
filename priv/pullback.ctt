@@ -72,7 +72,7 @@ completePullback (A B C: U) (f: A -> C) (g: B -> C)
 --              \_.y
 
 fiberPullback (A B: U) (f: A -> B) (y: B)
-  : pullbackSq (pullback A unit B f (\(i: unit) -> y))
+  : pullbackSq (pullback A unit B f (\(x: unit) -> y))
                A unit B f (\(x: unit) -> y)
                (pb1 A unit B f (\(x: unit) -> y))
                (pb2 A unit B f (\(x: unit) -> y))

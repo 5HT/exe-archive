@@ -17,7 +17,7 @@ data pushout (A B C: U) (f: C -> A) (g: C -> B)
 cofiber (A B: U) (f: A -> B): U
   = pushout  B unit A f (\(x: A) -> tt)
 
-fiber (A B: U) (f: A -> B) (y: B): U
+hfiber (A B: U) (f: A -> B) (y: B): U
   = pullback A unit B f (\(x: unit) -> y)
 
 --   fiber_f(y) ----> A
@@ -27,7 +27,7 @@ fiber (A B: U) (f: A -> B) (y: B): U
 --              \_.y
 
 fiberPullback (A B: U) (f: A -> B) (y: B)
-  : pullbackSq (pullback A unit B f (\(i: unit) -> y))
+  : pullbackSq (hfiber A B f y)
                A unit B f (\(x: unit) -> y)
                (pb1 A unit B f (\(x: unit) -> y))
                (pb2 A unit B f (\(x: unit) -> y))
