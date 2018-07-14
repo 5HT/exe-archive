@@ -6,6 +6,7 @@
 module cones where
 import sip
 import set
+import algebra
 
 -- A bit tricky, folded. Do we need more straightforward definition?
 homTo  (C: precategory) (X: carrier C): U   = (Y: carrier C) * hom C Y X
@@ -120,16 +121,16 @@ hasPullbackProp (C: precategory) (isC: isCategory C) (D: cospan C): isProp (hasP
 --        h      i
 
 pullbackPasting
-    (CA: precategory)
-    (A B C D E F: carrier CA)
-    (f: hom CA A B) (g: hom CA B C)
-    (h: hom CA D E) (i: hom CA E F)
-    (j: hom CA A D) (k: hom CA B E) (l: hom CA C F)
-    (cc1: isCommutative CA A B D E f h j k)
-    (cc2: isCommutative CA B C E F g i k l)
-    (cc3: isCommutative CA A C D F (compose CA A B C f g) (compose CA D E F h i) j l)
-    (pb2: isPullback CA (F, (E, i), (C, l)) (B, k, g, cc2))
-    (pb3: isPullback CA (F, (D, compose CA D E F h i), (C, l)) (A, j, compose CA A B C f g, cc3))
-  : isPullback CA (E, (D, h), (B, k)) (A, j, f, cc1)
+    (X: precategory)
+    (A B C D E F: carrier X)
+    (f: hom X A B) (g: hom X B C)
+    (h: hom X D E) (i: hom X E F)
+    (j: hom X A D) (k: hom X B E) (l: hom X C F)
+    (cc1: isComm X A B D E f h j k)
+    (cc2: isComm X B C E F g i k l)
+    (cc3: isComm X A C D F (compose X A B C f g) (compose X D E F h i) j l)
+    (pb2: isPullback X (F, (E, i), (C, l)) (B, k, g, cc2))
+    (pb3: isPullback X (F, (D, compose X D E F h i), (C, l)) (A, j, compose X A B C f g, cc3))
+  : isPullback X (E, (D, h), (B, k)) (A, j, f, cc1)
   = undefined
 
