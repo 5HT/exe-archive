@@ -26,9 +26,9 @@ pathToHtpy (A: U) (x y: A) (p: Path A x y): I -> A
 
 -- H_{f,g:X→Y}: X × [0,1] → Y,  f(x)=g(x)
 homotopy  (X Y: U)
-   (f g: X -> Y)
-   (p: (x: X) -> Path Y (f x) (g x))
-   (x: X): I -> Y = pathToHtpy Y (f x) (g x) (p x)
+          (f g: X -> Y)
+          (p: (x: X) -> Path Y (f x) (g x))
+          (x: X): I -> Y = pathToHtpy Y (f x) (g x) (p x)
 
 -- Proof of funext from the interval
 fext (A B: U) (f g: A -> B) (p: (x: A) -> Path B (f x) (g x)): Path (A -> B) f g

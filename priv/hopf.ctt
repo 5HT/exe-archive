@@ -200,3 +200,6 @@ H : S2 -> U = split
 
 TH : U = (c : S2) * H c
 
+
+
+

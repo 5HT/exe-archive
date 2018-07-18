@@ -11,6 +11,7 @@ import algebra
 import pointed
 import nat
 
+-- Cohomology Sequences
 data Seq (A: U) (B: A -> A -> U) (X Y: A)
    = seqNil (_: A)
    | seqCons (X Y Z: A) (_: B X Y) (_: Seq A B Y Z)
