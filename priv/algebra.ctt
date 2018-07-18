@@ -3,7 +3,7 @@
    - Group and AbGroup;
    - Ring and AbRing;
    - Hom sequence.
-   Copyright (c) Groupoid Infinity, 2014-1018.
+   Copyright (c) Groupoid Infinity, 2017-1018.
 
    see HoTT 6.11 Algebra -}
 

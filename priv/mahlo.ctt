@@ -20,6 +20,5 @@ data Universe
            (y: Elt f g x -> Universe f g)
            (z: Elv (f (Elt f g x) (\(a: Elt f g x) -> y a)))
 Elt: (f: (x: V) -> (Elv x -> V) -> V) ->
-     (g: (x: V) -> (y: Elv x -> V) -> (Elv (f x y) -> V) -> V) ->
-     Universe f g -> V = undefined
-
+     (g: (x: V) -> (y: Elv x -> V) ->
+     (Elv (f x y) -> V) -> V) -> Universe f g -> V = undefined

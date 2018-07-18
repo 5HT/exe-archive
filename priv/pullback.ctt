@@ -71,8 +71,10 @@ completePullback (A B C: U) (f: A -> C) (g: B -> C)
 --            1 ----> B
 --              \_.y
 
+fiberToPullback (A B: U) (f: A -> B) (y: B) : U = pullback A unit B f (\(x: unit) -> y)
+
 fiberPullback (A B: U) (f: A -> B) (y: B)
-  : pullbackSq (pullback A unit B f (\(x: unit) -> y))
+  : pullbackSq (fiberToPullback A B f y)
                A unit B f (\(x: unit) -> y)
                (pb1 A unit B f (\(x: unit) -> y))
                (pb2 A unit B f (\(x: unit) -> y))
