@@ -8,7 +8,7 @@ module k_theory where
 import quot
 import swaptrans
 import category
-import up
+import ump
 import prop
 
 qgroup    (m: cmonoid): U = setquot (pair m) (prel m)
