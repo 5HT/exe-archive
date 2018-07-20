@@ -17,10 +17,10 @@ data Seq (A: U) (B: A -> A -> U) (X Y: A)
    = seqNil (_: A)
    | seqCons (X Y Z: A) (_: B X Y) (_: Seq A B Y Z)
 
--- Pointed Map Sequence
-pmSeq: pointed -> pointed -> U = Seq pointed pmap
-pmNil (X: pointed): pmSeq X X = seqNil X
-pmCons (X Y Z: pointed) (h: pmap X Y) (t: pmSeq Y Z): pmSeq X Z = seqCons X Y Z h t
+-- Fiber Sequence
+fibSeq: pointed -> pointed -> U = Seq pointed pmap
+fibNil (X: pointed): fibSeq X X = seqNil X
+fibCons (X Y Z: pointed) (h: pmap X Y) (t: pmSeq Y Z): fibSeq X Z = seqCons X Y Z h t
 
 -- Group Homomorphism Sequence
 homSeq: group -> group -> U = Seq group grouphom
