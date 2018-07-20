@@ -10,6 +10,7 @@ module seq where
 import algebra
 import pointed
 import nat
+import fun
 
 -- Cohomology Sequences
 data Seq (A: U) (B: A -> A -> U) (X Y: A)
@@ -30,6 +31,11 @@ homCons (X Y Z: group) (h: grouphom X Y) (t: homSeq Y Z): homSeq X Z = seqCons X
 abSeq: abgroup -> abgroup -> U = Seq abgroup abgrouphom
 abNil (X: abgroup): abSeq X X = seqNil X
 abCons (X Y Z: abgroup) (h: abgrouphom X Y) (t: abSeq Y Z): abSeq X Z = seqCons X Y Z h t
+
+-- Functor Sequence
+catSeq: precategory -> precategory -> U = Seq precategory catfunctor
+catNil (X: precategory): catSeq X X = seqNil X
+catCons (X Y Z: precategory) (h: catfunctor X Y) (t: catSeq Y Z): catSeq X Z = seqCons X Y Z h t
 
 ChainComplex: U
   = (head: abgroup)
