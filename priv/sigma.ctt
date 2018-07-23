@@ -5,7 +5,7 @@
    see HoTT 1.6 Dependent pair types (Sigma-types) -}
 
 module sigma where
-import set
+import path
 
 Sigma  (A:U)(B:A->U): U = (x:A) * B(x)
 dpair  (A:U)(B:A->U)(a: A) (b: B a): Sigma A B = (a,b)
@@ -44,15 +44,6 @@ pathSig0 (A:U) (B: A -> U) (t u: Sigma A B)
        : Path U (PathP (<i>B (p@i)) t.2 u.2)
                 (Path (B u.1) (transport (<i>B (p@i)) t.2) u.2)
        = funDepTr A B t.1 u.1 p t.2 u.2
-
-corSigProp (A:U) (B:A-> U) (pB : (x:A) -> isProp (B x)) (t u : Sigma A B) (p:Path A t.1 u.1) :
-  isProp (PathP (<i>B (p@i)) t.2 u.2) = substInv U isProp T0 T1 rem rem1
- where P : Path U (B t.1) (B u.1) = <i>B (p@i)
-       T0 : U = PathP P t.2 u.2
-       T1 : U = Path (B u.1) (transport P t.2) u.2
-       rem : Path U T0 T1 = pathSig0 A B t u p
-       v2 : B u.1 = transport P t.2
-       rem1 : isProp T1 = propSet (B u.1) (pB u.1) v2 u.2
 
 corSigSet (A:U) (B:A-> U) (sB : (x:A) -> isSet (B x)) (t u : Sigma A B) (p:Path A t.1 u.1) :
   isProp (PathP (<i>B (p@i)) t.2 u.2) = substInv U isProp T0 T1 rem rem1

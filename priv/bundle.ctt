@@ -34,8 +34,8 @@ import iso
 --
 -- pr_1 o h = p
 
--- prerequisite from equiv.ctt
-fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B (p x) y
+fiber (A B: U) (p: A -> B) (y: B): U = (x: A) * Path B (p x) y
+bundle: U = (E B: U) * (y: B) * (p: E -> B) * fiber E B p y
 
 -- Fiber
 Family    (B: U): U = B -> U
@@ -56,6 +56,7 @@ decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
 -- Theorem (1) Trivial Fiber Bundle (F,B*F,pr1,B) equals Dependent Family F:B->U
 
 -- Agda Style Proof:
+-- https://paolocapriotti.com/blog/2013/02/20/families-and-fibrations/
 --
 --  F y = fiber (total B F) B (trivial B F) y
 --      = (z: E) * Path B z.1 y

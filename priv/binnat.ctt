@@ -1,6 +1,7 @@
 {- Binary Encoding of Nat numbers:
    - Pos, BinN, Double.
-   Copyright (c) Groupoid Infinity, 2014-2018. -}
+   Copyright (c) Groupoid Infinity, 2017-2018.
+-}
 
 module binnat where
 import univ

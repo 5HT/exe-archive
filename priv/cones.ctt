@@ -6,8 +6,10 @@
 module cones where
 import sip
 import set
+import algebra
 
-homTo (C: precategory) (X: carrier C): U = (Y: carrier C) * hom C Y X
+-- A bit tricky, folded. Do we need more straightforward definition?
+homTo  (C: precategory) (X: carrier C): U   = (Y: carrier C) * hom C Y X
 cospan (C: precategory): U = (X: carrier C) * (_: homTo C X) * homTo C X
 
 hasCospanCone (C: precategory) (D: cospan C) (W: carrier C): U
@@ -35,17 +37,20 @@ hasPullback (C: precategory) (D: cospan C): U
   = (E: cospanCone C D)
   * isPullback C D E
 
-isCospanConeHomProp (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) (h: hom C E1.1 E2.1): isProp (isCospanConeHom C D E1 E2 h)
+isCospanConeHomProp (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) (h: hom C E1.1 E2.1)
+  : isProp (isCospanConeHom C D E1 E2 h)
   = propAnd (Path (hom C E1.1 D.2.1.1) (compose C E1.1 E2.1 D.2.1.1 h E2.2.1)   E1.2.1)
             (Path (hom C E1.1 D.2.2.1) (compose C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
                (homSet C E1.1 D.2.1.1  (compose C E1.1 E2.1 D.2.1.1 h E2.2.1)   E1.2.1)
                (homSet C E1.1 D.2.2.1  (compose C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
 
-cospanConePath (C: precategory) (D: cospan C) (E: cospanCone C D): cospanConeHom C D E E
+cospanConePath (C: precategory) (D: cospan C) (E: cospanCone C D)
+  : cospanConeHom C D E E
   = (path C E.1, pathL C E.1 D.2.1.1 E.2.1, pathL C E.1 D.2.2.1 E.2.2.1)
 
-cospanConeComp (C : precategory) (D : cospan C) (X Y Z : cospanCone C D)
-               (F : cospanConeHom C D X Y) (G : cospanConeHom C D Y Z) : cospanConeHom C D X Z
+cospanConeComp (C: precategory) (D: cospan C) (X Y Z: cospanCone C D)
+               (F: cospanConeHom C D X Y) (G: cospanConeHom C D Y Z)
+  : cospanConeHom C D X Z
   = (compose C X.1 Y.1 Z.1 F.1 G.1,
      composition (hom C X.1 D.2.1.1)
             (compose C X.1 Z.1 D.2.1.1 (compose C X.1 Y.1 Z.1 F.1 G.1) Z.2.1)
@@ -71,25 +76,29 @@ cospanConeComp (C : precategory) (D : cospan C) (X Y Z : cospanCone C D)
             F.2.2))
 
 
-isPullbackProp (C : precategory) (D : cospan C) (E : cospanCone C D) : isProp (isPullback C D E)
+isPullbackProp (C : precategory) (D : cospan C) (E : cospanCone C D)
+  : isProp (isPullback C D E)
   = propPi (cospanCone C D) (\(h : cospanCone C D) -> isContr (cospanConeHom C D h E))
     (\(h : cospanCone C D) -> propIsContr (cospanConeHom C D h E))
 
-cospanConeStructure (C : precategory) (D : cospan C) : structure C
+cospanConeStructure (C: precategory) (D: cospan C)
+  : structure C
   = (hasCospanCone C D
-    ,\(x y : carrier C) (a : hasCospanCone C D x) (b : hasCospanCone C D y) -> isCospanConeHom C D (x, a) (y, b)
-    ,\(x y : carrier C) (a : hasCospanCone C D x) (b : hasCospanCone C D y) -> isCospanConeHomProp C D (x, a) (y, b)
-    ,\(x : carrier C) (a : hasCospanCone C D x) -> (cospanConePath C D (x, a)).2
-    ,\(x y z : carrier C) (a : hasCospanCone C D x) (b : hasCospanCone C D y) (c : hasCospanCone C D z)
-      (f : hom C x y) (g : hom C y z)
-      (Hf : isCospanConeHom C D (x, a) (y, b) f)
-      (Hg : isCospanConeHom C D (y, b) (z, c) g) -> (cospanConeComp C D (x, a) (y, b) (z, c) (f, Hf) (g, Hg)).2
+    ,\(x y: carrier C) (a: hasCospanCone C D x) (b: hasCospanCone C D y) -> isCospanConeHom C D (x, a) (y, b)
+    ,\(x y: carrier C) (a: hasCospanCone C D x) (b: hasCospanCone C D y) -> isCospanConeHomProp C D (x, a) (y, b)
+    ,\(x: carrier C) (a: hasCospanCone C D x) -> (cospanConePath C D (x, a)).2
+    ,\(x y z: carrier C) (a: hasCospanCone C D x) (b: hasCospanCone C D y) (c: hasCospanCone C D z)
+      (f: hom C x y) (g: hom C y z)
+      (Hf: isCospanConeHom C D (x, a) (y, b) f)
+      (Hg: isCospanConeHom C D (y, b) (z, c) g) -> (cospanConeComp C D (x, a) (y, b) (z, c) (f, Hf) (g, Hg)).2
     )
 
-cospanConePrecategory (C: precategory) (D: cospan C): precategory
+cospanConePrecategory (C: precategory) (D: cospan C)
+  : precategory
   = sipPrecategory C (cospanConeStructure C D)
 
-isCategoryCospanCone (C: precategory) (D: cospan C) (isC: isCategory C) : isCategory (cospanConePrecategory C D)
+isCategoryCospanCone (C: precategory) (D: cospan C) (isC: isCategory C)
+  : isCategory (cospanConePrecategory C D)
   = sip C isC (cospanConeStructure C D) hole
   where
     hole: isStandardStructure C (cospanConeStructure C D)
@@ -108,7 +117,8 @@ isCategoryCospanCone (C: precategory) (D: cospan C) (isC: isCategory C) : isCate
                             (<i>pathL C x D.2.2.1 a.2.1 @-i) d.2 @ i) D.2.2.2))
                          a.2.2 b.2.2 @ i)
 
-hasPullbackProp (C: precategory) (isC: isCategory C) (D: cospan C): isProp (hasPullback C D)
+hasPullbackProp (C: precategory) (isC: isCategory C) (D: cospan C)
+  : isProp (hasPullback C D)
   = terminalProp (cospanConePrecategory C D) (isCategoryCospanCone C D isC)
 
 --       f      g
@@ -119,16 +129,16 @@ hasPullbackProp (C: precategory) (isC: isCategory C) (D: cospan C): isProp (hasP
 --        h      i
 
 pullbackPasting
-    (CA: precategory)
-    (A B C D E F: carrier CA)
-    (f: hom CA A B) (g: hom CA B C)
-    (h: hom CA D E) (i: hom CA E F)
-    (j: hom CA A D) (k: hom CA B E) (l: hom CA C F)
-    (cc1: isCommutative CA A B D E f h j k)
-    (cc2: isCommutative CA B C E F g i k l)
-    (cc3: isCommutative CA A C D F (compose CA A B C f g) (compose CA D E F h i) j l)
-    (pb2: isPullback CA (F, (E, i), (C, l)) (B, k, g, cc2))
-    (pb3: isPullback CA (F, (D, compose CA D E F h i), (C, l)) (A, j, compose CA A B C f g, cc3))
-  : isPullback CA (E, (D, h), (B, k)) (A, j, f, cc1)
+    (X: precategory)
+    (A B C D E F: carrier X)
+    (f: hom X A B) (g: hom X B C)
+    (h: hom X D E) (i: hom X E F)
+    (j: hom X A D) (k: hom X B E) (l: hom X C F)
+    (cc1: isComm X A B D E f h j k)
+    (cc2: isComm X B C E F g i k l)
+    (cc3: isComm X A C D F (compose X A B C f g) (compose X D E F h i) j l)
+    (pb2: isPullback X (F, (E, i), (C, l)) (B, k, g, cc2))
+    (pb3: isPullback X (F, (D, compose X D E F h i), (C, l)) (A, j, compose X A B C f g, cc3))
+  : isPullback X (E, (D, h), (B, k)) (A, j, f, cc1)
   = undefined
 

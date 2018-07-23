@@ -5,6 +5,7 @@
 
 module quotient where
 import circle
+import set
 
 -- Quotient A by R
 data quot (A: U) (R: A -> A -> U)
@@ -40,3 +41,4 @@ rem: (a: unit) -> Path s1quot (inj tt) (inj a) = split
 
 identsetquot (A: U) (R: A -> A -> U) (a b: A) (r: R a b)
   : Path (setquot A R) (quotient a) (quotient b) = <i> identification {setquot A R} a b r @ i
+

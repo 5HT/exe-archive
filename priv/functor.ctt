@@ -34,11 +34,11 @@ functor_comptype (f g: FUNCTOR): FUNCTOR = ((funcomp F G,fmap),(id,compose,tt)) 
   G: U -> U = g.1.1
   T: U -> U = funcomp F G
   functorIdFunExt (x: FUNCTOR) (A: U): Path (x.1.1 A -> x.1.1 A) (x.1.2 A A (idfun A)) (idfun (x.1.1 A))
-    = funExt (x.1.1 A) (x.1.1 A) (x.1.2 A A (idfun A)) (idfun (x.1.1 A)) (x.2.1 A)
+    = funext (x.1.1 A) (x.1.1 A) (x.1.2 A A (idfun A)) (idfun (x.1.1 A)) (x.2.1 A)
   functorComposeFunExt (x: FUNCTOR) (A B C: U) (fx: B -> C) (gy: A -> B):
     Path (x.1.1 A -> x.1.1 C) (x.1.2 A C (o A B C fx gy))
                               (o (x.1.1 A) (x.1.1 B) (x.1.1 C) (x.1.2 B C fx) (x.1.2 A B gy))
-    = funExt (x.1.1 A) (x.1.1 C) (x.1.2 A C (o A B C fx gy))
+    = funext (x.1.1 A) (x.1.1 C) (x.1.2 A C (o A B C fx gy))
              ((o (x.1.1 A) (x.1.1 B) (x.1.1 C) (x.1.2 B C fx) (x.1.2 A B gy))) (x.2.2.1 A B C fx gy)
   lemma1 (A B: U) (g: A -> B) (x y: A) (z: B) (pxy: Path A x y) (pgyz: Path B (g y) z): Path B (g x) z
        = substInv A (\(X: A) -> Path B (g X) z) x y pxy pgyz

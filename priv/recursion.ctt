@@ -10,7 +10,6 @@ module recursion where
    in control module along with functor definition. -}
 
 import control
-import proto
 
 -- Fixpoint Equations:
 --      A B : U , F : U -> U
@@ -122,21 +121,19 @@ mutu (A B: U) (F: functor)
 
 -- model of inductive types as F-algebras squares
 ind   (F: U -> U) (A: U): U
-    = (in_: F (fix F) -> fix F)
-    * (in_rev: fix F -> F (fix F))
+    = (i: F (fix F) -> fix F)
+    * (o: fix F -> F (fix F))
     * (fold_: (F A -> A) -> fix F -> A)
-    * (cofree_: (F (cofree F A) -> A) -> fix F -> A)
-    * unit
+    * ((F (cofree F A) -> A) -> fix F -> A)
 
 coind (F: U -> U) (A: U): U
-    = (out_: fix F -> F (fix F))
-    * (out_rev: F (fix F) -> fix F)
+    = (o: fix F -> F (fix F))
+    * (i: F (fix F) -> fix F)
     * (unfold_: (A -> F A) -> A -> fix F)
-    * (free_: (A -> F (free F A)) -> A -> fix F)
-    * unit
+    * ((A -> F (free F A)) -> A -> fix F)
 
-inductive   (F: functor) (A: U): ind F.1 A = (in_ F.1,out_ F.1,cata A F,histo A F,tt)
-coinductive (F: functor) (A: U): coind F.1 A = (out_ F.1,in_ F.1,ana A F,futu A F,tt)
+inductive   (F: functor) (A: U): ind F.1 A = (in_ F.1,out_ F.1,cata A F,histo A F)
+coinductive (F: functor) (A: U): coind F.1 A = (out_ F.1,in_ F.1,ana A F,futu A F)
 
 data W (A:U) (B:A->U) = sup (x:A) (f:B(x) -> W A B)
 

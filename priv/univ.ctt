@@ -15,7 +15,7 @@ import iso
 
    1. Path (A = B)  - path
    2. Equiv (A ~ B) - sigma, fibrant
-   3. Iso (A == B)   - adjoints
+   3. Iso (A == B)  - adjoints
 
    Path: built-in
 
@@ -36,10 +36,9 @@ import iso
 
    Iso(Equiv,Path)                   -- equivToPath, pathToEquiv
    Equiv(swap(Equiv),Iso(Equ,Equiv)) -- univalence, (slow)
-   Equiv(Equiv,Iso(Path,Equiv))      -- univalence,  (fast)
+   Equiv(Equiv,Iso(Path,Equiv))      -- univalence, (fast)
    Path(Path,Equiv)                  -- pathEqEquiv
    Equiv(Path,Equiv)                 -- pathEquivEquiv -}
-
 
 -- This is Corollary 10 of the cubical type theory paper
 -- (the proof of theorem 9 is inlined) (due to Fabian Ruch).
@@ -71,7 +70,7 @@ thmUniv (t: (A X: U) -> Path U X A -> equiv X A) (A: U)
 univalence (A X: U) : isEquiv (Path U X A) (equiv X A) (transEquiv' A X)
   = thmUniv transEquiv' A X
 
-------------------------------------------------------------------------------------
+-- Univalence Intro
 ua (A B: U) (e: equiv A B): Path U A B
   = <i> Glue B [ (i = 0) -> (A,e), (i = 1) -> (B,idEquiv B) ]
 
@@ -120,7 +119,7 @@ elimIsIso (A : U) (Q : (B : U) -> (A -> B) -> (B -> A) -> U)
          (sg : section A B f g) (rg : retract A B f g) : Q B f g =
   elimIso A (\(B : U) (f : B -> A) (g : A -> B) -> Q B g f) d B g f rg sg
 
-------------------------------------------
+------------------------------------------ VERY SLOW
 {-
 uaretsig (A: U): retract ((B: U) * equiv A B) (singl U A) (f1 A) (f2 A)
   = \(p: (B: U) * equiv A B) -> <i> (p.1,uaret A p.1 p.2 @ i)

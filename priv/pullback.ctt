@@ -16,7 +16,10 @@ import equiv
 --        f
 
 -- Homotopy Limit
-pullback (A B C:U) (f: A -> C) (g: B -> C): U = (a: A) * (b: B) * Path C (f a) (g b)
+pullback (A B C:U) (f: A -> C) (g: B -> C): U
+  = (a: A)
+  * (b: B)
+  * Path C (f a) (g b)
 
 pb1 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> A = \(x: pullback A B C f g) -> x.1
 pb2 (A B C: U) (f: A -> C) (g: B -> C): pullback A B C f g -> B = \(x: pullback A B C f g) -> x.2.1
@@ -61,4 +64,19 @@ completePullback (A B C: U) (f: A -> C) (g: B -> C)
          [(i=0) -> lem2 y, (i=1) -> <i>lem5 y x q @ j, (j=0) -> <k> lem4 y @ k @ i, (j=1) -> <k>lem6 y x q@k@i]
     lem9 (z:Z) (x2: fiber Z Z I z): Path (fiber Z Z I z) (x1 z) x2 = <i>(lem5 z x2.1 x2.2@i,lem7 z x2.1 x2.2@i)
     P (z: Z): isContr (fiber Z Z I z) = ((x1 z),lem9 z)
+
+--   fiber_f(y) ----> A
+--            |       | f
+--            V       V
+--            1 ----> B
+--              \_.y
+
+fiberToPullback (A B: U) (f: A -> B) (y: B) : U = pullback A unit B f (\(x: unit) -> y)
+
+fiberPullback (A B: U) (f: A -> B) (y: B)
+  : pullbackSq (fiberToPullback A B f y)
+               A unit B f (\(x: unit) -> y)
+               (pb1 A unit B f (\(x: unit) -> y))
+               (pb2 A unit B f (\(x: unit) -> y))
+  = completePullback A unit B f (\(x: unit) -> y)
 

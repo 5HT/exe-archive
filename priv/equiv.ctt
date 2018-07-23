@@ -1,5 +1,6 @@
 {- Equivalence:
-   - Theorems, Gluening.
+   - Theorems, Gluening;
+   - Univalence Type.
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module equiv where
@@ -21,29 +22,27 @@ retEq (A B:U)(w:equiv A B)(y:B): Path B (w.1 (invEq A B w y)) y
 secEq (A B:U)(w:equiv A B)(x:A): Path A (invEq A B w (w.1 x)) x
   = <i> ((w.2(w.1 x)).2(x,<j>w.1 x)@i).1
 
-pathToEquiv (A B: U) (p: Path U A B): equiv A B
-  = subst U (equiv A) A B p (idEquiv A)
+-- Univalence Formation
+univ_Formation (A B: U): U = equiv A B -> Path U A B
 
-equivToPath (A B: U) (p: equiv A B): Path U A B
-  = <i> Glue B [(i=0) -> (A,p),
-                (i=1) -> (B,pathToEquiv B B (<_>B))]
+-- Univalence Intro
+equivToPath (A B: U): univ_Formation A B
+  = \(p: equiv A B) -> <i> Glue B [(i=0) -> (A,p), (i=1) -> (B, subst U (equiv B) B B (<_>B) (idEquiv B)) ]
 
-eqToEq (A B : U) (p : Path U A B)
-  : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p
-  = <j i> let e: equiv A B = pathToEquiv A B p
-              f: equiv B B = pathToEquiv B B (<k> B)
-              Ai: U = p@i
-              g: equiv Ai B = pathToEquiv Ai B (<k> p @ (i \/ k))
-          in Glue B [ (i=0) -> (A,e),
-                      (i=1) -> (B,f),
-                      (j=1) -> (p@i,g) ]
+-- Univalence Elim
+pathToEquiv (A B: U) (p: Path U A B): equiv A B = subst U (equiv A) A B p (idEquiv A)
 
-transPathFun (A B : U) (w : equiv A B)
-  : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1
-  = <i> \ (a:A) ->
-   let b : B = w.1 a
-       u : A = comp (<j>A) a []
-       q : Path B (w.1 u) b = <i>w.1 (comp (<j>A) a [(i=1) -> <j>a])
+-- Univalence Computation
+eqToEq (A B : U) (p : Path U A B) : Path (Path U A B) (equivToPath A B (pathToEquiv A B p)) p
+  = <j i> let Ai: U = p@i in Glue B [ (i=0) -> (A,pathToEquiv A B p),
+                                      (i=1) -> (B,pathToEquiv B B (<k> B)),
+                                      (j=1) -> (p@i,pathToEquiv Ai B (<k> p @ (i \/ k))) ]
+
+-- Univalence Uniqueness
+transPathFun (A B : U) (w : equiv A B) : Path (A -> B) w.1 (pathToEquiv A B (equivToPath A B w)).1
+  = <i> \ (a:A) -> let b: B = w.1 a
+                       u: A = comp (<j>A) a []
+                       q: Path B (w.1 u) b = <i>w.1 (comp (<j>A) a [(i=1) -> <j>a])
     in comp (<j> B) (comp (<j> B) (comp (<j> B) (comp (<j> B) (w.1 u)
             [(i=0)->q]) [(i=0)-><k>b]) [(i=0)-><k>b]) [(i=0)-><k>b]
 
