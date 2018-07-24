@@ -70,7 +70,7 @@ S3 : U = susp S2
 S4 : U = susp S3
 
 S: nat -> U = split
-   zero -> susp bool
+   zero -> bool
    succ x -> susp (S x)
 
 loopS1 : U = Path S1 base base
