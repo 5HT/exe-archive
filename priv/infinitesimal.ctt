@@ -28,3 +28,6 @@ ImNaturality (A B: U) (f: A -> B): (a: A) -> Path (Im B) ((ImUnit B) (f a)) ((Im
 ImInduction (A:U)(B:Im A->U)(x: (a: Im A)->isCoreduced(B a)) (y:(a: A)->B(ImUnit A a)):(a:Im A)->B a = undefined
 ImComputeInduction (A:U)(B:Im A->U) (c:(a:Im A)->isCoreduced(B a)) (f:(a:A)->B(ImUnit A a))(a:A)
                  : Path (B (ImUnit A a)) (f a) ((ImInduction A B c f) (ImUnit A a)) = undefined
+
+Disk (A: U) (x: A): U = (y: A) * Path (Im A) (ImUnit A x) (ImUnit A y)
+
