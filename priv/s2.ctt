@@ -1,5 +1,5 @@
 module s2 where
-import hopf
+import iso
 
 data bool = false | true
 data nat = zero | succ (x: nat)
@@ -9,37 +9,55 @@ one: nat = succ zero
 two: nat = succ one
 
 data S1 = base | loop <i> [ (i=0) -> base, (i=1) -> base ]
-data susp (A : U) = north | south | merid (a : A) <i> [ (i=0) -> north, (i=1) -> south ]
+data susp (A: U) = north | south | merid (a : A) <i> [ (i=0) -> north, (i=1) -> south ]
 data sph = pt | surf <i j> [ (i=0) -> pt, (i=1) -> pt, (j=0) -> pt, (j=1) -> pt ]
-
-loopS1 : Path S1 base base = <i> loop {S1} @ i
+LOOP: U = Path S1 base base
+loopS1 : LOOP = <i> loop {S1} @ i
 S2: U = susp S1
 
 data SEL = first | second
-S1MODEL: U = (positive: bool) -- split for "case" or "whole"
-           * (A: U) * (base: A)
+S1MODEL: U = (A: U) * (base: A)
            * (B: U) * (loop: B)
-           * (case: SEL -> either A B)
-           * (whole: (X: A) * B) * unit
+           * (x: SEL)
+           * (y: A)
+           * (sel: SEL -> either S1 LOOP) * unit
 
-whole: (_: S1) * (Path S1 base base)
-  = (base,loopS1)
-selector: SEL -> either S1 (Path S1 base base)
-  = split { first -> inl base ; second -> inr loopS1 }
-instance: S1MODEL
-  = (true,S1,base,Path S1 base base,loopS1,selector,whole,tt)
+whole: (_: S1) * LOOP = (base,loopS1)
+selector: SEL -> either S1 LOOP = split { first -> inl base ; second -> inr loopS1 }
 
-Square (A : U) (a0 a1 b0 b1 : A) (u : Path A a0 a1) (v : Path A b0 b1)
-  (r0 : Path A a0 b0) (r1 : Path A a1 b1) : U
-  = PathP (<i> (PathP (<j> A) (u @ i) (v @ i))) r0 r1
+instance: S1MODEL = (S1,base,LOOP,loopS1,first,base,selector,tt)
 
-sqSurf (x: sph): Square sph x x x x (<i> x) (<i> x) (<i> x) (<i> x)
-  = <i j> hcomp sph x [(i=0) -> <i> x, (i=1) -> <i> x,
-                       (j=0) -> <i> x, (j=1) -> <i> x ]
+enc: either S1 LOOP -> S1 = split
+  inl base -> base
+  inr x -> x @ 0
 
-loop2   : Path (Path sph pt pt) (<i>pt) (<i>pt) = sqSurf pt
+dec: S1 -> LOOP = split
+  base -> loopS1
+  loop @ i -> loop @ i
+
+encode (x: S1MODEL): S1 = enc (x.2.2.2.2.2.1 x.2.2.2.2.1)
+decode (x: S1): S1MODEL = (S1,base,LOOP,loopS1,first,x,selector,tt)
+
+I2 (A: U) (a0 a1 b0 b1: A) (u: Path A a0 a1) (v: Path A b0 b1)
+      (r0: Path A a0 b0) (r1: Path A a1 b1) : U
+      = PathP (<i> (PathP (<j> A) (u@i) (v@i))) r0 r1
+
+plain (A: U) (x: A): I2 A x x x x (<i> x) (<i> x) (<i> x) (<i> x)
+      = <i j> comp (<_>A) x [(i = 0) -> <i> x, (i=1) -> <i> x,
+                             (j = 0) -> <i> x, (j=1) -> <i> x ]
+
+loop2   : Path (Path sph pt pt) (<i>pt) (<i>pt) = plain sph pt
 loop3   : Path sph pt pt = loop2 @ 0
 loopSph : Path (Path sph pt pt) (<i>pt) (<i>pt) = <i j> surf {sph} @ i @ j
 loop4   : Path sph pt pt = loopSph @ 1
 loopEq  : Path (Path (Path sph pt pt) (<i>pt) (<i>pt)) loop2 loopSph = undefined
+
+data D3 (x: sph) = bo (x: sph)
+   | space <i j k> [ (i=0) -> bo x, (i=1) -> bo x ,
+                     (j=0) -> bo x, (j=1) -> bo x ,
+                     (k=0) -> bo x, (k=1) -> bo x ]
+
+loopD1  : Path (Path (D3 pt) (bo pt) (bo pt)) (<i>bo pt) (<i>bo pt) = <i>(<j>bo pt)
+loopD3  : Path (Path (Path (D3 pt) (bo pt) (bo pt)) (<i>bo pt) (<i>bo pt)) (loopD1) (loopD1)
+        = <i j k> space {D3 pt} @ i @ j @ k
 

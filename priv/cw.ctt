@@ -1,0 +1,8 @@
+module cw where
+import pushout
+
+attaching (A B C: U): U = B -> C -> A
+attached (A B C: U) (a: attaching A B C): U
+  = pushout A B (prod B C) (\(x: prod B C) -> a x.1 x.2)
+                           (\(x: prod B C) -> x.1)
+

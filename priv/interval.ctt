@@ -9,17 +9,12 @@ import iso
 import prop
 import set
 
--- I = (X:U) -> isGroupoid X -> (x y: X) -> Path X x y -> X
+-- I = (X:U) -> isSet X -> (x y: X) -> Path X x y -> X
 
 data I = i0
        | i1
        | seg <i> [(i=0) -> i0,
                   (i=1) -> i1]
-
-data P (A B: U) = p0 (_:A)
-                | p1 (_:B)
-                | pseg (x:A) (y:B) <i> [(i=0) -> p0 x,
-                                        (i=1) -> p1 y]
 
 pathToHtpy (A: U) (x y: A) (p: Path A x y): I -> A
    = split { i0 -> x; i1 -> y; seg @ i -> p @ i }

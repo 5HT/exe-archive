@@ -58,3 +58,6 @@ funcomp (F G: U -> U) (t: U): U = F (G t)
 ot      (A B C: U): U = (B -> C) -> (A -> B) -> (A -> C)
 o       (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f(g(x))
 flip    (A B C: U) (f: A -> B -> C) (b: B) (a: A): C = f a b
+uncurry (A: U) (B: U) (C : prod A B -> U) (f: (x: A) -> (y: B) -> C (x,y))
+      : (p: prod A B) -> C p = \ (p: prod A B) -> f p.1 p.2
+

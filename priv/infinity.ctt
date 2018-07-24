@@ -7,7 +7,7 @@ import control
 import path
 import pi
 
-data alg = z | o | max (a b: alg) | min (a b: alg) | ap (a b: alg)
+data alg = z | o | max (a b: alg) | min (a b: alg) | ap (a b: alg) | inv (a: alg)
 name: U = list nat
 
 mutual
@@ -20,39 +20,39 @@ data lang
    | HTS (_: hts)
 
 data pts
-    = star             (n: nat)
-    | var    (x: name) (l: nat)
-    | pi     (x: name) (l: nat) (d c: lang)
-    | lambda (x: name) (l: nat) (d c: lang)
-    | app                       (f a: lang)
+   = star             (n: nat)
+   | var    (x: name) (l: nat)
+   | pi     (x: name) (l: nat) (d c: lang)
+   | lambda (x: name) (l: nat) (d c: lang)
+   | app                       (f a: lang)
 
 data exists
-    = sigma (n: name) (a b: lang)
-    | pair (a b: lang)
-    | fst (p: lang)
-    | snd (p: lang)
+   = sigma (n: name) (a b: lang)
+   | pair (a b: lang)
+   | fst (p: lang)
+   | snd (p: lang)
 
 data identity
-    = id (a b: lang)
-    | idpair (a b: lang)
-    | idelim (a b c d e: lang)
+   = id (a b: lang)
+   | idpair (a b: lang)
+   | idelim (a b c d e: lang)
 
 data tele (A: U)   = emp | tel (n: name) (b: A) (t: tele A)
 data branch (A: U) =        br (n: name) (args: list name) (term: A)
 data label (A: U)  =       lab (n: name) (t: tele A)
 
 data ind
-    = data_  (n: name) (t: tele lang) (labels:   list (label lang))
-    | case   (n: name) (t: lang)      (branches: list (branch lang))
-    | ctor   (n: name)                (args:     list lang)
+   = data_  (n: name) (t: tele lang) (labels:   list (label lang))
+   | case   (n: name) (t: lang)      (branches: list (branch lang))
+   | ctor   (n: name)                (args:     list lang)
 
 data hts
-    = path (a b: lang)
-    | path_lam (n: name) (a b: lang)
-    | path_app (f: name) (a b: lang)
-    | comp_ (a b: lang)
-    | fill_ (a b c: lang)
-    | glue_ (a b c: lang)
-    | glue_elem (a b: lang)
-    | unglue_elem (a b: lang)
+   = path (a b: lang)
+   | path_lam (n: name) (a b: lang)
+   | path_app (f: name) (a b: lang)
+   | comp_ (a b: lang)
+   | fill_ (a b c: lang)
+   | glue_ (a b c: lang)
+   | glue_elem (a b: lang)
+   | unglue_elem (a b: lang)
 

@@ -1,5 +1,7 @@
 module suspension where
 import proto
+import iso
+
 -- https://arxiv.org/pdf/1606.05916.pdf
 
 data bool = false | true
@@ -16,13 +18,13 @@ idfun (A : U) (a : A) : A = a
   -2 = neg (succ zero)
 
 -}
-data Z = pos (n : nat) | neg (n : nat)
+data Z = pos (n : nat) | neg_ (n : nat)
 
 twoZ : Z = pos (succ (succ zero))
 oneZ : Z = pos (succ zero)
 zeroZ : Z = pos zero
-moneZ : Z = neg zero
-mtwoZ : Z = neg (succ zero)
+moneZ : Z = neg_ zero
+mtwoZ : Z = neg_ (succ zero)
 
 Path (A : U) (a0 a1 : A) : U = PathP (<i> A) a0 a1
 
@@ -62,6 +64,7 @@ data susp (A : U) = north
                   | south
                   | merid (a : A) <i> [ (i=0) -> north
                                       , (i=1) -> south ]
+
 S2 : U = susp S1
 S3 : U = susp S2
 S4 : U = susp S3
@@ -89,7 +92,7 @@ itLoopNeg : nat -> loopS1 = split
 
 loopIt : Z -> loopS1 = split
  pos n -> itLoop n
- neg n -> itLoopNeg n
+ neg_ n -> itLoopNeg n
 
 
 meridP (A : U) (a : A) : Path (susp A) north south =
@@ -416,3 +419,28 @@ test0To3 : (Omega3 (joinpt S1pt S1)).1 = f3 test0To2
 
 -- WORKS (2m54s)
 test0To4 : (Omega3 S2pt).1 = f4 test0To3
+-------------------------------------------------
+
+suspOf (A X : U) : U = (u:X) * (v:X) * (A -> Path X u v)
+
+funToL (A X:U) (f:susp A -> X) : suspOf A X =
+  (f north,f south,\ (a:A) -> <i>f (merid{susp A} a@i))
+
+lToFun (A X:U) (z:suspOf A X) : susp A -> X = split
+ north -> z.1
+ south -> z.2.1
+ merid a @ i-> z.2.2 a @ i
+
+test1 (A X:U) (z:suspOf A X) : Path (suspOf A X) (funToL A X (lToFun A X z)) z
+   = refl (suspOf A X) z
+
+rem (A X:U) (f:susp A ->X) : (u:susp A) -> Path X (lToFun A X (funToL A X f) u) (f u) = split
+    north -> refl X (f north)
+    south -> refl X (f south)
+    merid a @ i -> refl X (f (merid{susp A} a @ i))
+
+test2 (A X:U) (f:susp A ->X) : Path (susp A ->X) (lToFun A X (funToL A X f)) f
+   = <i>\ (u:susp A) -> rem A X f u @ i
+
+funSusp (A X:U) : Path U (susp A -> X) (suspOf A X) =
+ isoPath (susp A -> X) (suspOf A X) (funToL A X) (lToFun A X) (test1 A X) (test2 A X)

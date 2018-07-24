@@ -9,8 +9,8 @@ data vector (A: U) (n: nat)
    = vzero
    | vsucc (x: A) (xs: vector A (pred n))
 
-vn (A: U): vector A zero = vzero
-vc (A: U) (x: A) (n: nat) (xs: vector A n): vector A (succ n) = vsucc x xs
+vz (A: U): vector A zero = vzero
+vs (A: U) (x: A) (n: nat) (xs: vector A n): vector A (succ n) = vsucc x xs
 
 opaque vector
 
