@@ -53,9 +53,16 @@ composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
 --  = subst A (Path A a) b c q p
 --  = <i> comp (<j>A) (p @ i) [(i=0) -> <j> a, (i=1) -> q ]
 
-connection (A: U) (a b: A) (p: Path A a b)
+connection1 (A: U) (a b: A) (p: Path A a b)
   : PathP (<x> Path A (p @ x) b) p (<_> b)
   = <y x> p @ (x \/ y)
+
+connection2 (A: U) (a b: A) (p: Path A a b)
+  : PathP (<x> Path A a (p @ x)) (<_> a) p
+  = <x y> p @ (x /\ y)
+
+app1 (A: U) (a b: A) (p: Path A a b): A = p @ 0
+app2 (A: U) (a b: A) (p: Path A a b): A = p @ 1
 
 -- Kan filling operation
 kan (A: U) (a b c d: A) (p: Path A a b) (q: Path A a c) (r: Path A b d): Path A c d
@@ -68,5 +75,5 @@ kanOp (A: U) (a: A) (p: Path A a a) (b: A) (q: Path A a b)
 kanOpRefl (A: U) (a b: A) (q: Path A a b)
   : Path (Path A b b) (kanOp A a (refl A a) b q) (refl A b)
   = <j i> comp (refl U A) (q @ j) [ (i = 0) -> <k> q @ j \/ k,
-                                 (i = 1) -> <k> q @ j \/ k,
-                                 (j = 1) -> <k> b ]
+                                    (i = 1) -> <k> q @ j \/ k,
+                                    (j = 1) -> <k> b ]
