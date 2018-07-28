@@ -7,8 +7,8 @@ import control
 import path
 import pi
 
-data alg = z | o | max (a b: alg) | min (a b: alg) | ap (a b: alg) | inv (a: alg)
 name: U = list nat
+data alg = z | o | v (_: name) | max (a b: alg) | min (a b: alg) | ap (a b: alg) | inv (a: alg)
 
 mutual
 
@@ -33,13 +33,15 @@ data exists
    | snd (p: lang)
 
 data identity
-   = id (a b: lang)
+   = id (t a b: lang)
    | idpair (a b: lang)
    | idelim (a b c d e: lang)
 
 data tele (A: U)   = emp | tel (n: name) (b: A) (t: tele A)
 data branch (A: U) =        br (n: name) (args: list name) (term: A)
 data label (A: U)  =       lab (n: name) (t: tele A)
+                   | composite (n: name) (t: tele A)
+                               (dim: list name) (str: list (prod (prod name bool) lang))
 
 data ind
    = data_  (n: name) (t: tele lang) (labels:   list (label lang))
@@ -47,9 +49,9 @@ data ind
    | ctor   (n: name)                (args:     list lang)
 
 data hts
-   = path (a b: lang)
-   | path_lam (n: name) (a b: lang)
-   | path_app (f: name) (a b: lang)
+   = path (t a b: lang)
+   | path_lam (n: name) (a: alg) (b: lang)
+   | path_app (f: name) (a: lang) (p: alg)
    | comp_ (a b: lang)
    | fill_ (a b c: lang)
    | glue_ (a b c: lang)
