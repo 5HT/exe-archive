@@ -75,8 +75,6 @@ tripleLoop (l : loopS1) : loopS1 = <i> mult (l @ i) (square (l @ i))
 loopZ4 : Z = winding (doubleLoop (compS1 loop1 loop1))
 loopZ8 : Z = winding (doubleLoop (doubleLoop (compS1 loop1 loop1)))
 
-triv : loopS1 = <i> base
-
 -- A nice example of a homotopy on the circle. The path going halfway
 -- around the circle and then back is contractible:
 circ_hmtpy : Path loopS1 (<i> base) (<i> loop{S1} @ (i /\ -i)) =

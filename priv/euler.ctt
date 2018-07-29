@@ -62,8 +62,8 @@ lemFib1 (A:U) (F G : A -> U) (a:A) (fa : F a -> G a)
         Path U (Path (F a -> G x) (\ (u:F a) -> subst A G a x p (fa u)) (\ (u:F a) -> fx (subst A F a x p u)))
                (PathP (<i>F (p@i) -> G (p@i)) fa fx)) r where
       r (ga: F a -> G a)
-        : Path U (Path (F a -> G a) (\ (u:F a) -> transC (G a) (fa u)) (\ (u:F a) -> ga (transC (F a) u)))
-                 (Path (F a -> G a) fa ga)
+            : Path U (Path (F a -> G a) (\ (u:F a) -> transC (G a) (fa u)) (\ (u:F a) -> ga (transC (F a) u)))
+                     (Path (F a -> G a) fa ga)
         = <j>Path (F a -> G a) (\ (u:F a) -> lemTransC (G a) (fa u)@j) (\ (u : F a) -> ga (lemTransC (F a) u@j))
 
 compPathL (A:U) (a b:A) (p : Path A a b)
@@ -84,8 +84,8 @@ corFib1 (A: U) (F G: A -> U) (a: A) (fa ga: F a -> G a) (p: Path A a a)
       = comp (lemFib1 A F G a fa a p ga) (<i>\ (u:F a) -> h u @ i) []
 
 corFib3 (u:Z) (l:loopS1)
-      : Path Z (transport (<i>helix (backTurn l@i)) u)
-               (transport (<i>helix (loop1@-i)) (transport (<i>helix (l@i)) u))
+      : Path Z (comp (<i>helix (backTurn l@i)) u [])
+               (comp (<i>helix (loop1@-i)) (comp (<i>helix (l@i)) u []) [])
       = <i> lemFib2 S1 helix base base l u base (<j> loop1 @ -j) @ -i
 
 encode (x:S1) (p:Path S1 base x)
