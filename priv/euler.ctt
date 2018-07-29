@@ -5,6 +5,26 @@ import suspension
 
 -- Homotopy Groups of Spheres \pi_{n}S^{m} = ||\Omega^{n}(S^{m})||_0
 piS (n: nat): nat -> U = split
-   zero   -> sTrunc (space (omega (bool,false) n))
-   succ x -> sTrunc (space (omega (Sn (succ x),north) n))
+   zero   -> sTrunc (space (omega n (bool,false)))
+   succ x -> sTrunc (space (omega n (Sn (succ x),north)))
+
+-- \pi_1S^1
+spaceS1n  : U = Path (Sn one) north north
+spaceS1s  : U = Path (Sn one) north south
+meridS1n  : spaceS1s = <i> merid {Sn one} false @ i
+meridS1s  : spaceS1s = <i> merid {Sn one} false @ i
+c1        : spaceS1n = refl (Sn one) north
+c2        : spaceS1n = composition (Sn one) north south north meridS1n (<i>meridS1s@-i)
+c1truncel : piS one one = inc c1
+c1truncel2: piS one one = inc c2
+
+-- \pi_1S^2
+spaceS2n  : U = Path (Sn two) north north
+spaceS2s  : U = Path (Sn two) north south
+meridS2n  : spaceS2s = <i> merid {Sn two} north @ i
+meridS2s  : spaceS2s = <i> merid {Sn two} south @ i
+loop1     : spaceS2n = refl (Sn two) north
+loop2     : spaceS2n = composition (Sn two) north south north meridS2n (<i>meridS2s@-i)
+trivS2    : piS one two = inc loop1
+loopS2    : piS one two = inc loop2
 

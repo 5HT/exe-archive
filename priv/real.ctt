@@ -1,0 +1,6 @@
+module real where
+import int
+
+-- Homotopy Reals
+data R = cz (x: Z)
+       | sz (z: Z) <i> [(i=0) -> cz z, (i=1) -> cz (sucZ z)]

@@ -26,11 +26,11 @@ loop4   : Path sph pt pt = loopSph @ 1
 loopEq  : Path (Path (Path sph pt pt) (<i>pt) (<i>pt)) loop2 loopSph = undefined
 
 data D3 (x: sph) = bo (x: sph)
-   | space <i j k> [ (i=0) -> bo x, (i=1) -> bo x ,
+   | spc <i j k> [ (i=0) -> bo x, (i=1) -> bo x ,
                      (j=0) -> bo x, (j=1) -> bo x ,
                      (k=0) -> bo x, (k=1) -> bo x ]
 
 loopD1  : Path (Path (D3 pt) (bo pt) (bo pt)) (<i>bo pt) (<i>bo pt) = <i>(<j>bo pt)
 loopD3  : Path (Path (Path (D3 pt) (bo pt) (bo pt)) (<i>bo pt) (<i>bo pt)) (loopD1) (loopD1)
-        = <i j k> space {D3 pt} @ i @ j @ k
+        = <i j k> spc {D3 pt} @ i @ j @ k
 
