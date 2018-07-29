@@ -14,24 +14,8 @@ data pushout (A B C: U) (f: C -> A) (g: C -> B)
      | po3 (c: C) <i> [ (i=0) -> po1 (f c) ,
                         (i=1) -> po2 (g c) ]
 
-cofiber (A B: U) (f: A -> B): U
-  = pushout  B unit A f (\(x: A) -> tt)
-
-hfiber (A B: U) (f: A -> B) (y: B): U
-  = pullback A unit B f (\(x: unit) -> y)
-
---   fiber_f(y) ----> A
---            |       | f
---            V       V
---            1 ----> B
---              \_.y
-
-fiberPullback (A B: U) (f: A -> B) (y: B)
-  : pullbackSq (hfiber A B f y)
-               A unit B f (\(x: unit) -> y)
-               (pb1 A unit B f (\(x: unit) -> y))
-               (pb2 A unit B f (\(x: unit) -> y))
-  = completePullback A unit B f (\(x: unit) -> y)
+cofiber  (A B: U) (f: A -> B): U = pushout B unit A f (\(x: A) -> tt)
+cokernel (A B: U) (f: B -> A): U = pushout A A B f f
 
 --      f
 --  A ----> B
@@ -40,5 +24,5 @@ fiberPullback (A B: U) (f: A -> B) (y: B)
 --  1 ----> cofiber_f
 --     po1
 
--- TODO: cofiberPullback
+-- TODO: cofiberPushout
 

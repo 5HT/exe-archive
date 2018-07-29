@@ -1,11 +1,9 @@
 module suspension where
 import proto
 import iso
+import nat
 
 -- https://arxiv.org/pdf/1606.05916.pdf
-
-data bool = false | true
-data nat = zero | succ (n : nat)
 
 idfun (A : U) (a : A) : A = a
 
@@ -69,9 +67,9 @@ S2 : U = susp S1
 S3 : U = susp S2
 S4 : U = susp S3
 
-S: nat -> U = split
+Sn: nat -> U = split
    zero -> bool
-   succ x -> susp (S x)
+   succ x -> susp (Sn x)
 
 loopS1 : U = Path S1 base base
 loopP : loopS1 = <i> loop{S1} @ i

@@ -1,6 +1,7 @@
 {- Infinity Language:
    - Syntax.
    Copyright (c) Groupoid Infinity, 2014-2018. -}
+
 module infinity where
 import list
 import control
@@ -8,7 +9,8 @@ import path
 import pi
 
 name: U = list nat
-data alg = z | o | v (_: name) | max (a b: alg) | min (a b: alg) | ap (a b: alg) | inv (a: alg)
+data alg = z | o | v (_: name) | max (a b: alg)
+             | min (a b: alg)  | inv (a: alg)
 
 mutual
 
@@ -40,8 +42,8 @@ data identity
 data tele (A: U)   = emp | tel (n: name) (b: A) (t: tele A)
 data branch (A: U) =        br (n: name) (args: list name) (term: A)
 data label (A: U)  =       lab (n: name) (t: tele A)
-                   | composite (n: name) (t: tele A)
-                               (dim: list name) (str: list (prod (prod name bool) lang))
+                         | com (n: name) (t: tele A) (dim: list name)
+                               (str: list (prod (prod name bool) lang))
 
 data ind
    = data_  (n: name) (t: tele lang) (labels:   list (label lang))
@@ -50,8 +52,8 @@ data ind
 
 data hts
    = path (t a b: lang)
-   | path_lam (n: name) (a: alg) (b: lang)
-   | path_app (f: name) (a: lang) (p: alg)
+   | plam (n: name) (a: alg) (b: lang)
+   | papp (f: name) (a: lang) (p: alg)
    | comp_ (a b: lang)
    | fill_ (a b c: lang)
    | glue_ (a b c: lang)

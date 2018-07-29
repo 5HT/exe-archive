@@ -1,0 +1,10 @@
+module euler where
+import trunc
+import pointed
+import suspension
+
+-- Homotopy Groups of Spheres \pi_{n}S^{m} = ||\Omega^{n}(S^{m})||_0
+piS (n: nat): nat -> U = split
+   zero   -> sTrunc (space (omega (bool,false) n))
+   succ x -> sTrunc (space (omega (Sn (succ x),north) n))
+

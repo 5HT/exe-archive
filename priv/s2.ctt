@@ -1,42 +1,15 @@
 module s2 where
-import iso
-
-data bool = false | true
-data nat = zero | succ (x: nat)
-data either (A B: U) = inl (x:A) | inr (y:B)
-data unit = tt
-one: nat = succ zero
-two: nat = succ one
+import path
+import proto
 
 data S1 = base | loop <i> [ (i=0) -> base, (i=1) -> base ]
 data susp (A: U) = north | south | merid (a : A) <i> [ (i=0) -> north, (i=1) -> south ]
 data sph = pt | surf <i j> [ (i=0) -> pt, (i=1) -> pt, (j=0) -> pt, (j=1) -> pt ]
+
 LOOP: U = Path S1 base base
 loopS1 : LOOP = <i> loop {S1} @ i
+
 S2: U = susp S1
-
-data SEL = first | second
-S1MODEL: U = (A: U) * (base: A)
-           * (B: U) * (loop: B)
-           * (x: SEL)
-           * (y: A)
-           * (sel: SEL -> either S1 LOOP) * unit
-
-whole: (_: S1) * LOOP = (base,loopS1)
-selector: SEL -> either S1 LOOP = split { first -> inl base ; second -> inr loopS1 }
-
-instance: S1MODEL = (S1,base,LOOP,loopS1,first,base,selector,tt)
-
-enc: either S1 LOOP -> S1 = split
-  inl base -> base
-  inr x -> x @ 0
-
-dec: S1 -> LOOP = split
-  base -> loopS1
-  loop @ i -> loop @ i
-
-encode (x: S1MODEL): S1 = enc (x.2.2.2.2.2.1 x.2.2.2.2.1)
-decode (x: S1): S1MODEL = (S1,base,LOOP,loopS1,first,x,selector,tt)
 
 I2 (A: U) (a0 a1 b0 b1: A) (u: Path A a0 a1) (v: Path A b0 b1)
       (r0: Path A a0 b0) (r1: Path A a1 b1) : U
