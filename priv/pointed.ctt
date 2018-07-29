@@ -24,7 +24,6 @@ omega1 (A: pointed): pointed = (Path (space A) (point A) (point A), refl A.1 (po
 omega2 (A: pointed): pointed = omega1 (omega1 A)
 omega3 (A: pointed): pointed = omega2 (omega1 A)
 
-
 omega : nat -> pointed -> pointed = split
   zero -> idfun pointed
   succ n -> \(A: pointed) -> omega n (omega1 A)

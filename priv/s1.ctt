@@ -4,7 +4,7 @@
 
    see HoTT 6.4 Circles and spheres -}
 
-module circle where
+module s1 where
 import int
 import iso
 import bool_theory
@@ -32,11 +32,17 @@ helix : S1 -> U = split
   base -> Z
   loop @ i -> sucPathZ @ i
 
-winding (p : loopS1) : Z = trans Z Z rem zeroZ
-  where
-    rem : Path U Z Z = <i> helix (p @ i)
+oneTurn  (l: loopS1) : loopS1 = compS1 l loop1
+backTurn (l: loopS1) : loopS1 = compS1 l invLoop
+compInvS1 : Path loopS1 (refl S1 base) (compS1 invLoop loop1) = compInv' S1 base base loop1
+triv : loopS1 = <i> base
+l0   : loopS1 = triv
+l1   : loopS1 = oneTurn l0
+loopPos : nat -> loopS1 = split { zero -> triv ; succ n -> oneTurn (loopPos n) }
+loopNeg : nat -> loopS1 = split { zero -> invLoop ; succ n -> backTurn (loopNeg n) }
+loopIt  : Z   -> loopS1 = split { inl n -> loopNeg n ; inr n -> loopPos n }
 
-
+winding (p : loopS1) : Z = trans Z Z (<i> helix (p @ i)) zeroZ
 
 -- More examples:
 loopZ1  : Z = winding loop1
@@ -85,7 +91,6 @@ apcircleelim (A B : U) (x : A) (p : Path A x x) (f : A -> B) :
                    (circleelim B (f x) (<i> f (p @ i)) z) = split
    base -> <_> f x
    loop @ i -> <_> f (p @ i)
-
 
 -- a special case, Lemmas 6.2.5-6.2.9 in the book
 

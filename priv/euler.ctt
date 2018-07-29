@@ -1,4 +1,11 @@
+{- Homotopy Groups:
+   - \pi_{n}S^{m} = ||\Omega^{n}(S^{m})||_0
+   - \pi_1S^1, \pi_1S^2
+   - \Omega_{1}S^1 = Z
+   Copyright (c) Groupoid Infinity, 2016-2018 -}
+
 module euler where
+import s1
 import trunc
 import pointed
 import suspension
@@ -23,8 +30,125 @@ spaceS2n  : U = Path (Sn two) north north
 spaceS2s  : U = Path (Sn two) north south
 meridS2n  : spaceS2s = <i> merid {Sn two} north @ i
 meridS2s  : spaceS2s = <i> merid {Sn two} south @ i
-loop1     : spaceS2n = refl (Sn two) north
-loop2     : spaceS2n = composition (Sn two) north south north meridS2n (<i>meridS2s@-i)
-trivS2    : piS one two = inc loop1
-loopS2    : piS one two = inc loop2
+s1        : spaceS2n = refl (Sn two) north
+s2        : spaceS2n = composition (Sn two) north south north meridS2n (<i>meridS2s@-i)
+trivS2    : piS one two = inc s1
+loopS2    : piS one two = inc s2
 
+-- \Omega_{1}S^1 = Z
+testIsoPath (A B : U) (f : A -> B) (g : B -> A)
+                      (s : (y : B) -> Path B (f (g y)) y)
+                      (t : (x : A) -> Path A (g (f x)) x) (a:A)
+                    : Path B (f a) (trans A B (isoPath A B f g s t) a) =
+                      <i> comp (<_>B) (comp (<_>B) (f a) [(i=0) -> <_> f a]) [(i=0) -> <_> f a]
+
+lem1ItPos : (n:nat) -> Path loopS1 (loopIt (sucZ (inr n))) (oneTurn ((loopIt (inr n)))) = split
+  zero -> refl loopS1 l1
+  succ p -> <i>oneTurn (lem1ItPos p@i)
+
+lem1ItNeg : (n:nat) -> Path loopS1  (loopIt (sucZ (inl n))) (oneTurn (loopIt (inl n))) = split
+  zero -> compInvS1
+  succ p -> compInv S1 base base (loopIt (inl p)) base invLoop
+
+lem1It : (n:Z) -> Path loopS1 (loopIt (sucZ n)) (oneTurn  (loopIt n)) = split
+  inl n -> lem1ItNeg n
+  inr n -> lem1ItPos n
+
+lemFib1 (A:U) (F G : A -> U) (a:A) (fa : F a -> G a)
+      : (x:A) (p : Path A a x) -> (fx : F x -> G x) ->
+        Path U (Path (F a -> G x) (\ (u:F a) -> subst A G a x p (fa u)) (\ (u:F a) -> fx (subst A F a x p u)))
+               (PathP (<i>F (p@i) -> G (p@i)) fa fx)
+      = J A a (\ (x:A) (p : Path A a x) -> (fx : F x -> G x) ->
+        Path U (Path (F a -> G x) (\ (u:F a) -> subst A G a x p (fa u)) (\ (u:F a) -> fx (subst A F a x p u)))
+               (PathP (<i>F (p@i) -> G (p@i)) fa fx)) r where
+      r (ga: F a -> G a)
+        : Path U (Path (F a -> G a) (\ (u:F a) -> transC (G a) (fa u)) (\ (u:F a) -> ga (transC (F a) u)))
+                 (Path (F a -> G a) fa ga)
+        = <j>Path (F a -> G a) (\ (u:F a) -> lemTransC (G a) (fa u)@j) (\ (u : F a) -> ga (lemTransC (F a) u@j))
+
+compPathL (A:U) (a b:A) (p : Path A a b)
+      : Path (Path A a b) p (composition A a b b p (<_>b))
+      = <j i> comp (<_>A) (p @ i) [(i=0) -> <_> a, (i = 1) -> <_>b, (j=0) -> <_>(p@i) ]
+
+lemFib2 (A:U) (F:A->U) (a b:A) (p:Path A a b) (u:F a)
+      : (c:A) (q:Path A b c) -> Path (F c) (subst A F b c q (subst A F a b p u)) (subst A F a c (composition A a b c p q) u)
+      = J A b (\ (c:A) (q:Path A b c) -> Path (F c) (subst A F b c q (subst A F a b p u)) (subst A F a c (composition A a b c p q) u)) r where
+      x : Path (F b) (subst A F a b p u) (subst A F b b (<_>b) (subst A F a b p u)) =  <i>lemTransC (F b) (subst A F a b p u) @ -i
+      y : Path (F b) (subst A F a b p u) (subst A F a b (composition A a b b p (<_>b)) u) = <i>subst A F a b (compPathL A a b p @ i) u
+      r : Path (F b) (subst A F b b (<_>b) (subst A F a b p u)) (subst A F a b (composition A a b b p (<_>b)) u)
+        = comp (<i>Path (F b) (x@i) (y@i)) (<_>subst A F a b p u) []
+
+corFib1 (A: U) (F G: A -> U) (a: A) (fa ga: F a -> G a) (p: Path A a a)
+        (h: (u: F a) -> Path (G a) (subst A G a a p (fa u)) (ga (subst A F a a p u)))
+      : PathP (<i>F (p@i) -> G (p@i)) fa ga
+      = comp (lemFib1 A F G a fa a p ga) (<i>\ (u:F a) -> h u @ i) []
+
+corFib3 (u:Z) (l:loopS1)
+      : Path Z (transport (<i>helix (backTurn l@i)) u)
+               (transport (<i>helix (loop1@-i)) (transport (<i>helix (l@i)) u))
+      = <i> lemFib2 S1 helix base base l u base (<j> loop1 @ -j) @ -i
+
+encode (x:S1) (p:Path S1 base x)
+  : helix x
+  = subst S1 helix base x p zeroZ
+
+decode : (x:S1) -> helix x -> Path S1 base x = split
+  base -> loopIt
+  loop @ i -> rem @ i where
+    T : U = Z -> loopS1
+    G (x:S1) : U =  Path S1 base x
+    p : Path U T T = <j> helix (loop1@j) -> Path S1 base (loop1@j)
+    rem2 (n:Z) : Path loopS1 (oneTurn (loopIt n)) (loopIt (sucZ n)) = <i> lem1It n @ -i
+    rem1 (n:Z) : Path loopS1 (subst S1 G base base loop1 (loopIt n)) (loopIt (subst S1 helix base base loop1 n))
+               = comp (<i> Path loopS1 (oneTurn (loopIt n))
+                                       (loopIt (testIsoPath Z Z sucZ predZ sucpredZ predsucZ n @ i))) (rem2 n) []
+    rem : PathP p loopIt loopIt = corFib1 S1 helix G base loopIt loopIt loop1 rem1
+
+encodeDecode (x:S1) (p : Path S1 base x)
+           : Path (Path S1 base x) (decode x (encode x p)) p
+           = comp (<i>Path (Path S1 base (p@i)) (decode (p@i) (encode (p@i) (<j>p@(i/\j)))) (<j>p@(i/\j)))
+                  (refl loopS1 triv) []
+
+lemTransOneTurn (n:nat)
+  : Path Z (comp (<i>helix (loop1@i)) (inr n) []) (inr (succ n))
+  = <i> inr (succ (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))
+
+lemTransBackTurn (n:nat)
+  : Path Z (comp (<i>helix (loop1@-i)) (inl n) []) (inl (succ n))
+  = <i> inl (succ (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))
+
+corFib2 (u:Z) (l:loopS1)
+  : Path Z (comp (<i>helix (oneTurn l@i)) u [])
+           (comp (<i>helix (loop1@i)) (comp (<i>helix (l@i)) u []) [])
+  = <i> lemFib2 S1 helix base base l u base loop1 @ -i
+
+decodeEncodeBasePos : (n : nat) -> Path Z (comp (<x> helix (loopPos n @ x)) (inr zero) []) (inr n) = split
+  zero -> <_> inr zero
+  succ n ->  comp (<j>Path Z (comp (<i>helix (oneTurn l@i)) (inr zero) []) (lemTransOneTurn n@j)) rem3 []
+    where l : loopS1 = loopPos n
+          rem1 : Path Z (comp (<i>helix (l@i)) (inr zero) []) (inr n) = decodeEncodeBasePos n
+          rem2 : Path Z (comp (<i>helix (oneTurn l@i)) (inr zero) [])
+                        (comp (<i>helix (loop1@i)) (comp (<i>helix (l@i)) (inr zero) []) []) = corFib2 (inr zero) l
+          rem3 : Path Z (comp (<i>helix (oneTurn l@i)) (inr zero) [])
+                        (comp (<i>helix (loop1@i)) (inr n) [])
+               = comp (<j>Path Z (comp (<i>helix (oneTurn l@i)) (inr zero) [])
+                                 (comp (<i>helix (loop1@i)) (rem1@j) [])) rem2 []
+
+decodeEncodeBaseNeg : (n : nat) -> Path Z (comp (<x> helix (loopNeg n @ x)) (inr zero) []) (inl n) = split
+  zero -> <_> inl zero
+  succ n ->  comp (<j>Path Z (comp (<i>helix (backTurn l@i)) (inr zero) []) (lemTransBackTurn n@j)) rem3 []
+    where l : loopS1 = loopNeg n
+          rem1 : Path Z (comp (<i>helix (l@i)) (inr zero) []) (inl n) = decodeEncodeBaseNeg n
+          rem2 : Path Z (comp (<i>helix (backTurn l@i)) (inr zero) [])
+                        (comp (<i>helix (loop1@-i)) (comp (<i>helix (l@i)) (inr zero) []) []) = corFib3 (inr zero) l
+          rem3 : Path Z (comp (<i>helix (backTurn l@i)) (inr zero) [])
+                        (comp (<i>helix (loop1@-i)) (inl n) [])
+               = comp (<j>Path Z (comp (<i>helix (backTurn l@i)) (inr zero) [])
+                                 (comp (<i>helix (loop1@-i)) (rem1@j) [])) rem2 []
+
+decodeEncodeBase : (n : Z) -> Path Z (encode base (decode base n)) n = split
+  inl n -> decodeEncodeBaseNeg n
+  inr n -> decodeEncodeBasePos n
+
+loopS1eqZ : Path U Z loopS1 =
+  isoPath Z loopS1 (decode base) (encode base) (encodeDecode base) decodeEncodeBase

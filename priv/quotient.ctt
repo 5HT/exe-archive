@@ -4,7 +4,7 @@
    see HoTT 6.10 Quotients -}
 
 module quotient where
-import circle
+import s1
 import set
 
 -- Quotient A by R

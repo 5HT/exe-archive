@@ -1,6 +1,6 @@
 -- The loop space of the circle is equal to Z
 module helix where
-import circle
+import s1
 import pi
 
 PathS (A : U) (P : A -> U) (a0 a1 : A)
@@ -140,10 +140,6 @@ decode : (x:S1) -> helix x -> Path S1 base x = split
 
 encodeDecode (x:S1) (p : Path S1 base x) : Path (Path S1 base x) (decode x (encode x p)) p =
   transport (<i>Path (Path S1 base (p@i)) (decode (p@i) (encode (p@i) (<j>p@(i/\j)))) (<j>p@(i/\j))) (refl loopS1 triv)
-
--- encodeDecode : (c : S1) (p : Path S1 base c) -> Path (Path S1 base c) (decode c (encode c p)) p =
---  J S1 base (\ (c : S1) (p : Path S1 base c) -> Path (Path S1 base c) (decode c (encode c p)) p)
---    (<_> (<_> base))
 
 lemTransOneTurn (n:nat) : Path Z (transport (<i>helix (loop1@i)) (inr n)) (inr (succ n)) =
  <i>inr (succ (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))

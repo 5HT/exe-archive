@@ -1,31 +1,24 @@
--- The integers as nat + nat with proof that succ is an iso giving a
--- non-trivial path from Z to Z
+{- Integers:
+   - Z=N+N, Z=Z.
+   Copyright (c) Groupoid Infinity, 2014-2018 -}
+
 module int where
 import nat_theory
 import discor
 import hedberg
 
-       ---------------------------------------------------
-       -- Example: Non-trivial equality between Z and Z --
-       ---------------------------------------------------
-
 Z : U = either nat nat
 
-{- Z represents:
-
-  +2 = inr (succ (succ zero))
-  +1 = inr (succ zero)
-   0 = inr zero
-  -1 = inl zero
-  -2 = inl (succ zero)
-
--}
+{- +2 = inr (succ (succ zero))
+   +1 = inr (succ zero)
+    0 = inr zero
+   -1 = inl zero
+   -2 = inl (succ zero) -}
 
 zeroZ : Z = inr zero
 
 sucZ : Z -> Z = split
-  inl u -> auxsucZ u
-    where
+  inl u -> auxsucZ u where
     auxsucZ : nat -> Z = split
       zero  -> inr zero
       succ n -> inl n
@@ -33,29 +26,26 @@ sucZ : Z -> Z = split
 
 predZ : Z -> Z = split
   inl u -> inl (succ u)
-  inr v -> auxpredZ v
-    where
+  inr v -> auxpredZ v where
     auxpredZ : nat -> Z = split
       zero  -> inl zero
       succ n -> inr n
 
 sucpredZ : (x : Z) -> Path Z (sucZ (predZ x)) x = split
   inl u -> refl Z (inl u)
-  inr v -> lem v
-   where
+  inr v -> lem v where
     lem : (u : nat) -> Path Z (sucZ (predZ (inr u))) (inr u) = split
       zero  -> refl Z (inr zero)
       succ n -> refl Z (inr (succ n))
 
 predsucZ : (x : Z) -> Path Z (predZ (sucZ x)) x = split
-  inl u -> lem u
-   where
+  inl u -> lem u where
     lem : (u : nat) -> Path Z (predZ (sucZ (inl u))) (inl u) = split
       zero  -> refl Z (inl zero)
       succ n -> refl Z (inl (succ n))
   inr v -> refl Z (inr v)
 
-
+-- Non-trivial Equality Z=Z
 sucPathZ : Path U Z Z = isoPath Z Z sucZ predZ sucpredZ predsucZ
 
 -- We can transport along the proof forward and backwards:

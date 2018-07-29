@@ -2,6 +2,7 @@ module mahlo where
 -- http://www.cs.swan.ac.uk/~csetzer/articles/uppermahlo.ps
 -- http://www.cs.swan.ac.uk/~csetzer/slides/pcc/2013Toulouse/slidesPCCToulouse2013.pdf
 -- Mahlo Universes a la Setzer
+{-
 mutual
 data V
     = pi_  (x: V) (y: Elv x -> V)
@@ -22,3 +23,4 @@ data Universe
 Elt: (f: (x: V) -> (Elv x -> V) -> V) ->
      (g: (x: V) -> (y: Elv x -> V) ->
      (Elv (f x y) -> V) -> V) -> Universe f g -> V = undefined
+-}
