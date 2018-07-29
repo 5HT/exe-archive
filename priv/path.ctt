@@ -102,3 +102,28 @@ isPathContr (A: U) (cA: isContr A) (x y:A) : isContr (Path A x y) = (p0,q) where
                           (j=0) -> <k>comp (<l>A) a [(k=0) -> <l>a,
                                                      (i=0) -> <l>f x@k/\l,
                                                      (i=1) -> <l>f y@k/\l] ]
+
+lemFib1 (A:U) (F G : A -> U) (a:A) (fa : F a -> G a)
+      : (x:A) (p : Path A a x) -> (fx : F x -> G x) ->
+        Path U (Path (F a -> G x) (\ (u:F a) -> subst A G a x p (fa u)) (\ (u:F a) -> fx (subst A F a x p u)))
+               (PathP (<i>F (p@i) -> G (p@i)) fa fx)
+      = J A a (\ (x:A) (p : Path A a x) -> (fx : F x -> G x) ->
+        Path U (Path (F a -> G x) (\ (u:F a) -> subst A G a x p (fa u)) (\ (u:F a) -> fx (subst A F a x p u)))
+               (PathP (<i>F (p@i) -> G (p@i)) fa fx)) r where
+      r (ga: F a -> G a)
+            : Path U (Path (F a -> G a) (\ (u:F a) -> transC (G a) (fa u)) (\ (u:F a) -> ga (transC (F a) u)))
+                     (Path (F a -> G a) fa ga)
+        = <j>Path (F a -> G a) (\ (u:F a) -> lemTransC (G a) (fa u)@j) (\ (u : F a) -> ga (lemTransC (F a) u@j))
+
+lemFib2 (A:U) (F:A->U) (a b:A) (p:Path A a b) (u:F a)
+      : (c:A) (q:Path A b c) -> Path (F c) (subst A F b c q (subst A F a b p u)) (subst A F a c (composition A a b c p q) u)
+      = J A b (\ (c:A) (q:Path A b c) -> Path (F c) (subst A F b c q (subst A F a b p u)) (subst A F a c (composition A a b c p q) u)) r where
+      x : Path (F b) (subst A F a b p u) (subst A F b b (<_>b) (subst A F a b p u)) =  <i>lemTransC (F b) (subst A F a b p u) @ -i
+      y : Path (F b) (subst A F a b p u) (subst A F a b (composition A a b b p (<_>b)) u) = <i>subst A F a b (compPathL A a b p @ i) u
+      r : Path (F b) (subst A F b b (<_>b) (subst A F a b p u)) (subst A F a b (composition A a b b p (<_>b)) u)
+        = comp (<i>Path (F b) (x@i) (y@i)) (<_>subst A F a b p u) []
+
+corFib1 (A: U) (F G: A -> U) (a: A) (fa ga: F a -> G a) (p: Path A a a)
+        (h: (u: F a) -> Path (G a) (subst A G a a p (fa u)) (ga (subst A F a a p u)))
+      : PathP (<i>F (p@i) -> G (p@i)) fa ga
+      = comp (lemFib1 A F G a fa a p ga) (<i>\ (u:F a) -> h u @ i) []

@@ -95,12 +95,9 @@ compInv (A:U) (a b:A) (q:Path A a b) : (x:A) (p:Path A b x) -> Path (Path A a b)
  rem : Path (Path A a b) q (<i>comp  (<_>A) (comp (<_>A)(q@i) [(i=0) -> <_>a,(i=1)-><_>b]) [(i=0)-><_>a,(i=1)-><_>b]) =
       <j i>comp (<_>A) (comp (<_>A)(q@i) [(j=0)-><_>q@i,(i=0)-><_>a,(i=1)-><_>b]) [(j=0)-><_>q@i,(i=0)-><_>a,(i=1)-><_>b]
 
-compPath (A : U) (a b c : A) (p : Path A a b) (q : Path A b c) : Path A a c =
-  <i> comp (<_> A) (p @ i) [ (i =0) -> <j> a, (i = 1) -> q ]
-
 -- p ; p^-1 = 1
 compPathInv (A : U) (a b : A) (p : Path A a b) :
-  Path (Path A a a) (compPath A a b a p (<i> p @ -i)) (<_> a) =
+  Path (Path A a a) (composition A a b a p (<i> p @ -i)) (<_> a) =
     <k j> comp (<_> A) (p @ j /\ -k)
                   [ (j = 0) -> <_> a
                   , (j = 1) -> <i> p @ -i /\ -k
@@ -108,8 +105,12 @@ compPathInv (A : U) (a b : A) (p : Path A a b) :
 
 -- p^-1 ; p = 1
 compInvPath (A : U) (a b : A) (p : Path A a b) :
-  Path (Path A b b) (compPath A b a b (<i> p @ -i) p)  (<_> b) =
+  Path (Path A b b) (composition A b a b (<i> p @ -i) p)  (<_> b) =
    <j i> comp (<_> A) (p @ -i \/ j)
                  [ (i = 0) -> <_> b
                  , (j = 1) -> <_> b
                  , (i = 1) -> <k> p @ j \/ k ]
+
+compPathL (A:U) (a b:A) (p : Path A a b)
+      : Path (Path A a b) p (composition A a b b p (<_>b))
+      = <j i> comp (<_>A) (p @ i) [(i=0) -> <_> a, (i = 1) -> <_>b, (j=0) -> <_>(p@i) ]

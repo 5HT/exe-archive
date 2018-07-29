@@ -79,6 +79,12 @@ isoPath (A B: U) (f: A -> B) (g: B -> A)
   = <i> Glue B [ (i = 0) -> (A,f,isoToEquiv A B f g s t),
                  (i = 1) -> (B,idfun B,idIsEquiv B) ]
 
+testIsoPath (A B : U) (f : A -> B) (g : B -> A)
+                      (s : (y : B) -> Path B (f (g y)) y)
+                      (t : (x : A) -> Path A (g (f x)) x) (a:A)
+                    : Path B (f a) (trans A B (isoPath A B f g s t) a) =
+                      <i> comp (<_>B) (comp (<_>B) (f a) [(i=0) -> <_> f a]) [(i=0) -> <_> f a]
+
 -- sigma version of isoPath
 isoToPath (i: iso): Path U i.1 i.2.1
   = isoPath i.1 i.2.1 i.2.2.1 i.2.2.2.1 i.2.2.2.2.1 i.2.2.2.2.2.1

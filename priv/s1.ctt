@@ -115,3 +115,14 @@ thm (A:U) : Path U (aLoop A) (S1 -> A) = isoPath T0 T1 f g t s
        s (x:T0) : Path T0 (g (f x)) x    = refl T0 x
        t : (y:T1) -> Path T1 (f (g y)) y = lem A
 
+lem1ItPos : (n:nat) -> Path loopS1 (loopIt (sucZ (inr n))) (oneTurn ((loopIt (inr n)))) = split
+  zero -> refl loopS1 l1
+  succ p -> <i>oneTurn (lem1ItPos p@i)
+
+lem1ItNeg : (n:nat) -> Path loopS1  (loopIt (sucZ (inl n))) (oneTurn (loopIt (inl n))) = split
+  zero -> compInvS1
+  succ p -> compInv S1 base base (loopIt (inl p)) base invLoop
+
+lem1It : (n:Z) -> Path loopS1 (loopIt (sucZ n)) (oneTurn  (loopIt n)) = split
+  inl n -> lem1ItNeg n
+  inr n -> lem1ItPos n
