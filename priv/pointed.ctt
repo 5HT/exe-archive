@@ -38,7 +38,7 @@ omega_ (A: pointed): nat -> pointed = split -- omega n A
 
 -- Definition 8.4.1
 pmap (A B: pointed): U = (f: A.1 -> B.1) * (Path B.1 (f (point A)) (point B))
-zmap (X Y: pointed): pmap X Y = (\(x: space X) -> point Y,<i>point Y)
+zmap (X Y: pointed): space X -> space Y = \ (x: space X) -> point Y
 
 omegaMap (A B: pointed) (f: pmap A B)
   : pmap (omega1 A) (omega1 B)
