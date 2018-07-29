@@ -24,6 +24,7 @@ omega1 (A: pointed): pointed = (Path (space A) (point A) (point A), refl A.1 (po
 omega2 (A: pointed): pointed = omega1 (omega1 A)
 omega3 (A: pointed): pointed = omega2 (omega1 A)
 
+
 omega : nat -> pointed -> pointed = split
   zero -> idfun pointed
   succ n -> \(A: pointed) -> omega n (omega1 A)
@@ -37,6 +38,7 @@ omega_ (A: pointed): nat -> pointed = split -- omega n A
 
 -- Definition 8.4.1
 pmap (A B: pointed): U = (f: A.1 -> B.1) * (Path B.1 (f (point A)) (point B))
+zmap (X Y: pointed): pmap X Y = (\(x: space X) -> point Y,<i>point Y)
 
 omegaMap (A B: pointed) (f: pmap A B)
   : pmap (omega1 A) (omega1 B)
@@ -46,6 +48,7 @@ omegaMap (A B: pointed) (f: pmap A B)
         = kanOp B.1 (f.1 (point A)) (<i>f.1 (p@i)) (point B) f.2
     prf : Path (omega1 B).1 (space (point (omega1 A))) (point (omega1 B))
         = kanOpRefl B.1 (f.1 (point A)) (point B) f.2
+
 
 omegaMap2 (A B: pointed) (f: pmap A B): pmap (omega2 A) (omega2 B) = omegaMap (omega1 A) (omega1 B) (omegaMap  A B f)
 omegaMap3 (A B: pointed) (f: pmap A B): pmap (omega3 A) (omega3 B) = omegaMap (omega2 A) (omega2 B) (omegaMap2 A B f)
