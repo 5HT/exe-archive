@@ -48,25 +48,26 @@ lemTurn (n: nat): (b: bool) -> Path Z (comp (hlx b) (ze n b) []) (ze (succ n) b)
 -- section and retract
 encodeNeg: (n: nat)-> Path Z (comp (<x> helix (loopZ n false @ x)) (inr zero) []) (ze n false) = split
   zero -> <_> (ze zero false)
-  succ n -> comp (<i> Path Z (htz n false) (lemTurn n false @ i))
-           (comp (<i> Path Z (htz n false) (comp (hlx false) (encodeNeg n @ i) []))
-                 (<i> lemFib2 S1 helix base base (lnb n false) (inr zero) base (inversion false) @ -i) []) []
+  succ n -> (comp (<i> Path Z (htz n false) (lemTurn n false @ i))
+            (comp (<i> Path Z (htz n false) (comp (hlx false) (encodeNeg n @ i) []))
+                  (<i> lemFib2 S1 helix base base (lnb n false) (inr zero) base (inversion false) @ -i) []) [])
 
 encodePos: (n: nat)-> Path Z (comp (<x> helix (loopZ n true @ x)) (inr zero) []) (ze n true) = split
   zero -> <_> (ze zero true)
-  succ n -> comp (<i> Path Z (htz n true) (lemTurn n true @ i))
-           (comp (<i> Path Z (htz n true) (comp (hlx true) (encodePos n @ i) []))
-                 (<i> lemFib2 S1 helix base base (lnb n true) (inr zero) base (inversion true) @ -i) []) []
+  succ n -> (comp (<i> Path Z (htz n true) (lemTurn n true @ i))
+            (comp (<i> Path Z (htz n true) (comp (hlx true) (encodePos n @ i) []))
+                  (<i> lemFib2 S1 helix base base (lnb n true) (inr zero) base (inversion true) @ -i) []) [])
+
+-- TODO: error
+retractZ' (b: bool): (n: nat) -> Path Z (comp (<x> helix (loopZ n b @ x)) (inr zero) []) (ze n b) = split
+  zero -> <_> (ze zero b)
+  succ n -> (comp (<i> Path Z (htz n b) (lemTurn n b @ i))
+            (comp (<i> Path Z (htz n b) (comp (hlx b) (retractZ' b n @ i) []))
+                  (<i> lemFib2 S1 helix base base (lnb n b) (inr zero) base (inversion b) @ -i) []) [])
 
 retractZ : (n : Z) -> Path Z (encode base (decode base n)) n = split
   inl n -> encodeNeg n
   inr n -> encodePos n
-
-retractZ' (b: bool): (n: nat) -> Path Z (comp (<x> helix (loopZ n b @ x)) (inr zero) []) (ze n b) = split
-  zero -> <_> (ze zero b)
-  succ n -> (comp (<i> Path Z (htz n b) (lemTurn n b @ i))
-            (comp (<i> Path Z (htz n b) (comp (hlx b) (retractZ' n b @ i) []))
-                  (<i> lemFib2 S1 helix base base (lnb n b) (inr zero) base (inversion b) @ -i) []) [])
 
 sectionZ (p: Path S1 base base) : Path (Path S1 base base) (decode base (encode base p)) p
   = comp (<i>Path (Path S1 base (p@i)) (decode (p@i) (encode (p@i) (<j>p@(i/\j)))) (<j>p@(i/\j)))
