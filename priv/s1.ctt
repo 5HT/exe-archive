@@ -22,26 +22,19 @@ loop2 : loopS1 = compS1 loop1 loop1
 loop3 : loopS1 = composition S1 base base base loop1 loop1
 loop4 : loopS1 = compS1 loop2 loop1
 
-invLoop : loopS1 = inv S1 base base loop1
-
-moebius : S1 -> U = split
-  base -> bool
-  loop @ i -> negBoolEq @ i
-
-helix : S1 -> U = split
-  base -> Z
-  loop @ i -> sucPathZ @ i
-
-oneTurn  (l: loopS1) : loopS1 = compS1 l loop1
-backTurn (l: loopS1) : loopS1 = compS1 l invLoop
+triv      : loopS1 = <i> base
+invLoop   : loopS1 = inv S1 base base loop1
+oneTurn   : loopS1 -> loopS1 = \(l: loopS1) -> compS1 l loop1
+backTurn  : loopS1 -> loopS1 = \(l: loopS1) -> compS1 l invLoop
+l0        : loopS1 = triv
+l1        : loopS1 = oneTurn l0
+loopPos   : nat -> loopS1 = split { zero -> triv ; succ n -> oneTurn (loopPos n) }
+loopNeg   : nat -> loopS1 = split { zero -> invLoop ; succ n -> backTurn (loopNeg n) }
+loopIt    : Z   -> loopS1 = split { inl n -> loopNeg n ; inr n -> loopPos n }
 compInvS1 : Path loopS1 (refl S1 base) (compS1 invLoop loop1) = compInv' S1 base base loop1
-triv : loopS1 = <i> base
-l0   : loopS1 = triv
-l1   : loopS1 = oneTurn l0
-loopPos : nat -> loopS1 = split { zero -> triv ; succ n -> oneTurn (loopPos n) }
-loopNeg : nat -> loopS1 = split { zero -> invLoop ; succ n -> backTurn (loopNeg n) }
-loopIt  : Z   -> loopS1 = split { inl n -> loopNeg n ; inr n -> loopPos n }
 
+-- Helix for Winding
+helix : S1 -> U = split { base -> Z ; loop @ i -> sucPathZ @ i }
 winding (p : loopS1) : Z = trans Z Z (<i> helix (p @ i)) zeroZ
 
 -- More examples:
@@ -55,20 +48,11 @@ mLoop : (x : S1) -> Path S1 x x = split
   base -> loop1
   loop @ i -> (constSquare S1 base loop1) @ i
 
-rot : S1 -> S1 -> S1 = split
-  base -> (\ (y : S1) -> y)
-  loop @ i -> (\ (y : S1) -> mLoop y @ i)
-
-rot_unit_r : (a : S1) -> Path S1 (rot a base) a = split
-   base -> <_> base
-   loop@x -> <_> loop{S1}@x
-
 mult (x : S1) : S1 -> S1 = split
   base -> x
   loop @ i -> mLoop x @ i
 
 square (x : S1) : S1 = mult x x
-
 doubleLoop (l : loopS1) : loopS1 = <i> square (l @ i)
 tripleLoop (l : loopS1) : loopS1 = <i> mult (l @ i) (square (l @ i))
 
