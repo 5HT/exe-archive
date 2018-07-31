@@ -6,8 +6,6 @@
 
 module s1 where
 import int
-import iso
-import bool_theory
 
 data S1 = base
         | loop <i> [ (i=0) -> base ,
@@ -30,12 +28,21 @@ l0        : loopS1 = triv
 l1        : loopS1 = oneTurn l0
 loopPos   : nat -> loopS1 = split { zero -> triv ; succ n -> oneTurn (loopPos n) }
 loopNeg   : nat -> loopS1 = split { zero -> invLoop ; succ n -> backTurn (loopNeg n) }
+ze    (x: nat):    bool -> Z      = split { false -> inl x      ; true -> inr x }
+loopZ (x: nat):    bool -> loopS1 = split { false -> loopNeg x  ; true -> loopPos x }
+turnZ (x: loopS1): bool -> loopS1 = split { false -> backTurn x ; true -> oneTurn x }
+inversion:         bool -> loopS1 = split { false -> <i> loop1 @ -i ; true -> loop1 }
+lnb   (n: nat) (b: bool):  loopS1 = loopZ n b
 loopIt    : Z   -> loopS1 = split { inl n -> loopNeg n ; inr n -> loopPos n }
 compInvS1 : Path loopS1 (refl S1 base) (compS1 invLoop loop1) = compInv' S1 base base loop1
 
 -- Helix for Winding
 helix : S1 -> U = split { base -> Z ; loop @ i -> sucPathZ @ i }
 winding (p : loopS1) : Z = trans Z Z (<i> helix (p @ i)) zeroZ
+htl (n: nat) (b: bool): Path U Z Z = <i> helix (turnZ (loopZ n b) b @ i)
+htl' (n: nat) (b: bool): Path U Z Z = <i> helix (loopZ n b @ i)
+hlx: bool-> Path U Z Z = split { false -> <i>helix (loop1@-i) ; true -> <i>helix (loop1@i) }
+htz (n: nat) (b: bool): Z = comp (htl n b) (inr zero) []
 
 -- More examples:
 loopZ1  : Z = winding loop1
