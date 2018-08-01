@@ -194,12 +194,16 @@ opaque propIsEquiv
 
 -- 1. Real
 
-moebius : S1 -> U = split { base -> bool ; loop @ i -> ua bool bool negBoolEquiv @ i }
+moebius : S1 -> U = split
+  base -> bool
+  loop @ i -> ua bool bool negBoolEquiv @ i
 TH0 : U = (c : S1) * moebius c
 
 -- 2. Complex
 
-rot: (x : S1) -> Path S1 x x = split { base -> loop1 ; loop @ i -> constSquare S1 base loop1 @ i }
+rot: (x : S1) -> Path S1 x x = split
+  base -> loop1
+  loop @ i -> constSquare S1 base loop1 @ i
 mu : S1 -> equiv S1 S1 = split
   base -> idEquiv S1
   loop @ i -> equivPath S1 S1 (idEquiv S1) (idEquiv S1) (<j> \ (x: S1) -> rot x @ j) @ i
