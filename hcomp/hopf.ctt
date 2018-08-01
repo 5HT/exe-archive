@@ -206,6 +206,6 @@ mu : S1 -> equiv S1 S1 = split
 H1 : S2 -> U = split { north -> S1 ; south -> S1 ; merid x @ i -> ua S1 S1 (mu x) @ i }
 TH1 : U = (c : S2) * H1 c
 
--- 3. Quaternion
--- 4. Octanion
+-- 3. Quaternionic
+-- 4. Octanionic
 
