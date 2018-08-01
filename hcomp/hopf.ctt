@@ -176,6 +176,12 @@ propIsEquiv (A B : U) (f : A -> B) : isProp (isEquiv A B f) =
 equivPath (A B : U) (v w : equiv A B) (p : Path (A -> B) v.1 w.1) : Path (equiv A B) v w =
   lemSig (A -> B) (isEquiv A B) (propIsEquiv A B) v w p
 
+data bool = false | true
+
+negBool : bool -> bool = split { false -> true ; true -> false }
+negBoolK : (b : bool) -> Path bool (negBool (negBool b)) b = split { false-><i>false;true-><i>true }
+negBoolEquiv : equiv bool bool = (negBool,gradLemma bool bool negBool negBool negBoolK negBoolK)
+
 S2 : U = susp S1
 S3 : U = susp S2
 
@@ -183,23 +189,23 @@ ua (A B : U) (e : equiv A B) : Path U A B =
   <i> Glue B [ (i = 0) -> (A,e)
              , (i = 1) -> (B,idEquiv B) ]
 
-rot: (x : S1) -> Path S1 x x = split
-  base -> loop1
-  loop @ i -> constSquare S1 base loop1 @ i
 
 opaque propIsEquiv
 
+-- 1. Real
+
+moebius : S1 -> U = split { base -> bool ; loop @ i -> ua bool bool negBoolEquiv @ i }
+TH0 : U = (c : S1) * moebius c
+
+-- 2. Complex
+
+rot: (x : S1) -> Path S1 x x = split { base -> loop1 ; loop @ i -> constSquare S1 base loop1 @ i }
 mu : S1 -> equiv S1 S1 = split
   base -> idEquiv S1
-  loop @ i -> equivPath S1 S1 (idEquiv S1) (idEquiv S1) (<j> \(x : S1) -> rot x @ j) @ i
+  loop @ i -> equivPath S1 S1 (idEquiv S1) (idEquiv S1) (<j> \ (x: S1) -> rot x @ j) @ i
+H1 : S2 -> U = split { north -> S1 ; south -> S1 ; merid x @ i -> ua S1 S1 (mu x) @ i }
+TH1 : U = (c : S2) * H1 c
 
-H : S2 -> U = split
-  north -> S1
-  south -> S1
-  merid x @ i -> ua S1 S1 (mu x) @ i
-
-TH : U = (c : S2) * H c
-
-
-
+-- 3. Quaternion
+-- 4. Octanion
 
