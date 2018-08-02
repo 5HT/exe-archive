@@ -50,10 +50,8 @@ isInfinitesimalClose (X: U) (x x': X): U = Path (Im X) (ImUnit X x) (ImUnit X x'
 formalDisc (X: U) (x: X): U = (x': X) * isInfinitesimalClose X x x'
 unitDisc (X: U) (x: Im X): U = (x': X) * Path (Im X) x (ImUnit X x')
 starDisc (X: U) (x: X): formalDisc X x  = (x, refl (Im X) (ImUnit X x))
-
-differential (X Y: U) (f: X -> Y) (x: X)
-  : formalDisc X x -> formalDisc Y (f x)
-  = undefined
+differential (X Y: U) (f: X -> Y) (x: X) : formalDisc X x -> formalDisc Y (f x) = undefined
+formalDiscBundle (A: U): U = (x: A) * formalDisc A x
 
 preservesInifinitesimalProximity (X Y: U) (x x': X) (f: X -> Y)
   : isInfinitesimalClose X x x' -> isInfinitesimalClose Y (f x) (f x')
@@ -64,8 +62,14 @@ lemma45 (A B C: U) (f: A -> B) (g: B -> C) (x: A)
   : Path (formalDisc A x -> formalDisc C ((o A B C g f) x))
          (differential A C (o A B C g f) x)
          (o (formalDisc A x) (formalDisc B (f x)) (formalDisc C ((o A B C g f) x))
-            (differential B C g (f x)) (differential A B f x))
-  = undefined
+            (differential B C g (f x)) (differential A B f x)) = undefined
 
-formalDiscBundle (A: U): U = (x: A) * formalDisc A x
+-- Homogeneous Structure on A = (<i>A)
+
+homogeneous (A: U): U
+  = (e: A)
+  * (translationsFamily: (x: A) -> Path U A A)
+  * ((x: A) -> Path A (transport (translationsFamily x) e) x)
+
+-- Image
 
