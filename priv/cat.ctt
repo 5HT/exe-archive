@@ -92,10 +92,10 @@ opCat (P: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
 
 opPreserve (C: precategory) : Path precategory (opCat (opCat C)) C = <i> C
 
-mono (P: precategory) (B C: carrier P) (f: hom P B C): U
-  = (A: carrier P) (g1 g2: hom P A B)
- -> Path (hom P A C) (compose P A B C g1 f) (compose P A B C g2 f)
- -> Path (hom P A B) g1 g2
+mono (P: precategory) (Y Z: carrier P) (f: hom P Y Z): U
+  = (X: carrier P) (g1 g2: hom P X Y)
+ -> Path (hom P X Z) (compose P X Y Z g1 f) (compose P X Y Z g2 f)
+ -> Path (hom P X Y) g1 g2
 
 epi (P: precategory) (X Y: carrier P) (f: hom P X Y): U
   = (Z: carrier P) (g1 g2: hom P Y Z)
