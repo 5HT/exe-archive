@@ -6,6 +6,25 @@ module topos where
 import cat
 import cones
 
+mono (P: precategory) (Y Z: carrier P) (f: hom P Y Z): U
+  = (X: carrier P) (g1 g2: hom P X Y)
+ -> Path (hom P X Z) (compose P X Y Z g1 f) (compose P X Y Z g2 f)
+ -> Path (hom P X Y) g1 g2
+
+epi (P: precategory) (X Y: carrier P) (f: hom P X Y): U
+  = (Z: carrier P) (g1 g2: hom P Y Z)
+ -> Path (hom P X Z) (compose P X Y Z f g1) (compose P X Y Z f g2)
+ -> Path (hom P Y Z) g1 g2
+
+isCCC (C: precategory): U
+  = (Prod: (A B: carrier C) -> carrier C)
+  * (P1: (A B: carrier C) -> hom C (Prod A B) A)
+  * (P2: (A B: carrier C) -> hom C (Prod A B) B)
+  * (Exp: (A B: carrier C) -> carrier C)
+  * (Apply: (A B E: carrier C) -> hom C (Prod (Exp A B) A) B)
+  * (Term:  terminal C)
+  * unit -- TODO: Beta, Eta rules
+
 subobjectClassifier (C: precategory): U
   = (omega: carrier C)
   * (end: terminal C)
