@@ -68,7 +68,7 @@ lemma45 (A B C: U) (f: A -> B) (g: B -> C) (x: A)
 
 homogeneous (A: U): U
   = (e: A)
-  * (translationsFamily: (x: A) -> Path U A A)
+  * (translationsFamily: (x: A) -> Path U A A) -- could be non-trivial
   * ((x: A) -> Path A (transport (translationsFamily x) e) x)
 
 -- Image

@@ -97,3 +97,8 @@ mono (P: precategory) (B C: carrier P) (f: hom P B C): U
  -> Path (hom P A C) (compose P A B C g1 f) (compose P A B C g2 f)
  -> Path (hom P A B) g1 g2
 
+epi (P: precategory) (X Y: carrier P) (f: hom P X Y): U
+  = (Z: carrier P) (g1 g2: hom P Y Z)
+ -> Path (hom P X Z) (compose P X Y Z f g1) (compose P X Y Z f g2)
+ -> Path (hom P Y Z) g1 g2
+
