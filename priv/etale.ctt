@@ -28,4 +28,3 @@ isÉtaleMap (A B: U) (f: A -> B): U
 EtaleMap (A B: U): U
   = (f: A -> B)
   * isÉtaleMap A B f
-
