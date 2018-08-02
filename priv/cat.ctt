@@ -64,13 +64,13 @@ initialProp   (C: precategory) (isC: isCategory C): isProp (initial  C) = undefi
 terminalProp  (C: precategory) (isC: isCategory C): isProp (terminal C) = undefined
 
 isCCC (C: precategory): U
-    = (Prod: (A B: carrier C) -> carrier C)
-    * (P1: (A B: carrier C) -> hom C (Prod A B) A)
-    * (P2: (A B: carrier C) -> hom C (Prod A B) B)
-    * (Exp: (A B: carrier C) -> carrier C)
-    * (Apply: (A B E: carrier C) -> hom C (Prod (Exp A B) A) B)
-    * (Term:  terminal C)
-    * unit -- TODO: Beta, Eta rules
+  = (Prod: (A B: carrier C) -> carrier C)
+  * (P1: (A B: carrier C) -> hom C (Prod A B) A)
+  * (P2: (A B: carrier C) -> hom C (Prod A B) B)
+  * (Exp: (A B: carrier C) -> carrier C)
+  * (Apply: (A B E: carrier C) -> hom C (Prod (Exp A B) A) B)
+  * (Term:  terminal C)
+  * unit -- TODO: Beta, Eta rules
 
 isComm (X: precategory) (A B C D: carrier X)
        (f: hom X A B) (g: hom X C D)
@@ -90,7 +90,9 @@ opCat (P: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
      : Path (Hom A D) (c A C D (c A B C f g) h)
                       (c A B D f (c B C D g h)) = <i> pathC P D C B A h g f @ -i
 
-opPreserve (C: precategory) : Path precategory (opCat (opCat C)) C = <i> C
+opPreserve (C: precategory)
+  : Path precategory (opCat (opCat C)) C
+  = <i> C
 
 mono (P: precategory) (Y Z: carrier P) (f: hom P Y Z): U
   = (X: carrier P) (g1 g2: hom P X Y)
