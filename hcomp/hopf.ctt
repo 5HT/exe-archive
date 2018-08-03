@@ -186,9 +186,8 @@ S2 : U = susp S1
 S3 : U = susp S2
 
 ua (A B : U) (e : equiv A B) : Path U A B =
-  <i> Glue B [ (i = 0) -> (A,e)
-             , (i = 1) -> (B,idEquiv B) ]
-
+  <i> Glue B [ (i = 0) -> (A,e),
+               (i = 1) -> (B,idEquiv B) ]
 
 opaque propIsEquiv
 
@@ -213,3 +212,10 @@ TH1 : U = (c : S2) * H1 c
 -- 3. Quaternionic
 -- 4. Octanionic
 
+-- more classical representation of H-space
+H_space: U
+  = (A: U)
+  * (e: A)
+  * (mu: A -> A -> A)
+  * ((a:A) -> (_: Path A (mu e a) a)
+                * Path A (mu a e) a)
