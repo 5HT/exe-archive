@@ -191,18 +191,6 @@ Functions (X Y: U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) wher
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
        = refl (Hom A D) (c A C D (c A B C f g) h)
 
-FibCat (X: U) (Y: X -> U) (Z: isSet Y): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
-     Ob: U = (x:X) -> Y x
-     Hom (A B: Ob): U = undefined
-     id (A: Ob): Hom A A = undefined --idfun ((x:X)->Y x)
-     c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = undefined -- \(a:Pi X Y)->\(x:X)->(g(f(a)))x
-     HomSet (A B: Ob): isSet (Hom A B) = undefined -- setFun Ob Ob (setFun X Y Z)
-     L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = undefined -- refl (Hom A B) f
-     R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = undefined -- refl (Hom A B) f
-     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
-       = undefined -- refl (Hom A D) (c A C D (c A B C f g) h)
-
 reduce (AC BC AB: precategory)
        (H: bifunctor BC AB AC)
        (L: precategory) (F: catfunctor L BC)
