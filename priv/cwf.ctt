@@ -8,6 +8,10 @@ The code is by Thierry Coquand ported to cubical by 5HT.
 
      http://www.cse.chalmers.se/~peterd/papers/Ise2008.pdf
 
+Another good intro to LCCC was a 80-514 course at CMU:
+
+     http://math.cmu.edu/~cnewstea/talks/20170301.pdf
+
 Definition (Fam). The Fam is the category of families
 of sets where objects are dependent function
 spaces (x:A)->B(x) and morphisms with domain
