@@ -29,10 +29,10 @@ functor_fun (T: U): FUNCTOR = ((\(B:U)->T->B,fmap),(id,compose,tt)) where
                  (\(y: T) -> f (g (x y)))
    = refl (T->C) (\(y: T) -> f (g (x y)))
 
-functor_comptype (f g: FUNCTOR): FUNCTOR = ((funcomp F G,fmap),(id,compose,tt)) where
+functor_comptype (f g: FUNCTOR): FUNCTOR = ((O F G,fmap),(id,compose,tt)) where
   F: U -> U = f.1.1
   G: U -> U = g.1.1
-  T: U -> U = funcomp F G
+  T: U -> U = O F G
   functorIdFunExt (x: FUNCTOR) (A: U): Path (x.1.1 A -> x.1.1 A) (x.1.2 A A (idfun A)) (idfun (x.1.1 A))
     = funext (x.1.1 A) (x.1.1 A) (x.1.2 A A (idfun A)) (idfun (x.1.1 A)) (x.2.1 A)
   functorComposeFunExt (x: FUNCTOR) (A B C: U) (fx: B -> C) (gy: A -> B):

@@ -9,16 +9,15 @@ module bundle where
 import iso
 
 -- F_B  -> E -> B -- fiber bundle (F_B,E,p,B),
--- F: B -> U      -- fiber, ex. Vector Space, Total Space, Dependent Product, Pi
+-- F: B -> U      -- fiber, ex. Vector Space, Section Space, Dependent Product
 -- E              -- total topological space
 -- B              -- base space
 -- h: F -> E      -- homeomorphism
 -- p:      E -> B -- surjective projection map
--- p^-1:   B -> E -- fiber (y: B) = (x: E) * p (x) = y, inverse image
+-- p^-1:   B -> E -- section (y: B) = (x: E) * p (x) = y
 -- E=(y:B)*p^-1 y -- total space
--- p^-1 iso F     -- fiber is iso F_B
+-- p^-1 = F       -- fiber is iso F_B
 -- T. E = B * F_B -- fiber bundle called trivial if total space is a cartesian product
--- pr_1:  E ->  B -- cartesian projection
 
 -- NOTE: there is twisted hidden structure in p
 -- U = neighborhood in base B

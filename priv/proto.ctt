@@ -54,9 +54,9 @@ lam         (A: U) (B: A -> U) (x: A) (b: B(x)): A -> B(x) = \(x: A) -> b --\ de
 app         (A: U) (B: A -> U) (x: A) (f: A -> B(x)): B(x) = f(x)         --/ version
 lambda    (A B: U) (b: B): A -> B = \(_:A) -> b --\ non-dependent
 apply     (A B: U) (f: A -> B) (x: A): B = f(x) --/ version
-funcomp (F G: U -> U) (t: U): U = F (G t)
-ot      (A B C: U): U = (B -> C) -> (A -> B) -> (A -> C)
-o       (A B C: U) (f: B -> C) (g: A -> B): A -> C = \(x:A) -> f(g(x))
+ot (A B C: U) : U = (B -> C) -> (A -> B) -> (A -> C)
+o  (A B C: U) : ot A B C = \ (f: B -> C) (g: A -> B) (x: A) -> f (g x)
+O  (F G: U -> U) (t: U): U = F (G t)
 flip    (A B C: U) (f: A -> B -> C) (b: B) (a: A): C = f a b
 uncurry (A: U) (B: U) (C : prod A B -> U) (f: (x: A) -> (y: B) -> C (x,y))
       : (p: prod A B) -> C p = \ (p: prod A B) -> f p.1 p.2
