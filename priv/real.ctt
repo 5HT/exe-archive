@@ -1,6 +1,26 @@
+{- Real Cohesive Homotopy Type Theory:
+   - Flat, Shape, Crisp modalities.
+   Copyright (c) Groupoid Infinity, 2016-2018. -}
 module real where
 import int
 
 -- Homotopy Reals
 data R = cz (x: Z)
        | sz (z: Z) <i> [(i=0) -> cz z, (i=1) -> cz (sucZ z)]
+
+-- Flat Modality
+data flat  (A: U) = con  (x: flat A)
+flatInd (A: U) (C: flat A -> U)
+        (f: (u: flat A) -> C (con u))
+      : (x: flat A) -> C x
+      = split con x -> f x
+
+-- Shape Modality
+data shape (A: U) = sig' (_: A)
+                  | kap  (_: R -> shape A)
+                  | kap' (_: R -> shape A)
+                  | p1   (g: R -> shape A) (x:R) <i> [(i=0) -> g x, (i=1) -> kap g]
+                  | p2        (x: shape A)       <i> [(i=0) -> x,   (i=1) -> kap' (\(_:R) -> x)]
+
+-- Discrete Types
+IsDiscrete (A: U): U = (f: A -> (R -> A)) * isEquiv A (R -> A) f

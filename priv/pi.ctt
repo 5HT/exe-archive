@@ -67,12 +67,11 @@ setPi  (A: U) (B: A -> U) (h: (x: A) -> isSet (B x)) (f g: Pi A B)
      : Path (Path (Pi A B) f g) p q
      = <i j> \(x: A) -> (h x (f x) (g x) (<i>(p@i)x) (<i>(q@i)x)) @ i @ j
 
--- pi is set on domain
+-- pi is set on codomain
 setFun' (X Y: U) (p: X -> isSet Y)
       : isSet (X -> Y)
       = setPi X (\(_: X) -> Y) p
 
--- pi is set on codomain
 setFun (A B : U) (sB: isSet B)
      : isSet (A -> B)
      = setPi A (\(x: A) -> B) (\(x: A) -> sB)
