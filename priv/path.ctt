@@ -48,7 +48,7 @@ JPM (A: U) (a b: A) (P: singl A a -> U) (u: P (eta A a)) (p: Path A a b): P (b,p
 
 data N = Z  | S (n: N)
 
--- n-Groupoid
+-- is-n-Type predicate
 n_grpd (A: U) (n: N): U = (a b: A) -> rec A a b n where
    rec (A: U) (a b: A) : (k: N) -> U
      = split { Z -> Path A a b ; S n -> n_grpd (Path A a b) n }
@@ -68,7 +68,7 @@ inf_grpd (A: U): U
 
 isInfinityGroupoid (A: U): U = inf_grpd A
 
--- h-Types
+-- n-Types
 PROP         : U = (X:U) * isProp X
 SET          : U = (X:U) * isSet X
 GROUPOID     : U = (X:U) * isGroupoid X

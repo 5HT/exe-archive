@@ -21,6 +21,11 @@ discrete   (A: U): U = (a b: A) -> dec (Path A a b)
 
 propUnit : isProp unit = split tt -> split@((x:unit) -> Path unit tt x) with { tt -> <i> tt }
 
+fununit (A: U) (f g: A -> unit)
+     (p: (x: A) -> Path unit (f x) (g x))
+     : Path (A -> unit) f g
+     = <i> \(a: A) -> p a @ i
+
 -- Exists(A,B) = ||Sigma(A,B)||
 
 lemPropF (A : U) (P : A -> U) (pP : (x : A) -> isProp (P x)) (a0 a1 :A)
