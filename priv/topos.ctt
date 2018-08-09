@@ -6,6 +6,18 @@ module topos where
 import cat
 import cones
 
+Set: precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
+    Ob: U = SET
+    Hom (A B: Ob): U = A.1 -> B.1
+    id (A: Ob): Hom A A = idfun A.1
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = o A.1 B.1 C.1 g f
+    HomSet (A B: Ob): isSet (Hom A B) = setFun A.1 B.1 B.2
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = refl (Hom A B) f
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = refl (Hom A B) f
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+     : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h))
+     = refl (Hom A D) (c A B D f (c B C D g h))
+
 mono (P: precategory) (Y Z: carrier P) (f: hom P Y Z): U
   = (X: carrier P) (g1 g2: hom P X Y)
  -> Path (hom P X Z) (compose P X Y Z g1 f) (compose P X Y Z g2 f)
@@ -16,12 +28,15 @@ epi (P: precategory) (X Y: carrier P) (f: hom P X Y): U
  -> Path (hom P X Z) (compose P X Y Z f g1) (compose P X Y Z f g2)
  -> Path (hom P Y Z) g1 g2
 
+exp (A B: SET): SET = (A.1   -> B.1, setFun A.1 B.1 B.2)
+pro (A B: SET): SET = (prod A.1 B.1, setSig A.1 (\(_ : A.1) -> B.1) A.2 (\(_ : A.1) -> B.2))
+
 isCCC (C: precategory): U
-  = (Prod: (A B: carrier C) -> carrier C)
-  * (P1: (A B: carrier C) -> hom C (Prod A B) A)
-  * (P2: (A B: carrier C) -> hom C (Prod A B) B)
-  * (Exp: (A B: carrier C) -> carrier C)
-  * (Apply: (A B E: carrier C) -> hom C (Prod (Exp A B) A) B)
+  = (Prod:  (A B: carrier C) -> carrier C)
+  * (P1:    (A B: carrier C) -> hom C (Prod A B) A)
+  * (P2:    (A B: carrier C) -> hom C (Prod A B) B)
+  * (Exp:   (A B: carrier C) -> carrier C)
+  * (Apply: (A B: carrier C) -> hom C (Prod (Exp A B) A) B)
   * (Term:  terminal C)
   * unit -- TODO: Beta, Eta rules
 
@@ -41,4 +56,27 @@ Topos (cat: precategory): U
   = (rezk: isCategory cat)
   * (cartesianClosed: isCCC cat)
   * subobjectClassifier cat
+
+rezkSet
+  : isCategory Set
+  = undefined
+
+unitContr (x: SET): isContr (x.1 -> unit) = undefined
+cartesianClosedSet
+  : isCCC Set
+  = (\(A B: SET) -> pro A B,
+     \(A B: SET) (x: (pro A B).1) -> x.1,
+     \(A B: SET) (x: (pro A B).1) -> x.2,
+     \(A B: SET) -> exp A B,
+     \(A B: SET) -> \ (x: (pro (exp A B) A).1) -> x.1 x.2,
+     ((unit,setUnit),\(x: SET) -> unitContr x),
+     tt)
+
+subobjectSet
+  : subobjectClassifier Set
+  = undefined
+
+internal
+  : Topos Set
+  = (rezkSet,cartesianClosedSet,subobjectSet)
 

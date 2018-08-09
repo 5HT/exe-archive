@@ -98,6 +98,8 @@ injective (A B : U) (f : A -> B) : U =
 isContrProp (A : U) (h : isContr A) : isProp A =
   \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
 
+isPropContr (A : U) (h : isProp A) : isContr A = undefined
+
 lemProp (A : U) (h : A -> isProp A) : isProp A = \(a : A) -> h a a
 
 propSet (A : U) (h : isProp A) : isSet A =
