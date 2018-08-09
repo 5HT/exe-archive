@@ -84,3 +84,28 @@ opCat (P: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
 opPreserve (C: precategory)
   : Path precategory (opCat (opCat C)) C
   = <i> C
+
+-- Categorical Pullback
+
+homTo  (C: precategory) (X: carrier C): U   = (Y: carrier C) * hom C Y X
+cospan (C: precategory): U = (X: carrier C) * (_: homTo C X) * homTo C X
+cospanCone (C: precategory) (D: cospan C): U = (W: carrier C) * hasCospanCone C D W
+
+hasCospanCone (C: precategory) (D: cospan C) (W: carrier C) : U
+  = (f: hom C W D.2.1.1)
+  * (g: hom C W D.2.2.1)
+  * Path (hom C W D.1) (compose C W D.2.1.1 D.1 f D.2.1.2)
+                       (compose C W D.2.2.1 D.1 g D.2.2.2)
+
+isCospanConeHom (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) (h: hom C E1.1 E2.1) : U
+  = (_ : Path (hom C E1.1 D.2.1.1) (compose C E1.1 E2.1 D.2.1.1 h E2.2.1)   E1.2.1)
+  * (    Path (hom C E1.1 D.2.2.1) (compose C E1.1 E2.1 D.2.2.1 h E2.2.2.1) E1.2.2.1)
+
+cospanConeHom (C: precategory) (D: cospan C) (E1 E2: cospanCone C D) : U
+  = (h: hom C E1.1 E2.1) * isCospanConeHom C D E1 E2 h
+
+isPullback (C: precategory) (D: cospan C) (E: cospanCone C D) : U
+  = (h: cospanCone C D) -> isContr (cospanConeHom C D h E)
+
+hasPullback (C: precategory) (D: cospan C) : U
+  = (E: cospanCone C D) * isPullback C D E
