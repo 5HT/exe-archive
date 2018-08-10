@@ -9,11 +9,7 @@
    HoTT 9.4 Equivalences -}
 
 module fun where
-
 import cat
-import equiv
-import prop
-import set
 import iso_sigma
 
 -- Definition 9.2.1. Functor on Precategories

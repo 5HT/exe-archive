@@ -33,7 +33,7 @@ isIso (A B: U): U
   * (t: retract A B f g)
   * unit
 
-iso: U
+ISO: U
   = (A: U)
   * (B: U)
   * isIso A B
@@ -86,7 +86,7 @@ testIsoPath (A B : U) (f : A -> B) (g : B -> A)
                       <i> comp (<_>B) (comp (<_>B) (f a) [(i=0) -> <_> f a]) [(i=0) -> <_> f a]
 
 -- sigma version of isoPath
-isoToPath (i: iso): Path U i.1 i.2.1
+isoToPath (i: ISO): Path U i.1 i.2.1
   = isoPath i.1 i.2.1 i.2.2.1 i.2.2.2.1 i.2.2.2.2.1 i.2.2.2.2.2.1
 
 -- A proof that two propositions with maps between them can be identified with each other
