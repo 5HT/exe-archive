@@ -72,32 +72,6 @@ Func (X Y: precategory): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
 
-composition (A: U) (a b c: A) (p: Path A a b) (q: Path A b c): Path A a c
-    = comp (<i> Path A a (q @ i)) p []
---  = subst A (Path A a) b c q p
---  = <i> comp (<j>A) (p @ i) [(i=0) -> <j> a, (i=1) -> q ]
-
-compPathL (A:U) (a b:A) (p : Path A a b)
-      : Path (Path A a b) p (comp (<j> Path A a (p @ j)) (refl A a) [])
---      : Path (Path A a b) p (composition A a a b (<_>a) p)
-      = undefined -- <j i> comp (<_>A) a [(i=0) -> <_> a, (i=1) -> p, (j=0) -> <_>a ]
-
-compPathR (A:U) (a b:A) (p : Path A a b)
-      : Path (Path A a b) p (comp (<i> Path A a ((refl A b) @ i)) p [])
---      : Path (Path A a b) p (composition A a b b p (<_>b))
-      = <j i> comp (<_>A) (p@i) [(i=0) -> <_> a, (i=1) -> <_>b, (j=0) -> <_>(p@i) ]
-
-Grpd (X: U): precategory = ((Ob,Hom),id,c,HomSet,L,R,Q) where
-    Ob: U = X
-    Hom (A B: Ob): U = Path X A B
-    id (A: Ob): Path X A A = <i>A
-    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = composition X A B C f g
-    HomSet (A B: Ob): isSet (Hom A B) = undefined
-    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = <i> compPathL X A B f @ -i
-    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = <i> compPathR X A B f @ -i
-    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
-       : Path (Hom A D) (c A C D (c A B C f g) h) (c A B D f (c B C D g h)) = undefined
-
 -- Lemma. Monoid Hom is Set
 setmonoidhom (a b: monoid)
   : isSet (monoidhom a b)
