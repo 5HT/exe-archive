@@ -95,22 +95,38 @@ compInv (A:U) (a b:A) (q:Path A a b) : (x:A) (p:Path A b x) -> Path (Path A a b)
  rem : Path (Path A a b) q (<i>comp  (<_>A) (comp (<_>A)(q@i) [(i=0) -> <_>a,(i=1)-><_>b]) [(i=0)-><_>a,(i=1)-><_>b]) =
       <j i>comp (<_>A) (comp (<_>A)(q@i) [(j=0)-><_>q@i,(i=0)-><_>a,(i=1)-><_>b]) [(j=0)-><_>q@i,(i=0)-><_>a,(i=1)-><_>b]
 
--- p ; p^-1 = 1
+-- f o f^-1 = 1_a
 compPathInv (A : U) (a b : A) (p : Path A a b) :
   Path (Path A a a) (composition A a b a p (<i> p @ -i)) (<_> a) =
     <k j> comp (<_> A) (p @ j /\ -k)
-                  [ (j = 0) -> <_> a
-                  , (j = 1) -> <i> p @ -i /\ -k
-                  , (k = 1) -> <_> a ]
+                     [ (j = 0) -> <_> a,
+                       (j = 1) -> <i> p @ -i /\ -k,
+                       (k = 1) -> <_> a ]
 
--- p^-1 ; p = 1
+-- f^-1 o f = 1_b
 compInvPath (A : U) (a b : A) (p : Path A a b) :
   Path (Path A b b) (composition A b a b (<i> p @ -i) p)  (<_> b) =
    <j i> comp (<_> A) (p @ -i \/ j)
-                 [ (i = 0) -> <_> b
-                 , (j = 1) -> <_> b
-                 , (i = 1) -> <k> p @ j \/ k ]
+                    [ (i = 0) -> <_> b,
+                      (j = 1) -> <_> b,
+                      (i = 1) -> <k> p @ j \/ k ]
 
+-- id_a o f = f
 compPathL (A:U) (a b:A) (p : Path A a b)
+      : Path (Path A a b) p (composition A a a b (<_>a) p)
+      = <j i> comp (<_>A) a
+                       [ (i=0) -> <_> a,
+                         (i=1) -> p,
+                         (j=0) -> <k>(p@i/\k) ]
+
+-- f o id_b = f
+compPathR (A:U) (a b:A) (p : Path A a b)
       : Path (Path A a b) p (composition A a b b p (<_>b))
-      = <j i> comp (<_>A) (p @ i) [(i=0) -> <_> a, (i = 1) -> <_>b, (j=0) -> <_>(p@i) ]
+      = <j i> comp (<_>A) (p@i)
+                        [ (i=0) -> <_> a,
+                          (i=1) -> <_>b,
+                          (j=0) -> <_>(p@i) ]
+
+compPathQ (A:U) (a b c d:A) (f: Path A a b) (g: Path A b c) (h: Path A c d)
+        : Path (Path A a d) (composition A a c d (composition A a b c f g) h)
+                            (composition A a b d f (composition A b c d g h)) = undefined

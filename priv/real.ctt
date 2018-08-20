@@ -24,26 +24,25 @@ data shape (A: U)
    = sig' (_: A)
    | kap (_: R -> shape A)
    | kap' (_: R -> shape A)
-   | p1 (g: R -> shape A) (x:R) <i> [(i=0) -> g x, (i=1) -> kap g]
-   | p2 (x: shape A) <i> [(i=0) -> x, (i=1) -> kap' (\(_:R) -> x)]
+   | px1 (g: R -> shape A) (x:R) <i> [(i=0) -> g x, (i=1) -> kap g]
+   | px2 (x: shape A) <i> [(i=0) -> x, (i=1) -> kap' (\(_:R) -> x)]
 
 shapeP1 (A: U) (g: R -> shape A) (x: R): U = Path (shape A) (g x) (kap g)
-shape1  (A: U) (g: R -> shape A) (x: R): shapeP1 A g x = <i> p1 {shape A} g x @ i
-
+shape1  (A: U) (g: R -> shape A) (x: R): shapeP1 A g x = undefined
 shapeP2 (A: U) (x: shape A): U = Path (shape A) x (kap' (\(_:R) -> x))
-shape2  (A: U) (x: shape A): shapeP2 A x = <i> p2 {shape A} x @ i
+shape2  (A: U) (x: shape A): shapeP2 A x = undefined
 
 shapeRec (A: U) (f: A -> shape A)
          (k: (R -> shape A) -> shape A)
          (k': (R -> shape A) -> shape A)
-         (p1': (g: R -> shape A) (x: R) -> Path (shape A) (g x) (k g))
+         (p1': (g: R -> shape A) (x: R) -> Path (shape A) (g x) (kap g))
          (p2': (x: shape A) -> Path (shape A) x (k' (\(_:R) -> x)))
        : shape A -> shape A = split
          sig' a -> f a
          kap g -> k (\(x:R) -> shapeRec A f k k' p1' p2' (g x))
          kap' g -> k' (\(x:R) -> shapeRec A f k k' p1' p2' (g x))
-         p1 g x @ i -> shape1 A g x @ i
-         p2 x @ i -> shape2 A x @ i
+         px1 g x @ i -> shape1 A g x @ i
+         px2 x @ i -> shape2 A x @ i
 
 -- Discrete Types
 IsDiscrete (A: U)

@@ -100,5 +100,5 @@ site  (C: precategory): U
   * Coverage C
 
 sheaf (C: precategory): U
-  = (P: presheaf C)
-  * site C
+  = (S: site C)
+  * presheaf S.1

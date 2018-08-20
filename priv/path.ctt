@@ -119,7 +119,7 @@ lemFib2 (A:U) (F:A->U) (a b:A) (p:Path A a b) (u:F a)
       : (c:A) (q:Path A b c) -> Path (F c) (subst A F b c q (subst A F a b p u)) (subst A F a c (composition A a b c p q) u)
       = J A b (\ (c:A) (q:Path A b c) -> Path (F c) (subst A F b c q (subst A F a b p u)) (subst A F a c (composition A a b c p q) u)) r where
       x : Path (F b) (subst A F a b p u) (subst A F b b (<_>b) (subst A F a b p u)) =  <i>lemTransC (F b) (subst A F a b p u) @ -i
-      y : Path (F b) (subst A F a b p u) (subst A F a b (composition A a b b p (<_>b)) u) = <i>subst A F a b (compPathL A a b p @ i) u
+      y : Path (F b) (subst A F a b p u) (subst A F a b (composition A a b b p (<_>b)) u) = <i>subst A F a b (compPathR A a b p @ i) u
       r : Path (F b) (subst A F b b (<_>b) (subst A F a b p u)) (subst A F a b (composition A a b b p (<_>b)) u)
         = comp (<i>Path (F b) (x@i) (y@i)) (<_>subst A F a b p u) []
 

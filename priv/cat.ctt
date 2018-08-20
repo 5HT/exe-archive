@@ -108,3 +108,27 @@ isPullback (C: precategory) (D: cospan C) (E: cospanCone C D) : U
   = (h: cospanCone C D) -> isContr (cospanConeHom C D h E)
 hasPullback (C: precategory) (D: cospan C) : U
   = (E: cospanCone C D) * isPullback C D E
+
+isCatGroupoid (C: cat): U
+  = (id: (x: C.1) -> C.2 x x)
+  * (c: (x y z:C.1) -> C.2 x y -> C.2 y z -> C.2 x z)
+  * (inv: (x y: C.1) -> C.2 x y -> C.2 y x)
+  * (left: (x y: C.1) -> (f: C.2 x y) -> Path (C.2 x y) (c x x y (id x) f) f)
+  * (right: (x y: C.1) -> (f: C.2 x y) -> Path (C.2 x y) (c x y y f (id y)) f)
+  * ((x y z w: C.1) -> (f: C.2 x y) -> (g: C.2 y z) -> (h: C.2 z w) ->
+    Path (C.2 x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
+
+groupoid: U = (X: cat) * isCatGroupoid X
+
+-- Sample
+PathGrpd (X: U): groupoid = ((Ob,Hom),id,c,inv,L,R,Q) where
+    Ob: U = X
+    Hom (A B: Ob): U = Path X A B
+    id (A: Ob): Path X A A = refl X A
+    c (A B C: Ob) (f: Hom A B) (g: Hom B C): Hom A C = comp (<i> Path X A (g@i)) f []
+    inv (A B: Ob) (f: Hom A B): Hom B A = sym X A B f
+    L (A B: Ob) (f: Hom A B): Path (Hom A B) (c A A B (id A) f) f = <i> compPathL X A B f @ -i
+    R (A B: Ob) (f: Hom A B): Path (Hom A B) (c A B B f (id B)) f = <i> compPathR X A B f @ -i
+    Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
+       : Path (Hom A D) (c A C D (c A B C f g) h)
+                        (c A B D f (c B C D g h)) = compPathQ X A B C D f g h
