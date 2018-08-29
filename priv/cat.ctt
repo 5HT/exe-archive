@@ -120,6 +120,7 @@ isCatGroupoid (C: cat): U
     Path (C.2 x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
 
 groupoid: U = (X: cat) * isCatGroupoid X
+PathCat (X: U): cat = (X,\(x y: X)->Path X x y)
 
 -- Sample
 PathGrpd (X: U): groupoid = ((Ob,Hom),id,c,sym X,compPathInv X,compInvPath X,L,R,Q) where
