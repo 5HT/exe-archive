@@ -409,3 +409,14 @@ NatPSh (M: monoid) (D G: PSh M): U
   = (sigma: D.1 -> G.1)
   * ((s: D.1)(t: M.1.1) -> Path G.1 (G.2.1 (sigma s) t) (sigma (D.2.1 s t)))
 
+isType (M: monoid) (G: PSh M) (A: G.1 -> U): U
+  = (star: (g: G.1) -> A g -> (t: M.1.1) -> A (G.2.1 g t))
+  * (coe1: (g: G.1) (t: M.1.1)   -> Path U (A g) (A (G.2.1 g t)))
+  * (coe2: (g: G.1) (t r: M.1.1) -> Path U (A(G.2.1(G.2.1 g t)r))(A(G.2.1 g(M.2.1 t r))))
+  * (left: (g: G.1) (a: A g)     -> PathP (coe1 g M.2.2.2.1) a (star g a M.2.2.2.1))
+  * ((g:G.1)(a:A g) (t r: M.1.1) -> PathP (coe2 g t r) (star (G.2.1 g t) (star g a t) r)
+                                                       (star g a (M.2.1 t r)))
+
+Type (M: monoid) (G: PSh M): U
+  = (A: G.1 -> U)
+  * isType M G A
