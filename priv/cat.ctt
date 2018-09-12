@@ -10,6 +10,7 @@
 module cat where
 import path
 import proto
+import nat
 
 -- Category is the Algebra of Hom Functions on Ob domain
 cat: U = (A: U) * (A -> A -> U)
@@ -133,4 +134,3 @@ PathGrpd (X: U): groupoid = ((Ob,Hom),id,c,sym X,compPathInv X,compInvPath X,L,R
     Q (A B C D: Ob) (f: Hom A B) (g: Hom B C) (h: Hom C D)
        : Path (Hom A D) (c A C D (c A B C f g) h)
                         (c A B D f (c B C D g h)) = compPathQ X A B C D f g h
-

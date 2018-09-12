@@ -13,7 +13,7 @@ import iso_sigma
 -- The general notion of (∞,1)-categories
 
 -- 0-cat   -- 0-ob are elements, 0-hom is equivalence relation, setoid -- sets
--- 1-cat   -- 1-ob are spaces or 0-cat, 1-hom are maps
+-- 1-cat   -- 1-ob are sets or 0-cat, 1-hom are maps
 -- 2-cat-A -- 2-ob are 1-cat, 1-hom are functors/maps        \ bounded
 -- 2-cat-B -- 2-ob are 1-cat, 2-hom are ntrans/mapsOnMaps    / definition
 -- 3-cat-A -- 2-ob are (2-cat-A,2-cat-B), 1-hom are functors of product categories \

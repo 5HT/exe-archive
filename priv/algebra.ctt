@@ -393,3 +393,19 @@ lem_grouphom_inv (g h: group) (f: grouphom g h) (x: g.1.1)
     p2: Path h.1.1 (opGroup h (idGroup h) (f.1 x')) y'
         = <i> comp (<_> h.1.1) (p1 @ i) [(i=0) -> <j> opGroup h ((h.2.2.2).1 y @ j) (f.1 x'),
                                          (i=1) -> <_> y' ]
+
+--- http://cj-xu.github.io/talks/xu-m4c.pdf
+
+isPSh (G: U) (M: monoid): U
+  = (c: G -> M.1.1 -> G)
+  * (left: (g: G) -> Path G (c g M.2.2.2.1) g)
+  * ((g: G) (t r: M.1.1) -> Path G (c (c g t) r) (c g (M.2.1 t r)))
+
+PSh (M: monoid): U
+  = (G: U)
+  * (isPSh G M)
+
+NatPSh (M: monoid) (D G: PSh M): U
+  = (sigma: D.1 -> G.1)
+  * ((s: D.1)(t: M.1.1) -> Path G.1 (G.2.1 (sigma s) t) (sigma (D.2.1 s t)))
+
