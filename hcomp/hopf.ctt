@@ -6,6 +6,7 @@
 
 module hopf where
 
+prod (A B: U): U = (_: A) * B
 idfun (A: U) (a: A): A = a
 Pi (A: U) (B: A -> U): U = (x: A) -> B(x)
 Path (A: U) (a b: A): U = PathP (<i> A) a b
@@ -217,5 +218,4 @@ H_space: U
   = (A: U)
   * (e: A)
   * (mu: A -> A -> A)
-  * ((a:A) -> (_: Path A (mu e a) a)
-                * Path A (mu a e) a)
+  * ((a:A) -> prod (Path A (mu e a) a) (Path A (mu a e) a))
