@@ -124,7 +124,7 @@ groupoid: U = (X: cat) * isCatGroupoid X
 PathCat (X: U): cat = (X,\(x y: X)->Path X x y)
 
 -- Sample
-PathGrpd (X: U): groupoid = ((Ob,Hom),id,c,sym X,compPathInv X,compInvPath X,L,R,Q) where
+PathGrpd (X: U): groupoid = (PathCat X,id,c,sym X,compPathInv X,compInvPath X,L,R,Q) where
     Ob: U = X
     Hom (A B: Ob): U = Path X A B
     id (A: Ob): Path X A A = refl X A

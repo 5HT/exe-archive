@@ -420,3 +420,20 @@ isType (M: monoid) (G: PSh M) (A: G.1 -> U): U
 Type (M: monoid) (G: PSh M): U
   = (A: G.1 -> U)
   * isType M G A
+
+-- A coverage JJ on a monoid M is a collection of subsets of M,
+-- called the covering families, satisfying the coverage axiom:
+-- for any I∈J and t∈M,there exists a J∈JJ such that for each
+-- j∈J there are i∈I and r∈M such that t◦j=i◦r.
+
+-- A presheaf Γ is a sheaf on (M, JJ) if it satisfies the
+-- sheaf condition: for any I∈J and any compatible family
+-- of elements {γ_i∈Γ|i∈I} there exists a unique amalgamation γ∈Γ
+-- such that γ·i = γ_i for all i∈I. -}
+
+-- We need to add a (dependent) sheaf condition to the
+-- definition of types in the CwF of sheaves.
+-- When verifying the sheaf condition of the universe,
+-- we can only show that the amalgamation of a family
+-- of elements in Type(M) is unique up to (pointwise) isomorphism.
+
