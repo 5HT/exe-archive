@@ -127,6 +127,8 @@ compInvPath (A: U) (a b: A) (p: Path A a b)
                       (j=1) -> <_> b,
                       (i=1) -> <k> p @ j \/ k ]
 
+-- Groupoid Interpretation
+
 -- id_a o f = f
 compPathL (A:U) (a b:A) (p: Path A a b)
   : Path (Path A a b) p (composition A a a b (<_>a) p)
