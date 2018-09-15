@@ -72,6 +72,3 @@ homogeneous (A: U): U
   * ((x: A) -> Path A (transport (translationsFamily x) e) x)
 
 -- Image
-
-
-
