@@ -1,0 +1,12 @@
+module homology where
+import algebra
+
+kerGroup (G H: group) (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) * (Path H.1.1 (f g) H.2.1.2.2.1)
+
+kerRing  (G H: ring)  (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) * (Path H.1.1 (f g) H.2.2.1.1.1.2.2.1)
+
+kerAb (G H: abgroup)  (f: G.1.1 -> H.1.1): U
+  = (g: G.1.1) * (Path H.1.1 (f g) H.2.1.1.2.2.1)
+
