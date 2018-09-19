@@ -5,12 +5,32 @@
 
 module trunc where
 import path
+import prop
 
 data pTrunc (A : U) -- (-1)-trunc, mere proposition truncation
   = inc (a : A)
   | inh (x y : pTrunc A) <i>
         [ (i=0) -> x,
           (i=1) -> y ]
+
+pTruncIsProp (A : U) : isProp (pTrunc A) =
+ \ (x y : pTrunc A) -> <i> inh{pTrunc A} x y @ i
+
+pTruncRec (A B : U) (pP : isProp B) (f : A -> B) : pTrunc A -> B = split
+  inc a -> f a
+  inh x y @ i -> pP (pTruncRec A B pP f x) (pTruncRec A B pP f y) @ i
+
+pTruncElim (A : U) (B : (pTrunc A) -> U)
+           (pP : (x : pTrunc A) -> isProp (B x))
+           (f : (a : A) -> B (inc a))
+           : (x : pTrunc A) -> B x = split
+  inc a -> f a
+  inh x y @ i ->
+    lemPropF (pTrunc A) B pP x y
+      (<j> inh{pTrunc A} x y @ j)
+      (pTruncElim A B pP f x)
+      (pTruncElim A B pP f y)
+    @ i
 
 data sTrunc (A : U) -- (0)-trunc, set truncation
   = inc (a : A)
