@@ -1,5 +1,7 @@
 {- Étale Maps:
-   Copyright (c) Groupoid Infinity, 2014-2018 -}
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   EGA4 4.1 Etale maps -}
 
 module etale where
 import path

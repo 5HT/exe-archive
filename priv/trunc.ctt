@@ -1,4 +1,5 @@
 {- Truncations:
+   - Propositional (-1), Set (0), Groupoid (1).
    Copyright (c) Groupoid Infinity, 2014-2018.
 
    see HoTT 6.9 Truncations -}
@@ -40,16 +41,6 @@ data sTrunc (A : U) -- (0)-trunc, set truncation
           (j=0) -> a,
           (j=1) -> b ]
 
-data gTrunc (A : U) -- (1)-trunc, groupoid truncation
-  = inc (a : A)
-  | squashC (a b : gTrunc A) (p q : Path (gTrunc A) a b)
-            (r s: Path (Path (gTrunc A) a b) p q) <i j k>
-       [ (i=0) -> r @ j @ k
-       , (i=1) -> s @ j @ k
-       , (j=0) -> p @ k
-       , (j=1) -> q @ k
-       , (k=0) -> a
-       , (k=1) -> b]
 
 sTr (A : U) (a b : sTrunc A) (p q: Path (sTrunc A) a b) : Path (Path (sTrunc A) a b) p q =
   <i j> line {sTrunc A} a b p q @ i @ j
@@ -61,3 +52,13 @@ sTruncRec (A: U) (B: U) (bS: isSet B) (f: A -> B): sTrunc A -> B = split
                               (<k> sTruncRec A B bS f (p @ k))
                               (<k> sTruncRec A B bS f (q @ k))) @ i @ j
 
+data gTrunc (A : U) -- (1)-trunc, groupoid truncation
+  = inc (a : A)
+  | squashC (a b : gTrunc A) (p q : Path (gTrunc A) a b)
+            (r s: Path (Path (gTrunc A) a b) p q) <i j k>
+       [ (i=0) -> r @ j @ k
+       , (i=1) -> s @ j @ k
+       , (j=0) -> p @ k
+       , (j=1) -> q @ k
+       , (k=0) -> a
+       , (k=1) -> b]

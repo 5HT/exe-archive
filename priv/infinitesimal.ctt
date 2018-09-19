@@ -3,7 +3,6 @@
    Copyright (c) Groupoid Infinity, 2014-2018.
 
    HoTT 7.7 Modalities
-   EGA4 4.1 Etale maps
    https://ncatlab.org/schreiber/show/thesis+Wellen
    https://arxiv.org/pdf/1806.05966.pdf
 -}
@@ -11,10 +10,14 @@
 module infinitesimal where
 import path
 import equiv
+import trunc
 
 -- Infinitesimal modality, represents infinitesimal shape constructions
 
+-- Formation
 Im : U -> U = undefined
+
+-- Introduction
 ImUnit (A: U) : A -> Im A = undefined
 
 isCoreduced (A:U): U = isEquiv A (Im A) (ImUnit A)
@@ -36,39 +39,13 @@ ImNaturality (A B: U) (f: A -> B)
   : (a: A) -> Path (Im B) ((ImUnit B) (f a)) ((ImApp A B f) (ImUnit A a))
   = undefined
 
+-- Elimination
 ImInduction (A: U) (B: Im A -> U) (x: (a: Im A) -> isCoreduced (B a)) (y: (a: A) -> B (ImUnit A a))
   : (a: Im A) -> B a
   = undefined
 
+-- Beta
 ImComputeInduction (A: U) (B: Im A -> U) (c: (a: Im A) -> isCoreduced (B a)) (f: (a:A) -> B (ImUnit A a))(a:A)
   : Path (B (ImUnit A a)) (f a) ((ImInduction A B c f) (ImUnit A a))
   = undefined
 
--- Formal Disk
-
-isInfinitesimalClose (X: U) (x x': X): U = Path (Im X) (ImUnit X x) (ImUnit X x')
-formalDisc (X: U) (x: X): U = (x': X) * isInfinitesimalClose X x x'
-unitDisc (X: U) (x: Im X): U = (x': X) * Path (Im X) x (ImUnit X x')
-starDisc (X: U) (x: X): formalDisc X x  = (x, refl (Im X) (ImUnit X x))
-differential (X Y: U) (f: X -> Y) (x: X) : formalDisc X x -> formalDisc Y (f x) = undefined
-formalDiscBundle (A: U): U = (x: A) * formalDisc A x
-
-preservesInifinitesimalProximity (X Y: U) (x x': X) (f: X -> Y)
-  : isInfinitesimalClose X x x' -> isInfinitesimalClose Y (f x) (f x')
-  = undefined
-
--- Lemma 4.5
-lemma45 (A B C: U) (f: A -> B) (g: B -> C) (x: A)
-  : Path (formalDisc A x -> formalDisc C ((o A B C g f) x))
-         (differential A C (o A B C g f) x)
-         (o (formalDisc A x) (formalDisc B (f x)) (formalDisc C ((o A B C g f) x))
-            (differential B C g (f x)) (differential A B f x)) = undefined
-
--- Homogeneous Structure on A = (<i>A)
-
-homogeneous (A: U): U
-  = (e: A)
-  * (translationsFamily: (x: A) -> Path U A A) -- could be non-trivial
-  * ((x: A) -> Path A (transport (translationsFamily x) e) x)
-
--- Image

@@ -1,12 +1,17 @@
 {- Topology. Fiber Bundle:
    - Family, Fibrations and their Equality.
-
+   - F-fiber Bundle.
    https://groupoid.space/mltt/types/bundle/index.html
    Copyright (c) Groupoid Infinity, 2014-2018.
 -}
 
 module bundle where
 import iso
+import infinitesimal
+import pullback
+import trunc
+
+-- Fiber Bundle
 
 -- F_B  -> E -> B -- fiber bundle (F_B,E,p,B),
 -- F: B -> U      -- fiber, ex. Vector Space, Section Space, Dependent Product
@@ -33,7 +38,7 @@ import iso
 --
 -- pr_1 o h = p
 
-fiber (A B: U) (p: A -> B) (y: B): U = (x: A) * Path B (p x) y
+fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B (p x) y
 bundle: U = (E B: U) * (y: B) * (p: E -> B) * fiber E B p y
 
 -- Fiber
@@ -102,3 +107,53 @@ lem1 (B:U) (F: B -> U) (y: B) (x: F y)
                 (Path (F y) (transport (<i>F((refl B y)@i)) x) x)
        = <j> PathP (<i>F ((refl B y)@j\/i))
                    (comp (<i>F ((refl B y)@j/\i)) x [(j=0)-><_>x]) x
+
+data pTrunc2 (A : U) -- (-1)-trunc, mere proposition truncation
+  = inc2 (a : A)
+  | inh2 (x y : pTrunc2 A) <i>
+        [ (i=0) -> x,
+          (i=1) -> y ]
+
+
+-- Formal Disk Bundle
+
+isInfinitesimalClose (X: U) (a x': X): U = Path (Im X) (ImUnit X a) (ImUnit X x')
+formalDisc (X: U) (a: X): U = (x': X) * isInfinitesimalClose X a x'
+unitDisc (X: U) (x: Im X): U = (x': X) * Path (Im X) x (ImUnit X x')
+starDisc (X: U) (x: X): formalDisc X x  = (x, refl (Im X) (ImUnit X x))
+differential (X Y: U) (f: X -> Y) (x: X) : formalDisc X x -> formalDisc Y (f x) = undefined
+formalDiscBundle (A: U): U = (x: A) * formalDisc A x -- T_\infty(A) := \Sigma_{a:A}\mathbb{D}_a
+im1 (A B: U) (f: A -> B): U = (b: B) * pTrunc2 ((a:A) * Path B (f a) b)
+BAut (F: U): U = im1 unit U (\(x: unit) -> F)
+unitIm1 (A B: U) (f: A -> B): im1 A B f -> B = \(x: im1 A B f) -> x.1
+unitBAut (F: U): BAut F -> U = unitIm1 unit U (\(x: unit) -> F)
+unifamBAut (F: U): BAut F -> U = \(x: BAut F) -> x.1
+unifamOverBAut (F: U): U = Sigma (BAut F) (unifamBAut F)
+
+preservesInifinitesimalProximity (X Y: U) (x x': X) (f: X -> Y)
+  : isInfinitesimalClose X x x' -> isInfinitesimalClose Y (f x) (f x')
+  = undefined
+
+-- Lemma 4.5
+lemma45 (A B C: U) (f: A -> B) (g: B -> C) (x: A)
+  : Path (formalDisc A x -> formalDisc C ((o A B C g f) x))
+         (differential A C (o A B C g f) x)
+         (o (formalDisc A x) (formalDisc B (f x)) (formalDisc C ((o A B C g f) x))
+            (differential B C g (f x)) (differential A B f x)) = undefined
+
+-- Homogeneous Structure on A = (<i>A)
+
+homogeneous (A: U): U
+  = (e: A)
+  * (translationsFamily: (x: A) -> Path U A A) -- could be non-trivial
+  * ((x: A) -> Path A (transport (translationsFamily x) e) x)
+
+-- F-fiber Bundle
+
+classify (A' A: U) (E': A' -> U) (E: A -> U) (f: A' -> A): U
+  = (x: A') -> Path U (E'(x)) (E(f(x)))
+
+isFBundle (E B: U) (p: E -> B) (F: U): U
+  = (X: B -> BAut F)
+  * (classify B (BAut F) (\(b: B) -> fiber E B p b) (unitBAut F) X)
+
