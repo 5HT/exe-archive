@@ -129,11 +129,12 @@ isFBundle (E B: U) (p: E -> B) (F: U): U
   = (X: B -> BAut F)
   * (classify B (BAut F) (\(b: B) -> fiber E B p b) (unitBAut F) X)
 
+-- Theorem 4.3.7 diss
 FBundle (E B: U) (p: E -> B) (F: U) (x: isFBundle E B p F) (b: B)
   : pullbackSq E
     B (unifamOverBAut F) (BAut F)
     x.1 (\(x: unifamOverBAut F) -> x.1)
-    p (\(y: E) -> (x.1 b,(F,inc (tt,refl U F))))
+    p (\(y: E) -> (x.1 (p y),(F,inc (tt,refl U F))))
   = undefined
 
 preservesInifinitesimalProximity (X Y: U) (x x': X) (f: X -> Y)
