@@ -7,7 +7,6 @@ module interval where
 import equiv
 import iso
 import prop
-import set
 
 -- I = (X:U) -> isSet X -> (x y: X) -> Path X x y -> X
 
@@ -37,7 +36,6 @@ fromUnitK : (a : I) -> Path I (fromUnit (toUnit a)) a
 
 unitEqI: Path U unit I = isoPath unit I fromUnit toUnit fromUnitK toUnitK
 propI: isProp I = subst U isProp unit I unitEqI propUnit
-setI: isSet I = subst U isSet unit I unitEqI setUnit
 
 T: U = Path I i0 i0
 p0: T = refl I i0

@@ -10,7 +10,7 @@ import pointed
 import suspension
 
 -- Definition. Homotopy Groups of Spheres : \pi_{n}S^{m} = ||\Omega^{n}(S^{m})||_0
-piS (n: nat): nat -> U = split
+piS (n: nat): (m: nat) -> U = split
    zero   -> sTrunc (space (omega n (bool,false)))
    succ x -> sTrunc (space (omega n (Sn (succ x),north)))
 

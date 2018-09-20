@@ -30,8 +30,7 @@ isIso (A B: U): U
   = (f: A -> B)
   * (g: B -> A)
   * (s: section A B f g)
-  * (t: retract A B f g)
-  * unit
+  * (   retract A B f g)
 
 ISO: U
   = (A: U)
@@ -87,9 +86,9 @@ testIsoPath (A B : U) (f : A -> B) (g : B -> A)
 
 -- sigma version of isoPath
 isoToPath (i: ISO): Path U i.1 i.2.1
-  = isoPath i.1 i.2.1 i.2.2.1 i.2.2.2.1 i.2.2.2.2.1 i.2.2.2.2.2.1
+  = isoPath i.1 i.2.1 i.2.2.1 i.2.2.2.1 i.2.2.2.2.1 i.2.2.2.2.2
 
 -- A proof that two propositions with maps between them can be identified with each other
 propPath (A B: U) (f: A -> B) (g: B -> A) (pa: isProp A) (pb: isProp B): Path U A B
-  = isoToPath (A,B,f,g,(\ (b: B) -> pb (f (g b)) b),(\ (a: A) -> pa (g (f a)) a),tt)
+  = isoToPath (A,B,f,g,(\ (b: B) -> pb (f (g b)) b),(\ (a: A) -> pa (g (f a)) a))
 
