@@ -90,29 +90,38 @@ TrivialEqualsPi (B: U) (F: B -> U) (y: B)
 
 -- Local F-Bundle
 
+-- Definition (1) Dependent
+isFBundle1 (B: U) (p: B -> U) (F: U): U
+  = (x: (b: B) -> isContr (Path U (p b) F))
+  * ((x: Sigma B p) -> B)
+
+-- Definition (2) Non-Dependent
 im1 (A B: U) (f: A -> B): U = (b: B) * pTrunc ((a:A) * Path B (f a) b)
 BAut (F: U): U = im1 unit U (\(x: unit) -> F)
 unitIm1 (A B: U) (f: A -> B): im1 A B f -> B = \(x: im1 A B f) -> x.1
 unitBAut (F: U): BAut F -> U = unitIm1 unit U (\(x: unit) -> F)
-unifamOverBAut (F: U): U = (x: BAut F) * U
-
-classify (A' A: U) (E': A' -> U) (E: A -> U) (f: A' -> A): U
-  = (x: A') -> Path U (E'(x)) (E(f(x)))
-
--- Definition (1)
-isFBundle (E B: U) (p: E -> B) (F: U): U
+isFBundle2 (E B: U) (p: E -> B) (F: U): U
   = (X: B -> BAut F)
-  * (classify B (BAut F) (\(b: B) -> fiber E B p b) (unitBAut F) X)
+  * (classify B (BAut F) (\(b: B) -> fiber E B p b) (unitBAut F) X) where
+  classify (A' A: U) (E': A' -> U) (E: A -> U) (f: A' -> A): U
+    = (x: A') -> Path U (E'(x)) (E(f(x)))
 
--- Definition (2)
-isFBundle' (E B: U) (p: E -> B) (F: U): U
+-- Definition (3) Non-Dependent
+isFBundle3 (E B: U) (p: E -> B) (F: U): U
   = (V: U)
   * (v: surjective V B)
   * (v': prod V F -> E)
   * pullbackSq (prod V F) E V B p v.1 v' (\(x: prod V F) -> x.1)
 
+-- Definition (4) Dependent
+isFBundle4 (B: U) (p: B -> U) (F: U): U
+  = (V: U)
+  * (v: surjective V B)
+  * ((x: V) -> Path U (p (v.1 x)) F)
+
 -- Theorem 4.3.7
-FBundle (E B: U) (p: E -> B) (F: U) (x: isFBundle E B p F) (b: B)
+unifamOverBAut (F: U): U = (x: BAut F) * U
+FBundle (E B: U) (p: E -> B) (F: U) (x: isFBundle2 E B p F) (b: B)
   : pullbackSq E B (unifamOverBAut F) (BAut F)
     x.1 (\(x: unifamOverBAut F) -> x.1)
     p (\(y: E) -> (x.1 (p y),F))
