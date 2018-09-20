@@ -1,5 +1,6 @@
 {- Set Theory:
    - Collection of all sets is a groupoid.
+   - Path space between sets is a set.
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module collection where

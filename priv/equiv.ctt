@@ -1,12 +1,51 @@
 {- Equivalence:
+   - Surjective, Injective, Embedding, Hae;
    - Theorems, Gluening;
    - Univalence Type.
-   Copyright (c) Groupoid Infinity, 2014-2018. -}
+   Copyright (c) Groupoid Infinity, 2014-2018.
+
+   HoTT 4.6 Surjections and Embedding -}
 
 module equiv where
 import proto_equiv
 import sigma
 import retract
+import trunc
+
+isSurjective (A B: U) (f: A -> B): U
+  = (b: B) * pTrunc (fiber A B f b)
+
+surjective (A B: U): U
+  = (f: A -> B)
+  * isSurjective A B f
+
+isInjective (A B: U) (f: A -> B): U
+  = (x y: A) -> Path B (f x) (f y) -> Path A x y
+
+isInjective' (A B: U) (f: A -> B): U
+  = (b: B) -> isProp (fiber A B f b)
+
+injective (A B: U): U
+  = (f: A -> B)
+  * isInjective A B f
+
+isEmbedding (A B: U) (f: A -> B) : U
+  = (x y: A) -> isEquiv (Path A x y) (Path B (f x) (f y)) (cong A B f x y)
+
+embedding (A B: U): U
+  = (f: A -> B)
+  * isEmbedding A B f
+
+isHae (A B: U) (f: A -> B): U
+  = (g: B -> A)
+  * (eta_: Path (id A) (o A B A g f) (idfun A))
+  * (eps_: Path (id B) (o B A B f g) (idfun B))
+  * (p: Path U A B)
+  * ((x: A) -> HPath A B ((eta_ @ 0) x) ((eps_ @ 0) (f x)) p)
+
+hae (A B: U): U
+  = (f: A -> B)
+  * isHae A B f
 
 equivLemma (A B: U): (v w: equiv A B) -> Path (A -> B) v.1 w.1 -> Path (equiv A B) v w
   = lemSig (A -> B) (isEquiv A B) (propIsEquivDirect A B)

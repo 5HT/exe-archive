@@ -7,6 +7,7 @@
 module prop where
 import proto
 import path
+import sigma
 
 -- datatype properties: decideability, discretness, stability
 efq        (A: U): empty -> A = emptyRec A
@@ -96,9 +97,6 @@ decConst (A : U) : dec A -> exConst A = split
 stableConst (A : U) (sA: stable A) : exConst A =
  (\ (x:A) -> sA (dneg A x),\ (x y:A) -> <i>sA (propNeg (neg A) (dneg A x) (dneg A y) @ i))
 
-injective (A B : U) (f : A -> B) : U =
-  (a0 a1 : A) -> Path B (f a0) (f a1) -> Path A a0 a1
-
 ----------------------
 isContrProp (A : U) (h : isContr A) : isProp A =
   \(a b : A) -> <i> comp (<_> A) h.1 [ (i = 0) -> h.2 a, (i = 1) -> h.2 b ]
@@ -123,4 +121,13 @@ propIsContr (A : U) : isProp (isContr A) = lemProp (isContr A) rem where
 propIsProp (A : U) : isProp (isProp A) =
   \(f g : isProp A) -> <i> \(a b : A) ->
     propSet A f a b (f a b) (g a b) @ i
+
+corSigProp (A:U) (B:A-> U) (pB : (x:A) -> isProp (B x)) (t u : Sigma A B) (p:Path A t.1 u.1) :
+  isProp (PathP (<i>B (p@i)) t.2 u.2) = substInv U isProp T0 T1 rem rem1
+ where P : Path U (B t.1) (B u.1) = <i>B (p@i)
+       T0 : U = PathP P t.2 u.2
+       T1 : U = Path (B u.1) (transport P t.2) u.2
+       rem : Path U T0 T1 = pathSig0 A B t u p
+       v2 : B u.1 = transport P t.2
+       rem1 : isProp T1 = propSet (B u.1) (pB u.1) v2 u.2
 
