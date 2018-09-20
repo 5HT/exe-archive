@@ -1,9 +1,9 @@
 {- Topology. Fiber Bundle:
-   - Family, Fibrations and their Equality.
-   - F-fiber Bundle.
+   - Fiber Bundle;
+   - Trivial Fiber Bundle, Trivial = Pi;
+   - Local F-Bundle.
    https://groupoid.space/mltt/types/bundle/index.html
-   Copyright (c) Groupoid Infinity, 2014-2018.
--}
+   Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module bundle where
 import iso
@@ -12,6 +12,30 @@ import pullback
 import trunc
 
 -- Fiber Bundle
+
+-- A fiber bundle p : E -> B is required to be locally trivial,
+-- which might be witnessed by a pullback square like this:
+
+-- V × F ------> E
+--     |_|       |
+-- v*p |  (pb)   | p
+--     |         |
+--     v         v
+--     V ---v--> B
+
+-- NOTE: there is twisted hidden structure in p
+-- U = neighborhood in base B
+-- fibers locally behave like a products, but could be twisted
+
+--           h
+--           |
+-- p-inv (V) -> V * F
+--        |   /
+--    p --|  /-- pi1
+--        v /
+--        V
+--
+-- pr_1 o h = p
 
 -- F_B  -> E -> B -- fiber bundle (F_B,E,p,B),
 -- F: B -> U      -- fiber, ex. Vector Space, Section Space, Dependent Product
@@ -24,42 +48,13 @@ import trunc
 -- p^-1 = F       -- fiber is iso F_B
 -- T. E = B * F_B -- fiber bundle called trivial if total space is a cartesian product
 
--- NOTE: there is twisted hidden structure in p
--- U = neighborhood in base B
--- fibers locally behave like a products, but could be twisted
-
---           h
---           |
--- p-inv (U) -> U * F
---        |   /
---    p --|  /-- pr_1
---        V /
---        U
---
--- pr_1 o h = p
-
-fiber (E B: U) (p: E -> B) (y: B): U = (x: E) * Path B (p x) y
-bundle: U = (E B: U) * (y: B) * (p: E -> B) * fiber E B p y
-
--- Fiber
-Family    (B: U): U = B -> U
--- Fibration
+fiber (A B: U) (f: A -> B) (y: B): U = (x: A) * Path B (f x) y
+Family (B: U): U = B -> U
 Fibration (B: U): U = (X: U) * (X -> B)
 
--- Total Space of Fibrations or Fibred Space
-total   (B: U) (F: Family B): U = Sigma B F -- total space
-trivial (B: U) (F: Family B): total B F -> B = \ (x: total B F) -> x.1 -- proj_1
-homeo (B E: U) (F: Family B) (p: E -> B) (y: B): fiber E B p y -> total B F = undefined
-
-encode (B: U) (F: B -> U) (y: B) : fiber (total B F) B (trivial B F) y -> F y
-  = \ (x: fiber (total B F) B (trivial B F) y) -> subst B F x.1.1 y x.2 x.1.2
-
-decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
-  = \ (x: F y) -> ((y,x),refl B y)
-
--- Theorem (1) Trivial Fiber Bundle (F,B*F,pr1,B) equals Dependent Family F:B->U
-
--- Agda Style Proof:
+-- Trivial Fiber Bundle (F,B*F,pi1,B) equals Dependent Family F:B->U
+--
+-- Agda Syntax:
 -- https://paolocapriotti.com/blog/2013/02/20/families-and-fibrations/
 --
 --  F y = fiber (total B F) B (trivial B F) y
@@ -69,44 +64,57 @@ decode (B: U) (F: B -> U) (y: B) : F y -> fiber (total B F) B (trivial B F) y
 --      = (_: isContr B) * (F y)
 --      = F y
 
+encode (B: U) (F: B -> U) (y: B) : fiber (Sigma B F) B (pi1 B F) y -> F y
+  = \ (x: fiber (Sigma B F) B (pi1 B F) y) -> subst B F x.1.1 y x.2 x.1.2
+
+decode (B: U) (F: B -> U) (y: B) : F y -> fiber (Sigma B F) B (pi1 B F) y
+  = \ (x: F y) -> ((y,x),refl B y)
+
 lem2 (B: U) (F: B -> U) (y: B) (x: F y)
    : Path (F y) (comp (<i>F (refl B y @ i)) x []) x
    = <j> comp (<i>F ((refl B y) @ j/\i)) x [(j=1) -> <k>x]
 
-lem3 (B: U) (F: B -> U) (y: B) (x: fiber (total B F) B (trivial B F) y)
-   : Path (fiber (total B F) B (trivial B F) y) ((y,encode B F y x),refl B y) x
+lem3 (B: U) (F: B -> U) (y: B) (x: fiber (Sigma B F) B (pi1 B F) y)
+   : Path (fiber (Sigma B F) B (pi1 B F) y) ((y,encode B F y x),refl B y) x
    = <i> ((x.2 @ -i,comp (<j> F (x.2 @ -i /\ j)) x.1.2 [(i=1) -> <_> x.1.2 ]),<j> x.2 @ -i \/ j)
 
--- Cubical Syntax
-FiberPi (B: U) (F: B -> U) (y: B)
-  : Path U (fiber (total B F) B (trivial B F) y) (F y)
+TrivialEqualsPi (B: U) (F: B -> U) (y: B)
+  : Path U (fiber (Sigma B F) B (pi1 B F) y) (F y)
   = isoPath T A f g s t where
-    T: U = fiber (total B F) B (trivial B F) y
+    T: U = fiber (Sigma B F) B (pi1 B F) y
     A: U = F y
     f: T -> A = encode B F y
     g: A -> T = decode B F y
     s (x: A): Path A (f (g x)) x = lem2 B F y x
     t (x: T): Path T (g (f x)) x = lem3 B F y x
 
--- (2) The Sum of Fibers is Total Space
-TotalFam (B E: U) (p: E -> B)
-  : Path U (total B (fiber E B p)) E = undefined
+-- Local F-Bundle
 
--- (3) Fibrational Family is a point in Codomain
-FiberFamily (B E: U) (p: E -> B) (x: E)
-  : Path B (p x)
-           (trivial B (fiber E B p) (comp (<i> (TotalFam B E p) @ -i) x [])) = undefined
+im1 (A B: U) (f: A -> B): U = (b: B) * pTrunc ((a:A) * Path B (f a) b)
+BAut (F: U): U = im1 unit U (\(x: unit) -> F)
+unitIm1 (A B: U) (f: A -> B): im1 A B f -> B = \(x: im1 A B f) -> x.1
+unitBAut (F: U): BAut F -> U = unitIm1 unit U (\(x: unit) -> F)
+unifamOverBAut (F: U): U = (x: BAut F) * BAut F -- TODO:
 
--- (4) Family is Fibration
-FamilyFibration (B: U)
-  : Path U (Family B) (Fibration B) = undefined
+classify (A' A: U) (E': A' -> U) (E: A -> U) (f: A' -> A): U
+  = (x: A') -> Path U (E'(x)) (E(f(x)))
 
--- not used here
-lem1 (B:U) (F: B -> U) (y: B) (x: F y)
-       : PathP (<i>U) (PathP (<i>F ((refl B y)@i)) x x)
-                (Path (F y) (transport (<i>F((refl B y)@i)) x) x)
-       = <j> PathP (<i>F ((refl B y)@j\/i))
-                   (comp (<i>F ((refl B y)@j/\i)) x [(j=0)-><_>x]) x
+isFBundle (E B: U) (p: E -> B) (F: U): U
+  = (X: B -> BAut F)
+  * (classify B (BAut F) (\(b: B) -> fiber E B p b) (unitBAut F) X)
+
+isFBundle' (E B: U) (p: E -> B) (F: U): U
+  = (V: U)
+  * (v: surjective V B)
+  * (v': prod V F -> E)
+  * pullbackSq (prod V F) E V B p v.1 v' (\(x: prod V F) -> x.1)
+
+-- Theorem 4.3.7
+FBundle (E B: U) (p: E -> B) (F: U) (x: isFBundle E B p F) (b: B)
+  : pullbackSq E B (unifamOverBAut F) (BAut F)
+    x.1 (\(x: unifamOverBAut F) -> x.1)
+    p (\(y: E) -> (x.1 (p y),(F,inc (tt,refl U F))))
+  = undefined
 
 -- Formal Disk Bundle
 
@@ -116,54 +124,16 @@ unitDisc (X: U) (x: Im X): U = (x': X) * Path (Im X) x (ImUnit X x')
 starDisc (X: U) (x: X): formalDisc X x  = (x, refl (Im X) (ImUnit X x))
 differential (X Y: U) (f: X -> Y) (x: X) : formalDisc X x -> formalDisc Y (f x) = undefined
 formalDiscBundle (A: U): U = (x: A) * formalDisc A x -- T_\infty(A) := \Sigma_{a:A}\mathbb{D}_a
-im1 (A B: U) (f: A -> B): U = (b: B) * pTrunc ((a:A) * Path B (f a) b)
-BAut (F: U): U = im1 unit U (\(x: unit) -> F)
-unitIm1 (A B: U) (f: A -> B): im1 A B f -> B = \(x: im1 A B f) -> x.1
-unitBAut (F: U): BAut F -> U = unitIm1 unit U (\(x: unit) -> F)
-unifamOverBAut (F: U): U = (x: BAut F) * BAut F
 
--- F-bundle
-
-classify (A' A: U) (E': A' -> U) (E: A -> U) (f: A' -> A): U
-  = (x: A') -> Path U (E'(x)) (E(f(x)))
-
-isFBundle (E B: U) (p: E -> B) (F: U): U
-  = (X: B -> BAut F)
-  * (classify B (BAut F) (\(b: B) -> fiber E B p b) (unitBAut F) X)
-
--- A fiber bundle p : E -> B is required to be locally trivial,
--- which might be witnessed by a pullback square like this:
-
--- V × F ------> E
---     |_|       |
--- v*p |  (pb)   | p
---     |         |
---     v         v
---     V ---v--> B
-
-isFBundle' (E B: U) (p: E -> B) (F: U): U
-  = (V: U)
-  * (v: surjective V B)
-  * (v': prod V F -> E)
-  * pullbackSq (prod V F) E V B p v.1 v' (\(x: prod V F) -> x.1)
-
--- Theorem 4.3.7 diss
-FBundle (E B: U) (p: E -> B) (F: U) (x: isFBundle E B p F) (b: B)
-  : pullbackSq E B (unifamOverBAut F) (BAut F)
-    x.1 (\(x: unifamOverBAut F) -> x.1)
-    p (\(y: E) -> (x.1 (p y),(F,inc (tt,refl U F))))
-  = undefined
-
-preservesInifinitesimalProximity (X Y: U) (x x': X) (f: X -> Y)
-  : isInfinitesimalClose X x x' -> isInfinitesimalClose Y (f x) (f x')
-  = undefined
-
--- Lemma 4.5
 lemma45 (A B C: U) (f: A -> B) (g: B -> C) (x: A)
   : Path (formalDisc A x -> formalDisc C ((o A B C g f) x))
          (differential A C (o A B C g f) x)
          (o (formalDisc A x) (formalDisc B (f x)) (formalDisc C ((o A B C g f) x))
             (differential B C g (f x)) (differential A B f x)) = undefined
+
+preservesInifinitesimalProximity (X Y: U) (x x': X) (f: X -> Y)
+  : isInfinitesimalClose X x x' -> isInfinitesimalClose Y (f x) (f x')
+  = undefined
 
 -- Homogeneous Structure on A = (<i>A)
 

@@ -127,3 +127,10 @@ corFib1 (A: U) (F G: A -> U) (a: A) (fa ga: F a -> G a) (p: Path A a a)
         (h: (u: F a) -> Path (G a) (subst A G a a p (fa u)) (ga (subst A F a a p u)))
       : PathP (<i>F (p@i) -> G (p@i)) fa ga
       = comp (lemFib1 A F G a fa a p ga) (<i>\ (u:F a) -> h u @ i) []
+
+-- not used here
+lem1 (B:U) (F: B -> U) (y: B) (x: F y)
+       : PathP (<i>U) (PathP (<i>F ((refl B y)@i)) x x)
+                (Path (F y) (transport (<i>F((refl B y)@i)) x) x)
+       = <j> PathP (<i>F ((refl B y)@j\/i))
+                   (comp (<i>F ((refl B y)@j/\i)) x [(j=0)-><_>x]) x
