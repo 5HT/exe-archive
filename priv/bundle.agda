@@ -481,6 +481,13 @@ equivalence-of_and_over_ : ∀ {i} {A′ : 𝒰₀} {A : 𝒰 i} (E′ : A′ �
 equivalence-of E′ and E over f = (x : _) → E′(x) ≃ E(f x)
 
 -- Definition (2)
+record _is-a″_-fiber-bundle″ {B : 𝒰₀} (φ : B → 𝒰₀) (F : 𝒰₀) : 𝒰₁ where 
+    field
+      V : 𝒰₀
+      v : V ↠ B
+      pullback-trivializes : (x : V) → φ(v $↠ x) ≃ F
+
+-- Definition (3)
 record _is-a′_-fiber-bundle′ {E B : 𝒰₀} (p : E → B) (F : 𝒰₀) : 𝒰₁ where
     field
       χ : B → BAut F
@@ -492,7 +499,7 @@ pullback-square-with-right f bottom g top z₁ left z₂ = pullback-square f g z
 _is-a-product-with-projections_and_ : ∀ {A B : 𝒰₀} (Z : 𝒰₀) (z₁ : Z → A) (z₂ : Z → B) → 𝒰₀
 Z is-a-product-with-projections z₁ and z₂ = pullback-square-with-right (λ a → ∗) bottom (λ b → ∗) top z₁ left z₂
 
--- Definition (3)
+-- Definition (4)
 record _is-a‴_-fiber-bundle‴ {E B : 𝒰₀} (φ : E → B) (F : 𝒰₀) : 𝒰₁ where
     field
       V : 𝒰₀
@@ -503,9 +510,3 @@ record _is-a‴_-fiber-bundle‴ {E B : 𝒰₀} (φ : E → B) (F : 𝒰₀) : 
             top v′
             left π₁
 
--- Definition (4)
-record _is-a″_-fiber-bundle″ {B : 𝒰₀} (φ : B → 𝒰₀) (F : 𝒰₀) : 𝒰₁ where 
-    field
-      V : 𝒰₀
-      v : V ↠ B
-      pullback-trivializes : (x : V) → φ(v $↠ x) ≃ F

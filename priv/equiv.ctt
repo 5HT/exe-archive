@@ -40,8 +40,7 @@ isHae (A B: U) (f: A -> B): U
   = (g: B -> A)
   * (eta_: Path (id A) (o A B A g f) (idfun A))
   * (eps_: Path (id B) (o B A B f g) (idfun B))
-  * (p: Path U A B)
-  * ((x: A) -> HPath A B ((eta_ @ 0) x) ((eps_ @ 0) (f x)) p)
+  * ((x: A) -> Path B (f ((eta_ @ 0) x)) ((eps_ @ 0) (f x)))
 
 hae (A B: U): U
   = (f: A -> B)
