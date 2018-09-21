@@ -22,14 +22,15 @@ encode (x:S1) (p:Path S1 base x)
 decode : (x:S1) -> helix x -> Path S1 base x = split
   base -> loopIt
   loop @ i -> rem @ i where
-    T : U = Z -> loopS1
-    G (x:S1) : U =  Path S1 base x
-    p : Path U T T = <j> helix (loop1@j) -> Path S1 base (loop1@j)
-    rem2 (n:Z) : Path loopS1 (oneTurn (loopIt n)) (loopIt (sucZ n)) = <i> lem1It n @ -i
-    rem1 (n:Z) : Path loopS1 (subst S1 G base base loop1 (loopIt n)) (loopIt (subst S1 helix base base loop1 n))
-      = comp (<i> Path loopS1 (oneTurn (loopIt n))
-        (loopIt (testIsoPath Z Z sucZ predZ sucpredZ predsucZ n @ i))) (rem2 n) []
-    rem : PathP p loopIt loopIt = corFib1 S1 helix G base loopIt loopIt loop1 rem1
+    p : Path U (Z -> loopS1) (Z -> loopS1)
+      = <j> helix (loop1@j) -> Path S1 base (loop1@j)
+    rem : PathP p loopIt loopIt
+      = corFib1 S1 helix (\(x:S1)->Path S1 base x) base
+        loopIt loopIt loop1 (\(n:Z) ->
+        comp (<i> Path loopS1 (oneTurn (loopIt n))
+             (loopIt (testIsoPath Z Z sucZ predZ
+                      sucpredZ predsucZ n @ i)))
+             (<i>(lem1It n)@-i) [])
 
 lemTurn (n: nat): (b: bool) -> Path Z (comp (hlx b) (ze n b) []) (ze (succ n) b) = split
    false -> <i> inl (succ (comp (<_>nat) (comp (<_>nat) n [(i=1) -> <_>n]) [(i=1) -> <_>n]))

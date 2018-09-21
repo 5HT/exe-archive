@@ -92,3 +92,23 @@ isoToPath (i: ISO): Path U i.1 i.2.1
 propPath (A B: U) (f: A -> B) (g: B -> A) (pa: isProp A) (pb: isProp B): Path U A B
   = isoToPath (A,B,f,g,(\ (b: B) -> pb (f (g b)) b),(\ (a: A) -> pa (g (f a)) a))
 
+iso_Form (A B: U)
+  : U
+  = isIso A B -> Path U A B
+
+iso_Intro (A B: U)
+  : iso_Form A B
+  = undefined
+
+iso_Elim (A B: U)
+  : Path U A B -> isIso A B
+  = undefined
+
+iso_Comp (A B : U) (p : Path U A B)
+  : Path (Path U A B) (iso_Intro A B (iso_Elim A B p)) p
+  = undefined
+
+iso_Uniq (A B : U) (p: isIso A B)
+  : Path (isIso A B) (iso_Elim A B (iso_Intro A B p)) p
+  = undefined
+
