@@ -1,3 +1,8 @@
+{- CW-Comlexes:
+   Copyright (c) 2016-2018 Groupoid Infinity
+
+   HoTT -}
+
 module cw where
 import pushout
 
