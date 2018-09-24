@@ -12,7 +12,6 @@ install:
   - wget http://ns.synrc.com/publications/cubical
   - chmod +x cubical
   - export PATH=$PATH:$PWD
-  - uname -a
   - ./cubical -b priv/adj.ctt
   - ./mad dep com pla bun cub
 script:
