@@ -13,3 +13,4 @@ install:
   - chmod +x cubical
   - export PATH=$PATH:$PWD
   - "./mad dep com pla bun cub"
+  - "./mad com"
