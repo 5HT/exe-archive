@@ -7,6 +7,8 @@
 
 module sip where
 import cat
+import prop
+import iso_sigma
 
 structure (X: precategory): U
   = (P: carrier X -> U)

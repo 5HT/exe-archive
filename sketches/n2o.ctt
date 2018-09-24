@@ -1,0 +1,55 @@
+module n2o where
+import list
+
+binary: U  = list nat
+
+data ok    = ok (_: binary)
+data error = error (_: binary)
+data ftp   = ftp (id sid filename meta size offset block datum status: binary)
+data rest  = get | put | delete | exists | post | options
+data heart = ping | io (_: either ok error)
+
+data kvs   = get
+           | put
+           | delete
+           | add
+           | remove
+           | join
+           | fold
+           | index
+           | next
+           | prev
+
+data bpe   = create
+           | event
+           | complete
+           | amend
+           | run
+           | until
+
+data nitro = pickle (source pickled args: binary)
+           | client (id: nat) (topic _: binary)
+           | server (_: binary)
+           | flush (_: binary)
+           | direct (id d: binary)
+           | io (_: either ok error)
+           | init (_: binary)
+
+data n2o   = kvs
+           | bpe
+           | nitro
+           | ftp
+           | rest
+           | heart
+
+data mqtt  = con
+           | discon
+           | sub
+           | unsub
+           | created
+           | subscribed
+           | unsubscribed
+           | terminated
+           | pub
+           | deliverred
+           | ack

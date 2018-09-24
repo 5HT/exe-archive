@@ -2,7 +2,8 @@
    - Monoid and CMonoid;
    - Group and AbGroup;
    - Ring and AbRing;
-   - Hom sequence.
+   - Hom sequence;
+   - Presheaf Type Theory.
    Copyright (c) Groupoid Infinity, 2017-1018.
 
    see HoTT 6.11 Algebra -}
