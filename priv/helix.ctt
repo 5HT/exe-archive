@@ -1,4 +1,6 @@
--- The loop space of the circle is equal to Z
+{- Helix:
+   Copyright (c) Groupoid Infinity, 2016-2018. -}
+
 module helix where
 import s1
 import pi

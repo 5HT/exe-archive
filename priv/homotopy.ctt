@@ -3,7 +3,7 @@
    - Loop Space of S1 equals to Z.
    Copyright (c) Groupoid Infinity, 2016-2018 -}
 
-module euler where
+module homotopy where
 import s1
 import trunc
 import pointed

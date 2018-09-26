@@ -4,10 +4,8 @@
    - Limits;
    - Adjunctions.
    Copyright (c) Groupoid Infinity, 2017-2018.
-   Distributed under the terms of MIT License.
 
-   see HoTT 9.3 Adjunctions.
--}
+   HoTT 9.3 Adjunctions. -}
 
 module adj where
 import cat

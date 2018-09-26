@@ -2,7 +2,7 @@
    - Prop Theorems;
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 3.3 Mere propositions. -}
+   HoTT 3.3 Mere propositions. -}
 
 module prop where
 import proto

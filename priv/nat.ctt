@@ -3,8 +3,8 @@
    - Polymorphic funtions.
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 1.9 The natural numbers
-   see HoTT 2.13 Natural numbers -}
+   HoTT 1.9 The natural numbers
+   HoTT 2.13 Natural numbers -}
 
 module nat where
 

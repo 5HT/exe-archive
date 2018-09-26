@@ -3,7 +3,7 @@
    - Theorems are in bool_theory module.
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 1.8 The type of booleans -}
+   HoTT 1.8 The type of booleans -}
 
 module bool where
 import proto

@@ -1,8 +1,8 @@
 {- HIT:
-   - Circle HIT.
+   - 1-Sphere HIT.
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 6.4 Circles and spheres -}
+   HoTT 6.4 Circles and spheres -}
 
 module s1 where
 import int

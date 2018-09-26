@@ -1,8 +1,6 @@
 {- Bishop Equivalence:
    - Equivalence Classes.
-   Copyright (c) Groupoid Infinity, 2017-2018.
-   Distributed under the terms of MIT License.
--}
+   Copyright (c) Groupoid Infinity, 2017-2018. -}
 
 module bishop where
 import proto

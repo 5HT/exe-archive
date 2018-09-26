@@ -1,4 +1,4 @@
-{- Vector.
+{- Vector:
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module vector where

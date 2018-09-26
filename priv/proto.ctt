@@ -41,10 +41,10 @@ eitherInd (A B: U) (C: either A B -> U)
         : (x: either A B) -> C x
         = split { inl i -> x i ; inr j -> y j }
 
--- see HoTT 1.7 Coproduct types
--- see HoTT 2.12 Coproducts
--- see HoTT 2.6 Cartesian product types
--- see HoTT 2.8 The unit type
+-- HoTT 1.7 Coproduct types
+-- HoTT 2.12 Coproducts
+-- HoTT 2.6 Cartesian product types
+-- HoTT 2.8 The unit type
 
 -- functions proto_pi ?
 id          (A: U): U = A -> A

@@ -1,8 +1,7 @@
-{- Topology. Fiber Bundle:
+{- Fiber Bundle: https://groupoid.space/mltt/types/bundle/
    - Fiber Bundle;
    - Trivial Fiber Bundle, Trivial = Pi;
    - Local F-Bundle (4 definitions).
-   https://groupoid.space/mltt/types/bundle/index.html
    Copyright (c) Groupoid Infinity, 2014-2018. -}
 
 module bundle where
@@ -134,7 +133,7 @@ formalDisc (X: U) (a: X): U = (x': X) * isInfinitesimalClose X a x'
 unitDisc (X: U) (x: Im X): U = (x': X) * Path (Im X) x (ImUnit X x')
 starDisc (X: U) (x: X): formalDisc X x  = (x, refl (Im X) (ImUnit X x))
 differential (X Y: U) (f: X -> Y) (x: X) : formalDisc X x -> formalDisc Y (f x) = undefined
-formalDiscBundle (A: U): U = (x: A) * formalDisc A x -- T_\infty(A) := \Sigma_{a:A}\mathbb{D}_a
+formalDiscBundle (A: U): U = (a: A) * formalDisc A a -- T_\infty(A) := \Sigma_{a:A}\mathbb{D}_a
 
 lemma45 (A B C: U) (f: A -> B) (g: B -> C) (x: A)
   : Path (formalDisc A x -> formalDisc C ((o A B C g f) x))

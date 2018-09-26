@@ -1,7 +1,7 @@
 {- Homotopy Pushout:
    Copyright (c) Groupoid Infinity, 2014-2018.
 
-   see HoTT 6.8 Pushouts -}
+   HoTT 6.8 Pushouts -}
 
 module pushout where
 import proto
