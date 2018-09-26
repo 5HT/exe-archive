@@ -1,14 +1,14 @@
 module buddhism where
-import equiv
+import path
 
 concept (o: U): U
   = o -> U
 
-nondual (o: U) (p: concept o): U
-  = (x y: o) -> Path U (p x) (p y)
-
 allpaths (o: U): U
   = (x y: o) -> Path o x y
+
+nondual (o: U) (p: concept o): U
+  = (x y: o) -> Path U (p x) (p y)
 
 forward (o:U): ((p: concept o) -> nondual o p) -> allpaths o
   = \(nd: (p: concept o) -> nondual o p) (a b: o)
