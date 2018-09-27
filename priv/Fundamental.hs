@@ -105,9 +105,9 @@ subst e v w ((I u):as) = if (e v u) then (invert w) ++ (subst e v w as)
                                     else (I u): (subst e v w as)
 
 
- :: (GWord v) -> [[GWord v]]
- [a] = [[[],[a],[]]]
- (a:as) = [[],[a],as]: (adjoinleft a ( as))
+parts :: (GWord v) -> [[GWord v]]
+parts [a] = [[[],[a],[]]]
+parts (a:as) = [[],[a],as]: (adjoinleft a (parts as))
 
 part1 :: [GWord v] -> (GWord v)
 part1 [l,[c],r] = l
@@ -125,7 +125,7 @@ mayisolate e [u,[(I x)],v] = (not (occ x e u)) && (not (occ x e v))
 mayisolate e ws = False
 
 isolcandidates :: (Eqtest v) -> (GWord v) -> [[GWord v]]
-isolcandidates e w = filter (\x -> mayisolate e x) ( w)
+isolcandidates e w = filter (\x -> mayisolate e x) (parts w)
 
 showGen u = u
 
