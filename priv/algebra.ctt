@@ -171,7 +171,7 @@ proppreservesId (A B: U) (sB: isSet B) (iA: A) (iB: B) (f: A -> B)
 
 isMonoid (M: SET): U
   = (op: M.1 -> M.1 -> M.1)
-  * (_: isAssociative M.1 op)
+  * (assoc: isAssociative M.1 op)
   * (id: M.1)
   * (hasIdentity M.1 op id)
 

@@ -25,8 +25,17 @@ isPrecategory (C: cat): U
   * ((x y z w: C.1) -> (f: C.2 x y) -> (g: C.2 y z) -> (h: C.2 z w) ->
     Path (C.2 x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
 
--- type refinment: algebraic structure and its theorems
-precategory: U = (C: cat) * isPrecategory C
+-- general precategory
+precategory: U
+  = (C: cat)
+  * isPrecategory C
+
+-- pointed category with zero object
+ptcategory: U
+  = (C: cat)
+  * (pre: isPrecategory C)
+  * (z: C.1) -- zero object
+  * ((x: C.1) -> C.2 z x -> C.2 x z) -- 0 -> A -> 0
 
 -- Public Accessors
 carrier (C: precategory): U = C.1.1
