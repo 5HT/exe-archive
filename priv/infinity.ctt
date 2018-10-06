@@ -12,7 +12,9 @@ name: U = list nat
 data alg = z | o | v (_: name) | max (a b: alg)
              | min (a b: alg)  | inv (a: alg)
 
+
 mutual
+
 
 data lang
    = PTS (_: pts)
@@ -21,12 +23,13 @@ data lang
    | INDUCTION (_: ind)
    | HTS (_: hts)
 
+
 data pts
-   = star             (n: nat)
-   | var    (x: name) (l: nat)
-   | pi     (x: name) (l: nat) (d c: lang)
-   | lambda (x: name) (l: nat) (d c: lang)
-   | app                       (f a: lang)
+   = star           (n: nat)
+   | var  (x: name) (l: nat)
+   | pi   (x: name) (l: nat) (f: lang)
+   | lambda  (x: name) (l: nat) (f: lang)
+   | app                     (f a: lang)
 
 data exists
    = sigma (n: name) (a b: lang)

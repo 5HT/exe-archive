@@ -134,6 +134,13 @@ abcategory: U
 -- (f + g) o h = f o h + g o h
   * U
 
+--complex (a: abcategory): U
+--  = (objects: (n: nat) -> a.1)
+--  * (morphisms: (n: nat) -> a.2.1)
+--  * ((n: nat) -> Path a.1 (a.2.2.1 (objects n) (objects (succ n)) (objects (succ (succ n)))
+--                                   (morphisms (succ n)) (morphisms n)) (a.2.2.2.2.2.2.2.2.1))
+
+
 instance: abcategory = (Ob,Hom,id,c,homSet,L,R,Q,e,zer,mul,sum,pi1,pi2,inl,inr,Ob) where
     Ob: U = unit
     Hom (x y: Ob): U = abgroup
