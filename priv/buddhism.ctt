@@ -1,18 +1,15 @@
 module buddhism where
 import path
 
-concept (o: U): U
-  = o -> U
+-- from Favonia's PhD
 
-allpaths (o: U): U
-  = (x y: o) -> Path o x y
+concept (o: U): U = o -> U
+allpaths (o: U): U = (x y: o) -> Path o x y
+nondual (o: U) (p: concept o): U = (x y: o) -> Path U (p x) (p y)
 
-nondual (o: U) (p: concept o): U
-  = (x y: o) -> Path U (p x) (p y)
-
-forward (o:U): ((p: concept o) -> nondual o p) -> allpaths o
+encode (o:U): ((p: concept o) -> nondual o p) -> allpaths o
   = \(nd: (p: concept o) -> nondual o p) (a b: o)
   -> coerce (Path o a a) (Path o a b) (nd (\(z:o)->Path o a z) a b) (refl o a)
 
-backward (o:U): allpaths o -> ((p: concept o) -> nondual o p)
+decode (o:U): allpaths o -> ((p: concept o) -> nondual o p)
   = \(all: allpaths o)(p: concept o)(x y: o) -> cong o U p x y (all x y)
