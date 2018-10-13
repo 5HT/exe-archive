@@ -98,11 +98,17 @@ iso_Form (A B: U)
 
 iso_Intro (A B: U)
   : iso_Form A B
-  = undefined
+  = \(x: isIso A B) -> isoToPath (A,B,x)
 
 iso_Elim (A B: U)
   : Path U A B -> isIso A B
-  = undefined
+  = \(p: Path U A B) ->
+   (coerce A B p ,
+   coerce B A (<i>p@-i) ,
+   x p,
+   y p) where
+   x (p: Path U A B): section A B (coerce A B p) (coerce B A (<i>p@-i)) = undefined
+   y (p: Path U A B): retract A B (coerce A B p) (coerce B A (<i>p@-i)) = undefined
 
 iso_Comp (A B : U) (p : Path U A B)
   : Path (Path U A B) (iso_Intro A B (iso_Elim A B p)) p

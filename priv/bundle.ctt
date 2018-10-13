@@ -70,8 +70,8 @@ decode (B: U) (F: B -> U) (y: B) : F y -> fiber (Sigma B F) B (pi1 B F) y
   = \ (x: F y) -> ((y,x),refl B y)
 
 lem2 (B: U) (F: B -> U) (y: B) (x: F y)
-   : Path (F y) (comp (<i>F (refl B y @ i)) x []) x
-   = <j> comp (<i>F ((refl B y) @ j/\i)) x [(j=1) -> <k>x]
+   : Path (F y) (comp (<i>F (refl B y @ i))    x []) x
+           = <j> comp (<i>F (refl B y @ j/\i)) x [(j=1) -> <k>x]
 
 lem3 (B: U) (F: B -> U) (y: B) (x: fiber (Sigma B F) B (pi1 B F) y)
    : Path (fiber (Sigma B F) B (pi1 B F) y) ((y,encode B F y x),refl B y) x

@@ -124,14 +124,15 @@ retFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x) (x0:A) (z0:C x0)
                                    (i=1) -> <j> f x0 (comp (<k> B x0) u.1 [(j=0) -> <k> u.1,
                                                                            (l=1) -> <k>u.1 ])])
 
-equivFunFib (A:U) (B C : A->U) (f : (x:A) -> B x -> C x)
-            (cB : isContr (Sigma A B)) (cC : isContr (Sigma A C)) (x:A)
-          : isEquiv (B x) (C x) (f x)
-          = \ (z:C x) -> retIsContr (fiber (B x) (C x) (f x) z)
-                                    (fiber (Sigma A B) (Sigma A C) (total A B C f) (x,z))
-                                    (funFib1 A B C f x z)
-                                    (funFib2 A B C f x z)
-                                    (retFunFib A B C f x z)
-                                    (isEquivContr (Sigma A B) (Sigma A C) cB cC
-                                                  (total A B C f) (x,z))
+equivFunFib (A: U) (B C: A -> U)
+    (f: (x:A) -> B x -> C x)
+    (cB: isContr (Sigma A B)) (cC: isContr (Sigma A C)) (x: A)
+  : isEquiv (B x) (C x) (f x)
+  = \ (z:C x) -> retIsContr (fiber (B x) (C x) (f x) z)
+                            (fiber (Sigma A B) (Sigma A C) (total A B C f) (x,z))
+                            (funFib1 A B C f x z)
+                            (funFib2 A B C f x z)
+                            (retFunFib A B C f x z)
+                            (isEquivContr (Sigma A B) (Sigma A C) cB cC
+                                          (total A B C f) (x,z))
 

@@ -188,6 +188,12 @@ isAbGroup (G: SET): U
   = (g: isGroup G)
   * (isCommutative G.1 g.1.1)
 
+isDifferentialGroup (G: SET): U
+  = (g: isGroup G)
+  * (comm: isCommutative G.1 g.1.1)
+  * (boundary: G.1 -> G.1)
+  * ((x: G.1) -> Path G.1 (boundary (boundary x)) g.1.2.2.1)
+
 isRing (R: SET): U
   = (mul: isMonoid R)
   * (add: isAbGroup R)
