@@ -11,32 +11,24 @@ import proto
 import prop
 import path
 
--- Pi Rules
-
 -- Pi Formation
-Pi (A: U) (B: A -> U)
-  : U
-  = (x: A) -> B(x)
+Pi (A: U) (B: A -> U) : U = (x:A) -> B(x)
 
 -- Pi Intro
-lam (A: U) (B: A -> U) (a: A) (b: B a)
-  : A -> B a
-  = \(x: A) -> b
+lam (A: U) (B: A -> U) (b: Pi A B): Pi A B = \(x: A) -> b x
 
 -- Pi Elim
-app (A: U) (B: A -> U) (a: A) (f: A -> B a)
-  : B a
-  = f a
+app (A: U) (B: A -> U) (f: Pi A B) (a: A): B a = f a
 
 -- Pi Computation
-Pi_Beta (A: U) (B: A -> U) (a: A) (f: A -> B a)
-  : Path (B a) (app A B a (lam A B a (f a))) (f a)
-  = refl (B a) (f a)
+Pi_Beta (A: U) (B: A -> U) (f: Pi A B)
+  : Path (Pi A B) (\(x:A) -> f x) f
+  = refl (Pi A B) f
 
 -- Pi Uniqueness
-Pi_Eta (A: U) (B: A -> U) (a: A) (f: A -> B a)
-  : Path (A -> B a) f (\(x:A) -> f x)
-  = refl (A -> B a) f
+Pi_Eta (A: U) (B: A -> U) (f: Pi A B)
+  : Path (Pi A B) f (\(x:A) -> f x)
+  = refl (Pi A B) f
 
 -- FunExt Type
 funext_form (A B: U) (f g: A -> B): U

@@ -100,8 +100,6 @@ iso_Intro (A B: U)
   : iso_Form A B
   = \(x: isIso A B) -> isoToPath (A,B,x)
 
-section (A B: U) (f: A -> B) (g: B -> A): U = (b: B) -> Path B (f (g b)) b
-retract (A B: U) (f: A -> B) (g: B -> A): U = (a: A) -> Path A (g (f a)) a
 
 iso_Elim (A B: U)
   : Path U A B -> isIso A B
@@ -109,11 +107,6 @@ iso_Elim (A B: U)
      (coerce A B p,coerce B A (<i>p@-i), x p,y p) where
       x (p: Path U A B): section A B (coerce A B p) (coerce B A (<i>p@-i)) = undefined
       y (p: Path U A B): retract A B (coerce A B p) (coerce B A (<i>p@-i)) = undefined
--- TODO:
-invEq (A B:U)(w:equiv A B)(y:B): A = (w.2 y).1.1
-retEq (A B:U)(w:equiv A B)(y:B): Path B (w.1 (invEq A B w y)) y = <i> (w.2 y).1.2@-i
-secEq (A B:U)(w:equiv A B)(x:A): Path A (invEq A B w (w.1 x)) x = <i> ((w.2(w.1 x)).2(x,<j>w.1 x)@i).1
-pathToEquiv (A B: U) (p: Path U A B): equiv A B = subst U (equiv A) A B p (idEquiv A)
 
 iso_Comp (A B : U) (p : Path U A B)
   : Path (Path U A B) (iso_Intro A B (iso_Elim A B p)) p
@@ -122,4 +115,10 @@ iso_Comp (A B : U) (p : Path U A B)
 iso_Uniq (A B : U) (p: isIso A B)
   : Path (isIso A B) (iso_Elim A B (iso_Intro A B p)) p
   = undefined
+
+IsoIso (A B: U): isIso (isIso A B) (Path U A B)
+  = (iso_Intro A B,iso_Elim A B,iso_Comp A B,iso_Uniq A B)
+
+PiIso (A: U) (B: A -> U): isIso (Pi A B) (Pi A B)
+  = (lam A B,app A B,Pi_Beta A B,Pi_Eta A B)
 
