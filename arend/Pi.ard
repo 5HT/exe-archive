@@ -1,0 +1,13 @@
+
+\func Pi (A : \Type) (B : A -> \Type) : \Type => \Pi (x : A) -> B x
+
+\func lam (A : \Type) (B : A -> \Type) (b : Pi A B) : Pi A B => \lam (x : A) => b x
+
+\func app (A : \Type) (B : A -> \Type) (f : Pi A B) (a : A) : B a => f a
+
+\func beta (A : \Type) (B : A -> \Type) (f : Pi A B) (a : A) : f a = (\lam (x : A) => f x) a
+   => path (\lam i => f a)
+
+\func eta (A : \Type) (B : A -> \Type) (f : Pi A B) : f = (\lam (x : A) => f x)
+   => path (\lam i => f)
+

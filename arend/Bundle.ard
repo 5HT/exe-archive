@@ -1,15 +1,15 @@
 
-\func subst (A : \Type) (B : A -> \Type) (a a' : A) (p : a = a') (b : B a) : B a'
-  => coe (\lam i => B (p @ i)) b right
+\import Path
 
-\func fiber (A B : \Type) (f : A -> B) (base : B) => \Sigma (x : A) (f x = base)
+\func fiber (A B : \Type) (f : A -> B) (base : B)
+   => \Sigma (x : A) (f x = base)
 
 \func encode (B : \Type) (F : B -> \Type) (y : B) :
-  fiber (\Sigma (x : B) (F x)) B (\lam (p : \Sigma (x : B) (F x)) => p.1) y -> F y
-  => \lam (x : fiber (\Sigma (x : B) (F x)) B (\lam (p : \Sigma (x : B) (F x)) => p.1) y)
-  => subst B F x.1.1 y x.2 x.1.2
+      fiber (\Sigma (x : B) (F x)) B (\lam (p : \Sigma (x : B) (F x)) => p.1) y -> F y
+   => \lam (x : fiber (\Sigma (x : B) (F x)) B (\lam (p : \Sigma (x : B) (F x)) => p.1) y)
+   => subst B F x.1.1 y x.2 x.1.2
 
 \func decode (B : \Type) (F : B -> \Type) (y : B) :
-  F y -> fiber (\Sigma (x : B) (F x)) B (\lam (p : \Sigma (x : B) (F x)) => p.1) y
-  => \lam (x : F y) => ((y,x),path (\lam i => y))
+      F y -> fiber (\Sigma (x : B) (F x)) B (\lam (p : \Sigma (x : B) (F x)) => p.1) y
+   => \lam (x : F y) => ((y,x),path (\lam i => y))
 

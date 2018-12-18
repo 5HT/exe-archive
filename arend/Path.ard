@@ -1,0 +1,34 @@
+
+\func trans (A B : \Type) (p : A = B) (a : A) : B
+   => coe (\lam i => p @ i) a right
+
+\func transport {A : \Type} (B : A -> \Type) {a a' : A} (p : a = a') (b : B a) : B a'
+   => coe (\lam i => B (p @ i)) b right
+
+\func subst (A : \Type) (B : A -> \Type) (a a' : A) (p : a = a') (b : B a) : B a'
+   => coe (\lam i => B (p @ i)) b right
+
+\func Path (A : \Type) (a b : A) : \Type
+   => a = b
+
+\func HPath (A B : \Type) (a : A) (b : B) (P : A = B) : \Type
+   => (trans A B P a) = b
+
+\func refl (A : \Type) (a : A) : Path A a a
+   => path (\lam i => a)
+
+\func singl (A : \Type) (a : A) : \Type
+   => \Sigma (x : A) (a = x)
+
+\func theta (A : \Type) (a : A) : singl A a
+   => (a,refl A a)
+
+\func inv (A : \Type) (a b : A) (p : a = b) : b = a
+   => transport (\lam x => x = a) p (path (\lam _ => a))
+
+\func cong (A B : \Type) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
+   => path (\lam i => f (p @ i))
+
+\func coerce (A B : \Type) (p : A = B) : A -> B
+   => \lam (x : A) => trans A B p x
+
