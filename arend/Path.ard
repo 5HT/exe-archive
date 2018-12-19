@@ -1,4 +1,6 @@
 
+\import Sq
+
 \func trans (A B : \Type) (p : A = B) (a : A) : B
    => coe (\lam i => p @ i) a right
 
@@ -31,4 +33,10 @@
 
 \func coerce (A B : \Type) (p : A = B) : A -> B
    => \lam (x : A) => trans A B p x
+
+\func J {A : \Type} {a : A}
+      (C : \Pi (x : A) -> a = x -> \Type)
+      (b : C a (refl A a)) {x : A}
+      (p : a = x) : C x p
+   => coe (\lam i => C (p @ i) (psqueeze p i)) b right
 
