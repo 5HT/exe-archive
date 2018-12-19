@@ -1,0 +1,14 @@
+
+\import Path
+
+\func cat : \Type => \Sigma (A : \Type) (\Pi (x y : A) -> \Type)
+
+\record isPrecategory (C : cat)
+  (id : \Pi (x : C.1) -> C.2 x x)
+  (c : \Pi (x y z : C.1) (h : C.2 x y) (w : C.2 y z) -> C.2 x z)
+  (homSet : \Pi (x y : C.1) -> isSet (C.2 x y))
+  (left : \Pi (x y : C.1) (f : C.2 x y) -> Path (C.2 x y) (c x x y (id x) f) f)
+  (right : \Pi (x y : C.1) (f : C.2 x y) -> Path (C.2 x y) (c x y y f (id y)) f)
+  (assoc : \Pi (x y z w : C.1) (f : C.2 x y) (g : C.2 y z) (h : C.2 z w) ->
+    Path (C.2 x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
+

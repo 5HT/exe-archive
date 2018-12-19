@@ -42,3 +42,17 @@
 \func J (A : \Type) (a : A) (C : \Pi (x : A) -> a = x -> \Type) (d : C a (refl A a)) (x : A) (p : a = x) : C x p
 -- => coe (\lam i => C (p @ i) (connAnd p i)) d right -- normal form
    => subst (singl A a) (\lam x => C (x.1) (x.2)) (theta A a) (x, p) (contr A a x p) d
+
+\data N | Z | S (n : N)
+
+\func n-groupoid (A : \Type) (n : N) : \Type => \Pi (a b : A) -> rec A a b n
+   \where \func rec (A : \Type) (a b : A) (k : N) : \Type
+   \elim k { | Z => Path A a b | S n => n-groupoid (Path A a b) n }
+
+\func isContr     (A : \Type) : \Type => \Sigma (x : A) (\Pi (y : A) -> Path A x y)
+\func isProp      (A : \Type) : \Type => n-groupoid A Z
+\func isSet       (A : \Type) : \Type => n-groupoid A (S Z)
+\func isGroupoid  (A : \Type) : \Type => n-groupoid A (S (S Z))
+\func isGrp2      (A : \Type) : \Type => n-groupoid A (S (S (S Z)))
+\func isGrp3      (A : \Type) : \Type => n-groupoid A (S (S (S (S Z))))
+
