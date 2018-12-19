@@ -8,6 +8,15 @@
                           (path (\lam j => squee i j)))
           (path (\lam _ => path (\lam _ => left))) right @ i @ j
 
+\func lower (i j : I)
+   => \let | p1 => \lam x => path (\lam _ => x)
+           | p2 => path (\lam _ => path (\lam _ => left))
+       \in coe (\lam i => Path (\lam j => upper i j = i)
+               (path (\lam y => upper i y)) (p1 i)) p2 right @ i @ j
+
 \func connAnd {A : \Type} {a b : A} (p : a = b) (i : I) : a = p @ i
    => path (\lam j => p @ upper i j)
+
+\func connOr {A : \Type} {a b : A} (p : a = b) (i : I) : p @ i = b
+   => path (\lam j => p @ lower i j)
 
