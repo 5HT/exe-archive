@@ -2,11 +2,12 @@
 \func squee (i j : I)
    => coe (\lam x => left = x) (path (\lam _ => left)) j @ i
 
-\func squeeze (i j : I)
+\func upper (i j : I)
    => coe (\lam i => Path (\lam j => left = squee i j)
                           (path (\lam _ => left))
                           (path (\lam j => squee i j)))
           (path (\lam _ => path (\lam _ => left))) right @ i @ j
 
-\func psqueeze {A : \Type} {a a' : A} (p : a = a') (i : I) : a = p @ i
-   => path (\lam j => p @ squeeze i j)
+\func connAnd {A : \Type} {a b : A} (p : a = b) (i : I) : a = p @ i
+   => path (\lam j => p @ upper i j)
+

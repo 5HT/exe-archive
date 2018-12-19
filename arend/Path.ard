@@ -36,7 +36,6 @@
 
 \func J {A : \Type} {a : A}
       (C : \Pi (x : A) -> a = x -> \Type)
-      (b : C a (refl A a)) {x : A}
-      (p : a = x) : C x p
-   => coe (\lam i => C (p @ i) (psqueeze p i)) b right
+      (d : C a (refl A a)) {x : A} (p : a = x) : C x p
+   => coe (\lam i => C (p @ i) (connAnd p i)) d right
 
