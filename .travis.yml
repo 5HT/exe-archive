@@ -16,6 +16,7 @@ addons:
   apt:
     packages:
       - libgmp-dev
+
 before_install:
   - mkdir -p ~/.local/bin
   - export PATH=$HOME/.local/bin:$PATH
@@ -25,4 +26,4 @@ install:
   - git clone git://github.com/mortberg/cubicaltt && cd cubicaltt
   - stack build
   - ls ./.stack-work/dist/x86_64-linux
-  - ./.stack-work/dist/x86_64-linux/Cabal-1.24.2.0/build/cubical -b priv/k_theory.ctt
+  - ./.stack-work/dist/x86_64-linux/Cabal-1.24.2.0/build/cubical/cubical -b priv/k_theory.ctt
