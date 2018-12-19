@@ -2,7 +2,6 @@
 \import Path
 
 \func Sigma (A : \Type) (B : A -> \Type)
-    : \Type
    => \Sigma (x : A) (B x)
 
 \func dpair (A : \Type) (B : A -> \Type) (a : A) (b : B a)

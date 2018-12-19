@@ -2,7 +2,14 @@
 -- Function type
 
 \func id {A : \Type}
+   => A -> A
+
+\func idfun {A : \Type}
    => \lam (x : A) => x
+
+\func lambda {A B : \Type} (b : B)
+    : A -> B
+   => \lam _ => b
 
 \func -o {A B C : \Type} (f : A -> B)
    => \lam (g : B -> C) x => g (f x)
@@ -67,9 +74,32 @@
 
 \data exists (A : \Type) (B : A -> \Type) | sig (a : A) (b : B a)
 
-\func pr1 {A : \Type} {B : A -> \Type} (x : exists A B) : A
-    \elim x { sig a b => a }
+\func pr1 {A : \Type} {B : A -> \Type} (x : exists A B)
+    : A \elim x { sig a b => a }
 
-\func pr2 {A : \Type} {B : A -> \Type} (x : exists A B) : B (pr1 x)
-    \elim x { sig a b => b }
+\func pr2 {A : \Type} {B : A -> \Type} (x : exists A B)
+    : B (pr1 x) \elim x { sig a b => b }
+
+-- Bool type
+
+\data bool | false | true
+
+\func negation (x : bool)
+    : bool \elim x { | false => true | true => false }
+
+\func or (x : bool)
+    : bool -> bool \elim x { | false => idfun | true => lambda true }
+
+\func and (x : bool)
+    : bool -> bool \elim x { | false => lambda false | true => idfun }
+
+\func boolEq
+    : bool -> bool -> bool
+   => lambda negation
+
+\func boolRec (A : \Type) (f t : A) (x : bool)
+    : A \elim x { | false => f | true => t }
+
+\func boolInd (A : bool -> \Type) (f : A false) (t : A true) (n : bool)
+    : A n \elim n { | false => f | true => t }
 

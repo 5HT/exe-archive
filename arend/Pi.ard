@@ -1,6 +1,5 @@
 
 \func Pi (A : \Type) (B : A -> \Type)
-    : \Type
    => \Pi (x : A) -> B x
 
 \func lam (A : \Type) (B : A -> \Type) (b : Pi A B)
