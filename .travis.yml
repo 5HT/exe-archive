@@ -26,4 +26,5 @@ install:
   - git clone git://github.com/mortberg/cubicaltt && cd cubicaltt
   - stack build
   - ls ./.stack-work/dist/x86_64-linux
-  - ./.stack-work/dist/x86_64-linux/Cabal-1.24.2.0/build/cubical/cubical -b priv/k_theory.ctt
+  - cd ..
+  - ./cubicaltt/.stack-work/dist/x86_64-linux/Cabal-1.24.2.0/build/cubical/cubical -b priv/k_theory.ctt
