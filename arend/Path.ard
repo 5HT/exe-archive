@@ -4,6 +4,9 @@
 \func trans (A B : \Type) (p : A = B) (a : A) : B
    => coe (\lam i => p @ i) a right
 
+\func coerce (A B : \Type) (p : A = B) : A -> B
+   => trans A B p
+
 \func transport {A : \Type} (B : A -> \Type) {a x : A} (p : a = x) (b : B a) : B x
    => coe (\lam i => B (p @ i)) b right
 
@@ -34,13 +37,8 @@
 \func contr (A : \Type) (a b : A) (p : Path A a b) : Path (singl A a) (theta A a) (b,p)
    => path (\lam i => (p @ i, path (\lam j => p @ upper i j)))
 
-\func coerce (A B : \Type) (p : A = B) : A -> B
-   => \lam (x : A) => trans A B p x
-
 \func D (A : \Type) : \Type => \Pi (x y : A) -> Path A x y -> \Type
 
-\func J (A : \Type) (a : A)
-      (C : \Pi (x : A) -> a = x -> \Type)
-      (d : C a (refl A a)) (x : A) (p : a = x) : C x p
+\func J (A : \Type) (a : A) (C : \Pi (x : A) -> a = x -> \Type) (d : C a (refl A a)) (x : A) (p : a = x) : C x p
 -- => coe (\lam i => C (p @ i) (connAnd p i)) d right -- normal form
    => subst (singl A a) (\lam x => C (x.1) (x.2)) (theta A a) (x, p) (contr A a x p) d
