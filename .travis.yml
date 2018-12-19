@@ -12,7 +12,7 @@ install:
   - wget http://ns.synrc.com/publications/cubical
   - chmod +x cubical
   - export PATH=$PATH:$PWD
-  - ./cubical -b priv/adj.ctt
-  - ./mad dep com pla bun cub
+  #- ./cubical -b priv/adj.ctt
+  #- ./mad dep com pla bun cub
 script:
-  - ./mad com
+  #- ./mad com
