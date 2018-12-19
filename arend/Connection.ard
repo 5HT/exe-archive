@@ -1,12 +1,9 @@
 
-\func squee (i j : I)
-   => coe (\lam x => left = x) (path (\lam _ => left)) j @ i
-
 \func upper (i j : I)
-   => coe (\lam i => Path (\lam j => left = squee i j)
-                          (path (\lam _ => left))
-                          (path (\lam j => squee i j)))
-          (path (\lam _ => path (\lam _ => left))) right @ i @ j
+   => \let | p1 => \lam i j => (coe (\lam x => left = x) (path (\lam _ => left)) j @ i)
+           | p2 => (path (\lam _ => path (\lam _ => left)))
+       \in coe (\lam i => Path (\lam j => left = p1 i j) (path (\lam _ => left))
+               (path (\lam j => p1 i j))) p2 right @ i @ j
 
 \func lower (i j : I)
    => \let | p1 => \lam x => path (\lam _ => x)
