@@ -15,9 +15,11 @@ import set
 
 natSet : isSet nat = hedberg nat natDec
 
-mkFt (ob : nat -> U) (ft0 : (n : nat) -> ob (succ n) -> ob n) : (n : nat) -> ob n -> Sigma nat ob = split
-  zero  -> \(x : ob zero) -> (zero, x)
-  succ n -> \(x : ob (succ n)) -> (n, ft0 n x)
+mkFt (ob : nat -> U)
+     (ft0 : (n : nat) -> ob (succ n) -> ob n)
+  : (n : nat) -> ob n -> Sigma nat ob = split
+    zero   -> \(x : ob zero) -> (zero, x)
+    succ n -> \(x : ob (succ n)) -> (n, ft0 n x)
 
 --
 -- C0-Systems
@@ -144,10 +146,12 @@ CSystem : U
 
 -- Definition of a universe category
 uc : U
-   = (C : precategory)
-   * (_ : isCategory C)
+   = (C  : precategory)
+   * (_  : isCategory C)
    * (pt : terminal C)
-   * (V : carrier C) * (VT : carrier C) * (p : hom C VT V)
+   * (V  : carrier C)
+   * (VT : carrier C)
+   * (p  : hom C VT V)
    * ((f : homTo C V) -> hasPullback C (V, f, VT, p))
 
 -- An equivalence of universe categories is an equivalence of categories compatible with the "p" morphism
