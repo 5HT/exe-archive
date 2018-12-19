@@ -1,4 +1,6 @@
 
+-- Pure Cubical Meet and Join
+
 \func meet (i j : I)
    => \let | p1 => \lam i j => (coe (\lam x => left = x) (path (\lam _ => left)) j @ i)
            | p2 => (path (\lam _ => path (\lam _ => left)))
