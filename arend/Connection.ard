@@ -1,19 +1,19 @@
 
-\func upper (i j : I)
+\func meet (i j : I)
    => \let | p1 => \lam i j => (coe (\lam x => left = x) (path (\lam _ => left)) j @ i)
            | p2 => (path (\lam _ => path (\lam _ => left)))
        \in coe (\lam i => Path (\lam j => left = p1 i j) (path (\lam _ => left))
                (path (\lam j => p1 i j))) p2 right @ i @ j
 
-\func lower (i j : I)
+\func join (i j : I)
    => \let | p1 => \lam x => path (\lam _ => x)
            | p2 => path (\lam _ => path (\lam _ => left))
-       \in coe (\lam i => Path (\lam j => upper i j = i)
-               (path (\lam y => upper i y)) (p1 i)) p2 right @ i @ j
+       \in coe (\lam i => Path (\lam j => meet i j = i)
+               (path (\lam y => meet i y)) (p1 i)) p2 right @ i @ j
 
 \func connAnd {A : \Type} {a b : A} (p : a = b) (i : I) : a = p @ i
-   => path (\lam j => p @ upper i j)
+   => path (\lam j => p @ meet i j)
 
 \func connOr {A : \Type} {a b : A} (p : a = b) (i : I) : p @ i = b
-   => path (\lam j => p @ lower i j)
+   => path (\lam j => p @ join i j)
 

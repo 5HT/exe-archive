@@ -35,7 +35,7 @@
    => path (\lam i => f (p @ i))
 
 \func contr (A : \Type) (a b : A) (p : Path A a b) : Path (singl A a) (theta A a) (b,p)
-   => path (\lam i => (p @ i, path (\lam j => p @ upper i j)))
+   => path (\lam i => (p @ i, path (\lam j => p @ meet i j)))
 
 \func D (A : \Type) : \Type => \Pi (x y : A) -> Path A x y -> \Type
 
