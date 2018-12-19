@@ -39,9 +39,10 @@
 
 \func D (A : \Type) : \Type => \Pi (x y : A) -> Path A x y -> \Type
 
-\func J (A : \Type) (a : A) (C : \Pi (x : A) -> a = x -> \Type) (d : C a (refl A a)) (x : A) (p : a = x) : C x p
+\func J (A : \Type) (a : A) (C : \Pi (x : A) -> a = x -> \Type)
+        (d : C a (refl A a)) (x : A) (p : a = x) : C x p
 -- => coe (\lam i => C (p @ i) (connAnd p i)) d right -- normal form
-   => subst (singl A a) (\lam x => C (x.1) (x.2)) (theta A a) (x, p) (contr A a x p) d
+   => subst (singl A a) (\lam x => C x.1 x.2) (theta A a) (x,p) (contr A a x p) d
 
 \data N | Z | S (n : N)
 
