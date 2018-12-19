@@ -12,6 +12,19 @@
   (assoc : \Pi (x y z w : carrier) (f : hom x y) (g : hom y z) (h : hom z w) ->
     Path (hom x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
 
+\record catgroupoid
+  (carrier : \Type)
+  (hom : \Pi (x y : carrier) -> \Type)
+  (id : \Pi (x : carrier) -> hom x x)
+  (c : \Pi (x y z : carrier) -> hom x y -> hom y z -> hom x z)
+  (inv : \Pi (x y : carrier) -> hom x y -> hom y x)
+  (inv_left : \Pi (x y : carrier) (p : hom x y) -> Path (hom x x) (c x y x p (inv x y p)) (id x))
+  (inv_right : \Pi (x y : carrier) (p : hom x y) -> Path (hom y y) (c y x y (inv x y p) p) (id y))
+  (left : \Pi (x y : carrier) (f : hom x y) -> Path (hom x y) (c x x y (id x) f) f)
+  (right : \Pi (x y : carrier) (f : hom x y) -> Path (hom x y) (c x y y f (id y)) f)
+  (assoc : \Pi (x y z w : carrier) (f : hom x y) (g : hom y z) (h : hom z w) ->
+    Path (hom x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
+
 \record iso
   (C : precategory)
   (A : C.carrier)
@@ -44,17 +57,4 @@
        (h : X.hom A C) (i : X.hom B D) : \Type
    => Path (X.hom A D) (X.c A C D h g)
                        (X.c A B D f i)
-
-\record isCatGroupoid
-  (carrier : \Type)
-  (hom : \Pi (x y : carrier) -> \Type)
-  (id : \Pi (x : carrier) -> hom x x)
-  (c : \Pi (x y z : carrier) -> hom x y -> hom y z -> hom x z)
-  (inv : \Pi (x y : carrier) -> hom x y -> hom y x)
-  (inv_left : \Pi (x y : carrier) (p : hom x y) -> Path (hom x x) (c x y x p (inv x y p)) (id x))
-  (inv_right : \Pi (x y : carrier) (p : hom x y) -> Path (hom y y) (c y x y (inv x y p) p) (id y))
-  (left : \Pi (x y : carrier) (f : hom x y) -> Path (hom x y) (c x x y (id x) f) f)
-  (right : \Pi (x y : carrier) (f : hom x y) -> Path (hom x y) (c x y y f (id y)) f)
-  (assoc : \Pi (x y z w : carrier) (f : hom x y) (g : hom y z) (h : hom z w) ->
-    Path (hom x w) (c x z w (c x y z f g) h) (c x y w f (c y z w g h)))
 
