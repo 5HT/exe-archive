@@ -1,0 +1,34 @@
+
+\import Path
+
+\func Sigma (A : \Type) (B : A -> \Type)
+    : \Type
+   => \Sigma (x : A) (B x)
+
+\func dpair (A : \Type) (B : A -> \Type) (a : A) (b : B a)
+    : Sigma A B
+   => (a,b)
+
+\func pi1 (A : \Type) (B : A -> \Type) (x : Sigma A B)
+    : A
+   => x.1
+
+\func pi2 (A : \Type) (B : A -> \Type) (x : Sigma A B)
+    : B (pi1 A B x)
+   => x.2
+
+\func sigRec (A : \Type) (B : A -> \Type) (C : \Type)
+      (g : \Pi (x : A) -> \Pi (y : B x) -> C)
+      (p : Sigma A B) : C => g p.1 p.2
+
+\func beta1 (A : \Type) (B : A -> \Type) (a : A) (b : B a)
+    : Path A a (pi1 A B (a,b))
+   => refl A a
+
+\func beta2 (A : \Type) (B : A -> \Type) (a : A) (b : B a)
+    : Path (B a) b (pi2 A B (a,b))
+   => refl (B a) b
+
+\func eta2 (A : \Type) (B : A -> \Type) (p : Sigma A B)
+    : Path (Sigma A B) p (pi1 A B p,pi2 A B p)
+   => refl (Sigma A B) p
