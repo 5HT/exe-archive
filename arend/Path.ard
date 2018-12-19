@@ -1,5 +1,5 @@
 
-\import Sq
+\import Connection
 
 \func trans (A B : \Type) (p : A = B) (a : A) : B
    => coe (\lam i => p @ i) a right
@@ -30,6 +30,9 @@
 
 \func cong (A B : \Type) (f : A -> B) (a b : A) (p : Path A a b) : Path B (f a) (f b)
    => path (\lam i => f (p @ i))
+
+\func contr (A : \Type) (a b : A) (p : Path A a b) : Path (singl A a) (theta A a) (b,p)
+   => path (\lam i => (p @ i, path (\lam j => p @ upper i j)))
 
 \func coerce (A B : \Type) (p : A = B) : A -> B
    => \lam (x : A) => trans A B p x
