@@ -30,5 +30,5 @@
    => refl (B a) b
 
 \func eta2 (A : \Type) (B : A -> \Type) (p : Sigma A B)
-    : Path (Sigma A B) p (pi1 A B p,pi2 A B p)
+    : Path (Sigma A B) p (p.1,p.2)
    => refl (Sigma A B) p

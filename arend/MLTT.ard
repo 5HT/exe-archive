@@ -1,4 +1,6 @@
 
+-- Reality Check
+
 \import Pi
 \import Sigma
 \import Path
@@ -14,9 +16,9 @@
   (Sigma_Intro : \Pi (B : A -> \Type) (a : A) (b : B a) -> Sigma A B)
   (Sigma_Elim1 : \Pi (B : A -> \Type) (x : Sigma A B) -> A)
   (Sigma_Elim2 : \Pi (B : A -> \Type) (x : Sigma A B) -> B (pi1 A B x))
-  (Sigma_Comp1 : \Pi (B : A -> \Type) (a : A) (b : B a) -> Path A a (Sigma_Elim1 B (Sigma_Intro B a b)))
-  (Sigma_Comp2 : \Pi (B : A -> \Type) (a : A) (b : B a) -> Path (B a) b (Sigma_Elim2 B (a,b)))
-  (Sigma_Comp3 : \Pi (B : A -> \Type) (p : Sigma A B) -> Path (Sigma A B) p (pi1 A B p,pi2 A B p))
+  (Sigma_Comp1 : \Pi (B : A -> \Type) (a : A) (b : B a) -> a = (Sigma_Elim1 B (Sigma_Intro B a b)))
+  (Sigma_Comp2 : \Pi (B : A -> \Type) (a : A) (b : B a) -> b = (Sigma_Elim2 B (a,b)))
+  (Sigma_Comp3 : \Pi (B : A -> \Type) (p : Sigma A B) -> p = Sigma_Intro B (pi1 A B p) (Sigma_Elim2 B p))
   (Id_Former : A -> A -> \Type)
   (Id_Intro : \Pi (a : A) -> Path A a a)
   (Id_Elim : \Pi (a : A) (C : \Pi (x : A) -> a = x -> \Type) (d : C a (refl A a)) (x : A) (p : a = x) -> C x p)
