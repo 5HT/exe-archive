@@ -1,11 +1,7 @@
-<<<<<<< HEAD
 language: erlang
 
 otp_release:
   - 20.0
-=======
-language: generic
->>>>>>> 17779230956e8c53501fb75bbb89cb245fbf5f8c
 
 notifications:
   email:
@@ -15,7 +11,6 @@ notifications:
     on_failure: change  # options: [always|never|change] default: always
     on_start:   always  # options: [always|never|change] default: always
 
-<<<<<<< HEAD
 install:
   - "curl -fsSL https://raw.github.com/synrc/mad/master/mad > mad"
   - "chmod +x mad"
@@ -23,25 +18,3 @@ install:
 
 script:
   - ./mad com
-=======
-cache:
-  directories:
-  - $HOME/.stack
-
-addons:
-  apt:
-    packages:
-      - libgmp-dev
-
-before_install:
-  - mkdir -p ~/.local/bin
-  - export PATH=$HOME/.local/bin:$PATH
-  - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
-
-install:
-  - git clone git://github.com/mortberg/cubicaltt && cd cubicaltt
-  - stack build
-  - ls ./.stack-work/dist/x86_64-linux
-  - cd ..
-  - ./cubicaltt/.stack-work/dist/x86_64-linux/Cabal-1.24.2.0/build/cubical/cubical -b priv/k_theory.ctt
->>>>>>> 17779230956e8c53501fb75bbb89cb245fbf5f8c
