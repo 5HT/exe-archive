@@ -50,6 +50,7 @@ context default
     keyword whole send brown
     keyword whole in brown
     keyword whole U brown
+    keyword whole Type brown
 
 # Regular Inductive Types from Base Library
 
