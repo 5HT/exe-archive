@@ -5,7 +5,8 @@ data s = a
 listCategory (A: U) (o: listObject A): U = undefined
 
 histo (A:U) (F: U -> U) (X: functor F) (f: F (cofree F A) -> A) (z: fix F): A
-  = extract A F ((cata (cofree F A) F X (\(x: F (cofree F A)) -> CoFree (Fix (CoBindF (f x) ((X.1 (cofree F A) (fix (cofreeF F A)) (uncofree A F) x)))))) z) where
+  = extract A F ((cata (cofree F A) F X (\(x: F (cofree F A)) ->
+    CoFree (Fix (CoBindF (f x) ((X.1 (cofree F A) (fix (cofreeF F A)) (uncofree A F) x)))))) z) where
   extract (A: U) (F: U -> U): cofree F A -> A = split
     | CoFree f -> unpack_fix f where
   unpack_fix: fix (cofreeF F A) -> A = split
