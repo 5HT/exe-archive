@@ -1,6 +1,6 @@
 % Copyright Groupoid Infinity, Inc.
 
-mod -> 'module' id 'where' imp dec : {module,'$2','$3','$4','$5'}.
+mod -> 'module' id 'where' imp dec : {module,'$2','$4','$5'}.
 imp -> skip imp : '$2'.
 imp -> '$empty' : [].
 imp -> 'import' id imp : [{import,'$2'}|'$3'].
@@ -9,6 +9,7 @@ ids -> id ids : ['$1'|'$2'].
 tele -> '$empty' : [].
 tele -> cotele : '$1'.
 br -> ids arrow exp : {br,'$1','$3'}.
+br -> ids '@' ids arrow exp : {br,'$1','$3','$5'}.
 brs -> '$empty' : [].
 brs -> cobrs : '$1'.
 cobrs -> '|' br brs : ['$2'|'$3'].
@@ -27,7 +28,7 @@ f2 -> '-' f2 : {neg,'$2'}.
 f2 -> id : '$1'.
 exp -> 'split' cobrs : {split,'$2'}.
 exp -> id : '$1'.
-exp -> '(' exp ')' : '$2'.
+exp -> id '{' exp '}': {inst,'$1','$h3'}.
 exp -> '<' ids '>' exp : {plam,uncons('$2'),'$4'}.
 exp -> exp '.1' : {fst,'$1'}.
 exp -> exp '.2' : {snd,'$1'}.
@@ -40,8 +41,9 @@ exp -> 'fill' exp exp sys : {fill,'$2','$3','$4'}.
 exp -> 'glue' exp sys : {glue,'$2','$3'}.
 exp -> 'unglue' exp sys : {unglue,'$2','$3'}.
 exp -> exp ',' exp : uncons_p('$1','$3').
-exp -> app : '$1'.
 exp -> papp : '$1'.
+exp -> '(' exp ')' : '$2'.
+exp -> app : '$1'.
 app -> exp exp : {app,'$1','$2'}.
 papp -> exp '@' formula : {papp,'$1','$3'}.
 dec -> '$empty' : [].
@@ -52,23 +54,30 @@ def -> 'data' id tele '=' sum : {data,'$2','$3','$5'}.
 def -> id tele ':' exp '=' exp : {def,'$1','$2','$4','$6'}.
 def -> id tele ':' exp '=' exp 'where' def : {def,'$1','$2','$4','$6','$8'}.
 sum -> '$empty' : [].
-sum -> id tele : {ctor,'$1','$2'}.
-sum -> id tele '|' sum : [{ctor,'$1','$2'}|'$4'].
+sum -> rsum : '$1'.
+rsum -> id tele : {ctor,'$1','$2'}.
+rsum -> id tele '|' rsum : [{ctor,'$1','$2'}|'$4'].
+rsum -> id tele '<' ids '>' sys : {htor,'$1','$2','$4','$6'}.
+rsum -> id tele '<' ids '>' sys '|' rsum : [{htor,'$1','$2','$4','$6'}|'$8'].
 Rootsymbol mod.
 Right 100 exp.
 Right 100 arrow.
 Right 100 formula.
-Left 200 app.
 Left 10 '|'.
+Left 10 app.
 Left 10 skip.
 Left 10 'data'.
 Left 10 id.
 Left 10 def.
 
-Nonterminals mod imp tele exp app dec def ids sum cotele br brs cobrs codec formula f1 f2 side sides sys papp.
-Terminals id digits atom oper 'module' 'where' 'import' skip lam meet
-          '(' ')' '[' ']' '<' '>' '{' '}' '.' ',' ':' '=' '#' '|' '+' '-' '*' '/' '@' '0' '1'
-          arrow forall 'record' 'data' 'let' 'in' '.1' '.2' 'split' 'comp' 'fill' 'glue' 'unglue'.
+Nonterminals mod imp tele exp app dec def ids sum cotele rsum
+             br brs cobrs codec formula f1 f2 side sides sys papp.
+
+Terminals id digits atom oper skip lam meet arrow forall
+          '(' ')' '[' ']' '<' '>' '{' '}' '.' ','
+          ':' '=' '#' '|' '-' '*' '/' '@' '0' '1'
+          'module' 'where' 'import' 'record' 'data' 'split'
+          'let' 'in' '.1' '.2'  'comp' 'fill' 'glue' 'unglue'.
 
 Erlang code.
 
