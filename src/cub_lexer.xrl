@@ -12,12 +12,14 @@ Dot     = \.
 Comma   = \,
 Arrow   = (\->|\→)
 Forall  = (\\/|\∀)
+Meet    = (/\\)
 Lambda  = (\\|\λ)
 Curly   = [\{\}]
 Angle   = [\<\>]
 Parens  = [\(\)]
 Square  = [\[\]]
 Colon   = \:
+PathApp = \@
 Eq      = \=
 Pipe    = \|
 
@@ -27,11 +29,12 @@ Rules.
 (let|in|module|import|where) : {token,{list_to_atom(TokenChars),TokenLine}}.
 (spawn|send|receive) : {token,{list_to_atom(TokenChars),TokenLine}}.
 ({Curly}|{Parens}|{Angle}|{Square}) : {token,{list_to_atom(TokenChars),TokenLine}}.
-({Dot}|{Comma}|{Eq}|{Colon}|{Pipe}|{Star}) : {token,{list_to_atom(TokenChars),TokenLine}}.
+({Dot}|{Comma}|{Eq}|{Colon}|{Pipe}|{Star}|{PathApp}) : {token,{list_to_atom(TokenChars),TokenLine}}.
 
 {A}+ : {token, {id, TokenLine, TokenChars}}.
 {Arrow} : {token, {arrow, TokenLine}}.
 {Forall} : {token, {forall, TokenLine}}.
+{Meet} : {token, {meet, TokenLine}}.
 {Lambda} : {token, {lam, TokenLine}}.
 {B}+ : {token, {skip, TokenLine}}.
 {S}+ : skip_token.
