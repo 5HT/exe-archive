@@ -19,17 +19,17 @@ Angle   = [\<\>]
 Parens  = [\(\)]
 Square  = [\[\]]
 Colon   = \:
-PathApp = \@
+Et      = \@
 Eq      = \=
 Pipe    = \|
 
 Rules.
 
-(data|record|\.1|\.2|split) : {token,{list_to_atom(TokenChars),TokenLine}}.
+(data|record|\.1|\.2|split|comp|glue|fill|Glue|unglue) : {token,{list_to_atom(TokenChars),TokenLine}}.
 (let|in|module|import|where) : {token,{list_to_atom(TokenChars),TokenLine}}.
 (spawn|send|receive) : {token,{list_to_atom(TokenChars),TokenLine}}.
 ({Curly}|{Parens}|{Angle}|{Square}) : {token,{list_to_atom(TokenChars),TokenLine}}.
-({Dot}|{Comma}|{Eq}|{Colon}|{Pipe}|{Star}|{PathApp}) : {token,{list_to_atom(TokenChars),TokenLine}}.
+({Dot}|{Comma}|{Eq}|{Colon}|{Pipe}|{Star}|{Et}) : {token,{list_to_atom(TokenChars),TokenLine}}.
 
 {A}+ : {token, {id, TokenLine, TokenChars}}.
 {Arrow} : {token, {arrow, TokenLine}}.
