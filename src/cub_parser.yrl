@@ -17,7 +17,7 @@ sys -> '[' sides ']' : {sys,'$2'}.
 sides -> '$empty' : [].
 sides -> side : '$1'.
 sides -> side ',' sides : ['$1'|'$3'].
-side -> '(' id '=' dir ')' arrow exp : {side,'$2','$4','$7'}.
+side -> '(' id '=' id ')' arrow exp : {side,'$2','$4','$7'}.
 formula -> formula forall f1 : {join,'$1','$3'}.
 formula -> f1 : '$1'.
 formula -> f2 : '$1'.
@@ -25,9 +25,6 @@ f1 -> f1 meet f2 : {meet,'$1','$3'}.
 f1 -> f2 : '$1'.
 f2 -> '-' f2 : {neg,'$2'}.
 f2 -> id : '$1'.
-f2 -> dir : {dir,'$1'}.
-dir -> '0' : 0.
-dir -> '1' : 1.
 exp -> 'split' cobrs : {split,'$2'}.
 exp -> id : '$1'.
 exp -> '(' exp ')' : '$2'.
@@ -68,7 +65,7 @@ Left 10 'data'.
 Left 10 id.
 Left 10 def.
 
-Nonterminals mod imp tele exp app dec def ids sum cotele br brs cobrs codec formula dir f1 f2 side sides sys papp.
+Nonterminals mod imp tele exp app dec def ids sum cotele br brs cobrs codec formula f1 f2 side sides sys papp.
 Terminals id digits atom oper 'module' 'where' 'import' skip lam meet
           '(' ')' '[' ']' '<' '>' '{' '}' '.' ',' ':' '=' '#' '|' '+' '-' '*' '/' '@' '0' '1'
           arrow forall 'record' 'data' 'let' 'in' '.1' '.2' 'split' 'comp' 'fill' 'glue' 'unglue'.
